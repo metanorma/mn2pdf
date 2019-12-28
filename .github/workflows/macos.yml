@@ -1,0 +1,120 @@
+name: macos
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      # cabextract for fonts, gettext-base for envsubst
+      - name: Setup prerequisites
+        run: |
+          # Install `envsubst`
+          brew install gettext
+          brew link --force gettext
+
+          # Install Apache FOP
+          brew install fop
+
+          # Install Maven
+          brew install maven
+
+          # Install p7zip
+          brew install p7zip
+
+      - uses: actions/checkout@master
+
+      - name: Install Cambria
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+
+          # Install Cambria
+          pushd $(mktemp -d)
+          curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
+          unzip cambria.zip
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+          mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
+          mv Cambria.ttf cambria.ttf
+          mv Cambria\ Bold.ttf cambriab.ttf
+          mv Cambria\ Italic.ttf cambriai.ttf
+          mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
+          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
+          popd
+
+      - name: Install FreeSerif
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
+
+          pushd $(mktemp -d)
+          curl -Ls https://www.fontspace.com/download/13277/e8f09161b1174b2abe9bd65fb8223c48/gnu-freefont_freeserif.zip -o freefont.zip
+          unzip freefont.zip
+          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/freefont/
+          popd
+
+      - name: Install Nanum Gothic
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
+
+          pushd $(mktemp -d)
+          curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
+          unzip nanum.zip
+          mv NanumGothic{-,}Bold.ttf
+          mv NanumGothic{-,}ExtraBold.ttf
+          mv NanumGothic-Regular.ttf NanumGothic.ttf
+          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
+          popd
+
+      - name: Install Droid Sans Fallback
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
+
+          pushd ${MN_PDF_FONT_PATH}/truetype/droid/
+          wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
+          popd
+
+      - name: Install Chinese fonts
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+
+          pushd $(mktemp -d)
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
+          7za x hansans.7z
+          mv *.ttc ${MN_PDF_FONT_PATH}/
+          popd
+
+      - name: Install System Fonts
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts
+          ls -alR /System/Library/Fonts
+          ln -s /System/Library/Fonts/Supplemental/Arial.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Courier\ New.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/cour.ttf
+          ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/couri.ttf
+          ls -alR ${MN_PDF_FONT_PATH}
+
+      - name: Build
+        run: |
+          make all
+
+      - name: Run tests
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          ls -alR ${MN_PDF_FONT_PATH}
+          make test

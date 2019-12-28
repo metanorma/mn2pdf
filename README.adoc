@@ -1,17 +1,60 @@
-= XML2PDF
+= Metanorma mn2pdf
+
+image:https://github.com/metanorma/mn2pdf/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/mn2pdf/actions?workflow=ubuntu"]
+image:https://github.com/metanorma/mn2pdf/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/mn2pdf/actions?workflow=macos"]
 
 == Installing Build Tools
 
-You will need `maven` build tool.
+You will need the `maven` build tool and `make`.
 
 * https://www.baeldung.com/install-maven-on-windows-linux-mac[How to install Maven on Windows, Linux, Mac]
 
 
-Building the PDF document:
+== Usage
 
 [source,sh]
 ----
-mvn clean compile exec:java -Dexec.args="./source/pdf_fonts_config.xml ./source/iso-24229.xml ./source/mn-iso.xsl ./out/result.pdf"
+java -jar target/mn2pdf-1.0.jar <PDF-Font-Config> <XML-FileName> <XSLT-FileName> <Output-PDF-FileName>
+----
+
+e.g.
+
+[source,sh]
+----
+java -jar target/mn2pdf-1.0.jar tests/pdf_fonts_config.xml tests/G.191.xml tests/itu.recommendation.xsl tests/G.191.pdf
+----
+
+
+== Building the package
+
+[source,sh]
+----
+make all
+----
+
+== Testing
+
+The testing environment utilizes these tools:
+
+* `envsubst`
+* `make`
+
+We use the ITU Recommendation XSLT for testing. It requires the following fonts installed:
+
+* Times New Roman
+* Arial
+* FreeSerif
+* NanumGothic
+* DroidSans
+
+Please follow the instructions here to install prerequisites to run the tests:
+https://github.com/metanorma/mn-native-pdf
+
+Running the tests:
+
+[source,sh]
+----
+make test
 ----
 
 

@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 /**
  * This class for the conversion of an XML file to PDF using FOP and JEuclid
  */
-public class XML2PDF {
+public class mn2pdf {
 
     /**
      * Converts an XML file to a PDF file using FOP
@@ -42,7 +42,7 @@ public class XML2PDF {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertXML2PDF(File config, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
+    public void convertmn2pdf(File config, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
 
         OutputStream out = null;
         try {
@@ -107,12 +107,12 @@ public class XML2PDF {
      */
     public static void main(String[] args) {
         if (args.length != 4) {
-            System.out.println("Usage: java -jar xml2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF>");
+            System.out.println("Usage: java -jar mn2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF>");
             System.exit(-1);
         }
 
         try {
-            System.out.println("XML2PDF\n");
+            System.out.println("mn2pdf\n");
             System.out.println("Preparing...");
 
             //Setup config, input and output files
@@ -144,8 +144,8 @@ public class XML2PDF {
             System.out.println();
             System.out.println("Transforming...");
 
-            XML2PDF app = new XML2PDF();
-            app.convertXML2PDF(fConfig, fXML, fXSL, fPDF);
+            mn2pdf app = new mn2pdf();
+            app.convertmn2pdf(fConfig, fXML, fXSL, fPDF);
 
             System.out.println("Success!");
         } catch (Exception e) {

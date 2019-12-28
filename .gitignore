@@ -1,0 +1,5 @@
+dependency-reduced-pom.xml
+source.sh
+target/
+tests/*.pdf
+tests/pdf_fonts_config.xml
