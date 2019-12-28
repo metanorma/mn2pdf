@@ -11,13 +11,47 @@ jobs:
     name: Upload Release Asset
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@master
-
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      # cabextract for fonts, gettext-base for envsubst
+      - name: Setup prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gettext-base fop cabextract wget p7zip-full libxml2-utils
+
+          # Install fontforge
+          sudo apt-get -y install software-properties-common
+          sudo add-apt-repository ppa:fontforge/fontforge
+          sudo apt-get update
+          sudo apt-get -y install fontforge
+
+          # Install fonts
+          sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
+
+          # If necessary
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install ttf-mscorefonts-installer
+
+      - name: Setup Cambria fonts
+        run: |
+          # Setup Cambria
+          curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
+          sudo chown -R $(whoami) /usr/share/fonts/
+          mkdir -p ~/.fonts
+          cp -a /usr/share/fonts/* ~/.fonts
+          ls -alR ~/.fonts
+
+      - name: Setup CJK fonts
+        run: |
+          cd ~/.fonts
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
+          7z x hansans.7z
+          ls -alR ~/.fonts
+
+      - uses: actions/checkout@master
 
       - name: Build
         run: |
