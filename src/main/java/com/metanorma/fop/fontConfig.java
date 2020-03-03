@@ -102,7 +102,7 @@ public class fontConfig {
         for (int i = 0; i < fonts.getLength(); i++) {
             Node font = fonts.item(i);
             if (font.getAttributes().getNamedItem("embed-url") != null) {
-                String url = font.getAttributes().getNamedItem("embed-url").getTextContent().replace("file:///", "");
+                String url = font.getAttributes().getNamedItem("embed-url").getTextContent().replace("file://", "");
                 if (!new File (url).exists()) {
                     System.out.print("WARNING: Font file '" + url + "' doesn't exist. ");
                     Node fonttriplet = ((Element)font).getElementsByTagName("font-triplet").item(0);
