@@ -79,7 +79,6 @@ public class fontConfig {
         for (String fontfilename: fontList) {
             InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);
             final String destPath = fontPath + File.separator + fontfilename;
-            System.out.println("New file: " + destPath);
             Files.copy(fontfilestream, new File(destPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
