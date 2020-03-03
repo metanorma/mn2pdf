@@ -51,17 +51,6 @@ jobs:
           mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
           popd
 
-      - name: Install FreeSerif
-        run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
-
-          pushd $(mktemp -d)
-          curl -Ls https://www.fontspace.com/download/13277/e8f09161b1174b2abe9bd65fb8223c48/gnu-freefont_freeserif.zip -o freefont.zip
-          unzip freefont.zip
-          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/freefont/
-          popd
-
       - name: Install Nanum Gothic
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
