@@ -64,8 +64,11 @@ public class mn2pdf {
 
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             // (reuse if you plan to render multiple documents!)
-            FopFactory fopFactory = FopFactory.newInstance(config);
-
+            fontConfig fontConfig = new fontConfig(config);
+            FopFactory fopFactory = FopFactory.newInstance(fontConfig.getUpdatedConfig());
+            
+            //FopFactory fopFactory = FopFactory.newInstance(config)
+            
 
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
