@@ -110,7 +110,7 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/droid/DroidSansFallbackFull.ttf">
 					<font-triplet name="DroidSans" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts2/arial.ttf">
 					<font-triplet name="Arial" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf">
