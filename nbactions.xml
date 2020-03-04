@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath com.metanorma.fop.mn2pdf C:\Upwork\Metanorma\mn2pdf\tests\pdf_fonts_config.xml.in2  C:\Upwork\Metanorma\ITU\XML_CalConnect\cc-18011.xml C:\Upwork\Metanorma\ITU\cc.xsl test.pdf</exec.args>
+                <exec.args>-classpath %classpath com.metanorma.fop.mn2pdf C:\Upwork\Metanorma\mn2pdf.my\tests\pdf_fonts_config.xml.in2  C:\Upwork\Metanorma\ITU\XML_CalConnect\cc-18011.xml C:\Upwork\Metanorma\ITU\cc.xsl test.pdf</exec.args>
                 <exec.executable>java</exec.executable>
                 <Env.MN_PDF_FONT_PATH>C:\Upwork\Metanorma\fonts\sourcepro</Env.MN_PDF_FONT_PATH>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath com.metanorma.fop.mn2pdf C:\Upwork\Metanorma\mn2pdf\tests\pdf_fonts_config.xml.in2  C:\Upwork\Metanorma\ITU\XML_CalConnect\cc-18011.xml C:\Upwork\Metanorma\ITU\cc.xsl test.pdf</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath com.metanorma.fop.mn2pdf C:\Upwork\Metanorma\mn2pdf.my\tests\pdf_fonts_config.xml.in2  C:\Upwork\Metanorma\ITU\XML_CalConnect\cc-18011.xml C:\Upwork\Metanorma\ITU\cc.xsl test.pdf</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <Env.MN_PDF_FONT_PATH>C:\Upwork\Metanorma\fonts\sourcepro</Env.MN_PDF_FONT_PATH>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath com.metanorma.fop.mn2pdf C:\Upwork\Metanorma\mn2pdf\tests\pdf_fonts_config.xml.in2  C:\Upwork\Metanorma\ITU\XML_CalConnect\cc-18011.xml C:\Upwork\Metanorma\ITU\cc.xsl test.pdf</exec.args>
+                <exec.args>-classpath %classpath com.metanorma.fop.mn2pdf C:\Upwork\Metanorma\mn2pdf.my\tests\pdf_fonts_config.xml.in2  C:\Upwork\Metanorma\ITU\XML_CalConnect\cc-18011.xml C:\Upwork\Metanorma\ITU\cc.xsl test.pdf</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

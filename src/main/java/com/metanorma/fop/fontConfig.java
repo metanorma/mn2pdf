@@ -16,12 +16,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.fop.fonts.autodetect.FontFileFinder;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -93,7 +95,12 @@ public class fontConfig {
         return stream;
     }
     
-    private void substFonts() {
+    private void substFonts() throws IOException {
+        
+        List<URL> systemFontList;
+        
+        FontFileFinder fontFileFinder = new FontFileFinder(null);
+        systemFontList = fontFileFinder.find();
         
         // select substitutions element
         Node nodesubstitutions = configXML.getElementsByTagName("substitutions").item(0);
@@ -103,64 +110,88 @@ public class fontConfig {
         //iterate each font
         for (int i = 0; i < fonts.getLength(); i++) {
             Node font = fonts.item(i);
-            if (font.getAttributes().getNamedItem("embed-url") != null) {
-                String url = font.getAttributes().getNamedItem("embed-url").getTextContent().replace("file://", "");
-                if (!new File (url).exists()) {
-                    System.out.print("WARNING: Font file '" + url + "' doesn't exist. ");
-                    Node fonttriplet = ((Element)font).getElementsByTagName("font-triplet").item(0);
-                    String fontname = fonttriplet.getAttributes().getNamedItem("name").getTextContent();
-                    String fontstyle = fonttriplet.getAttributes().getNamedItem("style").getTextContent();
-                    String fontweight = fonttriplet.getAttributes().getNamedItem("weight").getTextContent();
-                    String substprefix = "Sans";
-                    if (fontname.toLowerCase().contains("arial")) {
-                        substprefix = "Sans";
-                    } else if (fontname.toLowerCase().contains("times")) {
-                        substprefix = "Serif";
-                    } else if (fontname.toLowerCase().contains("cambria")) {
-                        substprefix = "Serif";
-                    } else if (fontname.toLowerCase().contains("calibri")) {
-                        substprefix = "Sans";
-                    } else if (fontname.toLowerCase().contains("courier")) {
-                        substprefix = "Code";
-                    } else if (fontname.toLowerCase().contains("sans")) {
-                        substprefix = "Sans";
-                    } else if (fontname.toLowerCase().contains("serif")) {
-                        substprefix = "Serif";
-                    }
-
-                    // append a new node to substitutions
-                    Element substitution = configXML.createElement("substitution");
-                    Element from = configXML.createElement("from");
-                    from.setAttribute("font-family", fontname);
-                    from.setAttribute("font-style", fontstyle);
-                    from.setAttribute("font-weight", fontweight);
-                    substitution.appendChild(from);
-
-                    Element to = configXML.createElement("to");
-                    String substsuffix = "Regular";
-                    if (fontstyle.equals("italic")) {
-                        if (fontweight.equals("bold")) {
-                            substsuffix = "BoldIt";
-                        } else {
-                            substsuffix = "It";
+            Node attr_embed_url = font.getAttributes().getNamedItem("embed-url");
+            if (attr_embed_url != null) {
+                String embed_url = font.getAttributes().getNamedItem("embed-url").getTextContent().replace("file://", "");
+                File file_embed_url = new File (embed_url);
+                if (!file_embed_url.exists()) {
+                    System.out.print("WARNING: Font file '" + embed_url + "' doesn't exist. ");
+                    
+                    //try to find system font (example for Windows - C:/Windows/fonts/)
+                    
+                    String fontfilename = file_embed_url.getName();
+                    String font_replacementpath = null;
+                    for (URL url: systemFontList) {
+                        if (url.toString().toLowerCase().endsWith(fontfilename.toLowerCase())) {
+                            font_replacementpath = url.toString();
+                            break;
                         }
                     }
-                    if (fontweight.equals("bold")) {
+                    if (font_replacementpath != null) {
+                        attr_embed_url.setTextContent(font_replacementpath);
+                        System.out.println("Font '" + font_replacementpath + "' will be used.");
+                    } else {
+                        NodeList fonttriplets = ((Element)font).getElementsByTagName("font-triplet");
+                        //iterate each font-triplet
+                        for (int j = 0; j < fonttriplets.getLength(); j++) {
+                            Node fonttriplet = fonttriplets.item(j);
+                            //Node fonttriplet = ((Element)font).getElementsByTagName("font-triplet").item(0);
+                            String fontname = fonttriplet.getAttributes().getNamedItem("name").getTextContent();
+                            String fontstyle = fonttriplet.getAttributes().getNamedItem("style").getTextContent();
+                            String fontweight = fonttriplet.getAttributes().getNamedItem("weight").getTextContent();
+                            String substprefix = "Sans";
+                            if (fontname.toLowerCase().contains("arial")) {
+                                substprefix = "Sans";
+                            } else if (fontname.toLowerCase().contains("times")) {
+                                substprefix = "Serif";
+                            } else if (fontname.toLowerCase().contains("cambria")) {
+                                substprefix = "Serif";
+                            } else if (fontname.toLowerCase().contains("calibri")) {
+                                substprefix = "Sans";
+                            } else if (fontname.toLowerCase().contains("cour")) {
+                                substprefix = "Code";
+                            } else if (fontname.toLowerCase().contains("sans")) {
+                                substprefix = "Sans";
+                            } else if (fontname.toLowerCase().contains("serif")) {
+                                substprefix = "Serif";
+                            }
+
+                            // append a new node to substitutions
+                            Element substitution = configXML.createElement("substitution");
+                            Element from = configXML.createElement("from");
+                            from.setAttribute("font-family", fontname);
+                            from.setAttribute("font-style", fontstyle);
+                            from.setAttribute("font-weight", fontweight);
+                            substitution.appendChild(from);
+
+                            Element to = configXML.createElement("to");
+                            String substsuffix = "Regular";
+                            if (fontstyle.equals("italic")) {
+                                if (fontweight.equals("bold")) {
+                                    substsuffix = "BoldIt";
+                                } else {
+                                    substsuffix = "It";
+                                }
+                            }
+                            if (fontweight.equals("bold")) {
+
+                                if (fontstyle.equals("italic")) {
+                                    substsuffix = "BoldIt";
+                                } else {
+                                    substsuffix = "Bold";
+                                }
+                            }
+                            to.setAttribute("font-style", fontstyle);
+                            to.setAttribute("font-weight", fontweight);
+                            String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
+                            to.setAttribute("font-family", fontFamilySubst);
+                            System.out.println("Font '" + fontPath + File.separator + fontFamilySubst + ".ttf' will be used.");
+                            substitution.appendChild(to);
+
+                            nodesubstitutions.appendChild(substitution);
                         
-                        if (fontstyle.equals("italic")) {
-                            substsuffix = "BoldIt";
-                        } else {
-                            substsuffix = "Bold";
                         }
                     }
-                    to.setAttribute("font-style", fontstyle);
-                    to.setAttribute("font-weight", fontweight);
-                    String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
-                    to.setAttribute("font-family", fontFamilySubst);
-                    System.out.println("Font '" + fontFamilySubst + "' will be used.");
-                    substitution.appendChild(to);
-
-                    nodesubstitutions.appendChild(substitution);
                 }
             }
         }
