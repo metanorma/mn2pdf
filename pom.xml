@@ -16,6 +16,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jarname>${project.artifactId}-${project.version}.jar</jarname>
 		<exec.mainClass>com.metanorma.fop.mn2pdf</exec.mainClass>
+		<junit.version>5.4.2</junit.version>
 	</properties>
 	<build>
 		<plugins>
@@ -46,6 +47,17 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <version>2.22.1</version>
+				<configuration>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<systemPropertyVariables>
+						<buildDirectory>${project.build.directory}</buildDirectory>
+					</systemPropertyVariables>
+				</configuration>
+	        </plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -70,6 +82,18 @@
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 			<version>2.7.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+		    <scope>test</scope>
+		</dependency>
+	    <dependency>
+			<groupId>com.github.stefanbirkner</groupId>
+			<artifactId>system-rules</artifactId>
+			<version>1.19.0</version>
 		</dependency>
 	</dependencies>
 
