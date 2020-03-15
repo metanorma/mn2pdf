@@ -107,7 +107,9 @@ public class mn2pdf {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
         } finally {
-            out.close();
+            if (out != null) {
+                out.close();
+            }
         }
     }
 

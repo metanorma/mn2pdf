@@ -1,5 +1,5 @@
 #!make
-SHELL := /bin/bash
+SHELL ?= /bin/bash
 JAR_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
@@ -9,10 +9,9 @@ target/$(JAR_FILE):
 	mvn -Dmaven.test.skip=true clean package shade:shade
 
 test: target/$(JAR_FILE) src/test/resources/pdf_fonts_config.xml
-	mvn surefire-report:report
+	mvn test surefire-report:report
 
 src/test/resources/pdf_fonts_config.xml: src/test/resources/pdf_fonts_config.xml.in
-	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
 	envsubst < src/test/resources/pdf_fonts_config.xml.in > src/test/resources/pdf_fonts_config.xml
 
 clean:

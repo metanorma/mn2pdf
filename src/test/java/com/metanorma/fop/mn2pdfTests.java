@@ -95,8 +95,6 @@ public class mn2pdfTests {
 
     @Test
     public void success() {
-    	exitRule.expectSystemExitWithStatus(0);
-
     	ClassLoader classLoader = getClass().getClassLoader();
 		String config = classLoader.getResource("pdf_fonts_config.xml").getFile();
 		String xml = classLoader.getResource("G.191.xml").getFile();
