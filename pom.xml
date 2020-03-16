@@ -71,7 +71,7 @@
 					<executions>
 						<execution>
 							<id>rename-file</id>
-							<phase>test-compile</phase>
+							<phase>test</phase>
 							<goals>
 								<goal>rename</goal>
 							</goals>
