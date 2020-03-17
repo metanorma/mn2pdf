@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  * This class for the conversion of an XML file to PDF using FOP and JEuclid
  */
 public class mn2pdf {
-    static final String USAGE = "Usage: java -jar mn2pdf <path to fonts folder> <path to source XML file> <path to source XSLT file> <path to output PDF>";
+    static final String USAGE = "Usage: java -jar mn2pdf.jar <path to fonts folder> <path to source XML file> <path to source XSLT file> <path to output PDF>";
     static final String INPUT_NOT_FOUND = "Error: %s file '%s' not found!";
     //static final String FOP_CONFIG_INPUT = "FOP config";
     static final String FONTS_FOLDER_INPUT = "Fonts path";

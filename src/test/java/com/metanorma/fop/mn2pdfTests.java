@@ -54,7 +54,7 @@ public class mn2pdfTests {
     	exitRule.expectSystemExitWithStatus(-1);
 
     	ClassLoader classLoader = getClass().getClassLoader();
-        String fontpath = System.getProperty("buildDirectory") + File.separator + "fonts";
+        String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
 
         String[] args = new String[] { fontpath, "2", "3", "4" };
         mn2pdf.main(args);
@@ -68,7 +68,7 @@ public class mn2pdfTests {
     	exitRule.expectSystemExitWithStatus(-1);
 
     	ClassLoader classLoader = getClass().getClassLoader();
-        String fontpath = System.getProperty("buildDirectory") + File.separator + "fonts";
+        String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
         String xml = classLoader.getResource("G.191.xml").getFile();
 
         String[] args = new String[] { fontpath, xml, "3", "4" };
@@ -97,7 +97,7 @@ public class mn2pdfTests {
     @Test
     public void success() {
         ClassLoader classLoader = getClass().getClassLoader();
-        String fontpath = System.getProperty("buildDirectory") + File.separator + "fonts";
+        String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
         String xml = classLoader.getResource("G.191.xml").getFile();
         String xsl = classLoader.getResource("itu.recommendation.xsl").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "G.191.pdf");

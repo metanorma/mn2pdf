@@ -133,6 +133,7 @@ class fontConfig {
             if (attr_embed_url != null) {
                 String embed_url = attr_embed_url.getTextContent()
                                     .replace("${" + ENV_FONT_PATH + "}", fontPath);
+                
                 attr_embed_url.setNodeValue(embed_url);
                 embed_url = embed_url.replace("file://", "");
                 File file_embed_url = new File (embed_url);
