@@ -32,6 +32,14 @@ import org.xml.sax.SAXException;
  * This class for the conversion of an XML file to PDF using FOP and JEuclid
  */
 public class mn2pdf {
+    static final String USAGE = "Usage: java -jar mn2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF>";
+    static final String INPUT_NOT_FOUND = "Error: %s file '%s' not found!";
+    static final String FOP_CONFIG_INPUT = "FOP config";
+    static final String XML_INPUT = "XML";
+    static final String XSL_INPUT = "XSL";
+    static final String INPUT_LOG = "Input: %s (%s)";
+
+    static final int ERROR_EXIT_CODE = -1;
 
     /**
      * Converts an XML file to a PDF file using FOP
@@ -97,9 +105,11 @@ public class mn2pdf {
 
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            System.exit(-1);
+            System.exit(ERROR_EXIT_CODE);
         } finally {
-            out.close();
+            if (out != null) {
+                out.close();
+            }
         }
     }
 
@@ -110,8 +120,8 @@ public class mn2pdf {
      */
     public static void main(String[] args) {
         if (args.length != 4) {
-            System.out.println("Usage: java -jar mn2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF>");
-            System.exit(-1);
+            System.out.println(USAGE);
+            System.exit(ERROR_EXIT_CODE);
         }
 
         try {
@@ -122,27 +132,27 @@ public class mn2pdf {
             final String argConfig = args[0];
             File fConfig = new File(argConfig);
             if (!fConfig.exists()) {
-                System.out.println("Error: XML config file '" + fConfig + "' not found!");
-                System.exit(-1);
+                System.out.println(String.format(INPUT_NOT_FOUND, FOP_CONFIG_INPUT, fConfig));
+                System.exit(ERROR_EXIT_CODE);
             }
             final String argXML = args[1];
             File fXML = new File(argXML);
             if (!fXML.exists()) {
-                System.out.println("Error: source XML file '" + fXML + "' not found!");
-                System.exit(-1);
+                System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
+                System.exit(ERROR_EXIT_CODE);
             }
             final String argXSL = args[2];
             File fXSL = new File(argXSL);
             if (!fXSL.exists()) {
-                System.out.println("Error: XSL file '" + fXSL + "' not found!");
-                System.exit(-1);
+                System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
+                System.exit(ERROR_EXIT_CODE);
             }
             final String argPDF = args[3];
             File fPDF = new File(argPDF);
 
-            System.out.println("Input: FOP config (" + fConfig + ")");
-            System.out.println("Input: XML (" + fXML + ")");
-            System.out.println("Input: XSL (" + fXSL + ")");
+            System.out.println(String.format(INPUT_LOG, FOP_CONFIG_INPUT, fConfig));
+            System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
+            System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
             System.out.println("Output: PDF (" + fPDF + ")");
             System.out.println();
             System.out.println("Transforming...");
@@ -153,7 +163,7 @@ public class mn2pdf {
             System.out.println("Success!");
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            System.exit(-1);
+            System.exit(ERROR_EXIT_CODE);
         }
 
     }

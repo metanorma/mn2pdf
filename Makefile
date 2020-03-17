@@ -1,21 +1,18 @@
 #!make
-SHELL := /bin/bash
-JAR_FILE := mn2pdf-1.0.jar
+SHELL ?= /bin/bash
+JAR_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
-all: target/mn2pdf-1.0.jar
+all: target/$(JAR_FILE)
 
-target/mn2pdf-1.0.jar:
-	mvn clean package shade:shade
+target/$(JAR_FILE):
+	mvn -DskipTests clean package shade:shade
 
-test: target/mn2pdf-1.0.jar tests/pdf_fonts_config.xml
-	java -jar target/mn2pdf-1.0.jar tests/pdf_fonts_config.xml tests/G.191.xml tests/itu.recommendation.xsl tests/G.191.pdf
-
-tests/pdf_fonts_config.xml: tests/pdf_fonts_config.xml.in
-	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
-	envsubst < tests/pdf_fonts_config.xml.in > tests/pdf_fonts_config.xml
+test: target/$(JAR_FILE)
+	mvn test surefire-report:report
 
 clean:
 	rm -rf target
-	rm -rf tests/*.pdf tests/pdf_fonts_config.xml
+	rm -rf tests/*.pdf
 
 .PHONY: all clean test

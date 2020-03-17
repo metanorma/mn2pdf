@@ -32,9 +32,8 @@ import org.w3c.dom.NodeList;
  *
  * @author Alexander Dyuzhev
  */
-public class fontConfig {
-    
-    private final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
+class fontConfig {
+    static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
     private final String FONT_PREFIX = "Source";
     private final String FONT_SUFFIX = "Pro";
     private final String configPath;
