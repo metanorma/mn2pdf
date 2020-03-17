@@ -1,0 +1,61 @@
+cambria.ttc:
+ - cambria.ttf
+
+cambriab.ttf:
+ - Cambria Bold.ttf
+
+cambriai.ttf:
+ - Cambria Italic.ttf
+ 
+cambriaz.ttf:
+ - Cambria Bold Italic.ttf
+ 
+#calibri.ttf:
+
+calibrib.ttf:
+ - Calibri Bold.ttf
+ 
+calibrii.ttf:
+ - Calibri Italic.ttf
+ 
+calibriz.ttf:
+ - Calibri Bold Italic.ttf
+ 
+#arial.ttf:
+ 
+arialbd.ttf:
+ - Arial Bold.ttf
+  
+arialbi.ttf:
+ - Arial Bold Italic.ttf
+ 
+ariali.ttf:
+ - Arial Italic.ttf
+ 
+ariblk.ttf:
+ - Arial Black.ttf 
+
+times2.ttf:
+ - Times New Roman.ttf
+ 
+timesbd.ttf:
+ - Times New Roman Bold.ttf
+ 
+timesbi.ttf:
+ - Times New Roman Bold Italic.ttf
+ - TimesNewRomanBoldItalic.ttf
+ 
+timesi.ttf:
+ - Times New Roman Italic.ttf
+
+cour.ttf:
+ - Courier New.ttf
+ 
+courbd.ttf:
+ - Courier New Bold.ttf
+ 
+courbi.ttf:
+ - Courier New Bold Italic.ttf
+ 
+couri.ttf:
+ - Courier New Italic.ttf

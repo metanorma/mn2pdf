@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +19,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -27,6 +31,7 @@ import org.apache.fop.fonts.autodetect.FontFileFinder;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  *
@@ -34,13 +39,12 @@ import org.w3c.dom.NodeList;
  */
 class fontConfig {
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
+    private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String FONT_PREFIX = "Source";
     private final String FONT_SUFFIX = "Pro";
-    private final String configPath;
     private final Document configXML;
-    private String fontPath;
     private File updatedConfig;
-    
+    private String fontPath;
     private final ArrayList<String> fontList = new ArrayList<String>() { 
         { 
             // Example
@@ -52,10 +56,13 @@ class fontConfig {
         } 
     };
     
-    public fontConfig(File config) throws SAXException, ParserConfigurationException, IOException, Exception {
-        this.configPath = config.getAbsolutePath();
+    private Map<String, List<String>> fontalternatemap;
+    
+    public fontConfig(File fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
+        this.fontPath = fontPath.getAbsolutePath();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        InputStream config = getStreamFromResources(CONFIG_NAME);
 	this.configXML = dBuilder.parse(config);
         
         //extract all .ttf files from resources into fontPath folder
@@ -68,12 +75,12 @@ class fontConfig {
     //extract all .ttf files from resources into fontPath folder
     private void prepareFonts() throws IOException, Exception {
         
-        fontPath = System.getenv(ENV_FONT_PATH);
-        if (fontPath == null) {
+        //fontPath = System.getenv(ENV_FONT_PATH);
+        //if (fontPath == null) {
             //fontPath = System.getProperty("user.dir") + File.separator + ".fonts";
-            System.out.println("Environment variable MN_PDF_FONT_PATH doesn't set.");
-            System.exit(-1);
-        }
+        //    System.out.println("Environment variable MN_PDF_FONT_PATH doesn't set.");
+        //    System.exit(-1);
+        //}
         fontPath = fontPath.replace("~", System.getProperty("user.home"));
         new File(fontPath).mkdirs();
         
@@ -82,6 +89,22 @@ class fontConfig {
             final String destPath = fontPath + File.separator + fontfilename;
             Files.copy(fontfilestream, new File(destPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
+        
+        fontalternatemap = fillAlternateMap();
+
+    }
+    
+    private Map<String, List<String>> fillAlternateMap() throws IOException {
+        Yaml yaml = new Yaml();
+        Map<String, List<String>> map = null;
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("fontmap.yml")) {
+            Iterable<Object> itr = yaml.loadAll(inputStream);
+            for (Object object : itr) {
+                Map<String, List<String>> tmpmap = (Map<String, List<String>>) object;
+                map = tmpmap.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), entry -> entry.getValue()));
+            }
+        }
+        return map;
     }
     
     // get file from classpath, resources folder
@@ -96,10 +119,7 @@ class fontConfig {
     
     private void substFonts() throws IOException {
         
-        List<URL> systemFontList;
-        
-        FontFileFinder fontFileFinder = new FontFileFinder(null);
-        systemFontList = fontFileFinder.find();
+        List<String> systemFontList = getSystemFonts();
         
         // select substitutions element
         Node nodesubstitutions = configXML.getElementsByTagName("substitutions").item(0);
@@ -111,21 +131,42 @@ class fontConfig {
             Node font = fonts.item(i);
             Node attr_embed_url = font.getAttributes().getNamedItem("embed-url");
             if (attr_embed_url != null) {
-                String embed_url = font.getAttributes().getNamedItem("embed-url").getTextContent().replace("file://", "");
+                String embed_url = attr_embed_url.getTextContent()
+                                    .replace("${" + ENV_FONT_PATH + "}", fontPath);
+                attr_embed_url.setNodeValue(embed_url);
+                embed_url = embed_url.replace("file://", "");
                 File file_embed_url = new File (embed_url);
                 if (!file_embed_url.exists()) {
                     System.out.print("WARNING: Font file '" + embed_url + "' doesn't exist. ");
                     
                     //try to find system font (example for Windows - C:/Windows/fonts/)
-                    
                     String fontfilename = file_embed_url.getName();
                     String font_replacementpath = null;
-                    for (URL url: systemFontList) {
-                        if (url.toString().toLowerCase().endsWith(fontfilename.toLowerCase())) {
-                            font_replacementpath = url.toString();
+                    for (String url: systemFontList) {
+                        if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
+                            font_replacementpath = url;
                             break;
                         }
                     }
+                    // if there isn't system font, then try to find font with alternate name
+                    // Example: timesbd.ttf -> Times New Roman Bold.ttf
+                    if (font_replacementpath == null) {
+                        List<String> fontalternatelist = fontalternatemap.get(fontfilename.toLowerCase());
+                        if (fontalternatelist != null) {
+                            for (String fontalternatename: fontalternatelist) {
+                                if (font_replacementpath != null) {
+                                    break;
+                                }
+                                for (String url: systemFontList) {
+                                    if (url.toLowerCase().endsWith(fontalternatename.toLowerCase())) {
+                                        font_replacementpath = url;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                     if (font_replacementpath != null) {
                         attr_embed_url.setTextContent(font_replacementpath);
                         System.out.println("Font '" + font_replacementpath + "' will be used.");
@@ -194,9 +235,21 @@ class fontConfig {
                 }
             }
         }
-        
     }
 
+    private List<String> getSystemFonts() throws IOException{
+        List<URL> systemFontListURL;
+        FontFileFinder fontFileFinder = new FontFileFinder(null);
+        systemFontListURL = fontFileFinder.find();
+        // %20 to space character replacement
+        List<String> systemFontList =  new ArrayList<>();
+        for(URL url: systemFontListURL){
+            systemFontList.add(URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name()));
+        }
+        
+        return systemFontList;
+    }
+    
     private void writeXmlDocumentToXmlFile(Document xmlDocument) throws IOException
     {
         TransformerFactory tf = TransformerFactory.newInstance();
@@ -212,7 +265,7 @@ class fontConfig {
             String xmlString = writer.getBuffer().toString();   
             
             //System.out.println(xmlString);
-            String updateConfigPath = configPath + ".out";
+            String updateConfigPath = this.fontPath + File.separator + CONFIG_NAME + ".out";
             updatedConfig = new File (updateConfigPath);
             Path path = Paths.get(updateConfigPath);
             try (BufferedWriter bw = Files.newBufferedWriter(path)) 

@@ -74,142 +74,122 @@ the location of this file.
         (normal = 400, bold = 700)
         -->
 
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf" sub-font="Cambria">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttc" sub-font="Cambria">
 					<font-triplet name="Cambria" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttc" sub-font="Cambria Math">
+					<font-triplet name="Cambria Math" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf">
 					<font-triplet name="Cambria" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf">
 					<font-triplet name="Cambria" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf">
 					<font-triplet name="Cambria" style="italic" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf">
 					<font-triplet name="Calibri" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf">
 					<font-triplet name="Calibri" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf">
 					<font-triplet name="Calibri" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf">
 					<font-triplet name="Calibri" style="italic" weight="bold"/>
 				</font>
-
-				<!-- for Korean glyphs -->
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/nanum/NanumGothic.ttf">
-					<font-triplet name="NanumGothic" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/nanum/NanumGothicBold.ttf">
-					<font-triplet name="NanumGothic" style="normal" weight="bold"/>
-				</font>
-				<!-- for Japanese glyphs -->
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/droid/DroidSansFallbackFull.ttf">
-					<font-triplet name="DroidSans" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts2/arial.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf">
 					<font-triplet name="Arial" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf">
 					<font-triplet name="Arial" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf">
 					<font-triplet name="Arial" style="italic" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf">
 					<font-triplet name="Arial" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariblk.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariblk.ttf">
 					<font-triplet name="Arial Black" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times2.ttf">
 					<font-triplet name="Times New Roman" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf">
 					<font-triplet name="Times New Roman" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf">
 					<font-triplet name="Times New Roman" style="italic" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf">
 					<font-triplet name="Times New Roman" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/cour.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/cour.ttf">
 					<font-triplet name="Courier" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbd.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbd.ttf">
 					<font-triplet name="Courier" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbi.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbi.ttf">
 					<font-triplet name="Courier" style="italic" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/couri.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/couri.ttf">
 					<font-triplet name="Courier" style="italic" weight="normal"/>
 				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
 					<font-triplet name="HanSans" style="normal" weight="normal"/>
 					<font-triplet name="HanSans" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
 					<font-triplet name="HanSans" style="normal" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-Regular.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSansPro-Regular.ttf">
 					<font-triplet name="SourceSansPro-Regular" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-Bold.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSansPro-Bold.ttf">
 					<font-triplet name="SourceSansPro-Bold" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-It.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSansPro-It.ttf">
 					<font-triplet name="SourceSansPro-It" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-BoldIt.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSansPro-BoldIt.ttf">
 					<font-triplet name="SourceSansPro-BoldIt" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-Regular.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSerifPro-Regular.ttf">
 					<font-triplet name="SourceSerifPro-Regular" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-Bold.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSerifPro-Bold.ttf">
 					<font-triplet name="SourceSerifPro-Bold" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-It.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSerifPro-It.ttf">
 					<font-triplet name="SourceSerifPro-It" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-BoldIt.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceSerifPro-BoldIt.ttf">
 					<font-triplet name="SourceSerifPro-BoldIt" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-Regular.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceCodePro-Regular.ttf">
 					<font-triplet name="SourceCodePro-Regular" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-Bold.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceCodePro-Bold.ttf">
 					<font-triplet name="SourceCodePro-Bold" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-It.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceCodePro-It.ttf">
 					<font-triplet name="SourceCodePro-It" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-BoldIt.ttf">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceCodePro-BoldIt.ttf">
 					<font-triplet name="SourceCodePro-BoldIt" style="italic" weight="bold"/>
 				</font>
         
         
-        <!--
-        <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
-          <font-triplet name="Arial" style="normal" weight="normal"/>
-          <font-triplet name="ArialMT" style="normal" weight="normal"/>
-        </font>
-        <font metrics-url="arialb.xml" kerning="yes" embed-url="arialb.ttf">
-          <font-triplet name="Arial" style="normal" weight="bold"/>
-          <font-triplet name="ArialMT" style="normal" weight="bold"/>
-        </font>
-        -->
-
         <!-- auto-detect fonts -->
         <!-- <auto-detect/> -->
 
