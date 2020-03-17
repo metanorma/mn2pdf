@@ -116,7 +116,7 @@ the location of this file.
 				<font kerning="yes" embed-url="file:///${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariblk.ttf">
 					<font-triplet name="Arial Black" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file:///${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times2.ttf">
+				<font kerning="yes" embed-url="file:///${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf">
 					<font-triplet name="Times New Roman" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="file:///${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf">
