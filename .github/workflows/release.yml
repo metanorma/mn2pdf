@@ -16,11 +16,11 @@ jobs:
         with:
           java-version: 1.8
 
-      # cabextract for fonts, gettext-base for envsubst
+      # cabextract for fonts 
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base fop cabextract wget p7zip-full libxml2-utils
+          sudo apt-get -y install fop cabextract wget p7zip-full libxml2-utils
 
           # Install fontforge
           sudo apt-get -y install software-properties-common

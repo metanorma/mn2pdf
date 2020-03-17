@@ -36,7 +36,6 @@ make all
 
 The testing environment utilizes these tools:
 
-* `envsubst`
 * `make`
 
 We use the ITU Recommendation XSLT for testing. It requires the following fonts installed:

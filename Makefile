@@ -12,7 +12,6 @@ test: target/$(JAR_FILE)
 	mvn test surefire-report:report
 
 clean:
-	rm -rf target
-	rm -rf tests/*.pdf
+	mvn clean
 
 .PHONY: all clean test

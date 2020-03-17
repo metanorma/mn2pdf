@@ -15,13 +15,9 @@ jobs:
         with:
           java-version: 1.8
 
-      # cabextract for fonts, gettext-base for envsubst
+      # cabextract for fonts
       - name: Setup prerequisites
         run: |
-          # Install `envsubst`
-          brew install gettext
-          brew link --force gettext
-
           # Install Apache FOP
           brew install fop
 
