@@ -75,129 +75,103 @@ the location of this file.
         -->
 
 				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria">
+					<alternate embed-url="cambria.ttf"/>
 					<font-triplet name="Cambria" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria Math">
+					<alternate embed-url="cambria.ttf"/>
 					<font-triplet name="Cambria Math" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="cambriab.ttf">
+					<alternate embed-url="Cambria Bold.ttf"/>
 					<font-triplet name="Cambria" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="cambriai.ttf">
+					<alternate embed-url="Cambria Italic.ttf"/>
 					<font-triplet name="Cambria" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="cambriaz.ttf">
+					<alternate embed-url="Cambria Bold Italic.ttf"/>
 					<font-triplet name="Cambria" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="calibri.ttf">
 					<font-triplet name="Calibri" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="calibrib.ttf">
+					<alternate embed-url="Calibri Bold.ttf"/>
 					<font-triplet name="Calibri" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="calibrii.ttf">
+					<alternate embed-url="Calibri Italic.ttf"/>
 					<font-triplet name="Calibri" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="calibriz.ttf">
+					<alternate embed-url="Calibri Bold Italic.ttf"/>
 					<font-triplet name="Calibri" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="arial.ttf">
 					<font-triplet name="Arial" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="arialbd.ttf">
+					<alternate embed-url="Arial Bold.ttf"/>
 					<font-triplet name="Arial" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="arialbi.ttf">
+					<alternate embed-url="Arial Bold Italic.ttf"/>
 					<font-triplet name="Arial" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="ariali.ttf">
+					<alternate embed-url="Arial Italic.ttf"/>
 					<font-triplet name="Arial" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="ariblk.ttf">
+					<alternate embed-url="Arial Black.ttf"/>
 					<font-triplet name="Arial Black" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="times.ttf">
-					<font-triplet name="Times New Roman" style="normal" weight="normal">
-						<alternate embed-url="Times New Roman.ttf"/>
-					</font-triplet>
+					<alternate embed-url="Times New Roman.ttf"/>
+					<font-triplet name="Times New Roman" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="timesbd.ttf">
+					<alternate embed-url="Times New Roman Bold.ttf"/>
 					<font-triplet name="Times New Roman" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="timesbi.ttf">
+					<alternate embed-url="Times New Roman Bold Italic.ttf"/>
 					<font-triplet name="Times New Roman" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="timesi.ttf">
+					<alternate embed-url="Times New Roman Italic.ttf"/>
 					<font-triplet name="Times New Roman" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="cour.ttf">
+					<alternate embed-url="Courier New.ttf"/>
 					<font-triplet name="Courier" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="courbd.ttf">
+					<alternate embed-url="Courier New Bold.ttf"/>
 					<font-triplet name="Courier" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="courbi.ttf">
+					<alternate embed-url="Courier New Bold Italic.ttf"/>
 					<font-triplet name="Courier" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="couri.ttf">
+					<alternate embed-url="Courier New Italic.ttf"/>
 					<font-triplet name="Courier" style="italic" weight="normal"/>
 				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal">
 					<font-triplet name="HanSans" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
 					<font-triplet name="HanSans" style="italic" weight="normal"/>
 				</font>
-				<!-- <font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
-					<font-triplet name="HanSans" style="normal" weight="normal"/>
-					<font-triplet name="HanSans" style="italic" weight="normal"/>
-				</font> -->
 				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
 					<font-triplet name="HanSans" style="normal" weight="bold"/>
 				</font>
-				
-				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf">
-					<font-triplet name="SourceSansPro-Regular" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="SourceSansPro-Bold.ttf">
-					<font-triplet name="SourceSansPro-Bold" style="normal" weight="bold"/>
-				</font>
-				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
-					<font-triplet name="SourceSansPro-It" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="SourceSansPro-BoldIt.ttf">
-					<font-triplet name="SourceSansPro-BoldIt" style="italic" weight="bold"/>
-				</font>
-				
-				<font kerning="yes" embed-url="SourceSerifPro-Regular.ttf">
-					<font-triplet name="SourceSerifPro-Regular" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-Bold.ttf">
-					<font-triplet name="SourceSerifPro-Bold" style="normal" weight="bold"/>
-				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-It.ttf">
-					<font-triplet name="SourceSerifPro-It" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-BoldIt.ttf">
-					<font-triplet name="SourceSerifPro-BoldIt" style="italic" weight="bold"/>
-				</font>
-				
-				<font kerning="yes" embed-url="SourceCodePro-Regular.ttf">
-					<font-triplet name="SourceCodePro-Regular" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="SourceCodePro-Bold.ttf">
-					<font-triplet name="SourceCodePro-Bold" style="normal" weight="bold"/>
-				</font>
-				<font kerning="yes" embed-url="SourceCodePro-It.ttf">
-					<font-triplet name="SourceCodePro-It" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="SourceCodePro-BoldIt.ttf">
-					<font-triplet name="SourceCodePro-BoldIt" style="italic" weight="bold"/>
-				</font>
-        
-        
-        <!-- auto-detect fonts -->
-        <!-- <auto-detect/> -->
+
 
       </fonts>
 
