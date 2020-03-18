@@ -37,7 +37,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @author Alexander Dyuzhev
  */
-class fontConfig {
+class FontConfig {
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String FONT_PREFIX = "Source";
@@ -45,7 +45,7 @@ class fontConfig {
     private final Document configXML;
     private File updatedConfig;
     private String fontPath;
-    private final ArrayList<String> fontList = new ArrayList<String>() { 
+    private final ArrayList<String> defaultFontList = new ArrayList<String>() { 
         { 
             // Example
             // add("SourceSansPro-Regular.ttf");
@@ -58,8 +58,8 @@ class fontConfig {
     
     private Map<String, List<String>> fontalternatemap;
     
-    public fontConfig(File fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
-        this.fontPath = fontPath.getAbsolutePath();
+    public FontConfig(String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
+        this.fontPath = fontPath;
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         InputStream config = getStreamFromResources(CONFIG_NAME);
@@ -69,6 +69,7 @@ class fontConfig {
         prepareFonts();
         // replace missing font in fonts/substitutions sections
         substFonts();
+        //write updated FOP config file
         writeXmlDocumentToXmlFile(configXML);
     }
     
@@ -84,7 +85,7 @@ class fontConfig {
         fontPath = fontPath.replace("~", System.getProperty("user.home"));
         new File(fontPath).mkdirs();
         
-        for (String fontfilename: fontList) {
+        for (String fontfilename: defaultFontList) {
             InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);
             final String destPath = fontPath + File.separator + fontfilename;
             Files.copy(fontfilestream, new File(destPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -119,7 +120,7 @@ class fontConfig {
     
     private void substFonts() throws IOException {
         
-        List<String> systemFontList = getSystemFonts();
+        List<String> machineFontList = getMachineFonts();
         
         // select substitutions element
         Node nodesubstitutions = configXML.getElementsByTagName("substitutions").item(0);
@@ -131,19 +132,21 @@ class fontConfig {
             Node font = fonts.item(i);
             Node attr_embed_url = font.getAttributes().getNamedItem("embed-url");
             if (attr_embed_url != null) {
-                String embed_url = attr_embed_url.getTextContent()
-                                    .replace("${" + ENV_FONT_PATH + "}", fontPath);
+                String msg = "";
+                //String embed_url = attr_embed_url.getTextContent()
+                //                    .replace("${" + ENV_FONT_PATH + "}", fontPath);
+                String embed_url = "file:/" + fontPath + File.separator + attr_embed_url.getTextContent();
                 
                 attr_embed_url.setNodeValue(embed_url);
-                embed_url = embed_url.replace("file://", "");
+                embed_url = embed_url.replace("file:/", "");
                 File file_embed_url = new File (embed_url);
                 if (!file_embed_url.exists()) {
-                    System.out.print("WARNING: Font file '" + embed_url + "' doesn't exist. ");
-                    
+                    //System.out.print("WARNING: Font file '" + embed_url + "' doesn't exist. ");
+                    msg = "WARNING: Font file '" + embed_url + "' doesn't exist. ";
                     //try to find system font (example for Windows - C:/Windows/fonts/)
                     String fontfilename = file_embed_url.getName();
                     String font_replacementpath = null;
-                    for (String url: systemFontList) {
+                    for (String url: machineFontList) {
                         if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
                             font_replacementpath = url;
                             break;
@@ -158,7 +161,7 @@ class fontConfig {
                                 if (font_replacementpath != null) {
                                     break;
                                 }
-                                for (String url: systemFontList) {
+                                for (String url: machineFontList) {
                                     if (url.toLowerCase().endsWith(fontalternatename.toLowerCase())) {
                                         font_replacementpath = url;
                                         break;
@@ -170,7 +173,7 @@ class fontConfig {
                     
                     if (font_replacementpath != null) {
                         attr_embed_url.setTextContent(font_replacementpath);
-                        System.out.println("Font '" + font_replacementpath + "' will be used.");
+                        //System.out.println("Font '" + font_replacementpath + "' will be used.");
                     } else {
                         NodeList fonttriplets = ((Element)font).getElementsByTagName("font-triplet");
                         //iterate each font-triplet
@@ -226,7 +229,7 @@ class fontConfig {
                             to.setAttribute("font-weight", fontweight);
                             String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
                             to.setAttribute("font-family", fontFamilySubst);
-                            System.out.println("Font '" + fontPath + File.separator + fontFamilySubst + ".ttf' will be used.");
+                            System.out.println(msg + "Font '" + fontPath + File.separator + fontFamilySubst + ".ttf' will be used.");
                             substitution.appendChild(to);
 
                             nodesubstitutions.appendChild(substitution);
@@ -238,18 +241,25 @@ class fontConfig {
         }
     }
 
-    private List<String> getSystemFonts() throws IOException{
+    private List<String> getMachineFonts() throws IOException{
         List<URL> systemFontListURL;
-        FontFileFinder fontFileFinder = new FontFileFinder(null);
-        systemFontListURL = fontFileFinder.find();
-        // %20 to space character replacement
-        List<String> systemFontList =  new ArrayList<>();
-        for(URL url: systemFontListURL){
-            systemFontList.add(URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name()));
-        }
+        List<URL> userFontListURL;
         
-        return systemFontList;
+        FontFileFinder fontFileFinder = new FontFileFinder(null);
+        
+        userFontListURL =  fontFileFinder.find(fontPath);
+        systemFontListURL = fontFileFinder.find();
+        
+        userFontListURL.addAll(systemFontListURL);
+        
+        // %20 to space character replacement
+        List<String> machineFontList =  new ArrayList<>();
+        for(URL url: userFontListURL){
+            machineFontList.add(URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name()));
+        }
+        return machineFontList;
     }
+    
     
     private void writeXmlDocumentToXmlFile(Document xmlDocument) throws IOException
     {

@@ -25,6 +25,8 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 
 import net.sourceforge.jeuclid.fop.plugin.JEuclidFopFactoryConfigurator;
+import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.fop.apps.FopFactoryConfig;
 import org.xml.sax.SAXException;
 
 
@@ -51,7 +53,7 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(File fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
+    public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
 
         OutputStream out = null;
         try {
@@ -72,10 +74,9 @@ public class mn2pdf {
             String xmlFO = resultWriter.toString();
 
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
-            // (reuse if you plan to render multiple documents!)
-            fontConfig fontConfig = new fontConfig(fontPath);
+            FontConfig fontConfig = new FontConfig(fontPath);
+            
             FopFactory fopFactory = FopFactory.newInstance(fontConfig.getUpdatedConfig());
-            //FopFactory fopFactory = FopFactory.newInstance(config)
             
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
@@ -129,7 +130,6 @@ public class mn2pdf {
 
             //Setup font path, input and output files
             final String argFontsPath = args[0];
-            File fFontsPath = new File(argFontsPath);
             final String argXML = args[1];
             File fXML = new File(argXML);
             if (!fXML.exists()) {
@@ -153,7 +153,7 @@ public class mn2pdf {
             System.out.println("Transforming...");
 
             mn2pdf app = new mn2pdf();
-            app.convertmn2pdf(fFontsPath, fXML, fXSL, fPDF);
+            app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
 
             System.out.println("Success!");
         } catch (Exception e) {
