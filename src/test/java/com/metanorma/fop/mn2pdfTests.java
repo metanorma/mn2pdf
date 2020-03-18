@@ -97,7 +97,7 @@ public class mn2pdfTests {
     @Test
     public void success() {
         ClassLoader classLoader = getClass().getClassLoader();
-        String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
+        String fontpath = ((System.getenv("MN_PDF_FONT_PATH") == null) ? System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts" : System.getenv("MN_PDF_FONT_PATH"));
         String xml = classLoader.getResource("G.191.xml").getFile();
         String xsl = classLoader.getResource("itu.recommendation.xsl").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "G.191.pdf");

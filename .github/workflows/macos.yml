@@ -40,10 +40,10 @@ jobs:
           unzip cambria.zip
           mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
           mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
-          mv Cambria.ttf cambria.ttf
-          mv Cambria\ Bold.ttf cambriab.ttf
-          mv Cambria\ Italic.ttf cambriai.ttf
-          mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
+          #mv Cambria.ttf cambria.ttf
+          #mv Cambria\ Bold.ttf cambriab.ttf
+          #mv Cambria\ Italic.ttf cambriai.ttf
+          #mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
           mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
           popd
 
