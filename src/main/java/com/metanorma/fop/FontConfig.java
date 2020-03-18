@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -53,8 +54,7 @@ class FontConfig {
         } 
     };
     
-    //private Map<String, List<String>> fontalternatemap;
-    
+
     public FontConfig(String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
         this.fontPath = fontPath;
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -84,8 +84,8 @@ class FontConfig {
         
         for (String fontfilename: defaultFontList) {
             InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);
-            final String destPath = fontPath + File.separator + fontfilename;
-            Files.copy(fontfilestream, new File(destPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            final Path destPath = Paths.get(fontPath, fontfilename);
+            Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
         }
     }
     
@@ -100,7 +100,7 @@ class FontConfig {
         return stream;
     }
     
-    private void substFonts() throws IOException {
+    private void substFonts() throws IOException, URISyntaxException {
         
         List<String> machineFontList = getMachineFonts();
         
@@ -114,10 +114,9 @@ class FontConfig {
                 String msg = "";
                 //String embed_url = attr_embed_url.getTextContent()
                 //                    .replace("${" + ENV_FONT_PATH + "}", fontPath);
-                String embed_url = "file:/" + fontPath + File.separator + attr_embed_url.getTextContent();
-                
-                attr_embed_url.setNodeValue(embed_url);
-                embed_url = embed_url.replace("file:/", "");
+                String embed_url = Paths.get(fontPath, attr_embed_url.getTextContent()).toString();
+                // add file:/..
+                attr_embed_url.setNodeValue(new File(embed_url).toURI().toURL().toString());                
                 File file_embed_url = new File (embed_url);
                 if (!file_embed_url.exists()) {
                     msg = "WARNING: Font file '" + embed_url + "' doesn't exist. ";
@@ -167,9 +166,11 @@ class FontConfig {
                             String substsuffix = getSubstFontSuffix(fontweight, fontstyle);
                             String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
                             
-                            System.out.println(msg + "Font '" + fontPath + File.separator + fontFamilySubst + ".ttf' will be used.");
+                            font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
                             
-                            font_replacementpath = "file:/" + fontPath + File.separator + fontFamilySubst + ".ttf";
+                            System.out.println(msg + "Font '" + font_replacementpath + "' will be used.");
+                            
+                            font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
                         }
                     }
                     if (font_replacementpath != null) {
@@ -221,10 +222,9 @@ class FontConfig {
             String xmlString = writer.getBuffer().toString();   
             
             //System.out.println(xmlString);
-            String updateConfigPath = this.fontPath + File.separator + CONFIG_NAME + ".out";
-            updatedConfig = new File (updateConfigPath);
-            Path path = Paths.get(updateConfigPath);
-            try (BufferedWriter bw = Files.newBufferedWriter(path)) 
+            Path updateConfigPath = Paths.get(this.fontPath, CONFIG_NAME + ".out");
+            updatedConfig = updateConfigPath.toFile();
+            try (BufferedWriter bw = Files.newBufferedWriter(updateConfigPath)) 
             {
                 bw.write(xmlString);
             }
