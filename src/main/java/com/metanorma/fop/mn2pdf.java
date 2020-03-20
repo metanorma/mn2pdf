@@ -74,9 +74,9 @@ public class mn2pdf {
             String xmlFO = resultWriter.toString();
 
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
-            FontConfig fontConfig = new FontConfig(fontPath);
+            fontConfig fontcfg = new fontConfig(fontPath);
             
-            FopFactory fopFactory = FopFactory.newInstance(fontConfig.getUpdatedConfig());
+            FopFactory fopFactory = FopFactory.newInstance(fontcfg.getUpdatedConfig());
             
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();

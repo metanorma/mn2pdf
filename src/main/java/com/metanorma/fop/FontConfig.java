@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Alexander Dyuzhev
  */
-class FontConfig {
+class fontConfig {
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String FONT_PREFIX = "Source";
@@ -51,11 +51,14 @@ class FontConfig {
                     prefix -> Stream.of("Regular", "Bold", "It", "BoldIt").forEach(
                             suffix -> add(FONT_PREFIX + prefix + FONT_SUFFIX + "-" + suffix + ".ttf"))
             );
+            // add("SourceHanSans-Normal.ttc");
+            Stream.of("Normal", "Bold").forEach(
+                suffix -> add("SourceHanSans" + "-" + suffix + ".ttc"));
         } 
     };
     
 
-    public FontConfig(String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
+    public fontConfig(String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
         this.fontPath = fontPath;
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
