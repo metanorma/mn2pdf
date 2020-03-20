@@ -71,7 +71,7 @@ class fontConfig {
         fontPath = System.getenv(ENV_FONT_PATH);
         if (fontPath == null) {
             //fontPath = System.getProperty("user.dir") + File.separator + ".fonts";
-            System.out.println("Environment variable MN_PDF_FONT_PATH doesn't set.");
+            System.out.println("Environment variable MN_PDF_FONT_PATH is not set.");
             System.exit(-1);
         }
         fontPath = fontPath.replace("~", System.getProperty("user.home"));
