@@ -49,6 +49,11 @@ class fontConfig {
                     prefix -> Stream.of("Regular", "Bold", "It", "BoldIt").forEach(
                             suffix -> add(FONT_PREFIX + prefix + FONT_SUFFIX + "-" + suffix + ".ttf"))
             );
+            // add("SourceHanSans-Normal.ttc");
+           Stream.of("Normal", "Bold").forEach(
+                suffix -> add("SourceHanSans" + "-" + suffix + ".ttc"));
+
+            
         }
     };
 
