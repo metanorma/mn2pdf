@@ -58,9 +58,8 @@ jobs:
 
       - name: Get Version
         id: get_version
-        # echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         run: |
-          echo ::set-output name=VERSION::$(make version)
+          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
       - name: Upload Release Asset
         id: upload-release-asset
