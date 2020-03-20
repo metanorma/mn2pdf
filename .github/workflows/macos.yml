@@ -47,39 +47,6 @@ jobs:
           mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
           popd
 
-      - name: Install Nanum Gothic
-        run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
-
-          pushd $(mktemp -d)
-          curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
-          unzip nanum.zip
-          mv NanumGothic{-,}Bold.ttf
-          mv NanumGothic{-,}ExtraBold.ttf
-          mv NanumGothic-Regular.ttf NanumGothic.ttf
-          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
-          popd
-
-      - name: Install Droid Sans Fallback
-        run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
-
-          pushd ${MN_PDF_FONT_PATH}/truetype/droid/
-          wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
-          popd
-
-      - name: Install Chinese fonts
-        run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-
-          pushd $(mktemp -d)
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
-          7za x hansans.7z
-          mv *.ttc ${MN_PDF_FONT_PATH}/
-          popd
-
       - name: Install System Fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts

@@ -4,39 +4,46 @@ JAR_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -Dforce
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
 FONTS := \
-	SourceCodePro-Black \
-	SourceCodePro-BlackItalic \
-	SourceCodePro-Bold \
-	SourceCodePro-BoldItalic \
-	SourceCodePro-ExtraLight \
-	SourceCodePro-ExtraLightItalic \
-	SourceCodePro-Italic \
-	SourceCodePro-Light \
-	SourceCodePro-LightItalic \
-	SourceCodePro-Medium \
-	SourceCodePro-MediumItalic \
-	SourceCodePro-Regular \
-	SourceCodePro-SemiBold \
-	SourceCodePro-SemiBoldItalic \
-	SourceSansPro-Black \
-	SourceSansPro-BlackItalic \
-	SourceSansPro-Bold \
-	SourceSansPro-BoldItalic \
-	SourceSansPro-ExtraLight \
-	SourceSansPro-ExtraLightItalic \
-	SourceSansPro-Italic \
-	SourceSansPro-Light \
-	SourceSansPro-LightItalic \
-	SourceSansPro-Regular \
-	SourceSansPro-SemiBold \
-	SourceSerifPro-Black \
-	SourceSerifPro-Bold \
-	SourceSerifPro-ExtraLight \
-	SourceSerifPro-Light \
-	SourceSerifPro-Regular \
-	SourceSerifPro-SemiBold
+	SourceCodePro-Black.ttf \
+	SourceCodePro-BlackItalic.ttf \
+	SourceCodePro-Bold.ttf \
+	SourceCodePro-BoldItalic.ttf \
+	SourceCodePro-ExtraLight.ttf \
+	SourceCodePro-ExtraLightItalic.ttf \
+	SourceCodePro-Italic.ttf \
+	SourceCodePro-Light.ttf \
+	SourceCodePro-LightItalic.ttf \
+	SourceCodePro-Medium.ttf \
+	SourceCodePro-MediumItalic.ttf \
+	SourceCodePro-Regular.ttf \
+	SourceCodePro-SemiBold.ttf \
+	SourceCodePro-SemiBoldItalic.ttf \
+	SourceSansPro-Black.ttf \
+	SourceSansPro-BlackItalic.ttf \
+	SourceSansPro-Bold.ttf \
+	SourceSansPro-BoldItalic.ttf \
+	SourceSansPro-ExtraLight.ttf \
+	SourceSansPro-ExtraLightItalic.ttf \
+	SourceSansPro-Italic.ttf \
+	SourceSansPro-Light.ttf \
+	SourceSansPro-LightItalic.ttf \
+	SourceSansPro-Regular.ttf \
+	SourceSansPro-SemiBold.ttf \
+	SourceSerifPro-Black.ttf \
+	SourceSerifPro-Bold.ttf \
+	SourceSerifPro-ExtraLight.ttf \
+	SourceSerifPro-Light.ttf \
+	SourceSerifPro-Regular.ttf \
+	SourceSerifPro-SemiBold.ttf \
+	SourceHanSans-Bold.ttc \
+	SourceHanSans-ExtraLight.ttc \
+	SourceHanSans-Heavy.ttc \
+	SourceHanSans-Light.ttc \
+	SourceHanSans-Medium.ttc \
+	SourceHanSans-Normal.ttc \
+	SourceHanSans-Regular.ttc
 
-FONTS := $(addprefix src/main/resources/fonts/,$(addsuffix .ttf,$(FONTS)))
+FONTS := $(addprefix src/main/resources/fonts/,$(FONTS))
 
 all: $(FONTS) target/$(JAR_FILE)
 
@@ -59,11 +66,24 @@ fontclean:
 src/main/resources/fonts:
 	mkdir -p $@
 
-src/main/resources/fonts/SourceSansPro-%.ttf: | src/main/resources/fonts
+src/main/resources/fonts/SourceSansPro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourcesanspro/$(notdir $@)
 
-src/main/resources/fonts/SourceSerifPro-%.ttf: | src/main/resources/fonts
+src/main/resources/fonts/SourceSerifPro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourceserifpro/$(notdir $@)
 
-src/main/resources/fonts/SourceCodePro-%.ttf: | src/main/resources/fonts
+src/main/resources/fonts/SourceCodePro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourcecodepro/$(notdir $@)
+
+tmp:
+	mkdir -p $@
+
+tmp/SourceHanSans.7z: | tmp
+	curl -ssL -o $@ https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z
+
+tmp/SourceHanSans-%.ttc: tmp/SourceHanSans.7z
+	7za e -y $< -otmp
+	touch tmp/*.ttc
+
+src/main/resources/fonts/SourceHanSans-%.ttc: tmp/SourceHanSans-%.ttc
+	cp $< $@

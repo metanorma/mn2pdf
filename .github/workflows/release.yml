@@ -16,7 +16,7 @@ jobs:
         with:
           java-version: 1.8
 
-      # cabextract for fonts 
+      # cabextract for fonts
       - name: Setup prerequisites
         run: |
           sudo apt-get update
@@ -42,13 +42,6 @@ jobs:
           sudo chown -R $(whoami) /usr/share/fonts/
           mkdir -p ~/.fonts
           cp -a /usr/share/fonts/* ~/.fonts
-          ls -alR ~/.fonts
-
-      - name: Setup CJK fonts
-        run: |
-          cd ~/.fonts
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
-          7z x hansans.7z
           ls -alR ~/.fonts
 
       - uses: actions/checkout@master
