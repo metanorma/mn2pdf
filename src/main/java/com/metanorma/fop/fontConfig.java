@@ -40,34 +40,34 @@ class fontConfig {
     private final Document configXML;
     private String fontPath;
     private File updatedConfig;
-    
-    private final ArrayList<String> fontList = new ArrayList<String>() { 
-        { 
+
+    private final ArrayList<String> fontList = new ArrayList<String>() {
+        {
             // Example
             // add("SourceSansPro-Regular.ttf");
             Stream.of("Sans", "Serif", "Code").forEach(
                     prefix -> Stream.of("Regular", "Bold", "Italic", "BoldItalic").forEach(
                             suffix -> add(FONT_PREFIX + prefix + FONT_SUFFIX + "-" + suffix + ".ttf"))
             );
-        } 
+        }
     };
-    
+
     public fontConfig(File config) throws SAXException, ParserConfigurationException, IOException, Exception {
         this.configPath = config.getAbsolutePath();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	this.configXML = dBuilder.parse(config);
-        
+
         //extract all .ttf files from resources into fontPath folder
         prepareFonts();
         // replace missing font in fonts/substitutions sections
         substFonts();
         writeXmlDocumentToXmlFile(configXML);
     }
-    
+
     //extract all .ttf files from resources into fontPath folder
     private void prepareFonts() throws IOException, Exception {
-        
+
         fontPath = System.getenv(ENV_FONT_PATH);
         if (fontPath == null) {
             //fontPath = System.getProperty("user.dir") + File.separator + ".fonts";
@@ -76,14 +76,14 @@ class fontConfig {
         }
         fontPath = fontPath.replace("~", System.getProperty("user.home"));
         new File(fontPath).mkdirs();
-        
+
         for (String fontfilename: fontList) {
             InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);
             final String destPath = fontPath + File.separator + fontfilename;
             Files.copy(fontfilestream, new File(destPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
-    
+
     // get file from classpath, resources folder
     private InputStream getStreamFromResources(String fileName) throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -93,19 +93,19 @@ class fontConfig {
         }
         return stream;
     }
-    
+
     private void substFonts() throws IOException {
-        
+
         List<URL> systemFontList;
-        
+
         FontFileFinder fontFileFinder = new FontFileFinder(null);
         systemFontList = fontFileFinder.find();
-        
+
         // select substitutions element
         Node nodesubstitutions = configXML.getElementsByTagName("substitutions").item(0);
-        
+
         NodeList fonts = configXML.getElementsByTagName("font");
-        
+
         //iterate each font
         for (int i = 0; i < fonts.getLength(); i++) {
             Node font = fonts.item(i);
@@ -115,9 +115,9 @@ class fontConfig {
                 File file_embed_url = new File (embed_url);
                 if (!file_embed_url.exists()) {
                     System.out.print("WARNING: Font file '" + embed_url + "' doesn't exist. ");
-                    
+
                     //try to find system font (example for Windows - C:/Windows/fonts/)
-                    
+
                     String fontfilename = file_embed_url.getName();
                     String font_replacementpath = null;
                     for (URL url: systemFontList) {
@@ -188,13 +188,13 @@ class fontConfig {
                             substitution.appendChild(to);
 
                             nodesubstitutions.appendChild(substitution);
-                        
+
                         }
                     }
                 }
             }
         }
-        
+
     }
 
     private void writeXmlDocumentToXmlFile(Document xmlDocument) throws IOException
@@ -206,24 +206,24 @@ class fontConfig {
 
             StringWriter writer = new StringWriter();
 
-            //transform document to string 
+            //transform document to string
             transformer.transform(new DOMSource(xmlDocument), new StreamResult(writer));
 
-            String xmlString = writer.getBuffer().toString();   
-            
+            String xmlString = writer.getBuffer().toString();
+
             //System.out.println(xmlString);
             String updateConfigPath = configPath + ".out";
             updatedConfig = new File (updateConfigPath);
             Path path = Paths.get(updateConfigPath);
-            try (BufferedWriter bw = Files.newBufferedWriter(path)) 
+            try (BufferedWriter bw = Files.newBufferedWriter(path))
             {
                 bw.write(xmlString);
             }
-        } 
-        catch (TransformerException e) 
+        }
+        catch (TransformerException e)
         {
             e.printStackTrace();
-        }        
+        }
     }
 
     // get updated config file name
