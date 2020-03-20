@@ -19,34 +19,18 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install fop cabextract wget p7zip-full libxml2-utils
-
-          # Install fontforge
-          sudo apt-get -y install software-properties-common
-          sudo add-apt-repository ppa:fontforge/fontforge
-          sudo apt-get update
-          sudo apt-get -y install fontforge
+          sudo apt-get -y install cabextract p7zip-full libxml2-utils
 
           # Install fonts
+          sudo apt-get -y install fonts-freefont-ttf
+
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install ttf-mscorefonts-installer
 
       - name: Setup Cambria fonts
         run: |
-          # Setup Cambria
-          curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
-          sudo chown -R $(whoami) /usr/share/fonts/
-          mkdir -p ~/.fonts
-          cp -a /usr/share/fonts/* ~/.fonts
-          ls -alR ~/.fonts
-
-      - name: Setup CJK fonts
-        run: |
-          cd ~/.fonts
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
-          7z x hansans.7z
-          ls -alR ~/.fonts
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 
       - uses: actions/checkout@master
 
