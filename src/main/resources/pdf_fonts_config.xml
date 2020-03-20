@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<!--
+Relative config URLs are resolved relative to location of this file.
+-->
+
+<!-- NOTE: This is the version of the configuration -->
+<fop version="1.0">
+
+  <accessibility>true</accessibility>
+
+  <!-- Base URL for resolving relative URLs -->
+  <base>.</base>
+
+  <!-- Source resolution in dpi (dots/pixels per inch) for determining the size of pixels in SVG and bitmap images, default: 72dpi -->
+  <source-resolution>96</source-resolution>
+  <!-- Target resolution in dpi (dots/pixels per inch) for specifying the target resolution for generated bitmaps, default: 72dpi -->
+  <target-resolution>96</target-resolution>
+
+  <!-- Default page-height and page-width, in case value is specified as auto -->
+  <default-page-settings height="11.00in" width="8.50in"/>
+  <fonts>
+    <substitutions>
+    </substitutions>
+  </fonts>
+  <!-- Information for specific renderers -->
+  <!-- Uses renderer mime type for renderers -->
+  <renderers>
+    <renderer mime="application/pdf">
+      <pdf-ua-mode>PDF/UA-1</pdf-ua-mode>
+      <linearization>true</linearization>
+      <filterList>
+        <!-- provides compression using zlib flate (default is on) -->
+        <value>flate</value>
+
+        <!-- encodes binary data into printable ascii characters (default off)
+             This provides about a 4:5 expansion of data size -->
+        <!-- <value>ascii-85</value> -->
+
+        <!-- encodes binary data with hex representation (default off)
+             This filter is not recommended as it doubles the data size -->
+        <!-- <value>ascii-hex</value> -->
+      </filterList>
+
+      <fonts>
+        <!-- embedded fonts -->
+        <!--
+        This information must exactly match the font specified
+        in the fo file. Otherwise it will use a default font.
+
+        For example,
+        <fo:inline font-family="Arial" font-weight="bold" font-style="normal">
+            Arial-normal-normal font
+        </fo:inline>
+        for the font triplet specified by:
+        <font-triplet name="Arial" style="normal" weight="bold"/>
+
+        If you do not want to embed the font in the pdf document
+        then do not include the "embed-url" attribute.
+        The font will be needed where the document is viewed
+        for it to be displayed properly.
+
+        possible styles: normal | italic | oblique | backslant
+        possible weights: normal | bold | 100 | 200 | 300 | 400
+                          | 500 | 600 | 700 | 800 | 900
+        (normal = 400, bold = 700)
+        -->
+
+				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria">
+					<alternate embed-url="cambria.ttf"/>
+					<font-triplet name="Cambria" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria Math">
+					<alternate embed-url="cambria.ttf"/>
+					<font-triplet name="Cambria Math" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="cambriab.ttf">
+					<alternate embed-url="Cambria Bold.ttf"/>
+					<font-triplet name="Cambria" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="cambriai.ttf">
+					<alternate embed-url="Cambria Italic.ttf"/>
+					<font-triplet name="Cambria" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="cambriaz.ttf">
+					<alternate embed-url="Cambria Bold Italic.ttf"/>
+					<font-triplet name="Cambria" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="calibri.ttf">
+					<font-triplet name="Calibri" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="calibrib.ttf">
+					<alternate embed-url="Calibri Bold.ttf"/>
+					<font-triplet name="Calibri" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="calibrii.ttf">
+					<alternate embed-url="Calibri Italic.ttf"/>
+					<font-triplet name="Calibri" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="calibriz.ttf">
+					<alternate embed-url="Calibri Bold Italic.ttf"/>
+					<font-triplet name="Calibri" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="arial.ttf">
+					<font-triplet name="Arial" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="arialbd.ttf">
+					<alternate embed-url="Arial Bold.ttf"/>
+					<font-triplet name="Arial" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="arialbi.ttf">
+					<alternate embed-url="Arial Bold Italic.ttf"/>
+					<font-triplet name="Arial" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="ariali.ttf">
+					<alternate embed-url="Arial Italic.ttf"/>
+					<font-triplet name="Arial" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="ariblk.ttf">
+					<alternate embed-url="Arial Black.ttf"/>
+					<font-triplet name="Arial Black" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="times.ttf">
+					<alternate embed-url="Times New Roman.ttf"/>
+					<font-triplet name="Times New Roman" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="timesbd.ttf">
+					<alternate embed-url="Times New Roman Bold.ttf"/>
+					<font-triplet name="Times New Roman" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="timesbi.ttf">
+					<alternate embed-url="Times New Roman Bold Italic.ttf"/>
+					<font-triplet name="Times New Roman" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="timesi.ttf">
+					<alternate embed-url="Times New Roman Italic.ttf"/>
+					<font-triplet name="Times New Roman" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="cour.ttf">
+					<alternate embed-url="Courier New.ttf"/>
+					<font-triplet name="Courier" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="courbd.ttf">
+					<alternate embed-url="Courier New Bold.ttf"/>
+					<font-triplet name="Courier" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="courbi.ttf">
+					<alternate embed-url="Courier New Bold Italic.ttf"/>
+					<font-triplet name="Courier" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="couri.ttf">
+					<alternate embed-url="Courier New Italic.ttf"/>
+					<font-triplet name="Courier" style="italic" weight="normal"/>
+				</font>
+				<!-- for Chinese glyphs -->
+				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal">
+					<font-triplet name="HanSans" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
+					<font-triplet name="HanSans" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
+					<font-triplet name="HanSans" style="normal" weight="bold"/>
+				</font>
+
+
+      </fonts>
+
+      <!-- This option lets you specify additional options on an XML handler -->
+      <!--xml-handler namespace="http://www.w3.org/2000/svg">
+        <stroke-text>false</stroke-text>
+      </xml-handler-->
+
+    </renderer>
+
+  </renderers>
+
+</fop>
