@@ -50,6 +50,7 @@ all: $(FONTS) target/$(JAR_FILE)
 allfonts: $(FONTS)
 
 target/$(JAR_FILE):
+	ls -alR src
 	mvn -DskipTests clean package shade:shade
 
 test: target/$(JAR_FILE)
