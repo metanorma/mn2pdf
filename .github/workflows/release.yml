@@ -16,20 +16,14 @@ jobs:
         with:
           java-version: 1.8
 
-      # cabextract for fonts 
+      # cabextract for fonts
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install fop cabextract wget p7zip-full libxml2-utils
-
-          # Install fontforge
-          sudo apt-get -y install software-properties-common
-          sudo add-apt-repository ppa:fontforge/fontforge
-          sudo apt-get update
-          sudo apt-get -y install fontforge
+          sudo apt-get -y install cabextract p7zip-full libxml2-utils
 
           # Install fonts
-          sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
+          sudo apt-get -y install fonts-freefont-ttf
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
@@ -37,19 +31,7 @@ jobs:
 
       - name: Setup Cambria fonts
         run: |
-          # Setup Cambria
-          curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
-          sudo chown -R $(whoami) /usr/share/fonts/
-          mkdir -p ~/.fonts
-          cp -a /usr/share/fonts/* ~/.fonts
-          ls -alR ~/.fonts
-
-      - name: Setup CJK fonts
-        run: |
-          cd ~/.fonts
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
-          7z x hansans.7z
-          ls -alR ~/.fonts
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 
       - uses: actions/checkout@master
 
@@ -74,13 +56,19 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Get Version
+        id: get_version
+        # echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: |
+          echo ::set-output name=VERSION::$(make version)
+
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./target/mn2pdf-1.0.jar
-          asset_name: mn2pdf-1.0.jar
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/mn2pdf-${{ steps.get_version.outputs.VERSION }}.jar
+          asset_name: mn2pdf-${{ steps.get_version.outputs.VERSION }}.jar
           asset_content_type: application/java-archive

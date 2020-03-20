@@ -1,42 +1,63 @@
 #!make
 SHELL ?= /bin/bash
-JAR_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+ifdef ComSpec
+	PATHSEP2 := \\
+else
+	PATHSEP2 := /
+endif
+PATHSEP := $(strip $(PATHSEP2))
+
+JAR_VERSION := $(shell mvn -q -Dexec.executable="echo" -Dexec.args='$${project.version}' --non-recursive exec:exec -DforceStdout)
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
 FONTS := \
-	SourceCodePro-Black \
-	SourceCodePro-BlackItalic \
-	SourceCodePro-Bold \
-	SourceCodePro-BoldItalic \
-	SourceCodePro-ExtraLight \
-	SourceCodePro-ExtraLightItalic \
-	SourceCodePro-Italic \
-	SourceCodePro-Light \
-	SourceCodePro-LightItalic \
-	SourceCodePro-Medium \
-	SourceCodePro-MediumItalic \
-	SourceCodePro-Regular \
-	SourceCodePro-SemiBold \
-	SourceCodePro-SemiBoldItalic \
-	SourceSansPro-Black \
-	SourceSansPro-BlackItalic \
-	SourceSansPro-Bold \
-	SourceSansPro-BoldItalic \
-	SourceSansPro-ExtraLight \
-	SourceSansPro-ExtraLightItalic \
-	SourceSansPro-Italic \
-	SourceSansPro-Light \
-	SourceSansPro-LightItalic \
-	SourceSansPro-Regular \
-	SourceSansPro-SemiBold \
-	SourceSerifPro-Black \
-	SourceSerifPro-Bold \
-	SourceSerifPro-ExtraLight \
-	SourceSerifPro-Light \
-	SourceSerifPro-Regular \
-	SourceSerifPro-SemiBold
+	SourceCodePro-Black.ttf \
+	SourceCodePro-BlackIt.ttf \
+	SourceCodePro-Bold.ttf \
+	SourceCodePro-BoldIt.ttf \
+	SourceCodePro-ExtraLight.ttf \
+	SourceCodePro-ExtraLightIt.ttf \
+	SourceCodePro-It.ttf \
+	SourceCodePro-Light.ttf \
+	SourceCodePro-LightIt.ttf \
+	SourceCodePro-Medium.ttf \
+	SourceCodePro-MediumIt.ttf \
+	SourceCodePro-Regular.ttf \
+	SourceCodePro-Semibold.ttf \
+	SourceCodePro-SemiboldIt.ttf \
+	SourceSansPro-Black.ttf \
+	SourceSansPro-BlackIt.ttf \
+	SourceSansPro-Bold.ttf \
+	SourceSansPro-BoldIt.ttf \
+	SourceSansPro-ExtraLight.ttf \
+	SourceSansPro-ExtraLightIt.ttf \
+	SourceSansPro-It.ttf \
+	SourceSansPro-Light.ttf \
+	SourceSansPro-LightIt.ttf \
+	SourceSansPro-Regular.ttf \
+	SourceSansPro-Semibold.ttf \
+	SourceSansPro-SemiboldIt.ttf \
+	SourceSerifPro-Black.ttf \
+	SourceSerifPro-BlackIt.ttf \
+	SourceSerifPro-Bold.ttf \
+	SourceSerifPro-BoldIt.ttf \
+	SourceSerifPro-ExtraLight.ttf \
+	SourceSerifPro-ExtraLightIt.ttf \
+	SourceSerifPro-It.ttf \
+	SourceSerifPro-Light.ttf \
+	SourceSerifPro-LightIt.ttf \
+	SourceSerifPro-Regular.ttf \
+	SourceSerifPro-Semibold.ttf \
+	SourceSerifPro-SemiboldIt.ttf \
+	SourceHanSans-Bold.ttc \
+	SourceHanSans-ExtraLight.ttc \
+	SourceHanSans-Heavy.ttc \
+	SourceHanSans-Light.ttc \
+	SourceHanSans-Medium.ttc \
+	SourceHanSans-Normal.ttc \
+	SourceHanSans-Regular.ttc
 
-FONTS := $(addprefix src/main/resources/fonts/,$(addsuffix .ttf,$(FONTS)))
+FONTS := $(addprefix src/main/resources/fonts/,$(FONTS))
 
 all: $(FONTS) target/$(JAR_FILE)
 
@@ -54,16 +75,29 @@ clean:
 fontclean:
 	rm -rf fonts
 
-.PHONY: all clean test
-
 src/main/resources/fonts:
-	mkdir -p $@
+	mkdir -p $(subst /,$(PATHSEP),$@)
 
-src/main/resources/fonts/SourceSansPro-%.ttf: | src/main/resources/fonts
-	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourcesanspro/$(notdir $@)
+src/main/resources/fonts/SourceSansPro-%: | src/main/resources/fonts
+	curl -sSL -o $@ https://github.com/adobe-fonts/source-sans-pro/raw/release/TTF/$(notdir $@)
 
-src/main/resources/fonts/SourceSerifPro-%.ttf: | src/main/resources/fonts
-	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourceserifpro/$(notdir $@)
+src/main/resources/fonts/SourceSerifPro-%: | src/main/resources/fonts
+	curl -sSL -o $@ https://github.com/adobe-fonts/source-serif-pro/raw/release/TTF/$(notdir $@)
 
-src/main/resources/fonts/SourceCodePro-%.ttf: | src/main/resources/fonts
-	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourcecodepro/$(notdir $@)
+src/main/resources/fonts/SourceCodePro-%: | src/main/resources/fonts
+	curl -sSL -o $@ https://github.com/adobe-fonts/source-code-pro/raw/release/TTF/$(notdir $@)
+
+tmp/SourceHanSans.7z:
+	curl -ssL -o $@ https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z
+
+tmp/SourceHanSans-%.ttc: tmp/SourceHanSans.7z
+	7za e -y $< -otmp
+	touch tmp/*.ttc
+
+src/main/resources/fonts/SourceHanSans-%.ttc: tmp/SourceHanSans-%.ttc
+	cp $< $@
+
+version:
+	echo "${JAR_VERSION}"
+
+.PHONY: all clean allfonts fontclean test version

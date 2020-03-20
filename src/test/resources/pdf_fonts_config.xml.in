@@ -1,22 +1,13 @@
 <?xml version="1.0"?>
-<!-- $Id: fop.xconf 1616312 2014-08-06 19:19:31Z gadams $ -->
-
 <!--
-
-This is an example configuration file for FOP.
-This file contains the same settings as the default values
-and will have no effect if used unchanged.
-
-Relative config url's will be resolved relative to
-the location of this file.
-
+Relative config URLs are resolved relative to location of this file.
 -->
 
 <!-- NOTE: This is the version of the configuration -->
 <fop version="1.0">
 
   <accessibility>true</accessibility>
-  
+
   <!-- Base URL for resolving relative URLs -->
   <base>.</base>
 
@@ -31,6 +22,7 @@ the location of this file.
     <substitutions>
     </substitutions>
   </fonts>
+
   <!-- Information for specific renderers -->
   <!-- Uses renderer mime type for renderers -->
   <renderers>
@@ -99,17 +91,6 @@ the location of this file.
 					<font-triplet name="Calibri" style="italic" weight="bold"/>
 				</font>
 
-				<!-- for Korean glyphs -->
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/nanum/NanumGothic.ttf">
-					<font-triplet name="NanumGothic" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/nanum/NanumGothicBold.ttf">
-					<font-triplet name="NanumGothic" style="normal" weight="bold"/>
-				</font>
-				<!-- for Japanese glyphs -->
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/droid/DroidSansFallbackFull.ttf">
-					<font-triplet name="DroidSans" style="normal" weight="normal"/>
-				</font>
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts2/arial.ttf">
 					<font-triplet name="Arial" style="normal" weight="normal"/>
 				</font>
@@ -149,8 +130,8 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/truetype/msttcorefonts/couri.ttf">
 					<font-triplet name="Courier" style="italic" weight="normal"/>
 				</font>
-				<!-- for Chinese glyphs -->
-				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
+
+				<!-- CJK glyphs -->
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
 					<font-triplet name="HanSans" style="normal" weight="normal"/>
 					<font-triplet name="HanSans" style="italic" weight="normal"/>
@@ -158,7 +139,7 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
 					<font-triplet name="HanSans" style="normal" weight="bold"/>
 				</font>
-				
+
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-Regular.ttf">
 					<font-triplet name="SourceSansPro-Regular" style="normal" weight="normal"/>
 				</font>
@@ -171,7 +152,7 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-BoldItalic.ttf">
 					<font-triplet name="SourceSansPro-BoldIt" style="italic" weight="bold"/>
 				</font>
-				
+
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-Regular.ttf">
 					<font-triplet name="SourceSerifPro-Regular" style="normal" weight="normal"/>
 				</font>
@@ -184,7 +165,7 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-BoldItalic.ttf">
 					<font-triplet name="SourceSerifPro-BoldIt" style="italic" weight="bold"/>
 				</font>
-				
+
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-Regular.ttf">
 					<font-triplet name="SourceCodePro-Regular" style="normal" weight="normal"/>
 				</font>
@@ -197,8 +178,8 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-BoldItalic.ttf">
 					<font-triplet name="SourceCodePro-BoldIt" style="italic" weight="bold"/>
 				</font>
-        
-        
+
+
         <!--
         <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
           <font-triplet name="Arial" style="normal" weight="normal"/>
