@@ -1,5 +1,12 @@
 #!make
 SHELL ?= /bin/bash
+ifdef ComSpec
+	PATHSEP2 := \\
+else
+	PATHSEP2 := /
+endif
+PATHSEP := $(strip $(PATHSEP2))
+
 JAR_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
@@ -72,7 +79,7 @@ fontclean:
 .PHONY: all clean test
 
 src/main/resources/fonts:
-	mkdir -p $@
+	mkdir -p $(subst /,$(PATHSEP),$@) 
 
 src/main/resources/fonts/SourceSansPro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/adobe-fonts/source-sans-pro/raw/release/TTF/$(notdir $@)
