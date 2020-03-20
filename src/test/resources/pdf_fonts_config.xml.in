@@ -165,10 +165,10 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-Bold.ttf">
 					<font-triplet name="SourceSansPro-Bold" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-It.ttf">
+				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-Italic.ttf">
 					<font-triplet name="SourceSansPro-It" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-BoldIt.ttf">
+				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSansPro-BoldItalic.ttf">
 					<font-triplet name="SourceSansPro-BoldIt" style="italic" weight="bold"/>
 				</font>
 				
@@ -178,10 +178,10 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-Bold.ttf">
 					<font-triplet name="SourceSerifPro-Bold" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-It.ttf">
+				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-Italic.ttf">
 					<font-triplet name="SourceSerifPro-It" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-BoldIt.ttf">
+				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceSerifPro-BoldItalic.ttf">
 					<font-triplet name="SourceSerifPro-BoldIt" style="italic" weight="bold"/>
 				</font>
 				
@@ -191,10 +191,10 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-Bold.ttf">
 					<font-triplet name="SourceCodePro-Bold" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-It.ttf">
+				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-Italic.ttf">
 					<font-triplet name="SourceCodePro-It" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-BoldIt.ttf">
+				<font kerning="yes" embed-url="file://${env.MN_PDF_FONT_PATH}/SourceCodePro-BoldItalic.ttf">
 					<font-triplet name="SourceCodePro-BoldIt" style="italic" weight="bold"/>
 				</font>
         
