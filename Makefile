@@ -79,11 +79,10 @@ fontclean:
 .PHONY: all clean test
 
 src/main/resources/fonts:
-	mkdir -p $(subst /,$(PATHSEP),$@) 
+	mkdir -p $(subst /,$(PATHSEP),$@)
 
 src/main/resources/fonts/SourceSansPro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/adobe-fonts/source-sans-pro/raw/release/TTF/$(notdir $@)
-	
 
 src/main/resources/fonts/SourceSerifPro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/adobe-fonts/source-serif-pro/raw/release/TTF/$(notdir $@)
