@@ -2,4 +2,5 @@ dependency-reduced-pom.xml
 source.sh
 target/
 src/test/resources/pdf_fonts_config.xml
-tmp/
+tmp/*.ttc
+tmp/*.7z

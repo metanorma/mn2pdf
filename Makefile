@@ -90,10 +90,7 @@ src/main/resources/fonts/SourceSerifPro-%: | src/main/resources/fonts
 src/main/resources/fonts/SourceCodePro-%: | src/main/resources/fonts
 	curl -sSL -o $@ https://github.com/adobe-fonts/source-code-pro/raw/release/TTF/$(notdir $@)
 
-tmp:
-	mkdir -p $@
-
-tmp/SourceHanSans.7z: | tmp
+tmp/SourceHanSans.7z:
 	curl -ssL -o $@ https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z
 
 tmp/SourceHanSans-%.ttc: tmp/SourceHanSans.7z
