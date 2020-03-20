@@ -46,7 +46,7 @@ class fontConfig {
             // Example
             // add("SourceSansPro-Regular.ttf");
             Stream.of("Sans", "Serif", "Code").forEach(
-                    prefix -> Stream.of("Regular", "Bold", "Italic", "BoldItalic").forEach(
+                    prefix -> Stream.of("Regular", "Bold", "It", "BoldIt").forEach(
                             suffix -> add(FONT_PREFIX + prefix + FONT_SUFFIX + "-" + suffix + ".ttf"))
             );
         }

@@ -5,36 +5,43 @@ JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
 FONTS := \
 	SourceCodePro-Black.ttf \
-	SourceCodePro-BlackItalic.ttf \
+	SourceCodePro-BlackIt.ttf \
 	SourceCodePro-Bold.ttf \
-	SourceCodePro-BoldItalic.ttf \
+	SourceCodePro-BoldIt.ttf \
 	SourceCodePro-ExtraLight.ttf \
-	SourceCodePro-ExtraLightItalic.ttf \
-	SourceCodePro-Italic.ttf \
+	SourceCodePro-ExtraLightIt.ttf \
+	SourceCodePro-It.ttf \
 	SourceCodePro-Light.ttf \
-	SourceCodePro-LightItalic.ttf \
+	SourceCodePro-LightIt.ttf \
 	SourceCodePro-Medium.ttf \
-	SourceCodePro-MediumItalic.ttf \
+	SourceCodePro-MediumIt.ttf \
 	SourceCodePro-Regular.ttf \
-	SourceCodePro-SemiBold.ttf \
-	SourceCodePro-SemiBoldItalic.ttf \
+	SourceCodePro-Semibold.ttf \
+	SourceCodePro-SemiboldIt.ttf \
 	SourceSansPro-Black.ttf \
-	SourceSansPro-BlackItalic.ttf \
+	SourceSansPro-BlackIt.ttf \
 	SourceSansPro-Bold.ttf \
-	SourceSansPro-BoldItalic.ttf \
+	SourceSansPro-BoldIt.ttf \
 	SourceSansPro-ExtraLight.ttf \
-	SourceSansPro-ExtraLightItalic.ttf \
-	SourceSansPro-Italic.ttf \
+	SourceSansPro-ExtraLightIt.ttf \
+	SourceSansPro-It.ttf \
 	SourceSansPro-Light.ttf \
-	SourceSansPro-LightItalic.ttf \
+	SourceSansPro-LightIt.ttf \
 	SourceSansPro-Regular.ttf \
-	SourceSansPro-SemiBold.ttf \
+	SourceSansPro-Semibold.ttf \
+	SourceSansPro-SemiboldIt.ttf \
 	SourceSerifPro-Black.ttf \
+	SourceSerifPro-BlackIt.ttf \
 	SourceSerifPro-Bold.ttf \
+	SourceSerifPro-BoldIt.ttf \
 	SourceSerifPro-ExtraLight.ttf \
+	SourceSerifPro-ExtraLightIt.ttf \
+	SourceSerifPro-It.ttf \
 	SourceSerifPro-Light.ttf \
+	SourceSerifPro-LightIt.ttf \
 	SourceSerifPro-Regular.ttf \
-	SourceSerifPro-SemiBold.ttf \
+	SourceSerifPro-Semibold.ttf \
+	SourceSerifPro-SemiboldIt.ttf \
 	SourceHanSans-Bold.ttc \
 	SourceHanSans-ExtraLight.ttc \
 	SourceHanSans-Heavy.ttc \
@@ -68,13 +75,14 @@ src/main/resources/fonts:
 	mkdir -p $@
 
 src/main/resources/fonts/SourceSansPro-%: | src/main/resources/fonts
-	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourcesanspro/$(notdir $@)
+	curl -sSL -o $@ https://github.com/adobe-fonts/source-sans-pro/raw/release/TTF/$(notdir $@)
+	
 
 src/main/resources/fonts/SourceSerifPro-%: | src/main/resources/fonts
-	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourceserifpro/$(notdir $@)
+	curl -sSL -o $@ https://github.com/adobe-fonts/source-serif-pro/raw/release/TTF/$(notdir $@)
 
 src/main/resources/fonts/SourceCodePro-%: | src/main/resources/fonts
-	curl -sSL -o $@ https://github.com/google/fonts/raw/master/ofl/sourcecodepro/$(notdir $@)
+	curl -sSL -o $@ https://github.com/adobe-fonts/source-code-pro/raw/release/TTF/$(notdir $@)
 
 tmp:
 	mkdir -p $@
