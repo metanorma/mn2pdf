@@ -7,7 +7,7 @@ else
 endif
 PATHSEP := $(strip $(PATHSEP2))
 
-JAR_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+JAR_VERSION := $(shell mvn -q -Dexec.executable="echo" -Dexec.args='$${project.version}' --non-recursive exec:exec -DforceStdout)
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
 FONTS := \
@@ -64,7 +64,6 @@ all: $(FONTS) target/$(JAR_FILE)
 allfonts: $(FONTS)
 
 target/$(JAR_FILE):
-	ls -alR src
 	mvn -DskipTests clean package shade:shade
 
 test: target/$(JAR_FILE)
@@ -75,8 +74,6 @@ clean:
 
 fontclean:
 	rm -rf fonts
-
-.PHONY: all clean test
 
 src/main/resources/fonts:
 	mkdir -p $(subst /,$(PATHSEP),$@)
@@ -99,3 +96,8 @@ tmp/SourceHanSans-%.ttc: tmp/SourceHanSans.7z
 
 src/main/resources/fonts/SourceHanSans-%.ttc: tmp/SourceHanSans-%.ttc
 	cp $< $@
+
+version:
+	echo "${JAR_VERSION}"
+
+.PHONY: all clean allfonts fontclean test version
