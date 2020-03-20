@@ -19,12 +19,6 @@
 		<junit.version>5.4.2</junit.version>
 	</properties>
 	<build>
-		<testResources>
-				<testResource>
-					<directory>src/test/resources</directory>
-					<filtering>true</filtering>
-				</testResource>
-		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -64,24 +58,6 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-			<plugin>
-					<groupId>com.coderplus.maven.plugins</groupId>
-					<artifactId>copy-rename-maven-plugin</artifactId>
-					<version>1.0.1</version>
-					<executions>
-						<execution>
-							<id>rename-file</id>
-							<phase>test-compile</phase>
-							<goals>
-								<goal>rename</goal>
-							</goals>
-							<configuration>
-								<sourceFile>${project.build.testOutputDirectory}/pdf_fonts_config.xml.in</sourceFile>
-								<destinationFile>${project.build.testOutputDirectory}/pdf_fonts_config.xml</destinationFile>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 	</build>
 	<dependencies>
