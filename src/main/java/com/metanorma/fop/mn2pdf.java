@@ -133,7 +133,8 @@ public class mn2pdf {
             final String argXML = args[1];
             File fXML = new File(argXML);
             if (!fXML.exists()) {
-                System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
+                //System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
+                System.out.println(USAGE);
                 System.exit(ERROR_EXIT_CODE);
             }
             final String argXSL = args[2];
