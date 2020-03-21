@@ -29,7 +29,6 @@ public class mn2pdfTests {
     @Test
     public void notEnoughArguments() {
         exitRule.expectSystemExitWithStatus(-1);
-        //System.setSecurityManager(new NoExitSecurityManager());
         String[] args = new String[]{"1", "2", "3"};
         mn2pdf.main(args);
 
@@ -54,7 +53,6 @@ public class mn2pdfTests {
     public void xmlNotExists() {
         exitRule.expectSystemExitWithStatus(-1);
 
-        ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
 
         String[] args = new String[]{fontpath, "2", "3", "4"};
@@ -64,7 +62,7 @@ public class mn2pdfTests {
                 String.format(mn2pdf.INPUT_NOT_FOUND, mn2pdf.XML_INPUT, args[1])));
     }
 
-    //@Test
+    @Test
     public void xslNotExists() {
         exitRule.expectSystemExitWithStatus(-1);
 
@@ -94,7 +92,7 @@ public class mn2pdfTests {
 
  		assertTrue(systemOutRule.getLog().contains(fontConfig.ENV_FONT_PATH));
     }*/
-    //@Test
+    @Test
     public void success() {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = ((System.getenv("MN_PDF_FONT_PATH") == null) ? System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts" : System.getenv("MN_PDF_FONT_PATH"));
@@ -107,6 +105,5 @@ public class mn2pdfTests {
 
         assertTrue(Files.exists(pdf));
     }
-
     
 }

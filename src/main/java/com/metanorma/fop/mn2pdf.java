@@ -124,38 +124,36 @@ public class mn2pdf {
             System.exit(ERROR_EXIT_CODE);
         }
 
+        System.out.println("mn2pdf\n");
+        System.out.println("Preparing...");
+
+        //Setup font path, input and output files
+        final String argFontsPath = args[0];
+        final String argXML = args[1];
+        File fXML = new File(argXML);
+        if (!fXML.exists()) {
+            System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
+            System.exit(ERROR_EXIT_CODE);
+        }
+        final String argXSL = args[2];
+        File fXSL = new File(argXSL);
+        if (!fXSL.exists()) {
+            System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
+            System.exit(ERROR_EXIT_CODE);
+        }
+        final String argPDF = args[3];
+        File fPDF = new File(argPDF);
+
+        System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
+        System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
+        System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
+        System.out.println("Output: PDF (" + fPDF + ")");
+        System.out.println();
+        System.out.println("Transforming...");
+            
         try {
-            System.out.println("mn2pdf\n");
-            System.out.println("Preparing...");
-
-            //Setup font path, input and output files
-            final String argFontsPath = args[0];
-            final String argXML = args[1];
-            File fXML = new File(argXML);
-            if (!fXML.exists()) {
-                //System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
-                System.out.println(USAGE);
-                System.exit(ERROR_EXIT_CODE);
-            }
-            final String argXSL = args[2];
-            File fXSL = new File(argXSL);
-            if (!fXSL.exists()) {
-                System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
-                System.exit(ERROR_EXIT_CODE);
-            }
-            final String argPDF = args[3];
-            File fPDF = new File(argPDF);
-
-            System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
-            System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
-            System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
-            System.out.println("Output: PDF (" + fPDF + ")");
-            System.out.println();
-            System.out.println("Transforming...");
-
             mn2pdf app = new mn2pdf();
             app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
-
             System.out.println("Success!");
         } catch (Exception e) {
             e.printStackTrace(System.err);
