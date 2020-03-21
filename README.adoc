@@ -14,14 +14,14 @@ You will need the `maven` build tool and `make`.
 
 [source,sh]
 ----
-java -jar target/mn2pdf-1.0.jar <PDF-Font-Config> <XML-FileName> <XSLT-FileName> <Output-PDF-FileName>
+java -jar target/mn2pdf-1.3.jar <PDF-Font-Config> <XML-FileName> <XSLT-FileName> <Output-PDF-FileName>
 ----
 
 e.g.
 
 [source,sh]
 ----
-java -jar target/mn2pdf-1.0.jar tests/pdf_fonts_config.xml tests/G.191.xml tests/itu.recommendation.xsl tests/G.191.pdf
+java -jar target/mn2pdf-1.3.jar tests/pdf_fonts_config.xml tests/G.191.xml tests/itu.recommendation.xsl tests/G.191.pdf
 ----
 
 
@@ -31,6 +31,37 @@ java -jar target/mn2pdf-1.0.jar tests/pdf_fonts_config.xml tests/G.191.xml tests
 ----
 make all
 ----
+
+
+== Releasing a new version
+
+Update version in `pom.xml`, e.g.:
+
+[source,xml]
+----
+<groupId>com.metanorma.fop</groupId>
+<artifactId>mn2pdf</artifactId>
+<version>1.3</version>
+<name>Metanorma XML to PDF converter</name>
+----
+
+Build the package using instructions above, the package will be created at:
+`target/mn2pdf-{version}.jar`
+
+Tag the same version in Git:
+
+[source,xml]
+----
+git tag v1.3
+git push origin v1.3
+----
+
+Then the corresponding GitHub release will be automatically created at:
+https://github.com/metanorma/mn2pdf/releases
+
+And downloadable at:
+`https://github.com/metanorma/mn2pdf/releases/download/v{version}/mn2pdf-{version}.jar`
+
 
 == Testing
 
