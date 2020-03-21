@@ -73,7 +73,6 @@ We use the ITU Recommendation XSLT for testing. It requires the following fonts 
 
 * Times New Roman
 * Arial
-* FreeSerif
 
 Please follow the instructions here to install prerequisites to run the tests:
 https://github.com/metanorma/mn-native-pdf
