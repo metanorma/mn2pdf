@@ -4,8 +4,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Permission;
-import org.apache.tools.ant.ExitException;
 
 import org.junit.Rule;
 import org.junit.Test;
