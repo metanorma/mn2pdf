@@ -16,7 +16,5 @@ test: target/$(JAR_FILE)
 clean:
 	mvn clean
 
-version:
-	echo "${JAR_VERSION}"
 
 .PHONY: all clean test version
