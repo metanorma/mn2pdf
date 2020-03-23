@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -25,27 +26,71 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 
 import net.sourceforge.jeuclid.fop.plugin.JEuclidFopFactoryConfigurator;
-import org.apache.fop.apps.FopFactoryBuilder;
-import org.apache.fop.apps.FopFactoryConfig;
-import org.xml.sax.SAXException;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import org.xml.sax.SAXException;
 
 /**
  * This class for the conversion of an XML file to PDF using FOP and JEuclid
  */
 public class mn2pdf {
-    static final String USAGE = "Usage: java -jar mn2pdf.jar <path to fonts folder> <path to source XML file> <path to source XSLT file> <path to output PDF>";
+
+    static final String CMD = "java -jar mn2pdf.jar";
     static final String INPUT_NOT_FOUND = "Error: %s file '%s' not found!";
-    //static final String FOP_CONFIG_INPUT = "FOP config";
     static final String FONTS_FOLDER_INPUT = "Fonts path";
     static final String XML_INPUT = "XML";
     static final String XSL_INPUT = "XSL";
     static final String INPUT_LOG = "Input: %s (%s)";
 
+    static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
+    
+    static final Options options = new Options() {
+        {   
+            addOption(Option.builder("f")
+                .longOpt("font-path")
+                .desc("optional path to fonts folder")
+                .hasArg()
+                .argName("folder")
+                .required(false)
+                .build());
+            addOption(Option.builder("x")
+                .longOpt("xml-file")
+                .desc("path to source XML file")
+                .hasArg()
+                .argName("file")
+                .required(true)
+                .build());
+            addOption(Option.builder("s")
+                .longOpt("xsl-file")
+                .desc("path to XSL file")
+                .hasArg()
+                .argName("file")
+                .required(true)
+                .build());
+            addOption(Option.builder("o")
+                .longOpt("pdf-file")
+                .desc("path to output PDF file")
+                .hasArg()
+                .argName("file")
+                .required(true)
+                .build());
+        }
+    };
+    
+    static final String USAGE = getUsage();
+    
     static final int ERROR_EXIT_CODE = -1;
 
     /**
      * Converts an XML file to a PDF file using FOP
+     *
      * @param config the FOP config file
      * @param xml the XML source file
      * @param xsl the XSL file
@@ -75,9 +120,9 @@ public class mn2pdf {
 
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             fontConfig fontcfg = new fontConfig(fontPath);
-            
+
             FopFactory fopFactory = FopFactory.newInstance(fontcfg.getUpdatedConfig());
-            
+
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent as desired
@@ -113,53 +158,68 @@ public class mn2pdf {
         }
     }
 
-
     /**
      * Main method.
+     *
      * @param args command-line arguments
      */
-    public static void main(String[] args) {
-        if (args.length != 4) {
+    public static void main(String[] args) throws ParseException {
+        
+        CommandLineParser parser = new DefaultParser();
+        
+        
+        try {
+            CommandLine  cmd = parser.parse(options, args);
+        
+            System.out.println("mn2pdf\n");
+            System.out.println("Preparing...");
+
+            //Setup font path, input and output files
+            final String argFontsPath = (cmd.hasOption("font-path") ? cmd.getOptionValue("font-path") : DEFAULT_FONT_PATH);
+            
+            final String argXML = cmd.getOptionValue("xml-file");
+            File fXML = new File(argXML);
+            if (!fXML.exists()) {
+                System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
+                System.exit(ERROR_EXIT_CODE);
+            }
+            final String argXSL = cmd.getOptionValue("xsl-file");
+            File fXSL = new File(argXSL);
+            if (!fXSL.exists()) {
+                System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
+                System.exit(ERROR_EXIT_CODE);
+            }
+            final String argPDF = cmd.getOptionValue("pdf-file");
+            File fPDF = new File(argPDF);
+
+            System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
+            System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
+            System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
+            System.out.println("Output: PDF (" + fPDF + ")");
+            System.out.println();
+            System.out.println("Transforming...");
+
+            try {
+                mn2pdf app = new mn2pdf();
+                app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
+                System.out.println("Success!");
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+                System.exit(ERROR_EXIT_CODE);
+            }
+        }
+        catch( ParseException exp ) {
             System.out.println(USAGE);
             System.exit(ERROR_EXIT_CODE);
         }
-
-        System.out.println("mn2pdf\n");
-        System.out.println("Preparing...");
-
-        //Setup font path, input and output files
-        final String argFontsPath = args[0];
-        final String argXML = args[1];
-        File fXML = new File(argXML);
-        if (!fXML.exists()) {
-            System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
-            System.exit(ERROR_EXIT_CODE);
-        }
-        final String argXSL = args[2];
-        File fXSL = new File(argXSL);
-        if (!fXSL.exists()) {
-            System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
-            System.exit(ERROR_EXIT_CODE);
-        }
-        final String argPDF = args[3];
-        File fPDF = new File(argPDF);
-
-        System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
-        System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
-        System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
-        System.out.println("Output: PDF (" + fPDF + ")");
-        System.out.println();
-        System.out.println("Transforming...");
-            
-        try {
-            mn2pdf app = new mn2pdf();
-            app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
-            System.out.println("Success!");
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            System.exit(ERROR_EXIT_CODE);
-        }
-
     }
 
+    private static String getUsage() {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter pw = new PrintWriter(stringWriter);
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp(pw, 80, CMD, "", options, 0, 0, "");
+        pw.flush();
+        return stringWriter.toString();
+    }
 }
