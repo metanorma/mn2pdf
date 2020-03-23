@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.commons.cli.ParseException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class mn2pdfTests {
     public final EnvironmentVariables envVarRule = new EnvironmentVariables();
 
     @Test
-    public void notEnoughArguments() {
+    public void notEnoughArguments() throws ParseException {
         exitRule.expectSystemExitWithStatus(-1);
         String[] args = new String[]{"1", "2", "3"};
         mn2pdf.main(args);
@@ -48,12 +49,12 @@ public class mn2pdfTests {
     }*/
     
     @Test
-    public void xmlNotExists() {
+    public void xmlNotExists() throws ParseException {
         exitRule.expectSystemExitWithStatus(-1);
 
         String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
 
-        String[] args = new String[]{fontpath, "2", "3", "4"};
+        String[] args = new String[]{"--xml-file", "1", "--xsl-file", "2", "--pdf-file", "3"};
         mn2pdf.main(args);
 
         assertTrue(systemOutRule.getLog().contains(
@@ -61,14 +62,14 @@ public class mn2pdfTests {
     }
 
     @Test
-    public void xslNotExists() {
+    public void xslNotExists() throws ParseException {
         exitRule.expectSystemExitWithStatus(-1);
 
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
         String xml = classLoader.getResource("G.191.xml").getFile();
 
-        String[] args = new String[]{fontpath, xml, "3", "4"};
+        String[] args = new String[]{"--xml-file", xml, "--xsl-file", "3", "--pdf-file", "4"};
         mn2pdf.main(args);
 
         assertTrue(systemOutRule.getLog().contains(
@@ -91,14 +92,14 @@ public class mn2pdfTests {
  		assertTrue(systemOutRule.getLog().contains(fontConfig.ENV_FONT_PATH));
     }*/
     @Test
-    public void success() {
+    public void success() throws ParseException {
         ClassLoader classLoader = getClass().getClassLoader();
-        String fontpath = ((System.getenv("MN_PDF_FONT_PATH") == null) ? System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts" : System.getenv("MN_PDF_FONT_PATH"));
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("G.191.xml").getFile();
         String xsl = classLoader.getResource("itu.recommendation.xsl").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "G.191.pdf");
 
-        String[] args = new String[]{fontpath, xml, xsl, pdf.toAbsolutePath().toString()};
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
         mn2pdf.main(args);
 
         assertTrue(Files.exists(pdf));
