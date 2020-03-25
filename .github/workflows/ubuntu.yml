@@ -27,10 +27,10 @@ jobs:
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install ttf-mscorefonts-installer
 
-      - name: Setup Source fonts
-        run: |
-          curl -sSL -o source-fonts.zip https://github.com/metanorma/source-fonts/releases/download/v1.0/source-fonts-1.0.zip
-          unzip source-fonts.zip
+#      - name: Setup Source fonts
+#        run: |
+#          curl -sSL -o source-fonts.zip https://github.com/metanorma/source-fonts/releases/download/v1.0/source-fonts-1.0.zip
+#          unzip source-fonts.zip
 
       - name: Setup Cambria fonts
         run: |
