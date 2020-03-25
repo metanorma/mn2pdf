@@ -26,11 +26,6 @@ jobs:
           # Install cabextract
           brew install cabextract
 
-#      - name: Setup Source fonts
-#        run: |
-#          curl -sSL -o source-fonts.zip https://github.com/metanorma/source-fonts/releases/download/v1.0/source-fonts-1.0.zip
-#          unzip source-fonts.zip
-
       - name: Install Microsoft Vista fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
