@@ -10,6 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
+
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -19,10 +21,7 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install cabextract p7zip-full libxml2-utils
-
-          # Install fonts
-          sudo apt-get -y install fonts-freefont-ttf
+          sudo apt-get -y install cabextract libxml2-utils
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
@@ -31,8 +30,6 @@ jobs:
       - name: Setup Cambria fonts
         run: |
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
-
-      - uses: actions/checkout@master
 
       - name: Build
         run: |

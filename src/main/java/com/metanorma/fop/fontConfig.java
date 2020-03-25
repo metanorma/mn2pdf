@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +19,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Stream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -85,10 +85,32 @@ class fontConfig {
         fontPath = fontPath.replace("~", System.getProperty("user.home"));
         new File(fontPath).mkdirs();
         
+        ArrayList<String> fontstocopy = new ArrayList<>();
         for (String fontfilename: defaultFontList) {
-            InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);
             final Path destPath = Paths.get(fontPath, fontfilename);
-            Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
+            if (!destPath.toFile().exists()) {
+                fontstocopy.add(fontfilename);
+            }            
+            //InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);            
+            //Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
+        }
+        if (!fontstocopy.isEmpty()) {
+            String url = getFontsURL();
+            int remotefilesize = Util.getFileSize(new URL(url));
+            final Path destZipPath = Paths.get(fontPath, "source-fonts.zip");
+            if (!destZipPath.toFile().exists() || Files.size(destZipPath) != remotefilesize) {
+                // download a file
+                Util.downloadFile(url, destZipPath);
+            }
+            // unzip file to fontPath
+            Util.unzipFile(destZipPath, fontPath, defaultFontList);
+            // check existing files
+            for (String fontfilename: defaultFontList) {
+                final Path destPath = Paths.get(fontPath, fontfilename);
+                if (!destPath.toFile().exists()) {
+                    System.out.println("Can't file a font file: " + destPath.toString());
+                }
+            }
         }
     }
     
@@ -280,5 +302,11 @@ class fontConfig {
             }
         }
         return substsuffix;
+    }
+    
+    private String getFontsURL() throws Exception {
+        Properties appProps = new Properties();
+        appProps.load(getStreamFromResources("app.properties"));
+        return appProps.getProperty("sourcefontsURL");
     }
 }

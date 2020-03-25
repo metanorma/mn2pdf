@@ -20,10 +20,7 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install cabextract p7zip-full libxml2-utils
-
-          # Install fonts
-          sudo apt-get -y install fonts-freefont-ttf
+          sudo apt-get -y install cabextract libxml2-utils
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
