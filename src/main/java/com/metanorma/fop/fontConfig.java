@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Stream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -94,7 +95,7 @@ class fontConfig {
             //Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
         }
         if (!fontstocopy.isEmpty()) {
-            String url = "https://github.com/metanorma/source-fonts/releases/download/v1.0/source-fonts-1.0.zip";
+            String url = getFontsURL();
             int remotefilesize = Util.getFileSize(new URL(url));
             final Path destZipPath = Paths.get(fontPath, "source-fonts.zip");
             if (!destZipPath.toFile().exists() || Files.size(destZipPath) != remotefilesize) {
@@ -303,5 +304,9 @@ class fontConfig {
         return substsuffix;
     }
     
-    
+    private String getFontsURL() throws Exception {
+        Properties appProps = new Properties();
+        appProps.load(getStreamFromResources("app.properties"));
+        return appProps.getProperty("sourcefontsURL");
+    }
 }

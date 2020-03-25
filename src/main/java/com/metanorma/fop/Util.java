@@ -58,6 +58,7 @@ public class Util {
                     if (defaultFontList.contains(zipEntryName)) {
                         //File newFile = newFile(destDir, zipEntry);
                         File newFile = new File(destDir, zipEntryName);
+                        System.out.println("Extracting font file " + newFile.getAbsolutePath() + "...");
                         FileOutputStream fos = new FileOutputStream(newFile);
                         int len;
                         while ((len = zis.read(buffer)) > 0) {
