@@ -73,6 +73,10 @@ Relative config URLs are resolved relative to location of this file.
 					<alternate embed-url="cambria.ttf"/>
 					<font-triplet name="Cambria Math" style="normal" weight="normal"/>
 				</font>
+				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria Math" simulate-style="true">
+					<alternate embed-url="cambria.ttf"/>
+					<font-triplet name="Cambria Math" style="normal" weight="bold"/>
+				</font>				 
 				<font kerning="yes" embed-url="cambriab.ttf">
 					<alternate embed-url="Cambria Bold.ttf"/>
 					<font-triplet name="Cambria" style="normal" weight="bold"/>
@@ -158,6 +162,9 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
 					<font-triplet name="HanSans" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
+					<font-triplet name="HanSans" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
 					<font-triplet name="HanSans" style="normal" weight="bold"/>
