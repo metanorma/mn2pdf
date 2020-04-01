@@ -17,6 +17,13 @@
 		<exec.mainClass>com.metanorma.fop.mn2pdf</exec.mainClass>
 		<junit.version>5.4.2</junit.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>metanormarepository</id>
+			<name>Metanorma repository</name>
+			<url>https://maven.pkg.github.com/metanorma/barcode4j</url>
+		</repository>
+		</repositories>
 	<build>
 		<plugins>
 			<plugin>

@@ -13,7 +13,6 @@ JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 all: target/$(JAR_FILE)
 
 target/$(JAR_FILE):
-#	mvn -Dmaven.test.skip=true -f barcode4j/pom.xml clean install
 	mvn -DskipTests clean package shade:shade
 
 test: target/$(JAR_FILE)

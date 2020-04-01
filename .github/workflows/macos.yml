@@ -40,6 +40,8 @@ jobs:
           make all
 
       - name: Run tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           ls -alR ${MN_PDF_FONT_PATH}
