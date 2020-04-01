@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.metanorma.fop</groupId>
 	<artifactId>mn2pdf</artifactId>
-	<version>1.5</version>
+	<version>1.6</version>
 	<name>Metanorma XML to PDF converter</name>
 	<packaging>jar</packaging>
 	<url>https://www.metanorma.com</url>
@@ -18,6 +18,13 @@
 		<exec.mainClass>com.metanorma.fop.mn2pdf</exec.mainClass>
 		<junit.version>5.4.2</junit.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>metanormarepository</id>
+			<name>Metanorma repository</name>
+			<url>https://maven.pkg.github.com/metanorma/barcode4j</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>
