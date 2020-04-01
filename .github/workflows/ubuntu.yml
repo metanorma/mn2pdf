@@ -32,11 +32,14 @@ jobs:
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           make all
 
       - name: Run tests
         env:
           MN_PDF_FONT_PATH: ~/.fonts
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           make test

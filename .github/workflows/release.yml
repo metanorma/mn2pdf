@@ -33,12 +33,15 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           make all
 
       - name: Run tests
         env:
           MN_PDF_FONT_PATH: ~/.fonts
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           make test
 
