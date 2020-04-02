@@ -18,7 +18,9 @@ settings.xml:
 # 	PAT_TOKEN=${PAT_TOKEN}; \
 # 	PAT_USERNAME=${PAT_USERNAME}; \
 # 	envsubst < settings.xml.in > ~/.m2/settings.xml
+	cp settings.xml ~/.m2/settings.xml
 	cat ~/.m2/settings.xml
+	
 
 clean:
 	mvn clean
