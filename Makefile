@@ -18,8 +18,8 @@ settings:
 # 	PAT_TOKEN=${PAT_TOKEN}; \
 # 	PAT_USERNAME=${PAT_USERNAME}; \
 # 	envsubst < settings.xml.in > ~/.m2/settings.xml
-	PAT_USERNAME=${GITHUB_USERNAME}
-	PAT_TOKEN=${GITHUB_TOKEN}
+	PAT_USERNAME=${PAT_USERNAME}
+	PAT_TOKEN=${PAT_TOKEN}
 	cp settings.xml ~/.m2/settings.xml
 	cat ~/.m2/settings.xml
 	
