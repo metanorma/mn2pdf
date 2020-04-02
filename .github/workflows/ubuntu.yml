@@ -21,7 +21,7 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install cabextract libxml2-utils
+          sudo apt-get -y install gettext-base cabextract libxml2-utils
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
@@ -33,12 +33,15 @@ jobs:
 
       - name: Build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_USERNAME: ${{ secrets.PAT_USERNAME }}
         run: |
           make all
 
       - name: Run tests
         env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_USERNAME: ${{ secrets.PAT_USERNAME }}
           MN_PDF_FONT_PATH: ~/.fonts
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
