@@ -23,6 +23,10 @@ jobs:
           # Install Maven
           brew install maven
 
+          # Install `envsubst`
+          brew install gettext
+          brew link --force gettext
+
           # Install cabextract
           brew install cabextract
 
@@ -34,10 +38,16 @@ jobs:
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - name: Build
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_USERNAME: ${{ secrets.PAT_USERNAME }}
         run: |
           make all
 
       - name: Run tests
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_USERNAME: ${{ secrets.PAT_USERNAME }}
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           ls -alR ${MN_PDF_FONT_PATH}
