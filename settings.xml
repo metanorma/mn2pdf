@@ -8,10 +8,10 @@
 
     <profiles>
         <profile>
-            <id>github</id>
+            <id>metanormarepository</id>
             <repositories>
                 <repository>
-                    <id>github</id>
+                    <id>metanormarepository</id>
                     <name>GitHub Metanorma Apache Maven Packages</name>
                     <url>https://maven.pkg.github.com/metanorma</url>
                 </repository>
