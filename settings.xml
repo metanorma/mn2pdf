@@ -13,7 +13,7 @@
                 <repository>
                     <id>metanormarepository</id>
                     <name>GitHub Metanorma Apache Maven Packages</name>
-                    <url>https://maven.pkg.github.com/metanorma</url>
+                    <url>https://maven.pkg.github.com/metanorma/barcode4j</url>
                 </repository>
             </repositories>
         </profile>
