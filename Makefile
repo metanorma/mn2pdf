@@ -13,10 +13,10 @@ target/$(JAR_FILE): settings.xml
 test: target/$(JAR_FILE)
 	mvn test surefire-report:report
 
-settings.xml: settings.xml.in
-	PAT_TOKEN=${PAT_TOKEN}; \
-	PAT_USERNAME=${PAT_USERNAME}; \
-	envsubst < settings.xml.in > ~/.m2/settings.xml
+# settings.xml: settings.xml.in
+# 	PAT_TOKEN=${PAT_TOKEN}; \
+# 	PAT_USERNAME=${PAT_USERNAME}; \
+# 	envsubst < settings.xml.in > ~/.m2/settings.xml
 
 clean:
 	mvn clean
