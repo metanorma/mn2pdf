@@ -15,12 +15,10 @@ test: target/$(JAR_FILE)
 
 # settings.xml: settings.xml.in
 settings:
-# 	PAT_TOKEN=${PAT_TOKEN}; \
-# 	PAT_USERNAME=${PAT_USERNAME}; \
-# 	envsubst < settings.xml.in > ~/.m2/settings.xml
 	PAT_USERNAME=${PAT_USERNAME}
 	PAT_TOKEN=${PAT_TOKEN}
-	cp settings.xml ~/.m2/settings.xml
+	envsubst < settings.xml > ~/.m2/settings.xml
+#	cp settings.xml ~/.m2/settings.xml
 	cat ~/.m2/settings.xml
 	
 
