@@ -20,7 +20,13 @@
 	</properties>
   <repositories>
       <repository>
-          <id>metanormarepository</id>
+        <id>central</id>
+        <url>https://repo1.maven.org/maven2</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+      </repository>
+      <repository>
+          <id>metanorma</id>
           <name>GitHub Metanorma Apache Maven Packages</name>
           <url>https://maven.pkg.github.com/metanorma/barcode4j</url>
           <releases><enabled>true</enabled></releases>
