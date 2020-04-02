@@ -7,17 +7,19 @@ JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
 all: target/$(JAR_FILE)
 
-target/$(JAR_FILE): settings
+target/$(JAR_FILE): settings.xml
 	mvn -DskipTests clean package shade:shade
 
 test: target/$(JAR_FILE)
 	mvn test surefire-report:report
 
 # settings.xml: settings.xml.in
-settings:
+settings.xml:
 # 	PAT_TOKEN=${PAT_TOKEN}; \
 # 	PAT_USERNAME=${PAT_USERNAME}; \
 # 	envsubst < settings.xml.in > ~/.m2/settings.xml
+	PAT_USERNAME=${GITHUB_USERNAME}
+	PAT_TOKEN=${GITHUB_TOKEN}
 	cp settings.xml ~/.m2/settings.xml
 	cat ~/.m2/settings.xml
 	
