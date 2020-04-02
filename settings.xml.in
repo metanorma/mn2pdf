@@ -7,6 +7,7 @@
 		<server>
 			<id>github</id>
 			<username>${PAT_USERNAME}</username>
+			<username2>${{ secrets.PAT_USERNAME }}</username2>
 			<password>${PAT_TOKEN}</password>
 		</server>
   </servers>
