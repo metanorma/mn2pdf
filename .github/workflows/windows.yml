@@ -31,7 +31,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_USERNAME: ${{ github.actor }}
-        env:
           MN_PDF_FONT_PATH: C:\Windows\Fonts
         run: |
           make test SHELL=cmd
