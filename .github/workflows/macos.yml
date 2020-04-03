@@ -39,15 +39,16 @@ jobs:
 
       - name: Build
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          PAT_USERNAME: ${{ secrets.PAT_USERNAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
           make all
 
       - name: Run tests
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          PAT_USERNAME: ${{ secrets.PAT_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           ls -alR ${MN_PDF_FONT_PATH}
