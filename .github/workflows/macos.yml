@@ -23,10 +23,6 @@ jobs:
           # Install Maven
           brew install maven
 
-          # Install `envsubst`
-          brew install gettext
-          brew link --force gettext
-
           # Install cabextract
           brew install cabextract
 
