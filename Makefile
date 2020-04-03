@@ -17,8 +17,8 @@ test: target/$(JAR_FILE)
 settings:
 	GITHUB_USERNAME=${GITHUB_USERNAME}
 	GITHUB_TOKEN=${GITHUB_TOKEN}
-	envsubst < settings.xml > ~/.m2/settings.xml
-#	cp settings.xml ~/.m2/settings.xml
+#	envsubst < settings.xml > ~/.m2/settings.xml
+	cp settings.xml ~/.m2/settings.xml
 	cat ~/.m2/settings.xml
 	
 
