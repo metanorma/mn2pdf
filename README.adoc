@@ -2,6 +2,7 @@
 
 image:https://github.com/metanorma/mn2pdf/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/mn2pdf/actions?workflow=ubuntu"]
 image:https://github.com/metanorma/mn2pdf/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/mn2pdf/actions?workflow=macos"]
+image:https://github.com/metanorma/mn2pdf/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/mn2pdf/actions?workflow=windows"]
 
 == Installing Build Tools
 
