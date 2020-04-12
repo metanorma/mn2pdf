@@ -51,6 +51,10 @@ class fontConfig {
                     prefix -> Stream.of("Regular", "Bold", "It", "BoldIt").forEach(
                             suffix -> add(FONT_PREFIX + prefix + FONT_SUFFIX + "-" + suffix + ".ttf"))
             );
+            Stream.of("Sans").forEach(
+                    prefix -> Stream.of("Light", "LightIt").forEach(
+                            suffix -> add(FONT_PREFIX + prefix + FONT_SUFFIX + "-" + suffix + ".ttf"))
+            );
             // add("SourceHanSans-Normal.ttc");
             Stream.of("Normal", "Bold").forEach(
                 suffix -> add("SourceHanSans" + "-" + suffix + ".ttc"));
@@ -144,7 +148,7 @@ class fontConfig {
                 attr_embed_url.setNodeValue(new File(embed_url).toURI().toURL().toString());                
                 File file_embed_url = new File (embed_url);
                 if (!file_embed_url.exists()) {
-                    msg = "WARNING: Font file '" + embed_url + "' doesn't exist. ";
+                    msg = "WARNING: Font file '" + embed_url + "'";
                     //try to find system font (example for Windows - C:/Windows/fonts/)
                     String fontfilename = file_embed_url.getName();
                     String font_replacementpath = null;
@@ -188,12 +192,12 @@ class fontConfig {
                             String fontweight = fonttriplet.getAttributes().getNamedItem("weight").getTextContent();
                             
                             String substprefix = getSubstFontPrefix(fontname);
-                            String substsuffix = getSubstFontSuffix(fontweight, fontstyle);
+                            String substsuffix = getSubstFontSuffix(fontname, fontweight, fontstyle);
                             String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
                             
                             font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
                             
-                            System.out.println(msg + "Font '" + font_replacementpath + "' will be used.");
+                            System.out.println(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. " + "Font '" + font_replacementpath + "' will be used.");
                             
                             font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
                         }
@@ -285,13 +289,18 @@ class fontConfig {
         return substprefix;
     }
 
-    private String getSubstFontSuffix(String fontweight, String fontstyle) {
+    private String getSubstFontSuffix(String fontname, String fontweight, String fontstyle) {
         String substsuffix = "Regular";
+        String pfx = "";
+        if (fontname.contains("Light")) {
+            pfx = "Light";
+            substsuffix = "Light";
+        }
         if (fontstyle.equals("italic")) {
             if (fontweight.equals("bold")) {
                 substsuffix = "BoldIt";
             } else {
-                substsuffix = "It";
+                substsuffix = pfx + "It";
             }
         }
         if (fontweight.equals("bold")) {
