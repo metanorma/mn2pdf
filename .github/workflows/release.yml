@@ -46,7 +46,7 @@ jobs:
           GH_USERNAME: ${{ github.actor }}
           # for deploy mn2pdf
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository }}
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
           make deploy
 
