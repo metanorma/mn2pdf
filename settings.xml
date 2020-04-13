@@ -19,6 +19,11 @@
                   <name>GitHub Metanorma Apache Maven Packages</name>
                   <url>https://maven.pkg.github.com/metanorma/barcode4j</url>
               </repository>
+              <repository>
+               <id>metanorma_mn2pdf</id>
+               <name>GitHub Metanorma Apache Maven Packages</name>
+               <url>https://maven.pkg.github.com/metanorma/mn2pdf</url>
+             </repository>
             </repositories>
         </profile>
     </profiles>
@@ -28,6 +33,11 @@
             <id>metanorma</id>
             <username>${env.GH_USERNAME}</username>
             <password>${env.GH_TOKEN}</password>
+        </server>
+        <server>
+            <id>metanorma_mn2pdf</id>
+            <username>${env.GITHUB_TOKEN}</username>
+            <password>${env.GITHUB_USERNAME}</password>
         </server>
     </servers>
 </settings>
