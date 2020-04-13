@@ -13,8 +13,11 @@ target/$(JAR_FILE):
 test: target/$(JAR_FILE)
 	mvn --settings settings.xml test surefire-report:report
 
+deploy:
+	mvn --settings settings.xml -Dmaven.test.skip=true clean deploy shade:shade
+
 clean:
 	mvn clean
 
 
-.PHONY: all clean test version
+.PHONY: all clean test deploy version
