@@ -41,6 +41,7 @@ jobs:
 
       - name: Deploy
         env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           GH_USERNAME: ${{ github.actor }}
           #GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
