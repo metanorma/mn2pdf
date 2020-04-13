@@ -39,14 +39,14 @@ jobs:
         run: |
           make all
 
-      - name: Deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-          GH_TOKEN: ${{ github.token }}
-          GH_USERNAME: ${{ github.actor }}
-          #GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          make deploy
+#      - name: Deploy
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+#          GH_TOKEN: ${{ github.token }}
+#          GH_USERNAME: ${{ github.actor }}
+#          #GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+#        run: |
+#          make deploy
 
 
       - name: Run tests
