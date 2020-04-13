@@ -18,6 +18,13 @@
 		<exec.mainClass>com.metanorma.fop.mn2pdf</exec.mainClass>
 		<junit.version>5.4.2</junit.version>
 	</properties>
+	<distributionManagement>
+	 <repository>
+		 <id>github</id>
+		 <name>GitHub Metanorma Apache Maven Packages</name>
+		 <url>https://maven.pkg.github.com/metanorma/mn2pdf</url>
+	 </repository>
+	</distributionManagement>
   <repositories>
       <repository>
         <id>central</id>
