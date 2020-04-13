@@ -35,15 +35,15 @@ jobs:
 
       - name: Build
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_USERNAME: ${{ github.actor }}
+          GH_TOKEN: ${{ github.token }}
+          GH_USERNAME: ${{ github.actor }}
         run: |
           make all
 
       - name: Run tests
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_USERNAME: ${{ github.actor }}
+          GH_TOKEN: ${{ github.token }}
+          GH_USERNAME: ${{ github.actor }}
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           ls -alR ${MN_PDF_FONT_PATH}
