@@ -43,7 +43,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_USERNAME: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          #GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           make deploy
 
