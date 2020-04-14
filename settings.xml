@@ -36,7 +36,7 @@
         </server>
         <server>
             <id>metanorma_mn2pdf</id>
-            <username>${env.GITHUB_USERNAME}</username>
+            <username>metanorma</username>
             <password>${env.GITHUB_TOKEN}</password>
         </server>
     </servers>
