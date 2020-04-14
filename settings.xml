@@ -19,11 +19,11 @@
                   <name>GitHub Metanorma Apache Maven Packages</name>
                   <url>https://maven.pkg.github.com/metanorma/barcode4j</url>
               </repository>
-              <repository>
+              <!-- <repository>
                <id>metanorma_mn2pdf</id>
                <name>GitHub Metanorma Apache Maven Packages</name>
                <url>https://maven.pkg.github.com/metanorma/mn2pdf</url>
-             </repository>
+             </repository>-->
             </repositories>
         </profile>
     </profiles>
