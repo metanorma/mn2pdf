@@ -1,8 +1,7 @@
 #!make
 SHELL ?= /bin/bash
 
-JAR_VERSION := $(shell mvn -q -Dexec.executable="echo" -Dexec.args='$${project.version}' --non-recursive exec:exec -DforceStdout); \
-echo "${JAR_VERSION}"
+JAR_VERSION := $(shell mvn -q -Dexec.executable="echo" -Dexec.args='$${project.version}' --non-recursive exec:exec -DforceStdout)
 #JAR_VERSION := 1.7
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
@@ -21,4 +20,4 @@ clean:
 	mvn clean
 
 
-.PHONY: all clean test deploy version
+.PHONY: all clean test deploy version target/$(JAR_FILE)
