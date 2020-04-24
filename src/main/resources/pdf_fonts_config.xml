@@ -209,6 +209,45 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
 					<font-triplet name="SourceSansPro-Light" style="italic" weight="bold"/>
 				</font>
+				<!-- SourceSansPro font -->
+				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf">
+						<font-triplet name="SourceSansPro" style="normal" weight="normal"/>
+					</font>
+				<font kerning="yes" embed-url="SourceSansPro-Bold.ttf">
+					<font-triplet name="SourceSansPro" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
+					<font-triplet name="SourceSansPro" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceSansPro-BoldIt.ttf">
+					<font-triplet name="SourceSansPro" style="italic" weight="bold"/>
+				</font>
+				<!-- SourceSerifPro font -->
+				<font kerning="yes" embed-url="SourceSerifPro-Regular.ttf">
+						<font-triplet name="SourceSerifPro" style="normal" weight="normal"/>
+					</font>
+				<font kerning="yes" embed-url="SourceSerifPro-Bold.ttf">
+					<font-triplet name="SourceSerifPro" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="SourceSerifPro-It.ttf">
+					<font-triplet name="SourceSerifPro" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceSerifPro-BoldIt.ttf">
+					<font-triplet name="SourceSerifPro" style="italic" weight="bold"/>
+				</font>
+				<!-- SourceCodePro font -->
+				<font kerning="yes" embed-url="SourceCodePro-Regular.ttf">
+						<font-triplet name="SourceCodePro" style="normal" weight="normal"/>
+					</font>
+				<font kerning="yes" embed-url="SourceCodePro-Bold.ttf">
+					<font-triplet name="SourceCodePro" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="SourceCodePro-It.ttf">
+					<font-triplet name="SourceCodePro" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SourceCodePro-BoldIt.ttf">
+					<font-triplet name="SourceCodePro" style="italic" weight="bold"/>
+				</font>
 				
       </fonts>
 
