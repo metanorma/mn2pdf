@@ -249,6 +249,14 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="SourceCodePro" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- For mathml display -->
+				<font kerning="yes" embed-url="STIX2Math.otf" simulate-style="true">
+					<font-triplet name="STIX2Math" style="normal" weight="normal"/>
+					<font-triplet name="STIX2Math" style="normal" weight="700"/>
+					<font-triplet name="STIX2Math" style="italic" weight="normal"/>
+					<font-triplet name="STIX2Math" style="italic" weight="700"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->

@@ -57,7 +57,9 @@ class fontConfig {
             );
             // add("SourceHanSans-Normal.ttc");
             Stream.of("Normal", "Bold").forEach(
-                suffix -> add("SourceHanSans" + "-" + suffix + ".ttc"));
+                suffix -> add(FONT_PREFIX + "HanSans" + "-" + suffix + ".ttc"));
+            
+            add("STIX2Math.otf");
         } 
     };
     
@@ -98,8 +100,8 @@ class fontConfig {
             //InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);            
             //Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
         }
-        if (!fontstocopy.isEmpty()) {
-            String url = getFontsURL();
+        if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(FONT_PREFIX))) {
+            String url = getFontsURL("sourcefontsURL");
             int remotefilesize = Util.getFileSize(new URL(url));
             final Path destZipPath = Paths.get(fontPath, "source-fonts.zip");
             if (!destZipPath.toFile().exists() || Files.size(destZipPath) != remotefilesize) {
@@ -114,6 +116,15 @@ class fontConfig {
                 if (!destPath.toFile().exists()) {
                     System.out.println("Can't file a font file: " + destPath.toString());
                 }
+            }
+        }
+        if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith("STIX"))) {
+            String url = getFontsURL("STIX2MathfontURL");
+            int remotefilesize = Util.getFileSize(new URL(url));
+            final Path destPath = Paths.get(fontPath, "STIX2Math.otf");
+            if (!destPath.toFile().exists() || Files.size(destPath) != remotefilesize) {
+                // download a file
+                Util.downloadFile(url, destPath);
             }
         }
     }
@@ -313,9 +324,9 @@ class fontConfig {
         return substsuffix;
     }
     
-    private String getFontsURL() throws Exception {
+    private String getFontsURL(String property) throws Exception {
         Properties appProps = new Properties();
         appProps.load(getStreamFromResources("app.properties"));
-        return appProps.getProperty("sourcefontsURL");
+        return appProps.getProperty(property);
     }
 }
