@@ -114,7 +114,7 @@ class fontConfig {
             for (String fontfilename: defaultFontList) {
                 final Path destPath = Paths.get(fontPath, fontfilename);
                 if (!destPath.toFile().exists()) {
-                    System.out.println("Can't file a font file: " + destPath.toString());
+                    System.out.println("Can't find a font file: " + destPath.toString());
                 }
             }
         }
