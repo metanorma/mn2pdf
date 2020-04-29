@@ -51,6 +51,8 @@ public class mn2pdf {
 
     static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
     
+    static boolean DEBUG = false;
+    
     static final Options options = new Options() {
         {   
             addOption(Option.builder("f")
@@ -80,6 +82,11 @@ public class mn2pdf {
                 .hasArg()
                 .argName("file")
                 .required(true)
+                .build());
+            addOption(Option.builder("d")
+                .longOpt("debug")
+                .desc("write intermediate fo.xml file")
+                .required(false)
                 .build());
         }
     };
@@ -191,7 +198,9 @@ public class mn2pdf {
             }
             final String argPDF = cmd.getOptionValue("pdf-file");
             File fPDF = new File(argPDF);
-
+            
+            DEBUG = cmd.hasOption("debug");
+            
             System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
             System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
             System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
