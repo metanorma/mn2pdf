@@ -1,13 +1,19 @@
 package com.metanorma.fop;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.security.CodeSource;
+import java.text.MessageFormat;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -18,6 +24,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -109,7 +116,6 @@ public class mn2pdf {
 
         OutputStream out = null;
         try {
-            // Step 0. Convert XML to FO file with XSL
             //Setup XSLT
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(new StreamSource(xsl));
@@ -117,14 +123,31 @@ public class mn2pdf {
             //Setup input for XSLT transformation
             Source src = new StreamSource(xml);
 
-            //Setup output
-            StringWriter resultWriter = new StringWriter();
-            StreamResult sr = new StreamResult(resultWriter);
+            //DEBUG: write intermediate FO to file
+            if (DEBUG) {
+                
+                OutputJaxpImplementationInfo();
+                
+                // Step 0. Convert XML to FO file with XSL
+                
+                //Setup output
+                OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
+                //Resulting SAX events (the generated FO) must be piped through to FOP
+                Result res = new StreamResult(outstream);
 
-            //Start XSLT transformation and FOP generating
-            transformer.transform(src, sr);
-            String xmlFO = resultWriter.toString();
-
+                //Start XSLT transformation and FO generating
+                transformer.transform(src, res);
+                
+                // using resultWriter
+                //StringWriter resultWriter = new StringWriter();
+                //StreamResult sr = new StreamResult(resultWriter);
+                //transformer.transform(src, sr);
+                //String xmlFO = resultWriter.toString();
+                //BufferedWriter writer = new BufferedWriter(new FileWriter("fo.xml"));
+                //writer.write(xmlFO);
+                //writer.close();
+            }
+            
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             fontConfig fontcfg = new fontConfig(fontPath);
 
@@ -143,17 +166,17 @@ public class mn2pdf {
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
 
             // Setup JAXP using identity transformer
-            factory = TransformerFactory.newInstance();
-            transformer = factory.newTransformer(); // identity transformer
+            //factory = TransformerFactory.newInstance();
+            //transformer = factory.newTransformer(); // identity transformer
 
             // Setup input stream
-            Source srcFO = new StreamSource(new StringReader(xmlFO));
+            //Source srcFO = new StreamSource(new StringReader(xmlFO));
 
             // Resulting SAX events (the generated FO) must be piped through to FOP
             Result res = new SAXResult(fop.getDefaultHandler());
 
             // Start XSLT transformation and FOP processing
-            transformer.transform(srcFO, res);
+            transformer.transform(src, res);
 
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -230,5 +253,21 @@ public class mn2pdf {
         formatter.printHelp(pw, 80, CMD, "", options, 0, 0, "");
         pw.flush();
         return stringWriter.toString();
+    }
+    
+    private static void OutputJaxpImplementationInfo() {
+        System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
+        System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
+        System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
+        System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
+    }
+
+    private static String getJaxpImplementationInfo(String componentName, Class componentClass) {
+        CodeSource source = componentClass.getProtectionDomain().getCodeSource();
+        return MessageFormat.format(
+                "{0} implementation: {1} loaded from: {2}",
+                componentName,
+                componentClass.getName(),
+                source == null ? "Java Runtime" : source.getLocation());
     }
 }
