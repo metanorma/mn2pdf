@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 class fontConfig {
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
+    private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     private final String FONT_PREFIX = "Source";
     private final String FONT_SUFFIX = "Pro";
     private final Document configXML;
@@ -262,7 +263,7 @@ class fontConfig {
             String xmlString = writer.getBuffer().toString();   
             
             //System.out.println(xmlString);
-            Path updateConfigPath = Paths.get(this.fontPath, CONFIG_NAME + ".out");
+            Path updateConfigPath = Paths.get(this.fontPath, CONFIG_NAME_UPDATED);
             updatedConfig = updateConfigPath.toFile();
             try (BufferedWriter bw = Files.newBufferedWriter(updateConfigPath)) 
             {
@@ -280,6 +281,18 @@ class fontConfig {
         return updatedConfig;
     }
 
+    public void setPDFUAmode(String mode) throws SAXException, IOException, ParserConfigurationException{
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();        
+        Document configXML = dBuilder.parse(updatedConfig);
+        NodeList pdfuamodelist = configXML.getElementsByTagName("pdf-ua-mode");
+        if (pdfuamodelist != null) {
+            Node pdfuamode = pdfuamodelist.item(0);
+            pdfuamode.setTextContent(mode);
+        }
+        writeXmlDocumentToXmlFile(configXML);
+    }
+    
     private String getSubstFontPrefix (String fontname) {
         String substprefix = "Sans";
         if (fontname.toLowerCase().contains("arial")) {

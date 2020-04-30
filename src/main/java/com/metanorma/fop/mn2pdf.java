@@ -14,6 +14,7 @@ import java.security.CodeSource;
 import java.text.MessageFormat;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.ErrorListener;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -59,6 +60,8 @@ public class mn2pdf {
     static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
     
     static boolean DEBUG = false;
+    
+    static boolean PDFUA_error = false;
     
     static final Options options = new Options() {
         {   
@@ -114,7 +117,6 @@ public class mn2pdf {
      */
     public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
 
-        OutputStream out = null;
         try {
             //Setup XSLT
             TransformerFactory factory = TransformerFactory.newInstance();
@@ -148,14 +150,31 @@ public class mn2pdf {
                 //writer.close();
             }
             
-            // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             fontConfig fontcfg = new fontConfig(fontPath);
+         
+            runFOP(fontcfg, src, pdf, transformer);
+            
+            if(PDFUA_error) {
+                System.out.println("INFO: Trying to generate PDF in non PDF/UA-1 mode.");
+                fontcfg.setPDFUAmode("DISABLED");
+                runFOP(fontcfg, src, pdf, transformer);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            System.exit(ERROR_EXIT_CODE);
+        }
+    }
 
+    private void runFOP (fontConfig fontcfg, Source src, File pdf, Transformer transformer) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
+        OutputStream out = null;
+        try {
+            // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             FopFactory fopFactory = FopFactory.newInstance(fontcfg.getUpdatedConfig());
 
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            // configure foUserAgent as desired
+            // configure foUserAgent
 
             // Setup output stream.  Note: Using BufferedOutputStream
             // for performance reasons (helpful with FileOutputStreams).
@@ -175,9 +194,10 @@ public class mn2pdf {
             // Resulting SAX events (the generated FO) must be piped through to FOP
             Result res = new SAXResult(fop.getDefaultHandler());
 
+            transformer.setErrorListener(new DefaultErrorListener());
+
             // Start XSLT transformation and FOP processing
             transformer.transform(src, res);
-
         } catch (Exception e) {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
@@ -187,7 +207,31 @@ public class mn2pdf {
             }
         }
     }
+    
+    private class DefaultErrorListener implements ErrorListener {
 
+        public void warning(TransformerException exc) {
+            System.err.println(exc.toString());
+        }
+
+        public void error(TransformerException exc)
+                throws TransformerException {
+            throw exc;
+        }
+
+        public void fatalError(TransformerException exc)
+                throws TransformerException {
+            String excstr=exc.toString();
+            if (excstr.contains("PDFConformanceException") && excstr.contains("all fonts, even the base 14 fonts, have to be embedded") && !PDFUA_error) {
+                System.err.println(exc.toString());
+                PDFUA_error = true;
+            } else {
+                throw exc;
+            }            
+        }
+    }
+    
+    
     /**
      * Main method.
      *
