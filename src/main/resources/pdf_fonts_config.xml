@@ -257,6 +257,20 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="STIX2Math" style="italic" weight="700"/>
 				</font>
 				
+				<!-- Garamond -->
+				<font kerning="yes" embed-url="GARA.TTF">
+					<font-triplet name="Garamond" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="GARABD.TTF">
+					<font-triplet name="Garamond" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="GARAIT.TTF">
+					<font-triplet name="Garamond" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="GARAIT.TTF" simulate-style="true">
+					<font-triplet name="Garamond" style="italic" weight="bold"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
