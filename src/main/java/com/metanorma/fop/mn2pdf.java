@@ -63,6 +63,16 @@ public class mn2pdf {
     
     static boolean PDFUA_error = false;
     
+    static final Options optionsInfo = new Options() {
+        {   
+            addOption(Option.builder("v")
+               .longOpt("version")
+               .desc("display application version")
+               .required(true)
+               .build());
+            }
+    };
+    
     static final Options options = new Options() {
         {   
             addOption(Option.builder("f")
@@ -97,7 +107,12 @@ public class mn2pdf {
                 .longOpt("debug")
                 .desc("write intermediate fo.xml file")
                 .required(false)
-                .build());
+                .build()); 
+            addOption(Option.builder("v")
+               .longOpt("version")
+               .desc("display application version")
+               .required(false)
+               .build());
         }
     };
     
@@ -241,47 +256,65 @@ public class mn2pdf {
         
         CommandLineParser parser = new DefaultParser();
         
+        String ver = Util.getAppVersion();
         
         try {
-            CommandLine  cmd = parser.parse(options, args);
-        
-            System.out.println("mn2pdf\n");
-            System.out.println("Preparing...");
-
-            //Setup font path, input and output files
-            final String argFontsPath = (cmd.hasOption("font-path") ? cmd.getOptionValue("font-path") : DEFAULT_FONT_PATH);
             
-            final String argXML = cmd.getOptionValue("xml-file");
-            File fXML = new File(argXML);
-            if (!fXML.exists()) {
-                System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
-                System.exit(ERROR_EXIT_CODE);
-            }
-            final String argXSL = cmd.getOptionValue("xsl-file");
-            File fXSL = new File(argXSL);
-            if (!fXSL.exists()) {
-                System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
-                System.exit(ERROR_EXIT_CODE);
-            }
-            final String argPDF = cmd.getOptionValue("pdf-file");
-            File fPDF = new File(argPDF);
-            
-            DEBUG = cmd.hasOption("debug");
-            
-            System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
-            System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
-            System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
-            System.out.println("Output: PDF (" + fPDF + ")");
-            System.out.println();
-            System.out.println("Transforming...");
-
             try {
-                mn2pdf app = new mn2pdf();
-                app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
-                System.out.println("Success!");
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-                System.exit(ERROR_EXIT_CODE);
+                CommandLine cmdInfo = parser.parse(optionsInfo, args);
+                if (cmdInfo.hasOption("version")) {
+                    System.out.println(ver);
+                }
+            } catch( ParseException exp ) {
+            
+                CommandLine cmd = parser.parse(options, args);
+
+                System.out.println("mn2pdf ");
+                if (cmd.hasOption("version")) {
+                    System.out.println(ver);
+                }
+                System.out.println("\n");
+                System.out.println("Preparing...");
+
+                //Setup font path, input and output files
+                final String argFontsPath = (cmd.hasOption("font-path") ? cmd.getOptionValue("font-path") : DEFAULT_FONT_PATH);
+
+                final String argXML = cmd.getOptionValue("xml-file");
+                File fXML = new File(argXML);
+                if (!fXML.exists()) {
+                    System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
+                    System.exit(ERROR_EXIT_CODE);
+                }
+                final String argXSL = cmd.getOptionValue("xsl-file");
+                File fXSL = new File(argXSL);
+                if (!fXSL.exists()) {
+                    System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
+                    System.exit(ERROR_EXIT_CODE);
+                }
+                final String argPDF = cmd.getOptionValue("pdf-file");
+                File fPDF = new File(argPDF);
+
+                DEBUG = cmd.hasOption("debug");
+
+                if (cmd.hasOption("version")) {
+                    System.out.println(ver);
+                }
+
+                System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
+                System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
+                System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
+                System.out.println("Output: PDF (" + fPDF + ")");
+                System.out.println();
+                System.out.println("Transforming...");
+
+                try {
+                    mn2pdf app = new mn2pdf();
+                    app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
+                    System.out.println("Success!");
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                    System.exit(ERROR_EXIT_CODE);
+                }
             }
         }
         catch( ParseException exp ) {

@@ -11,6 +11,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -89,5 +92,36 @@ public class Util {
         }
          
         return new File(destinationDir, new File(zipEntry.getName()).getName());
+    }
+    
+    public static String getAppVersion() {
+        String version = "";
+        /*Package pckg = Util.class.getPackage();
+        version = pckg.getImplementationVersion();
+        */
+        /*URLClassLoader cl = (URLClassLoader) mn2pdf.class.getClassLoader();
+        URL url = cl.findResource("META-INF/MANIFEST.MF");
+        try {
+            Manifest manifest = new Manifest(url.openStream());
+            Attributes attr = manifest.getMainAttributes();
+            version = manifest.getMainAttributes().getValue("Implementation-Version");
+        } catch (IOException ex)  {}
+        */
+        try {
+            Enumeration<URL> resources = mn2pdf.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+            while (resources.hasMoreElements()) {
+                Manifest manifest = new Manifest(resources.nextElement().openStream());
+                // check that this is your manifest and do what you need or get the next one
+                Attributes attr = manifest.getMainAttributes();
+                String mainClass = attr.getValue("Main-Class");
+                if(mainClass != null && mainClass.contains("com.metanorma.fop.mn2pdf")) {
+                    version = manifest.getMainAttributes().getValue("Implementation-Version");
+                }
+            }
+        } catch (IOException ex)  {
+            version = "";
+        }
+        
+        return version;
     }
 }
