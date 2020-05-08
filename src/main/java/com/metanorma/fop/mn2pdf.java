@@ -3,16 +3,22 @@ package com.metanorma.fop;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.text.MessageFormat;
+import java.util.UUID;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.ErrorListener;
 
@@ -22,6 +28,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -42,6 +49,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
@@ -130,15 +140,17 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
+    public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException, ParserConfigurationException {
 
+        File srcxml = ImageUpdate(xml);
+        
         try {
             //Setup XSLT
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(new StreamSource(xsl));
 
             //Setup input for XSLT transformation
-            Source src = new StreamSource(xml);
+            Source src = new StreamSource(srcxml);
 
             //DEBUG: write intermediate FO to file
             if (DEBUG) {
@@ -346,5 +358,56 @@ public class mn2pdf {
                 componentName,
                 componentClass.getName(),
                 source == null ? "Java Runtime" : source.getLocation());
+    }
+    
+    private File ImageUpdate(File xml) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        InputStream xmlstream = new FileInputStream(xml);
+        Document sourceXML = dBuilder.parse(xmlstream);
+        NodeList images = sourceXML.getElementsByTagName("image");
+        String strTmpPath = System.getProperty("java.io.tmpdir");
+        String uuid = UUID.randomUUID().toString();
+        Path tmpfilepath = Paths.get(strTmpPath, xml.getName(), uuid.toString());
+        boolean changed = false;
+        for (int i = 0; i < images.getLength(); i++) {
+            Node image = images.item(i);
+            Node mimetype = image.getAttributes().getNamedItem("mimetype");
+            if (mimetype != null && mimetype.getTextContent().equals("image/svg+xml")) {
+                // decode base64 svg into external tmp file
+                Node src = image.getAttributes().getNamedItem("src");
+                if (src != null && src.getTextContent().startsWith("data:image")) {
+                    String base64svg = src.getTextContent().substring(src.getTextContent().indexOf("base64,")+7);
+                    String xmlsvg = Util.getDecodedBase64SVGnode(base64svg);
+                    Files.createDirectories(tmpfilepath);
+                    Path svgpath = Paths.get(tmpfilepath.toString(), "" + i + ".svg");
+                    try (BufferedWriter bw = Files.newBufferedWriter(svgpath)) 
+                    {
+                        bw.write(xmlsvg);
+                    }
+                    src.setNodeValue(svgpath.toFile().toURI().toURL().toString());
+                    changed = true;
+                }
+            }
+        }
+        if (changed) {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer;
+            transformer = tf.newTransformer();
+            StringWriter writer = new StringWriter();
+               
+            //transform document to string 
+            transformer.transform(new DOMSource(sourceXML), new StreamResult(writer));
+            String xmlString = writer.getBuffer().toString();
+            Path updatedxmlpath = Paths.get(tmpfilepath.toString(), "doc.xml");
+            try (BufferedWriter bw = Files.newBufferedWriter(updatedxmlpath))
+            {
+                bw.write(xmlString);
+            }
+            return updatedxmlpath.toFile();
+        } else {
+            return xml;
+        }
+        
     }
 }
