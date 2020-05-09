@@ -11,6 +11,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -123,5 +124,16 @@ public class Util {
         }
         
         return version;
+    }
+    
+    public static String getDecodedBase64SVGnode(String encodedString) { //throws SAXException, IOException, ParserConfigurationException {
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
+        String decodedString = new String(decodedBytes);
+        return decodedString;
+        /*if (decodedString.startsWith("<?xml")) {
+            return decodedString.substring(decodedString.indexOf("?>") + 2);
+        } else {
+            return decodedString;
+        }*/
     }
 }

@@ -3,16 +3,25 @@ package com.metanorma.fop;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.text.MessageFormat;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.ErrorListener;
 
@@ -22,6 +31,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -42,6 +52,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
@@ -120,6 +135,10 @@ public class mn2pdf {
     
     static final int ERROR_EXIT_CODE = -1;
 
+    static final String TMPDIR = System.getProperty("java.io.tmpdir");
+    
+    final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
+    
     /**
      * Converts an XML file to a PDF file using FOP
      *
@@ -130,13 +149,19 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
+    public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException, ParserConfigurationException {
 
+        
+        
+        String imagesxml = getImageFilePath(xml);
+                
         try {
             //Setup XSLT
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(new StreamSource(xsl));
 
+            transformer.setParameter("svg_images", imagesxml);
+            
             //Setup input for XSLT transformation
             Source src = new StreamSource(xml);
 
@@ -174,10 +199,21 @@ public class mn2pdf {
                 fontcfg.setPDFUAmode("DISABLED");
                 runFOP(fontcfg, src, pdf, transformer);
             }
-            
         } catch (Exception e) {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
+        }
+        // flush temporary folder
+        if (!DEBUG) {
+            //Files.deleteIfExists(tmpfilepath);
+            try {
+                Files.walk(tmpfilepath)
+                    .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                            .forEach(File::delete);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -237,7 +273,7 @@ public class mn2pdf {
         public void fatalError(TransformerException exc)
                 throws TransformerException {
             String excstr=exc.toString();
-            if (excstr.contains("PDFConformanceException") && excstr.contains("all fonts, even the base 14 fonts, have to be embedded") && !PDFUA_error) {
+            if (excstr.contains("PDFConformanceException") && excstr.contains("PDF/UA-1") && !PDFUA_error) { // excstr.contains("all fonts, even the base 14 fonts, have to be embedded")
                 System.err.println(exc.toString());
                 PDFUA_error = true;
             } else {
@@ -347,4 +383,72 @@ public class mn2pdf {
                 componentClass.getName(),
                 source == null ? "Java Runtime" : source.getLocation());
     }
+    
+    private String getImageFilePath(File xml)  {
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputStream xmlstream = new FileInputStream(xml);
+            Document sourceXML = dBuilder.parse(xmlstream);
+            NodeList images = sourceXML.getElementsByTagName("image");
+
+            HashMap<String, String> svgmap = new HashMap<>();
+            for (int i = 0; i < images.getLength(); i++) {
+                Node image = images.item(i);
+                Node mimetype = image.getAttributes().getNamedItem("mimetype");
+                if (mimetype != null && mimetype.getTextContent().equals("image/svg+xml")) {
+                    // decode base64 svg into external tmp file
+                    Node svg_src = image.getAttributes().getNamedItem("src");
+                    Node svg_id = image.getAttributes().getNamedItem("id");
+                    if (svg_src != null && svg_id != null && svg_src.getTextContent().startsWith("data:image")) {
+                        String base64svg = svg_src.getTextContent().substring(svg_src.getTextContent().indexOf("base64,")+7);
+                        String xmlsvg = Util.getDecodedBase64SVGnode(base64svg);
+                        try {
+                            Files.createDirectories(tmpfilepath);
+                            String id = svg_id.getTextContent();
+                            Path svgpath = Paths.get(tmpfilepath.toString(), id + ".svg");
+                            try (BufferedWriter bw = Files.newBufferedWriter(svgpath)) {
+                                bw.write(xmlsvg);
+                            }
+                            svgmap.put(id, svgpath.toFile().toURI().toURL().toString());
+                        } catch (IOException ex) {
+                            System.err.println("Can't save svg file into a temporary directory " + tmpfilepath.toString());
+                            ex.printStackTrace();;
+                        }
+                    }
+                }
+            }
+            if (!svgmap.isEmpty()) {
+                // crate map file for svg images
+                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+                Document document = documentBuilder.newDocument();
+                Element root = document.createElement("images");
+                document.appendChild(root);
+                for (Map.Entry<String, String> item : svgmap.entrySet()) {
+                    Element image = document.createElement("image");
+                    root.appendChild(image);
+                    Attr attr_id = document.createAttribute("id");
+                    attr_id.setValue(item.getKey());
+                    image.setAttributeNode(attr_id);
+                    Attr attr_path = document.createAttribute("src");
+                    attr_path.setValue(item.getValue());
+                    image.setAttributeNode(attr_path);
+                }
+                // save xml 'images.xml' with svg links to temporary folder
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                DOMSource domSource = new DOMSource(document);
+                Path outputPath = Paths.get(tmpfilepath.toString(), "images.xml");
+                StreamResult streamResult = new StreamResult(outputPath.toFile());
+                transformer.transform(domSource, streamResult);
+
+                return outputPath.toString();
+            }
+        } catch (Exception ex) {
+            System.err.println("Can't save images.xml into temporary folder");
+            ex.printStackTrace();
+        }
+        return "";
+    }    
 }
