@@ -204,7 +204,7 @@ public class mn2pdf {
             System.exit(ERROR_EXIT_CODE);
         }
         // flush temporary folder
-        if (!DEBUG) {
+        if (!DEBUG && Files.exists(tmpfilepath)) {
             //Files.deleteIfExists(tmpfilepath);
             try {
                 Files.walk(tmpfilepath)
