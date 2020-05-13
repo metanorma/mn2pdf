@@ -102,7 +102,7 @@ class fontConfig {
             //Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
         }
         if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(FONT_PREFIX))) {
-            String url = getFontsURL("sourcefontsURL");
+            String url = getFontsURL("URL.sourcefonts");
             int remotefilesize = Util.getFileSize(new URL(url));
             final Path destZipPath = Paths.get(fontPath, "source-fonts.zip");
             if (!destZipPath.toFile().exists() || Files.size(destZipPath) != remotefilesize) {
@@ -120,7 +120,7 @@ class fontConfig {
             }
         }
         if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith("STIX"))) {
-            String url = getFontsURL("STIX2MathfontURL");
+            String url = getFontsURL("URL.STIX2Mathfont");
             int remotefilesize = Util.getFileSize(new URL(url));
             final Path destPath = Paths.get(fontPath, "STIX2Math.otf");
             if (!destPath.toFile().exists() || Files.size(destPath) != remotefilesize) {
@@ -298,9 +298,9 @@ class fontConfig {
         if (fontname.toLowerCase().contains("arial")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("times")) {
-            substprefix = "Serif";
+            substprefix = "Sans";//"Serif";
         } else if (fontname.toLowerCase().contains("cambria")) {
-            substprefix = "Serif";
+            substprefix = "Sans";//"Serif";
         } else if (fontname.toLowerCase().contains("calibri")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("cour")) {
@@ -308,7 +308,7 @@ class fontConfig {
         } else if (fontname.toLowerCase().contains("sans")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("serif")) {
-            substprefix = "Serif";
+            substprefix = "Sans";//"Serif";
         }
         return substprefix;
     }
