@@ -271,6 +271,42 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Garamond" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- SimSun -->
+				<font kerning="yes" embed-url="simsun.ttc" sub-font="SimSun">
+					<alternate embed-url="SourceSerifPro-Regular.ttf"/>
+					<font-triplet name="SimSun" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="simsun.ttc" sub-font="SimSun" simulate-style="true">
+					<alternate embed-url="SourceSerifPro-Bold.ttf"/>
+					<font-triplet name="SimSun" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="simsun.ttc"  sub-font="SimSun" simulate-style="true">
+					<alternate embed-url="SourceSerifPro-It.ttf"/>
+					<font-triplet name="SimSun" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="simsun.ttc" sub-font="SimSun" simulate-style="true">
+					<alternate embed-url="SourceSerifPro-BoldIt.ttf"/>
+					<font-triplet name="SimSun" style="italic" weight="bold"/>
+				</font>
+				<!-- SimHei -->
+				<font kerning="yes" embed-url="Simhei.ttf">
+					<alternate embed-url="SourceSansPro-Regular.ttf"/>
+					<font-triplet name="SimHei" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="Simhei.ttf" simulate-style="true">
+					<alternate embed-url="SourceSansPro-Bold.ttf"/>
+					<font-triplet name="SimHei" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="Simhei.ttf" simulate-style="true">
+					<alternate embed-url="SourceSansPro-It.ttf"/>
+					<font-triplet name="SimHei" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="Simhei.ttf" simulate-style="true">
+					<alternate embed-url="SourceSansPro-BoldIt.ttf"/>
+					<font-triplet name="SimHei" style="italic" weight="bold"/>
+				</font>
+				
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
