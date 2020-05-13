@@ -1,9 +1,11 @@
 package com.metanorma.fop;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -26,10 +28,18 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.apache.fop.fonts.autodetect.FontFileFinder;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 
 /**
  *
@@ -42,8 +52,10 @@ class fontConfig {
     private final String FONT_PREFIX = "Source";
     private final String FONT_SUFFIX = "Pro";
     private final Document configXML;
+    private final Document srcXML;
     private File updatedConfig;
     private String fontPath;
+    private ArrayList<String> messages;
     private final ArrayList<String> defaultFontList = new ArrayList<String>() { 
         { 
             // Example
@@ -65,12 +77,19 @@ class fontConfig {
     };
     
 
-    public fontConfig(String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
+    public fontConfig(String xmlFO, String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
+        messages = new ArrayList<>();
         this.fontPath = fontPath;
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         InputStream config = getStreamFromResources(CONFIG_NAME);
+        
 	this.configXML = dBuilder.parse(config);
+        
+        InputSource is = new InputSource(new StringReader(xmlFO));
+        this.srcXML = dBuilder.parse(is);
+        
+        
         
         //extract all .ttf files from resources into fontPath folder
         prepareFonts();
@@ -145,6 +164,8 @@ class fontConfig {
         
         List<String> machineFontList = getMachineFonts();
         
+        //List<String> srcDocumentFontList = getDocumentFonts();
+        
         NodeList fonts = configXML.getElementsByTagName("font");
         
         //iterate each font
@@ -209,7 +230,7 @@ class fontConfig {
                             
                             font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
                             
-                            System.out.println(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. " + "Font '" + font_replacementpath + "' will be used.");
+                            printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. " + "Font '" + font_replacementpath + "' will be used.");
                             
                             font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
                         }
@@ -247,6 +268,34 @@ class fontConfig {
         return machineFontList;
     }
     
+    private List<String> getDocumentFonts() {
+        List<String> documentFontList = new ArrayList<>();
+        
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        
+        XPathExpression query;
+        try {
+            query = xPath.compile("//*/@font-family");
+            NodeList nList = (NodeList)query.evaluate(srcXML, XPathConstants.NODESET);
+            
+            for (int i = 0; i < nList.getLength(); i++) {
+                try {
+                    Attr attr = (Attr) nList.item(i);
+                    for (String fname: attr.getNodeValue().split(",")) {
+                        fname = fname.trim();
+                        if (!documentFontList.contains(fname)) {
+                            documentFontList.add(fname);
+                        }
+                    }                    
+                } catch (Exception ex) {}
+            }
+            
+        } catch (XPathExpressionException ex) {
+            System.out.println(ex.toString());
+        }
+        
+        return documentFontList;
+    }
     
     private void writeXmlDocumentToXmlFile(Document xmlDocument) throws IOException
     {
@@ -342,4 +391,14 @@ class fontConfig {
         appProps.load(getStreamFromResources("app.properties"));
         return appProps.getProperty(property);
     }
+    
+    private void printMessage(String msg) {
+        System.out.println(msg);
+        messages.add(msg);
+    }
+
+    public ArrayList<String> getMessages() {
+        return messages;
+    }
+    
 }

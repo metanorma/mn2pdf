@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -166,38 +167,43 @@ public class mn2pdf {
             Source src = new StreamSource(xml);
 
             //DEBUG: write intermediate FO to file
-            if (DEBUG) {
-                
-                OutputJaxpImplementationInfo();
-                
-                // Step 0. Convert XML to FO file with XSL
-                
+            
+            OutputJaxpImplementationInfo();
+            
+            // Step 0. Convert XML to FO file with XSL
+            StringWriter resultWriter = new StringWriter();
+            StreamResult sr = new StreamResult(resultWriter);
+            //Start XSLT transformation and FO generating
+            transformer.transform(src, sr);
+            String xmlFO = resultWriter.toString();
+            if (DEBUG) {   
+                BufferedWriter writer = new BufferedWriter(new FileWriter(pdf.getAbsolutePath() + ".fo.xml"));
+                writer.write(xmlFO);
+                writer.close();
                 //Setup output
-                OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
+                //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
                 //Resulting SAX events (the generated FO) must be piped through to FOP
-                Result res = new StreamResult(outstream);
-
+                //Result res = new StreamResult(outstream);
                 //Start XSLT transformation and FO generating
-                transformer.transform(src, res);
+                //transformer.transform(src, res);
                 
                 // using resultWriter
                 //StringWriter resultWriter = new StringWriter();
                 //StreamResult sr = new StreamResult(resultWriter);
                 //transformer.transform(src, sr);
-                //String xmlFO = resultWriter.toString();
-                //BufferedWriter writer = new BufferedWriter(new FileWriter("fo.xml"));
-                //writer.write(xmlFO);
-                //writer.close();
             }
             
-            fontConfig fontcfg = new fontConfig(fontPath);
-         
+            fontConfig fontcfg = new fontConfig(xmlFO, fontPath);
+            
             runFOP(fontcfg, src, pdf, transformer);
             
             if(PDFUA_error) {
                 System.out.println("INFO: Trying to generate PDF in non PDF/UA-1 mode.");
                 fontcfg.setPDFUAmode("DISABLED");
                 runFOP(fontcfg, src, pdf, transformer);
+            }
+            for(String msg: fontcfg.getMessages()) {
+            //    System.out.println(msg);
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -220,6 +226,7 @@ public class mn2pdf {
     private void runFOP (fontConfig fontcfg, Source src, File pdf, Transformer transformer) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
         OutputStream out = null;
         try {
+            System.out.println("Transforming...");
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             FopFactory fopFactory = FopFactory.newInstance(fontcfg.getUpdatedConfig());
 
@@ -341,8 +348,7 @@ public class mn2pdf {
                 System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
                 System.out.println("Output: PDF (" + fPDF + ")");
                 System.out.println();
-                System.out.println("Transforming...");
-
+                
                 try {
                     mn2pdf app = new mn2pdf();
                     app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
@@ -369,10 +375,12 @@ public class mn2pdf {
     }
     
     private static void OutputJaxpImplementationInfo() {
-        System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
-        System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
-        System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
-        System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
+        if (DEBUG) {
+            System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
+            System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
+            System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
+            System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
+        }
     }
 
     private static String getJaxpImplementationInfo(String componentName, Class componentClass) {
