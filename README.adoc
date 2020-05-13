@@ -15,14 +15,14 @@ You will need the `maven` build tool and `make`.
 
 [source,sh]
 ----
-java -Xss5m -Xmx1024m -jar target/mn2pdf-1.14.jar --xml-file <XML-FileName> --xsl-file <XSLT-FileName> --pdf-file <Output-PDF-FileName>
+java -Xss5m -Xmx1024m -jar target/mn2pdf-1.15.jar --xml-file <XML-FileName> --xsl-file <XSLT-FileName> --pdf-file <Output-PDF-FileName>
 ----
 
 e.g.
 
 [source,sh]
 ----
-java -Xss5m -Xmx1024m -jar target/mn2pdf-1.14.jar --xml-file tests/G.191.xml --xsl-file tests/itu.recommendation.xsl --pdf-file tests/G.191.pdf
+java -Xss5m -Xmx1024m -jar target/mn2pdf-1.15.jar --xml-file tests/G.191.xml --xsl-file tests/itu.recommendation.xsl --pdf-file tests/G.191.pdf
 ----
 
 
@@ -42,7 +42,7 @@ Update version in `pom.xml`, e.g.:
 ----
 <groupId>com.metanorma.fop</groupId>
 <artifactId>mn2pdf</artifactId>
-<version>1.14</version>
+<version>1.15</version>
 <name>Metanorma XML to PDF converter</name>
 ----
 
