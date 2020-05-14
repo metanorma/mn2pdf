@@ -164,16 +164,17 @@ class fontConfig {
         
         List<String> machineFontList = getMachineFonts();
         
-        //List<String> srcDocumentFontList = getDocumentFonts();
+        List<String> srcDocumentFontList = getDocumentFonts();
         
         NodeList fonts = configXML.getElementsByTagName("font");
         
-        //iterate each font
+        //iterate each font from FOP config
         for (int i = 0; i < fonts.getLength(); i++) {
             Node font = fonts.item(i);
             Node attr_embed_url = font.getAttributes().getNamedItem("embed-url");
             Node attr_sub_font = font.getAttributes().getNamedItem("sub-font");
             Node attr_simulate_style = font.getAttributes().getNamedItem("simulate-style");
+            NodeList fonttriplets = ((Element)font).getElementsByTagName("font-triplet");
             if (attr_embed_url != null) {
                 String msg = "";
                 //String embed_url = attr_embed_url.getTextContent()
@@ -181,96 +182,107 @@ class fontConfig {
                 String embed_url = Paths.get(fontPath, attr_embed_url.getTextContent()).toString();
                 // add file:/..
                 attr_embed_url.setNodeValue(new File(embed_url).toURI().toURL().toString());                
-                File file_embed_url = new File (embed_url);
-                if (!file_embed_url.exists()) {
-                    msg = "WARNING: Font file '" + embed_url + "'";
-                    //try to find system font (example for Windows - C:/Windows/fonts/)
-                    String fontfilename = file_embed_url.getName();
-                    String font_replacementpath = null;
-                    for (String url: machineFontList) {
-                        if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
-                            font_replacementpath = url;
-                            break;
-                        }
-                    }
-                    // if there isn't system font, then try to find font with alternate name
-                    // Example: timesbd.ttf -> Times New Roman Bold.ttf
-                    if (font_replacementpath == null) {
-                        
-                        NodeList fontsalternate = ((Element)font).getElementsByTagName("alternate");
-                        
-                        //iterate each font-triplet
-                        for (int j = 0; j < fontsalternate.getLength(); j++) {
-                            if (font_replacementpath != null) {
+                
+                boolean isUsedFont = true;
+                try {
+                    String fonttriplet_name = fonttriplets.item(0).getAttributes().getNamedItem("name").getTextContent();
+                    isUsedFont = srcDocumentFontList.contains(fonttriplet_name);
+                } catch (Exception ex) {
+                    //skip
+                };
+                
+                //try to find font if it uses only (skip unused font processing)
+                if (isUsedFont) {
+                
+                    File file_embed_url = new File (embed_url);
+                    if (!file_embed_url.exists()) {
+                        msg = "WARNING: Font file '" + embed_url + "'";
+                        //try to find system font (example for Windows - C:/Windows/fonts/)
+                        String fontfilename = file_embed_url.getName();
+                        String font_replacementpath = null;
+                        for (String url: machineFontList) {
+                            if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
+                                font_replacementpath = url;
                                 break;
                             }
-                            Node fontalternate = fontsalternate.item(j);
-                            String fontalternateURL = fontalternate.getAttributes().getNamedItem("embed-url").getTextContent();
-                            for (String url: machineFontList) {
-                                if (url.toLowerCase().endsWith(fontalternateURL.toLowerCase())) {
-                                    font_replacementpath = url;
-                                    Node attr_sub_font_alternate = fontalternate.getAttributes().getNamedItem("sub-font");
-                                    // if alternate font doesn't have sub-font attribute, then delete it
-                                    if (attr_sub_font_alternate == null && attr_sub_font != null) {
-                                        font.getAttributes().removeNamedItem("sub-font");
-                                    } else if (attr_sub_font_alternate != null) {                                        
-                                        // if exist, then change it, else add it
-                                        String attr_sub_font_alternate_value = attr_sub_font_alternate.getTextContent();
-                                        if (attr_sub_font != null) {
-                                            attr_sub_font.setNodeValue(attr_sub_font_alternate_value);
-                                        } else {
-                                            ((Element)font).setAttribute("sub-font", attr_sub_font_alternate_value);
-                                        }
-                                    }
-                                    Node attr_simulate_style_alternate = fontalternate.getAttributes().getNamedItem("simulate-style");
-                                    // if alternate font doesn't have simulate-style attribute, then delete it
-                                    if (attr_simulate_style_alternate == null && attr_simulate_style != null) {
-                                        font.getAttributes().removeNamedItem("simulate-style");
-                                    } else if (attr_simulate_style_alternate != null) { 
-                                        String attr_simulate_style_alternate_value = attr_simulate_style_alternate.getTextContent();
-                                        // if exist, then change it, else add it
-                                        if (attr_simulate_style != null) {
-                                            attr_simulate_style.setNodeValue(attr_simulate_style_alternate_value);
-                                        } else {
-                                            ((Element)font).setAttribute("simulate-style",attr_simulate_style_alternate_value);
-                                        }
-                                    }
+                        }
+                        // if there isn't system font, then try to find font with alternate name
+                        // Example: timesbd.ttf -> Times New Roman Bold.ttf
+                        if (font_replacementpath == null) {
+
+                            NodeList fontsalternate = ((Element)font).getElementsByTagName("alternate");
+
+                            //iterate each font-triplet
+                            for (int j = 0; j < fontsalternate.getLength(); j++) {
+                                if (font_replacementpath != null) {
                                     break;
+                                }
+                                Node fontalternate = fontsalternate.item(j);
+                                String fontalternateURL = fontalternate.getAttributes().getNamedItem("embed-url").getTextContent();
+                                for (String url: machineFontList) {
+                                    if (url.toLowerCase().endsWith(fontalternateURL.toLowerCase())) {
+                                        font_replacementpath = url;
+                                        Node attr_sub_font_alternate = fontalternate.getAttributes().getNamedItem("sub-font");
+                                        // if alternate font doesn't have sub-font attribute, then delete it
+                                        if (attr_sub_font_alternate == null && attr_sub_font != null) {
+                                            font.getAttributes().removeNamedItem("sub-font");
+                                        } else if (attr_sub_font_alternate != null) {                                        
+                                            // if exist, then change it, else add it
+                                            String attr_sub_font_alternate_value = attr_sub_font_alternate.getTextContent();
+                                            if (attr_sub_font != null) {
+                                                attr_sub_font.setNodeValue(attr_sub_font_alternate_value);
+                                            } else {
+                                                ((Element)font).setAttribute("sub-font", attr_sub_font_alternate_value);
+                                            }
+                                        }
+                                        Node attr_simulate_style_alternate = fontalternate.getAttributes().getNamedItem("simulate-style");
+                                        // if alternate font doesn't have simulate-style attribute, then delete it
+                                        if (attr_simulate_style_alternate == null && attr_simulate_style != null) {
+                                            font.getAttributes().removeNamedItem("simulate-style");
+                                        } else if (attr_simulate_style_alternate != null) { 
+                                            String attr_simulate_style_alternate_value = attr_simulate_style_alternate.getTextContent();
+                                            // if exist, then change it, else add it
+                                            if (attr_simulate_style != null) {
+                                                attr_simulate_style.setNodeValue(attr_simulate_style_alternate_value);
+                                            } else {
+                                                ((Element)font).setAttribute("simulate-style",attr_simulate_style_alternate_value);
+                                            }
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    
-                    if (font_replacementpath == null) {
-                        
-                        NodeList fonttriplets = ((Element)font).getElementsByTagName("font-triplet");
-                        //iterate each font-triplet
-                        for (int j = 0; j < fonttriplets.getLength(); j++) {
-                            Node fonttriplet = fonttriplets.item(j);
-                            
-                            String fontname = fonttriplet.getAttributes().getNamedItem("name").getTextContent();
-                            String fontstyle = fonttriplet.getAttributes().getNamedItem("style").getTextContent();
-                            String fontweight = fonttriplet.getAttributes().getNamedItem("weight").getTextContent();
-                            
-                            String substprefix = getSubstFontPrefix(fontname);
-                            String substsuffix = getSubstFontSuffix(fontname, fontweight, fontstyle);
-                            String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
-                            
-                            font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
-                            
-                            printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. " + "Font '" + font_replacementpath + "' is used.");
-                            
-                            font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
+
+                        if (font_replacementpath == null) {                        
+                            //iterate each font-triplet
+                            for (int j = 0; j < fonttriplets.getLength(); j++) {
+                                Node fonttriplet = fonttriplets.item(j);
+
+                                String fontname = fonttriplet.getAttributes().getNamedItem("name").getTextContent();
+                                String fontstyle = fonttriplet.getAttributes().getNamedItem("style").getTextContent();
+                                String fontweight = fonttriplet.getAttributes().getNamedItem("weight").getTextContent();
+
+                                String substprefix = getSubstFontPrefix(fontname);
+                                String substsuffix = getSubstFontSuffix(fontname, fontweight, fontstyle);
+                                String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
+
+                                font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
+
+                                printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
+
+                                font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
+                            }
                         }
-                    }
-                    if (font_replacementpath != null) {
-                        attr_embed_url.setNodeValue(font_replacementpath);
-                        //if (font.getAttributes().getNamedItem("sub-font") != null && !(font.getAttributes().getNamedItem("embed-url").getNodeValue().contains(".ttc"))) {
-                        //    font.getAttributes().removeNamedItem("sub-font");
-                        //}
-                        //if (font.getAttributes().getNamedItem("simulate-style") != null) {
-                        //    font.getAttributes().removeNamedItem("simulate-style");
-                        //}
+                        if (font_replacementpath != null) {
+                            attr_embed_url.setNodeValue(font_replacementpath);
+                            //if (font.getAttributes().getNamedItem("sub-font") != null && !(font.getAttributes().getNamedItem("embed-url").getNodeValue().contains(".ttc"))) {
+                            //    font.getAttributes().removeNamedItem("sub-font");
+                            //}
+                            //if (font.getAttributes().getNamedItem("simulate-style") != null) {
+                            //    font.getAttributes().removeNamedItem("simulate-style");
+                            //}
+                        }
                     }
                 }
             }

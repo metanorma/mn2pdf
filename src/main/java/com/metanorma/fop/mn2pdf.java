@@ -198,12 +198,13 @@ public class mn2pdf {
             runFOP(fontcfg, src, pdf, transformer);
             
             if(PDFUA_error) {
-                System.out.println("INFO: Trying to generate PDF in non PDF/UA-1 mode.");
+                System.out.println("WARNING: Trying to generate PDF in non PDF/UA-1 mode.");
                 fontcfg.setPDFUAmode("DISABLED");
                 runFOP(fontcfg, src, pdf, transformer);
+                System.out.println("WARNING: PDF generated in non PDF/UA-1 mode.");
             }
             for(String msg: fontcfg.getMessages()) {
-            //    System.out.println(msg);
+            	System.out.println(msg);
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
