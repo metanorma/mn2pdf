@@ -166,8 +166,6 @@ public class mn2pdf {
             //Setup input for XSLT transformation
             Source src = new StreamSource(xml);
 
-            //DEBUG: write intermediate FO to file
-            
             OutputJaxpImplementationInfo();
             
             // Step 0. Convert XML to FO file with XSL
@@ -177,7 +175,10 @@ public class mn2pdf {
             transformer.transform(src, sr);
             String xmlFO = resultWriter.toString();
             if (DEBUG) {   
-                BufferedWriter writer = new BufferedWriter(new FileWriter(pdf.getAbsolutePath() + ".fo.xml"));
+                //DEBUG: write intermediate FO to file
+                //BufferedWriter writer = new BufferedWriter(new FileWriter(pdf.getAbsolutePath() + ".fo.xml"));
+                BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.xml"));
+                
                 writer.write(xmlFO);
                 writer.close();
                 //Setup output
