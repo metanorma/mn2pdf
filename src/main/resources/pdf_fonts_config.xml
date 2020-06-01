@@ -306,6 +306,53 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="SimHei" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- Helvetica Neue -->
+				<font kerning="yes" embed-url="HelveticaNeue-Roman.ttf">
+					<alternate embed-url="arial.ttf"/>
+					<font-triplet name="Helvetica Neue" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-Bold.ttf">
+					<alternate embed-url="arialbd.ttf"/>
+					<font-triplet name="Helvetica Neue" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-Italic.ttf">
+					<alternate embed-url="ariali.ttf"/>					
+					<font-triplet name="Helvetica Neue" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-BoldItalic.ttf">
+					<alternate embed-url="arialbi.ttf"/>									
+					<font-triplet name="Helvetica Neue" style="italic" weight="bold"/>
+				</font>
+				
+				<!-- SFMono-Regular -->
+				<font kerning="yes" embed-url="SFMono.ttf">
+					<alternate embed-url="consola.ttf"/>
+					<alternate embed-url="cour.ttf"/>
+					<alternate embed-url="Courier New.ttf"/>
+					<alternate embed-url="SourceCodePro-Regular.ttf"/>
+					<font-triplet name="SFMono-Regular" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SFMono.ttf" simulate-style="true">
+					<alternate embed-url="consolab.ttf"/>
+					<alternate embed-url="courbd.ttf"/>
+					<alternate embed-url="Courier New Bold.ttf"/>
+					<alternate embed-url="SourceCodePro-Bold.ttf"/>
+					<font-triplet name="SFMono-Regular" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="SFMono.ttf" simulate-style="true">
+					<alternate embed-url="consolai.ttf"/>
+					<alternate embed-url="couri.ttf"/>
+					<alternate embed-url="Courier New Italic.ttf"/>
+					<alternate embed-url="SourceCodePro-It.ttf"/>
+					<font-triplet name="SFMono-Regular" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="SFMono.ttf" simulate-style="true">
+					<alternate embed-url="consolaz.ttf"/>
+					<alternate embed-url="courbi.ttf"/>
+					<alternate embed-url="Courier New Bold Italic.ttf"/>
+					<alternate embed-url="SourceCodePro-BoldIt.ttf"/>
+					<font-triplet name="SFMono-Regular" style="italic" weight="bold"/>
+				</font>
 				
       </fonts>
 

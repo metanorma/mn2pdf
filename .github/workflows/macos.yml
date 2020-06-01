@@ -26,12 +26,12 @@ jobs:
           # Install cabextract
           brew install cabextract
 
-      - name: Install Microsoft Vista fonts
-        run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
-          export RENAME_FONTS=false
-          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
+#      - name: Install Microsoft Vista fonts
+#        run: |
+#          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+#          export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
+#          export RENAME_FONTS=false
+#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - name: Build
         env:
@@ -45,6 +45,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_USERNAME: ${{ github.actor }}
         run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          ls -alR ${MN_PDF_FONT_PATH}
           make test
