@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +26,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.ErrorListener;
+//import javax.xml.transform.ErrorListener;
+import javax.xml.transform.OutputKeys;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -43,6 +46,9 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.events.Event;
+import org.apache.fop.events.model.EventSeverity;
+import org.apache.fop.events.EventFormatter;
 
 import net.sourceforge.jeuclid.fop.plugin.JEuclidFopFactoryConfigurator;
 
@@ -53,6 +59,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -151,17 +158,17 @@ public class mn2pdf {
      * @throws FOPException, SAXException In case of a FOP problem
      */
     public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException, ParserConfigurationException {
-
-        
         
         String imagesxml = getImageFilePath(xml);
                 
         try {
             //Setup XSLT
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(new StreamSource(xsl));
-
-            transformer.setParameter("svg_images", imagesxml);
+            TransformerFactory factoryFO = TransformerFactory.newInstance();
+            Transformer transformerFO = factoryFO.newTransformer(new StreamSource(xsl));
+            
+            transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+            
+            transformerFO.setParameter("svg_images", imagesxml);
             
             //Setup input for XSLT transformation
             Source src = new StreamSource(xml);
@@ -172,38 +179,40 @@ public class mn2pdf {
             StringWriter resultWriter = new StringWriter();
             StreamResult sr = new StreamResult(resultWriter);
             //Start XSLT transformation and FO generating
-            transformer.transform(src, sr);
+            transformerFO.transform(src, sr);
             String xmlFO = resultWriter.toString();
             if (DEBUG) {   
-                //DEBUG: write intermediate FO to file
-                //BufferedWriter writer = new BufferedWriter(new FileWriter(pdf.getAbsolutePath() + ".fo.xml"));
-                BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.xml"));
-                
-                writer.write(xmlFO);
-                writer.close();
+                //DEBUG: write intermediate FO to file                
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.xml"))) {
+                        writer.write(xmlFO);                    
+                }
                 //Setup output
                 //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
                 //Resulting SAX events (the generated FO) must be piped through to FOP
                 //Result res = new StreamResult(outstream);
                 //Start XSLT transformation and FO generating
                 //transformer.transform(src, res);
-                
-                // using resultWriter
-                //StringWriter resultWriter = new StringWriter();
-                //StreamResult sr = new StreamResult(resultWriter);
-                //transformer.transform(src, sr);
             }
             
             fontConfig fontcfg = new fontConfig(xmlFO, fontPath);
             
+            // FO processing by FOP
+            TransformerFactory factory = TransformerFactory.newInstance();            
+            Transformer transformer = factory.newTransformer(); // identity transformer
+            src = new StreamSource(new StringReader(xmlFO));
+            
             runFOP(fontcfg, src, pdf, transformer);
+            
             
             if(PDFUA_error) {
                 System.out.println("WARNING: Trying to generate PDF in non PDF/UA-1 mode.");
                 fontcfg.setPDFUAmode("DISABLED");
+                src = new StreamSource(new StringReader(xmlFO));
                 runFOP(fontcfg, src, pdf, transformer);
                 System.out.println("WARNING: PDF generated in non PDF/UA-1 mode.");
             }
+            
             for(String msg: fontcfg.getMessages()) {
             	System.out.println(msg);
             }
@@ -224,7 +233,6 @@ public class mn2pdf {
             }
         }
     }
-
     private void runFOP (fontConfig fontcfg, Source src, File pdf, Transformer transformer) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
         OutputStream out = null;
         try {
@@ -235,6 +243,11 @@ public class mn2pdf {
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent
+            
+            //Adding a simple logging listener that writes to stdout and stderr            
+            //foUserAgent.getEventBroadcaster().addEventListener(new SysOutEventListener());
+            // Add your own event listener
+            //foUserAgent.getEventBroadcaster().addEventListener(new MyEventListener());
 
             // Setup output stream.  Note: Using BufferedOutputStream
             // for performance reasons (helpful with FileOutputStreams).
@@ -248,19 +261,26 @@ public class mn2pdf {
             //factory = TransformerFactory.newInstance();
             //transformer = factory.newTransformer(); // identity transformer
 
-            // Setup input stream
-            //Source srcFO = new StreamSource(new StringReader(xmlFO));
-
+            
             // Resulting SAX events (the generated FO) must be piped through to FOP
             Result res = new SAXResult(fop.getDefaultHandler());
-
+            
             transformer.setErrorListener(new DefaultErrorListener());
-
+            
             // Start XSLT transformation and FOP processing
-            transformer.transform(src, res);
+            // Setup input stream                        
+            transformer.transform(src, res);           
+            
         } catch (Exception e) {
-            e.printStackTrace(System.err);
-            System.exit(ERROR_EXIT_CODE);
+            String excstr=e.toString();
+            if (excstr.contains("PDFConformanceException") && excstr.contains("PDF/UA-1") && !PDFUA_error) { // excstr.contains("all fonts, even the base 14 fonts, have to be embedded")
+                System.err.println(e.toString());
+                PDFUA_error = true;
+            } else {
+                e.printStackTrace(System.err);
+                System.exit(ERROR_EXIT_CODE);
+            } 
+            
         } finally {
             if (out != null) {
                 out.close();
@@ -268,7 +288,7 @@ public class mn2pdf {
         }
     }
     
-    private class DefaultErrorListener implements ErrorListener {
+    private class DefaultErrorListener implements javax.xml.transform.ErrorListener {
 
         public void warning(TransformerException exc) {
             System.err.println(exc.toString());
@@ -290,6 +310,65 @@ public class mn2pdf {
             }            
         }
     }
+    
+    private static class MyEventListener implements org.apache.fop.events.EventListener {
+
+        public void processEvent(Event event) {
+            if ("org.apache.fop.layoutmgr.BlockLevelEventProducer.overconstrainedAdjustEndIndent".
+                    equals(event.getEventID())) {
+                //skip
+            } else
+            if("org.apache.fop.render.RendererEventProducer.endPage".
+                    equals(event.getEventID())) {
+                //skip
+            }else 
+            if ("org.apache.fop.pdf.PDFConformanceException".
+                    equals(event.getEventID())) {
+                System.err.println(new RuntimeException(EventFormatter.format(event)).toString());
+                PDFUA_error = true;
+            } 
+            else
+            if ("org.apache.fop.ResourceEventProducer.imageNotFound"
+                    .equals(event.getEventID())) {
+
+                //Get the FileNotFoundException that's part of the event's parameters
+                //FileNotFoundException fnfe = (FileNotFoundException)event.getParam("fnfe");
+
+                System.out.println("---=== imageNotFound Event for " + event.getParam("uri")
+                        + "!!! ===---");
+                //Stop processing when an image could not be found. Otherwise, FOP would just
+                //continue without the image!
+
+                System.out.println("Throwing a RuntimeException...");
+                //throw new RuntimeException(EventFormatter.format(event), fnfe);
+            } else {
+                //ignore all other events
+            }
+        }
+
+    }
+
+    /** A simple event listener that writes the events to stdout and sterr. */
+    private static class SysOutEventListener implements org.apache.fop.events.EventListener {
+
+        /** {@inheritDoc} */
+        public void processEvent(Event event) {
+            String msg = EventFormatter.format(event);
+            EventSeverity severity = event.getSeverity();
+            if (severity == EventSeverity.INFO) {
+                System.out.println("[INFO ] " + msg);
+            } else if (severity == EventSeverity.WARN) {
+                System.out.println("[WARN ] " + msg);
+            } else if (severity == EventSeverity.ERROR) {
+                System.err.println("[ERROR] " + msg);
+            } else if (severity == EventSeverity.FATAL) {
+                System.err.println("[FATAL] " + msg);
+            } else {
+                assert false;
+            }
+        }
+    }
+
     
     
     /**
