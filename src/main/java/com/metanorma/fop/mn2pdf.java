@@ -19,7 +19,9 @@ import java.security.CodeSource;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -78,6 +80,7 @@ public class mn2pdf {
     static final String FONTS_FOLDER_INPUT = "Fonts path";
     static final String XML_INPUT = "XML";
     static final String XSL_INPUT = "XSL";
+    static final String XSL_INPUT_PARAMS = "XSL parameters";
     static final String INPUT_LOG = "Input: %s (%s)";
 
     static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
@@ -126,6 +129,15 @@ public class mn2pdf {
                 .argName("file")
                 .required(true)
                 .build());
+            addOption(Option.builder("p")
+                .longOpt("param")
+                .argName("name=value")
+                .hasArgs()
+                .valueSeparator()
+                .numberOfArgs(2)
+                .desc("parameter(s) for xslt")
+                .required(false)
+                .build()); 
             addOption(Option.builder("d")
                 .longOpt("debug")
                 .desc("write intermediate fo.xml file")
@@ -157,7 +169,7 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(String fontPath, File xml, File xsl, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException, ParserConfigurationException {
+    public void convertmn2pdf(String fontPath, File xml, File xsl, Properties xslparams, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException, ParserConfigurationException {
         
         String imagesxml = getImageFilePath(xml);
                 
@@ -169,6 +181,13 @@ public class mn2pdf {
             transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
             
             transformerFO.setParameter("svg_images", imagesxml);
+            
+            Iterator xslparamsIterator = xslparams.keySet().iterator();
+            while(xslparamsIterator.hasNext()){
+                String name   = (String) xslparamsIterator.next();
+                String value = xslparams.getProperty(name);                
+                transformerFO.setParameter(name, value);
+            }
             
             //Setup input for XSLT transformation
             Source src = new StreamSource(xml);
@@ -382,14 +401,20 @@ public class mn2pdf {
         
         String ver = Util.getAppVersion();
         
+        boolean cmdFail = false;
+        
         try {
-            
+            CommandLine cmdInfo = parser.parse(optionsInfo, args);
+            if (cmdInfo.hasOption("version")) {
+                System.out.println(ver);
+            }
+        } catch( ParseException exp ) {
+            cmdFail = true;
+        }
+        
+        if (cmdFail) {
+        
             try {
-                CommandLine cmdInfo = parser.parse(optionsInfo, args);
-                if (cmdInfo.hasOption("version")) {
-                    System.out.println(ver);
-                }
-            } catch( ParseException exp ) {
             
                 CommandLine cmd = parser.parse(options, args);
 
@@ -423,26 +448,35 @@ public class mn2pdf {
                 if (cmd.hasOption("version")) {
                     System.out.println(ver);
                 }
-
+                
+                Properties xslparams = new Properties();
+                if (cmd.hasOption("param")) {
+                    xslparams = cmd.getOptionProperties("param");                    
+                }
+                
                 System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
                 System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
                 System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
+                if (!xslparams.isEmpty()) {                    
+                    System.out.println(String.format(INPUT_LOG, XSL_INPUT_PARAMS, xslparams.toString()));
+                }
                 System.out.println("Output: PDF (" + fPDF + ")");
+                
                 System.out.println();
                 
                 try {
                     mn2pdf app = new mn2pdf();
-                    app.convertmn2pdf(argFontsPath, fXML, fXSL, fPDF);
+                    app.convertmn2pdf(argFontsPath, fXML, fXSL, xslparams, fPDF);
                     System.out.println("Success!");
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                     System.exit(ERROR_EXIT_CODE);
                 }
+            
+            } catch( ParseException exp ) {
+                System.out.println(USAGE);
+                System.exit(ERROR_EXIT_CODE);
             }
-        }
-        catch( ParseException exp ) {
-            System.out.println(USAGE);
-            System.exit(ERROR_EXIT_CODE);
         }
     }
 
