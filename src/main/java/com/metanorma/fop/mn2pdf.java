@@ -82,7 +82,8 @@ public class mn2pdf {
     static final String XSL_INPUT = "XSL";
     static final String XSL_INPUT_PARAMS = "XSL parameters";
     static final String INPUT_LOG = "Input: %s (%s)";
-
+    static final String WARNING_NONPDFUA = "WARNING: PDF generated in non PDF/UA-1 mode.";
+    
     static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
     
     static boolean DEBUG = false;
@@ -229,7 +230,7 @@ public class mn2pdf {
                 fontcfg.setPDFUAmode("DISABLED");
                 src = new StreamSource(new StringReader(xmlFO));
                 runFOP(fontcfg, src, pdf, transformer);
-                System.out.println("WARNING: PDF generated in non PDF/UA-1 mode.");
+                System.out.println(WARNING_NONPDFUA);
             }
             
             for(String msg: fontcfg.getMessages()) {

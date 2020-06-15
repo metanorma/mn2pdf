@@ -47,6 +47,7 @@ import org.xml.sax.InputSource;
  */
 class fontConfig {
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
+    static final String WARNING_FONT = "WARNING: Font file '%s' (font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     private final String FONT_PREFIX = "Source";
@@ -268,8 +269,9 @@ class fontConfig {
                                 String fontFamilySubst = FONT_PREFIX + substprefix + FONT_SUFFIX + "-" + substsuffix;
 
                                 font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
-
-                                printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
+                                
+                                //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
+                                printMessage(String.format(WARNING_FONT, embed_url, fontstyle, fontweight, font_replacementpath));
 
                                 font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
                             }
