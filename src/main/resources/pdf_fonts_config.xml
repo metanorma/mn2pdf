@@ -354,6 +354,34 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="SFMono-Regular" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- Lato -->
+				<font kerning="yes" embed-url="Lato-Regular.ttf">
+					<font-triplet name="Lato" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="Lato-Bold.ttf">
+					<font-triplet name="Lato" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="Lato-Italic.ttf">
+					<font-triplet name="Lato" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="Lato-BoldItalic.ttf">
+					<font-triplet name="Lato" style="italic" weight="bold"/>
+				</font>
+				
+				<!-- Lato Light -->
+				<font kerning="yes" embed-url="Lato-Light.ttf">
+					<font-triplet name="Lato Light" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="Lato-Regular.ttf">
+					<font-triplet name="Lato Light" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="Lato-LightItalic.ttf">
+					<font-triplet name="Lato Light" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="Lato-Italic.ttf">
+					<font-triplet name="Lato Light" style="italic" weight="bold"/>
+				</font>
+				
 				<font kerning="yes" embed-url="TestFont.ttf" simulate-style="true">
 					<font-triplet name="TestFont" style="normal" weight="normal"/>
 					<font-triplet name="TestFont" style="normal" weight="bold"/>
