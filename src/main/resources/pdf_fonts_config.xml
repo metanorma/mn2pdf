@@ -382,6 +382,11 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Lato Light" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- FiraCode -->
+				<font kerning="yes" embed-url="FiraCode-Regular.ttf">
+					<font-triplet name="FiraCode" style="normal" weight="normal"/>
+				</font>
+				
 				<font kerning="yes" embed-url="TestFont.ttf" simulate-style="true">
 					<font-triplet name="TestFont" style="normal" weight="normal"/>
 					<font-triplet name="TestFont" style="normal" weight="bold"/>
