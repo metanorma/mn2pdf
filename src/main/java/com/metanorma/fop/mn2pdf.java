@@ -263,6 +263,7 @@ public class mn2pdf {
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent
+            foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
             
             //Adding a simple logging listener that writes to stdout and stderr            
             //foUserAgent.getEventBroadcaster().addEventListener(new SysOutEventListener());

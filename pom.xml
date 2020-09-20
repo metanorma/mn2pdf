@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.metanorma.fop</groupId>
 	<artifactId>mn2pdf</artifactId>
-	<version>1.20</version>
+	<version>1.21</version>
 	<name>Metanorma XML to PDF converter</name>
 	<packaging>jar</packaging>
 	<url>https://www.metanorma.com</url>
