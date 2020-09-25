@@ -17,10 +17,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
@@ -41,6 +43,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.fop.apps.FOPException;
@@ -87,6 +92,8 @@ public class mn2pdf {
     static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
     
     static boolean DEBUG = false;
+    
+    static boolean SPLIT_BY_LANGUAGE = false;
     
     static boolean PDFUA_error = false;
     
@@ -144,6 +151,11 @@ public class mn2pdf {
                 .desc("write intermediate fo.xml file")
                 .required(false)
                 .build()); 
+            addOption(Option.builder("split")
+                .longOpt("split-by-language")
+                .desc("additionally create a PDF for each language in XML")
+                .required(false)
+                .build());
             addOption(Option.builder("v")
                .longOpt("version")
                .desc("display application version")
@@ -160,6 +172,7 @@ public class mn2pdf {
     
     final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
     
+    int pageCount = 0;
     /**
      * Converts an XML file to a PDF file using FOP
      *
@@ -290,7 +303,9 @@ public class mn2pdf {
             
             // Start XSLT transformation and FOP processing
             // Setup input stream                        
-            transformer.transform(src, res);           
+            transformer.transform(src, res);  
+            
+            this.pageCount = fop.getResults().getPageCount();
             
         } catch (Exception e) {
             String excstr=e.toString();
@@ -446,6 +461,8 @@ public class mn2pdf {
                 File fPDF = new File(argPDF);
 
                 DEBUG = cmd.hasOption("debug");
+                
+                SPLIT_BY_LANGUAGE = cmd.hasOption("split-by-language");
 
                 if (cmd.hasOption("version")) {
                     System.out.println(ver);
@@ -466,9 +483,37 @@ public class mn2pdf {
                 
                 System.out.println();
                 
+                
                 try {
                     mn2pdf app = new mn2pdf();
                     app.convertmn2pdf(argFontsPath, fXML, fXSL, xslparams, fPDF);
+                    
+                    if (SPLIT_BY_LANGUAGE) {
+                        int initial_page_number = 1;
+                        int coverpages_count = getCoverPagesCount(fXSL);
+                        //determine how many documents in source XML
+                        ArrayList<String> languages = getLanguagesList(fXML);                        
+                        for (int i = 0; i< languages.size(); i++) {
+                            if (i>=1)  {
+                                xslparams.setProperty("initial_page_number", "" + initial_page_number);
+                            }
+                            xslparams.setProperty("doc_split_by_language", "" + languages.get(i));
+                            
+                            //add language code to output PDF
+                            String argPDFsplit = argPDF;                            
+                            argPDFsplit = argPDFsplit.substring(0, argPDFsplit.lastIndexOf(".")) + "_" + languages.get(i) + argPDFsplit.substring(argPDFsplit.lastIndexOf("."));
+                            File fPDFsplit = new File(argPDFsplit);
+                            
+                            System.out.println("Generate PDF for language '" + languages.get(i) + "'.");
+                            System.out.println("Output: PDF (" + fPDFsplit + ")");
+                            
+                            app.convertmn2pdf(argFontsPath, fXML, fXSL, xslparams, fPDFsplit);
+                            
+                            // initial page number for 'next' document
+                            initial_page_number = (app.getPageCount() - coverpages_count) + 1;
+                        }                        
+                    }
+                    
                     System.out.println("Success!");
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
@@ -576,4 +621,69 @@ public class mn2pdf {
         }
         return "";
     }    
+
+    private static ArrayList<String> getLanguagesList (File fXML) {
+        ArrayList<String> languagesList = new ArrayList<>();
+        try {            
+            // open XML and find all <language> tags
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputStream xmlstream = new FileInputStream(fXML);
+            Document sourceXML = dBuilder.parse(xmlstream);
+            //NodeList languages = sourceXML.getElementsByTagName("language");
+
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            XPathExpression expr = xpath.compile("//*[contains(local-name(),'-standard')]/*[local-name()='bibdata']//*[local-name()='language']");
+            NodeList languages = (NodeList) expr.evaluate(sourceXML, XPathConstants.NODESET);
+            
+            for (int i = 0; i < languages.getLength(); i++) {
+                String language = languages.item(i).getTextContent();                 
+                if (!languagesList.contains(language)) {
+                    languagesList.add(language);
+                }
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Can't read language list from source XML.");
+            ex.printStackTrace();
+        }
+        
+        return languagesList;
+    }
+    
+    private static int getCoverPagesCount (File fXSL) {
+        int countpages = 0;
+        try {            
+            // open XSL and find 
+            // <xsl:variable name="coverpages_count">2</xsl:variable>
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputStream xmlstream = new FileInputStream(fXSL);
+            Document sourceXML = dBuilder.parse(xmlstream);
+            
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            XPathExpression expr = xpath.compile("//*[local-name() = 'variable'][@name='coverpages_count']");
+            NodeList vars = (NodeList) expr.evaluate(sourceXML, XPathConstants.NODESET);
+            if (vars.getLength() > 0) {
+                countpages = Integer.valueOf(vars.item(0).getTextContent());
+            }
+        } catch (Exception ex) {
+            System.err.println("Can't read coverpages_count variable from source XSL.");
+            ex.printStackTrace();
+        }        
+        return countpages;
+    }
+    
+    public int getPageCount() {
+        return pageCount;
+    }
+    
+    private Optional<String> getExtensionByStringHandling(String filename) {
+	    return Optional.ofNullable(filename)
+	      .filter(f -> f.contains("."))
+	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+	}
+    
 }
