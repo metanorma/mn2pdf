@@ -229,6 +229,9 @@ public class mn2pdf {
             }
             
             fontConfig fontcfg = new fontConfig(xmlFO, fontPath);
+            if (DEBUG) {
+                Util.showAvailableAWTFonts();
+            }
             
             // FO processing by FOP
             TransformerFactory factory = TransformerFactory.newInstance();            
@@ -679,11 +682,5 @@ public class mn2pdf {
     public int getPageCount() {
         return pageCount;
     }
-    
-    private Optional<String> getExtensionByStringHandling(String filename) {
-	    return Optional.ofNullable(filename)
-	      .filter(f -> f.contains("."))
-	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
-	}
-    
+
 }

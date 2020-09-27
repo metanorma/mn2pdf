@@ -1,5 +1,6 @@
 package com.metanorma.fop;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -135,5 +136,15 @@ public class Util {
         } else {
             return decodedString;
         }*/
+    }
+    
+    public static void showAvailableAWTFonts() {
+        final String[] fam = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        System.out.println("====================");
+        System.out.println("Available fonts:");
+        for (final String element : fam) {
+            System.out.println(element);
+        }
+        System.out.println("====================");
     }
 }

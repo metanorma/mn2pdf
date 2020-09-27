@@ -1,5 +1,8 @@
 package com.metanorma.fop;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -22,6 +25,7 @@ import org.xml.sax.SAXException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -98,6 +102,9 @@ class fontConfig {
         substFonts();
         //write updated FOP config file
         writeXmlDocumentToXmlFile(configXML);
+        
+        //add fonts from fontPath to system available fonts
+        updateFonts();
     }
     
     //extract all .ttf files from resources into fontPath folder
@@ -432,6 +439,36 @@ class fontConfig {
         Properties appProps = new Properties();
         appProps.load(getStreamFromResources("app.properties"));
         return appProps.getProperty(property);
+    }
+    
+    private void updateFonts(){
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        
+        try (Stream<Path> walk = Files.walk(Paths.get(this.fontPath))) {
+                List<String> fontfiles = walk.map(x -> x.toString())
+                                .filter(f -> f.endsWith(".ttf") || f.endsWith(".TTF") || f.endsWith(".ttc") || f.endsWith(".TTC") || f.endsWith(".otf") || f.endsWith(".OTF")).collect(Collectors.toList());
+                
+                for(String fontfile : fontfiles) {
+                    try {
+                        Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontfile));            
+                        //register the font
+                        ge.registerFont(ttfFont);
+                    } catch(FontFormatException e) {
+                        try {
+                            Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontfile));            
+                            //register the font
+                            ge.registerFont(type1Font);
+                        } catch(FontFormatException e1) {
+                            e1.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }                
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+        
     }
     
     private void printMessage(String msg) {
