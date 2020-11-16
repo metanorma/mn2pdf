@@ -10,6 +10,10 @@ You will need the `maven` build tool and `make`.
 
 * https://www.baeldung.com/install-maven-on-windows-linux-mac[How to install Maven on Windows, Linux, Mac]
 
+== Java Requirements
+
+You will need the Java Development Kit (JDK) version 8, Update 241 (8u241) or higher.
+
 
 == Usage
 
