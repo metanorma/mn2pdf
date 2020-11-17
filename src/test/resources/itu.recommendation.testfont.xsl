@@ -61,7 +61,7 @@
 	
 	<xsl:template match="/">
 		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
-		<fo:root font-family="TestFont, STIX2Math" font-size="12pt" xml:lang="{$lang}">
+		<fo:root font-family="TestFont, STIX Two Math" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1501,7 +1501,7 @@
 		<!-- <fo:inline font-size="12pt" color="red">
 			MathML: 
 		</fo:inline> -->
-		<fo:inline font-family="STIX2Math" font-size="11pt">
+		<fo:inline font-family="STIX Two Math" font-size="11pt">
 			<fo:instream-foreign-object fox:alt-text="Math"> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>

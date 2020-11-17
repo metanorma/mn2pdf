@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -36,7 +37,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -116,6 +116,13 @@ public class mn2pdf {
                 .argName("folder")
                 .required(false)
                 .build());
+            addOption(Option.builder("m")
+                .longOpt("font-manifest")
+                .desc("optional fontist manifest file")
+                .hasArg()
+                .argName("file")
+                .required(false)
+                .build());
             addOption(Option.builder("x")
                 .longOpt("xml-file")
                 .desc("path to source XML file")
@@ -168,9 +175,6 @@ public class mn2pdf {
     
     static final int ERROR_EXIT_CODE = -1;
 
-    static final String TMPDIR = System.getProperty("java.io.tmpdir");
-    
-    final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
     
     int pageCount = 0;
     /**
@@ -183,39 +187,24 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(String fontPath, File xml, File xsl, Properties xslparams, File pdf) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException, ParserConfigurationException {
+    public void convertmn2pdf(String fontPath, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
         
-        String imagesxml = getImageFilePath(xml);
+        String imagesxml = sourceXMLDocument.getImageFilePath();
                 
         try {
             //Setup XSLT
-            TransformerFactory factoryFO = TransformerFactory.newInstance();
-            Transformer transformerFO = factoryFO.newTransformer(new StreamSource(xsl));
             
-            transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+            Properties xslparams = new Properties();
+            xslparams.setProperty("svg_images", imagesxml);
+            xsltConverter.setParams(xslparams);
             
-            transformerFO.setParameter("svg_images", imagesxml);
-            
-            Iterator xslparamsIterator = xslparams.keySet().iterator();
-            while(xslparamsIterator.hasNext()){
-                String name   = (String) xslparamsIterator.next();
-                String value = xslparams.getProperty(name);                
-                transformerFO.setParameter(name, value);
-            }
-            
-            //Setup input for XSLT transformation
-            Source src = new StreamSource(xml);
+            xsltConverter.transform(sourceXMLDocument);
 
-            OutputJaxpImplementationInfo();
+            String xmlFO = sourceXMLDocument.getXMLFO();
             
-            // Step 0. Convert XML to FO file with XSL
-            StringWriter resultWriter = new StringWriter();
-            StreamResult sr = new StreamResult(resultWriter);
-            //Start XSLT transformation and FO generating
-            transformerFO.transform(src, sr);
-            String xmlFO = resultWriter.toString();
             if (DEBUG) {   
                 //DEBUG: write intermediate FO to file                
+                
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.xml"))) {
                         writer.write(xmlFO);                    
@@ -228,24 +217,22 @@ public class mn2pdf {
                 //transformer.transform(src, res);
             }
             
-            fontConfig fontcfg = new fontConfig(xmlFO, fontPath);
+            fontConfig fontcfg = new fontConfig(sourceXMLDocument.getDocumentFonts(), fontPath);
             if (DEBUG) {
                 Util.showAvailableAWTFonts();
             }
             
             // FO processing by FOP
-            TransformerFactory factory = TransformerFactory.newInstance();            
-            Transformer transformer = factory.newTransformer(); // identity transformer
-            src = new StreamSource(new StringReader(xmlFO));
             
-            runFOP(fontcfg, src, pdf, transformer);
+            Source  src = new StreamSource(new StringReader(xmlFO));
             
+            runFOP(fontcfg, src, pdf);
             
             if(PDFUA_error) {
                 System.out.println("WARNING: Trying to generate PDF in non PDF/UA-1 mode.");
                 fontcfg.setPDFUAmode("DISABLED");
                 src = new StreamSource(new StringReader(xmlFO));
-                runFOP(fontcfg, src, pdf, transformer);
+                runFOP(fontcfg, src, pdf);
                 System.out.println(WARNING_NONPDFUA);
             }
             
@@ -256,22 +243,16 @@ public class mn2pdf {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
         }
-        // flush temporary folder
-        if (!DEBUG && Files.exists(tmpfilepath)) {
-            //Files.deleteIfExists(tmpfilepath);
-            try {
-                Files.walk(tmpfilepath)
-                    .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                            .forEach(File::delete);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        
+            
     }
-    private void runFOP (fontConfig fontcfg, Source src, File pdf, Transformer transformer) throws IOException, FOPException, SAXException, TransformerException, TransformerConfigurationException, TransformerConfigurationException {
+    private void runFOP (fontConfig fontcfg, Source src, File pdf) throws IOException, FOPException, SAXException, TransformerException {
         OutputStream out = null;
         try {
+            
+            TransformerFactory factory = TransformerFactory.newInstance();            
+            Transformer transformer = factory.newTransformer(); // identity transformer
+            
             System.out.println("Transforming...");
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             FopFactory fopFactory = FopFactory.newInstance(fontcfg.getUpdatedConfig());
@@ -350,7 +331,7 @@ public class mn2pdf {
         }
     }
     
-    private static class MyEventListener implements org.apache.fop.events.EventListener {
+   /* private static class MyEventListener implements org.apache.fop.events.EventListener {
 
         public void processEvent(Event event) {
             if ("org.apache.fop.layoutmgr.BlockLevelEventProducer.overconstrainedAdjustEndIndent".
@@ -385,13 +366,13 @@ public class mn2pdf {
             }
         }
 
-    }
+    }*/
 
     /** A simple event listener that writes the events to stdout and sterr. */
-    private static class SysOutEventListener implements org.apache.fop.events.EventListener {
+    //private static class SysOutEventListener implements org.apache.fop.events.EventListener {
 
         /** {@inheritDoc} */
-        public void processEvent(Event event) {
+   /*     public void processEvent(Event event) {
             String msg = EventFormatter.format(event);
             EventSeverity severity = event.getSeverity();
             if (severity == EventSeverity.INFO) {
@@ -406,7 +387,7 @@ public class mn2pdf {
                 assert false;
             }
         }
-    }
+    }*/
 
     
     
@@ -443,6 +424,7 @@ public class mn2pdf {
                     System.out.println(ver);
                 }
                 System.out.println("\n");
+                
                 System.out.println("Preparing...");
 
                 //Setup font path, input and output files
@@ -454,12 +436,14 @@ public class mn2pdf {
                     System.out.println(String.format(INPUT_NOT_FOUND, XML_INPUT, fXML));
                     System.exit(ERROR_EXIT_CODE);
                 }
+                
                 final String argXSL = cmd.getOptionValue("xsl-file");
                 File fXSL = new File(argXSL);
                 if (!fXSL.exists()) {
                     System.out.println(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
                     System.exit(ERROR_EXIT_CODE);
                 }
+                
                 final String argPDF = cmd.getOptionValue("pdf-file");
                 File fPDF = new File(argPDF);
 
@@ -486,21 +470,28 @@ public class mn2pdf {
                 
                 System.out.println();
                 
+                SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(fXML);
+                
+                XSLTconverter xsltConverter = new XSLTconverter(fXSL);
+                xsltConverter.setParams(xslparams);
+                
                 
                 try {
                     mn2pdf app = new mn2pdf();
-                    app.convertmn2pdf(argFontsPath, fXML, fXSL, xslparams, fPDF);
+                    app.convertmn2pdf(argFontsPath, sourceXMLDocument, xsltConverter, fPDF);
                     
                     if (SPLIT_BY_LANGUAGE) {
                         int initial_page_number = 1;
                         int coverpages_count = getCoverPagesCount(fXSL);
                         //determine how many documents in source XML
-                        ArrayList<String> languages = getLanguagesList(fXML);                        
+                        ArrayList<String> languages = sourceXMLDocument.getLanguagesList(); 
                         for (int i = 0; i< languages.size(); i++) {
                             if (i>=1)  {
                                 xslparams.setProperty("initial_page_number", "" + initial_page_number);
                             }
                             xslparams.setProperty("doc_split_by_language", "" + languages.get(i));
+                            
+                            xsltConverter.setParams(xslparams);
                             
                             //add language code to output PDF
                             String argPDFsplit = argPDF;                            
@@ -510,11 +501,16 @@ public class mn2pdf {
                             System.out.println("Generate PDF for language '" + languages.get(i) + "'.");
                             System.out.println("Output: PDF (" + fPDFsplit + ")");
                             
-                            app.convertmn2pdf(argFontsPath, fXML, fXSL, xslparams, fPDFsplit);
+                            app.convertmn2pdf(argFontsPath, sourceXMLDocument, xsltConverter, fPDFsplit);
                             
                             // initial page number for 'next' document
                             initial_page_number = (app.getPageCount() - coverpages_count) + 1;
                         }                        
+                    }
+                    
+                    // flush temporary folder
+                    if (!DEBUG) {
+                        sourceXMLDocument.flushTempPath();
                     }
                     
                     System.out.println("Success!");
@@ -539,121 +535,11 @@ public class mn2pdf {
         return stringWriter.toString();
     }
     
-    private static void OutputJaxpImplementationInfo() {
-        if (DEBUG) {
-            System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
-        }
-    }
-
-    private static String getJaxpImplementationInfo(String componentName, Class componentClass) {
-        CodeSource source = componentClass.getProtectionDomain().getCodeSource();
-        return MessageFormat.format(
-                "{0} implementation: {1} loaded from: {2}",
-                componentName,
-                componentClass.getName(),
-                source == null ? "Java Runtime" : source.getLocation());
-    }
     
-    private String getImageFilePath(File xml)  {
-        try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            InputStream xmlstream = new FileInputStream(xml);
-            Document sourceXML = dBuilder.parse(xmlstream);
-            NodeList images = sourceXML.getElementsByTagName("image");
+    
+       
 
-            HashMap<String, String> svgmap = new HashMap<>();
-            for (int i = 0; i < images.getLength(); i++) {
-                Node image = images.item(i);
-                Node mimetype = image.getAttributes().getNamedItem("mimetype");
-                if (mimetype != null && mimetype.getTextContent().equals("image/svg+xml")) {
-                    // decode base64 svg into external tmp file
-                    Node svg_src = image.getAttributes().getNamedItem("src");
-                    Node svg_id = image.getAttributes().getNamedItem("id");
-                    if (svg_src != null && svg_id != null && svg_src.getTextContent().startsWith("data:image")) {
-                        String base64svg = svg_src.getTextContent().substring(svg_src.getTextContent().indexOf("base64,")+7);
-                        String xmlsvg = Util.getDecodedBase64SVGnode(base64svg);
-                        try {
-                            Files.createDirectories(tmpfilepath);
-                            String id = svg_id.getTextContent();
-                            Path svgpath = Paths.get(tmpfilepath.toString(), id + ".svg");
-                            try (BufferedWriter bw = Files.newBufferedWriter(svgpath)) {
-                                bw.write(xmlsvg);
-                            }
-                            svgmap.put(id, svgpath.toFile().toURI().toURL().toString());
-                        } catch (IOException ex) {
-                            System.err.println("Can't save svg file into a temporary directory " + tmpfilepath.toString());
-                            ex.printStackTrace();;
-                        }
-                    }
-                }
-            }
-            if (!svgmap.isEmpty()) {
-                // crate map file for svg images
-                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-                Document document = documentBuilder.newDocument();
-                Element root = document.createElement("images");
-                document.appendChild(root);
-                for (Map.Entry<String, String> item : svgmap.entrySet()) {
-                    Element image = document.createElement("image");
-                    root.appendChild(image);
-                    Attr attr_id = document.createAttribute("id");
-                    attr_id.setValue(item.getKey());
-                    image.setAttributeNode(attr_id);
-                    Attr attr_path = document.createAttribute("src");
-                    attr_path.setValue(item.getValue());
-                    image.setAttributeNode(attr_path);
-                }
-                // save xml 'images.xml' with svg links to temporary folder
-                TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                Transformer transformer = transformerFactory.newTransformer();
-                DOMSource domSource = new DOMSource(document);
-                Path outputPath = Paths.get(tmpfilepath.toString(), "images.xml");
-                StreamResult streamResult = new StreamResult(outputPath.toFile());
-                transformer.transform(domSource, streamResult);
-
-                return outputPath.toString();
-            }
-        } catch (Exception ex) {
-            System.err.println("Can't save images.xml into temporary folder");
-            ex.printStackTrace();
-        }
-        return "";
-    }    
-
-    private static ArrayList<String> getLanguagesList (File fXML) {
-        ArrayList<String> languagesList = new ArrayList<>();
-        try {            
-            // open XML and find all <language> tags
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            InputStream xmlstream = new FileInputStream(fXML);
-            Document sourceXML = dBuilder.parse(xmlstream);
-            //NodeList languages = sourceXML.getElementsByTagName("language");
-
-            XPathFactory xPathfactory = XPathFactory.newInstance();
-            XPath xpath = xPathfactory.newXPath();
-            XPathExpression expr = xpath.compile("//*[contains(local-name(),'-standard')]/*[local-name()='bibdata']//*[local-name()='language']");
-            NodeList languages = (NodeList) expr.evaluate(sourceXML, XPathConstants.NODESET);
-            
-            for (int i = 0; i < languages.getLength(); i++) {
-                String language = languages.item(i).getTextContent();                 
-                if (!languagesList.contains(language)) {
-                    languagesList.add(language);
-                }
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Can't read language list from source XML.");
-            ex.printStackTrace();
-        }
-        
-        return languagesList;
-    }
+    
     
     private static int getCoverPagesCount (File fXSL) {
         int countpages = 0;

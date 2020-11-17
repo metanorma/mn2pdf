@@ -4764,7 +4764,7 @@
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring($str, 1, 1)))"/>
 		<xsl:value-of select="substring($str, 2)"/>		
 	</xsl:template><xsl:template match="mathml:math">
-		<fo:inline font-family="STIX2Math">
+		<fo:inline font-family="STIX Two Math">
 			<fo:instream-foreign-object fox:alt-text="Math"> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
