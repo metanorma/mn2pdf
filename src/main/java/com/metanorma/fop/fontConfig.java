@@ -1,10 +1,15 @@
 package com.metanorma.fop;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.metanorma.fop.fonts.FOPFont;
+import static com.metanorma.fop.mn2pdf.DEBUG;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +30,13 @@ import org.xml.sax.SAXException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -42,6 +52,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
 
@@ -57,11 +69,19 @@ class fontConfig {
     private final String DEFAULTFONT_PREFIX = "Source";
     private final String DEFAULTFONT_SUFFIX = "Pro";
     private final Document FOPconfigXML;
+
+    static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
     
     private List<String> sourceDocumentFontList;
     private File updatedConfig;
     private String fontPath;
     private ArrayList<String> messages;
+    
+    List<FOPFont> fopFonts = new ArrayList<>();
+    
+    private File fFontManifest;
+    
+    private boolean isReady = false;
     
     private final ArrayList<String> defaultFontList = new ArrayList<String>() { 
         { 
@@ -84,25 +104,80 @@ class fontConfig {
     };
     
 
-    public fontConfig(List<String> sourceDocumentFontList, String fontPath) throws SAXException, ParserConfigurationException, IOException, Exception {
+    public fontConfig() throws SAXException, ParserConfigurationException, IOException, Exception {
         messages = new ArrayList<>();
+        
+        fontPath = DEFAULT_FONT_PATH;
+        
+	FOPconfigXML = getSourceFOPConfigFile();
+        
+        fopFonts = getFOPfonts();
+        
+        //for DEBUG only 
+        /*for(FOPFont font: fonts) {
+            XmlMapper xmlMapper = new XmlMapper();
+            try {
+                String xml = xmlMapper.writeValueAsString(font);
+                System.out.println(xml);
+            } catch (JsonProcessingException ex) {
+                System.out.println("Error!");
+            }
+        }*/
+        
+    }
+    
+    public void setFontPath(String fontPath) {
         this.fontPath = fontPath;
-        
-	this.FOPconfigXML = getSourceFOPConfigFile();
-        
+    }
+    
+    public void setFontManifest(File fFontManifest) {
+        this.fFontManifest = fFontManifest;
+    }
+    
+    public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
         this.sourceDocumentFontList = sourceDocumentFontList;
         
-        //extract all .ttf files from resources into fontPath folder
-        prepareFonts();
+        for(String sourceDocumentFont: sourceDocumentFontList) {
+            fopFonts.stream()
+                    .filter(fopFont -> !fopFont.getFont_triplet().isEmpty())
+                    .filter(fopFont -> fopFont.getFont_triplet().get(0).getName().equals(sourceDocumentFont))                    
+                    .forEach(fopFont -> fopFont.setIsUsing(true));
+            
+           /* for (FOPFont fopFont: fopFonts) {
+                if(!fopFont.getFont_triplet().isEmpty() && 
+                        fopFont.getFont_triplet().get(0).getName().equals(sourceDocumentFont)) {
+                    fopFont.setIsUsing(true);
+                }
+            }*/         
+        }
         
-        // replace missing font in fonts/substitutions sections
-        substFonts();
-        
-        //write updated FOP config file
-        writeFOPConfigFile(FOPconfigXML);
-        
-        //add fonts from fontPath to system available fonts
-        updateFonts();
+    }
+    
+    
+    private void updateConfig() throws IOException, Exception {
+        if(!isReady) {
+            
+            
+            
+            //extract all .ttf files from resources into fontPath folder
+            prepareFonts();
+
+            // replace missing font in fonts/substitutions sections
+            substFonts();
+
+            updateFontsInFOPConfig(FOPconfigXML);
+            
+            //write updated FOP config file
+            writeFOPConfigFile(FOPconfigXML);
+
+            //add fonts from fontPath to system available fonts            
+            updateFonts();
+
+            if (DEBUG) {
+                Util.showAvailableAWTFonts();
+            }
+            isReady = true;
+        }
     }
     
     private Document getSourceFOPConfigFile() throws SAXException, ParserConfigurationException, IOException, Exception {
@@ -111,6 +186,38 @@ class fontConfig {
         InputStream config = getStreamFromResources(CONFIG_NAME);
         Document sourceFOPConfig = dBuilder.parse(config);
         return sourceFOPConfig;
+    }
+    
+    private List<FOPFont> getFOPfonts() {        
+        List<FOPFont> fonts = new ArrayList<>();
+        
+        NodeList fontNodes = FOPconfigXML.getElementsByTagName("font");
+        
+        //iterate each font from FOP config xml and create FOPFont  Object
+        for (int i = 0; i < fontNodes.getLength(); i++) {
+            Node fontNode = fontNodes.item(i);
+            XmlMapper xmlMapper = new XmlMapper();
+            
+            try {
+                // DEBUG String xml = xmlMapper.writeValueAsString(new FOPFont());
+                
+                FOPFont fopfont = xmlMapper.readValue(innerXml(fontNode), FOPFont.class);
+                fonts.add(fopfont);
+            } catch (JsonProcessingException ex) {
+                System.out.println("Error in reading font information: "+ ex.toString());
+                System.out.println("XML fragment: " + innerXml(fontNode));
+            }
+        }        
+        return fonts;
+    }
+    
+    public List<FOPFont> getUsedFonts ()
+    {
+        List<FOPFont> fonts = fopFonts.stream()
+            .filter(fopFont -> fopFont.isUsing())
+            .collect(Collectors.toList());
+            
+        return fonts;
     }
     
     //extract all .ttf files from resources into fontPath folder
@@ -126,6 +233,7 @@ class fontConfig {
         new File(fontPath).mkdirs();
         
         ArrayList<String> fontstocopy = new ArrayList<>();
+        // check if default font exist in fontPath
         for (String fontfilename: defaultFontList) {
             final Path destPath = Paths.get(fontPath, fontfilename);
             if (!destPath.toFile().exists()) {
@@ -134,6 +242,7 @@ class fontConfig {
             //InputStream fontfilestream = getStreamFromResources("fonts/" + fontfilename);            
             //Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
         }
+        // download Source family fonts
         if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(DEFAULTFONT_PREFIX))) {
             String url = getFontsURL("URL.sourcefonts");
             int remotefilesize = Util.getFileSize(new URL(url));
@@ -323,6 +432,42 @@ class fontConfig {
         return machineFontList;
     }
     
+    private void updateFontsInFOPConfig(Document xmlDocument) {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        String expression = "/fop/renderers/renderer/fonts";
+        try {
+            Node nodeFonts = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+            removeChilds(nodeFonts);
+            
+            for(FOPFont fopFont: fopFonts) {
+                try {
+                    String fopFontString = new XmlMapper().writeValueAsString(fopFont);
+                    Node newNodeFont =  DocumentBuilderFactory
+                        .newInstance()
+                        .newDocumentBuilder()
+                        .parse(new ByteArrayInputStream(fopFontString.getBytes()))
+                        .getDocumentElement();
+                    Document doc = nodeFonts.getOwnerDocument();
+                    newNodeFont = doc.importNode(newNodeFont, true);
+                    nodeFonts.appendChild(newNodeFont);
+                } catch (SAXException | IOException | ParserConfigurationException ex) {
+                    System.out.println("Error in FOP font xml processing: " + ex.toString());
+                }
+            }
+            
+            
+        } catch (XPathExpressionException ex) {
+            
+        }
+    }
+    
+    private void removeChilds(Node node) {
+        while (node.hasChildNodes())
+        {
+            node.removeChild(node.getFirstChild());
+        }
+    }
+    
     private void writeFOPConfigFile(Document xmlDocument) throws IOException
     {
         TransformerFactory tf = TransformerFactory.newInstance();
@@ -352,7 +497,10 @@ class fontConfig {
     }
 
     // get updated config file name
-    public File getUpdatedConfig() {
+    public File getUpdatedConfig() throws Exception {
+        
+        updateConfig();
+        
         return updatedConfig;
     }
 
@@ -425,6 +573,11 @@ class fontConfig {
                 List<String> fontfiles = walk.map(x -> x.toString())
                                 .filter(f -> f.endsWith(".ttf") || f.endsWith(".TTF") || f.endsWith(".ttc") || f.endsWith(".TTC") || f.endsWith(".otf") || f.endsWith(".OTF")).collect(Collectors.toList());
                 
+                // add used fonts
+                for(FOPFont usedFOPFont : getUsedFonts()) {
+                    fontfiles.add(usedFOPFont.getEmbed_url());
+                }
+                
                 for(String fontfile : fontfiles) {
                     try {
                         Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontfile));            
@@ -456,5 +609,27 @@ class fontConfig {
     public ArrayList<String> getMessages() {
         return messages;
     }
-    
+
+    private String innerXml(Node node) {
+       /* DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        LSSerializer lsSerializer = lsImpl.createLSSerializer();
+        lsSerializer.getDomConfig().setParameter("xml-declaration", false);
+        NodeList childNodes = node.getChildNodes();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+           sb.append(lsSerializer.writeToString(childNodes.item(i)));
+        }
+        return sb.toString(); 
+        */
+       ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            Source source = new DOMSource(node);
+            Result target = new StreamResult(out);       
+            transformer.transform(source, target);
+        } catch (TransformerException ex) {}
+        return out.toString();
+        
+    }
 }

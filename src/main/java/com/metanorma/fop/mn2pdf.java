@@ -1,5 +1,6 @@
 package com.metanorma.fop;
 
+import static com.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -88,8 +89,6 @@ public class mn2pdf {
     static final String XSL_INPUT_PARAMS = "XSL parameters";
     static final String INPUT_LOG = "Input: %s (%s)";
     static final String WARNING_NONPDFUA = "WARNING: PDF generated in non PDF/UA-1 mode.";
-    
-    static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
     
     static boolean DEBUG = false;
     
@@ -187,7 +186,7 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(String fontPath, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
+    public void convertmn2pdf(String fontPath, File fFontManifest, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
         
         String imagesxml = sourceXMLDocument.getImageFilePath();
                 
@@ -198,6 +197,7 @@ public class mn2pdf {
             xslparams.setProperty("svg_images", imagesxml);
             xsltConverter.setParams(xslparams);
             
+            // transform XML to XSL-FO (XML .fo file)
             xsltConverter.transform(sourceXMLDocument);
 
             String xmlFO = sourceXMLDocument.getXMLFO();
@@ -216,11 +216,10 @@ public class mn2pdf {
                 //Start XSLT transformation and FO generating
                 //transformer.transform(src, res);
             }
-            
-            fontConfig fontcfg = new fontConfig(sourceXMLDocument.getDocumentFonts(), fontPath);
-            if (DEBUG) {
-                Util.showAvailableAWTFonts();
-            }
+            fontConfig fontcfg = new fontConfig();
+            fontcfg.setFontPath(fontPath);
+            fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
+            fontcfg.setFontManifest(fFontManifest);
             
             // FO processing by FOP
             
@@ -428,8 +427,19 @@ public class mn2pdf {
                 System.out.println("Preparing...");
 
                 //Setup font path, input and output files
-                final String argFontsPath = (cmd.hasOption("font-path") ? cmd.getOptionValue("font-path") : DEFAULT_FONT_PATH);
+                final String argFontsPath = (cmd.hasOption("font-path") ? cmd.getOptionValue("font-path") : DEFAULT_FONT_PATH); //DEFAULT_FONT_PATH
 
+                final String argFontManifest = (cmd.hasOption("font-manifest") ? cmd.getOptionValue("font-manifest") : "");
+                
+                File fFontManifest = null;
+                if (!argFontManifest.isEmpty()) {
+                    fFontManifest = new File(argFontManifest);
+                    if (!fFontManifest.exists()) {
+                        System.out.println(String.format(INPUT_NOT_FOUND, "Font manifest", fFontManifest));
+                        System.exit(ERROR_EXIT_CODE);
+                    }
+                }
+                
                 final String argXML = cmd.getOptionValue("xml-file");
                 File fXML = new File(argXML);
                 if (!fXML.exists()) {
@@ -460,7 +470,12 @@ public class mn2pdf {
                     xslparams = cmd.getOptionProperties("param");                    
                 }
                 
-                System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
+                if (cmd.hasOption("font-manifest") && !cmd.hasOption("font-path")) {
+                    // no output
+                } else {
+                    System.out.println(String.format(INPUT_LOG, FONTS_FOLDER_INPUT, argFontsPath));
+                }
+                
                 System.out.println(String.format(INPUT_LOG, XML_INPUT, fXML));
                 System.out.println(String.format(INPUT_LOG, XSL_INPUT, fXSL));
                 if (!xslparams.isEmpty()) {                    
@@ -478,7 +493,7 @@ public class mn2pdf {
                 
                 try {
                     mn2pdf app = new mn2pdf();
-                    app.convertmn2pdf(argFontsPath, sourceXMLDocument, xsltConverter, fPDF);
+                    app.convertmn2pdf(argFontsPath, fFontManifest, sourceXMLDocument, xsltConverter, fPDF);
                     
                     if (SPLIT_BY_LANGUAGE) {
                         int initial_page_number = 1;
@@ -501,7 +516,7 @@ public class mn2pdf {
                             System.out.println("Generate PDF for language '" + languages.get(i) + "'.");
                             System.out.println("Output: PDF (" + fPDFsplit + ")");
                             
-                            app.convertmn2pdf(argFontsPath, sourceXMLDocument, xsltConverter, fPDFsplit);
+                            app.convertmn2pdf(argFontsPath, fFontManifest, sourceXMLDocument, xsltConverter, fPDFsplit);
                             
                             // initial page number for 'next' document
                             initial_page_number = (app.getPageCount() - coverpages_count) + 1;

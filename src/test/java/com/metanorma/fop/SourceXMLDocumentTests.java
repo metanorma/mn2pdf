@@ -64,8 +64,8 @@ public class SourceXMLDocumentTests {
         ClassLoader classLoader = getClass().getClassLoader();
         String xml = classLoader.getResource("G.191.xml").getFile();
         SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
-        String xsl = classLoader.getResource("itu.recommendation.xsl").getFile();
         
+        String xsl = classLoader.getResource("itu.recommendation.xsl").getFile();
         XSLTconverter xsltConverter = new XSLTconverter(new File(xsl));
         xsltConverter.transform(sourceXMLDocument);
         List<String> fonts = sourceXMLDocument.getDocumentFonts();
