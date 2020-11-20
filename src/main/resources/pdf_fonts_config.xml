@@ -157,16 +157,16 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal">
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" mn_default="true">
 					<font-triplet name="HanSans" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" mn_default="true">
 					<font-triplet name="HanSans" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" mn_default="true">
 					<font-triplet name="HanSans" style="italic" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
+				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold" mn_default="true">
 					<font-triplet name="HanSans" style="normal" weight="bold"/>
 				</font>
 				
@@ -197,60 +197,60 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				
 				<!-- SourceSansPro-Light font -->
-				<font kerning="yes" embed-url="SourceSansPro-Light.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-Light.ttf" mn_default="true">
 						<font-triplet name="SourceSansPro-Light" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro-Light" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro-Light" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-It.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro-Light" style="italic" weight="bold"/>
 				</font>
 				<!-- SourceSansPro font -->
-				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf" mn_default="true">
 						<font-triplet name="SourceSansPro" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceSansPro-Bold.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-Bold.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-It.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-BoldIt.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-BoldIt.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro" style="italic" weight="bold"/>
 				</font>
 				<!-- SourceSerifPro font -->
-				<font kerning="yes" embed-url="SourceSerifPro-Regular.ttf">
+				<font kerning="yes" embed-url="SourceSerifPro-Regular.ttf" mn_default="true">
 						<font-triplet name="SourceSerifPro" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceSerifPro-Bold.ttf">
+				<font kerning="yes" embed-url="SourceSerifPro-Bold.ttf" mn_default="true">
 					<font-triplet name="SourceSerifPro" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-It.ttf">
+				<font kerning="yes" embed-url="SourceSerifPro-It.ttf" mn_default="true">
 					<font-triplet name="SourceSerifPro" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-BoldIt.ttf">
+				<font kerning="yes" embed-url="SourceSerifPro-BoldIt.ttf" mn_default="true">
 					<font-triplet name="SourceSerifPro" style="italic" weight="bold"/>
 				</font>
 				<!-- SourceCodePro font -->
-				<font kerning="yes" embed-url="SourceCodePro-Regular.ttf">
+				<font kerning="yes" embed-url="SourceCodePro-Regular.ttf" mn_default="true">
 						<font-triplet name="SourceCodePro" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceCodePro-Bold.ttf">
+				<font kerning="yes" embed-url="SourceCodePro-Bold.ttf" mn_default="true">
 					<font-triplet name="SourceCodePro" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceCodePro-It.ttf">
+				<font kerning="yes" embed-url="SourceCodePro-It.ttf" mn_default="true">
 					<font-triplet name="SourceCodePro" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceCodePro-BoldIt.ttf">
+				<font kerning="yes" embed-url="SourceCodePro-BoldIt.ttf" mn_default="true">
 					<font-triplet name="SourceCodePro" style="italic" weight="bold"/>
 				</font>
 				
 				<!-- For mathml display -->
-				<font kerning="yes" embed-url="STIX2Math.otf" simulate-style="true">
+				<font kerning="yes" embed-url="STIX2Math.otf" simulate-style="true" mn_default="true">
 					<font-triplet name="STIX Two Math" style="normal" weight="normal"/>
 					<font-triplet name="STIX Two Math" style="normal" weight="700"/>
 					<font-triplet name="STIX Two Math" style="italic" weight="normal"/>

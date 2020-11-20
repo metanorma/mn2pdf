@@ -332,7 +332,8 @@ class fontConfig {
                 fopFont.setEmbed_url(embed_url);
                 
                 //if font is using only (skip unused font processing)
-                if (fopFont.isUsing()) {
+                // skip default fonts
+                if (fopFont.isUsing() && !fopFont.isMn_default()) {
                     
                     File file_embed_url = new File (embed_url);
                     if (!file_embed_url.exists()) { // if font file doesn't exist

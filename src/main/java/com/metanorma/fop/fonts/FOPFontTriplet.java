@@ -46,6 +46,15 @@ public class FOPFontTriplet {
     
     @JsonIgnore
     public String getFontSubstituionByDefault() {
+        
+        // if default fonts (will be download in default font folder)
+        // no replace
+        /*if (name.equals("HanSans") ||
+            name.equals("STIX Two Math") ||
+            name.startsWith("SourceS") ||
+            name.startsWith("SourceCodePro")) {
+            return "";
+        }*/
         String substprefix = getSubstFontPrefix(name);
         String substsuffix = getSubstFontSuffix(name, weight, style);
         String fontFamilySubst = DefaultFonts.DEFAULTFONT_PREFIX + substprefix + DefaultFonts.DEFAULTFONT_SUFFIX + "-" + substsuffix;

@@ -28,7 +28,10 @@ public class FOPFont {
     
     @JacksonXmlProperty(isAttribute=true, localName = "simulate-style")
     String simulate_style;
-            
+    
+    @JacksonXmlProperty(isAttribute=true)
+    boolean mn_default = false;
+    
     @JacksonXmlElementWrapper(useWrapping = false)
     List<FOPFontAlternate> alternate = new ArrayList<>();
     
@@ -88,6 +91,16 @@ public class FOPFont {
         this.simulate_style = simulate_style;
     }
 
+    public boolean isMn_default() {
+        return mn_default;
+    }
+
+    public void setMn_default(boolean mn_default) {
+        this.mn_default = mn_default;
+    }
+
+    
+    
     public List<FOPFontAlternate> getAlternate() {
         return alternate;
     }
