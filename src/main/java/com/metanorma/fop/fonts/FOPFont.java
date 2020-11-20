@@ -39,6 +39,16 @@ public class FOPFont {
     @JsonIgnore
     boolean isUsing = false;
     
+    @JsonIgnore
+    String source = "";
+    
+    @JsonIgnore
+    List<String> messages = new ArrayList<>();
+    
+    @JsonIgnore
+    boolean readyToUse = false;
+    
+    
     public FOPFont () {
         //test
         /*embed_url = "C:/font.ttf";
@@ -104,5 +114,60 @@ public class FOPFont {
         this.isUsing = isUsing;
     }
 
+    // return name of first font-triplet
+    @JsonIgnore
+    public String getName() {
+        if (!font_triplet.isEmpty()) {
+            return font_triplet.get(0).getName();
+        } else {
+            return "";
+        }
+    }
+
+    @JsonIgnore
+    public String getSource() {
+        return source;
+    }
+
+    @JsonIgnore
+    public void setSource(String source) {
+        this.source = source;
+    }
+    
+    
+    
+    @JsonIgnore
+    public boolean contains(String fontName, String fontWeight, String fontStyle) {
+        return font_triplet.stream()
+                .filter(f -> f.getName().equals(fontName))
+                .filter(f -> f.getWeight().equals(fontWeight))
+                .filter(f -> f.getStyle().equals(fontStyle))
+                .toArray().length != 0;        
+    }
+
+    @JsonIgnore
+    public String getMessages() {
+        StringBuilder sb = new StringBuilder();
+        messages.stream()
+                .forEach(m -> sb.append(m).append("\n"));
+        return sb.toString();
+    }
+
+    @JsonIgnore
+    public void setMessage(String message) {
+        messages.add(message);
+    }
+
+    @JsonIgnore
+    public boolean isReadyToUse() {
+        return readyToUse;
+    }
+
+    @JsonIgnore
+    public void setReadyToUse(boolean readyToUse) {
+        this.readyToUse = readyToUse;
+    }
+    
+    
     
 }

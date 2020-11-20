@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -58,7 +59,7 @@ public class Util {
     }
     
     // https://www.baeldung.com/java-compress-and-uncompress
-    public static void unzipFile(Path zipPath, String destPath, ArrayList<String> defaultFontList) {
+    public static void unzipFile(Path zipPath, String destPath, List<String> defaultFontList) {
         try {
             File destDir = new File(destPath);
             byte[] buffer = new byte[1024];

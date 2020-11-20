@@ -186,7 +186,7 @@ public class mn2pdf {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    public void convertmn2pdf(String fontPath, File fFontManifest, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
+    public void convertmn2pdf(fontConfig fontcfg, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
         
         String imagesxml = sourceXMLDocument.getImageFilePath();
                 
@@ -216,10 +216,8 @@ public class mn2pdf {
                 //Start XSLT transformation and FO generating
                 //transformer.transform(src, res);
             }
-            fontConfig fontcfg = new fontConfig();
-            fontcfg.setFontPath(fontPath);
+            
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
-            fontcfg.setFontManifest(fFontManifest);
             
             // FO processing by FOP
             
@@ -254,7 +252,7 @@ public class mn2pdf {
             
             System.out.println("Transforming...");
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
-            FopFactory fopFactory = FopFactory.newInstance(fontcfg.getUpdatedConfig());
+            FopFactory fopFactory = FopFactory.newInstance(fontcfg.getConfig());
 
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
@@ -490,10 +488,14 @@ public class mn2pdf {
                 XSLTconverter xsltConverter = new XSLTconverter(fXSL);
                 xsltConverter.setParams(xslparams);
                 
+                fontConfig fontcfg = new fontConfig();
+                fontcfg.setFontPath(argFontsPath);
+                
+                fontcfg.setFontManifest(fFontManifest);
                 
                 try {
                     mn2pdf app = new mn2pdf();
-                    app.convertmn2pdf(argFontsPath, fFontManifest, sourceXMLDocument, xsltConverter, fPDF);
+                    app.convertmn2pdf(fontcfg, sourceXMLDocument, xsltConverter, fPDF);
                     
                     if (SPLIT_BY_LANGUAGE) {
                         int initial_page_number = 1;
@@ -516,7 +518,7 @@ public class mn2pdf {
                             System.out.println("Generate PDF for language '" + languages.get(i) + "'.");
                             System.out.println("Output: PDF (" + fPDFsplit + ")");
                             
-                            app.convertmn2pdf(argFontsPath, fFontManifest, sourceXMLDocument, xsltConverter, fPDFsplit);
+                            app.convertmn2pdf(fontcfg, sourceXMLDocument, xsltConverter, fPDFsplit);
                             
                             // initial page number for 'next' document
                             initial_page_number = (app.getPageCount() - coverpages_count) + 1;

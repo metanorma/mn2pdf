@@ -2,9 +2,12 @@ package com.metanorma.fop;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.cos.COSName;
 
@@ -126,15 +129,17 @@ public class mn2pdfTests {
         String xsl = classLoader.getResource("iec.international-standard.xsl").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "iec-rice.pdf");
 
-        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--param", "additionalXMLs=iec-rice.fr.xml", "--pdf-file", pdf.toAbsolutePath().toString()};
+        String additionalXMLs = "iec-rice.fr.xml";
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--param", "additionalXMLs=" + additionalXMLs, "--pdf-file", pdf.toAbsolutePath().toString()};
         mn2pdf.main(args);        
-        assertTrue(systemErrRule.getLog().contains("Can not load requested doc"));
+        assertTrue(systemErrRule.getLog().contains(additionalXMLs + " (")); //"Can not load requested doc"
     }
     
     @Test
     public void successFontReplacement() throws ParseException {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        
         String xml = classLoader.getResource("G.191.xml").getFile();
         String xsl = classLoader.getResource("itu.recommendation.testfont.xsl").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "itu.pdf");
@@ -142,8 +147,13 @@ public class mn2pdfTests {
         String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
         mn2pdf.main(args);
         
+        String embed_url = Paths.get(fontpath, "TestFont.ttf").toString();
+        /*try 
+            embed_url = new File(embed_url).toURI().toURL().toString();
+        } catch (MalformedURLException ex) {}*/
+        String newPath = Paths.get(fontpath, "SourceSansPro-Regular.ttf").toString();
         assertTrue(systemOutRule.getLog().contains(
-            String.format(fontConfig.WARNING_FONT, fontpath + File.separator + "TestFont.ttf", "normal", "normal", fontpath + File.separator + "SourceSansPro-Regular.ttf")));
+            String.format(fontConfig.WARNING_FONT, embed_url, "normal", "normal", newPath)));
         assertTrue(Files.exists(pdf));
     }
     
