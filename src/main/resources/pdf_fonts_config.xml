@@ -157,100 +157,100 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal">
-					<font-triplet name="HanSans" style="normal" weight="normal"/>
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" mn_default="true">
+					<font-triplet name="Source Han Sans" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
-					<font-triplet name="HanSans" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" mn_default="true">
+					<font-triplet name="Source Han Sans" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true">
-					<font-triplet name="HanSans" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" mn_default="true">
+					<font-triplet name="Source Han Sans" style="italic" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
-					<font-triplet name="HanSans" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold" mn_default="true">
+					<font-triplet name="Source Han Sans" style="normal" weight="bold"/>
 				</font>
 				
 				<!-- AzoSans font -->
 				<font kerning="yes" embed-url="AzoSans-Regular.ttf">
-					<font-triplet name="AzoSans" style="normal" weight="normal"/>
+					<font-triplet name="Azo Sans" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-Bold.ttf">
-					<font-triplet name="AzoSans" style="normal" weight="bold"/>
+					<font-triplet name="Azo Sans" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-Italic.ttf">
-					<font-triplet name="AzoSans" style="italic" weight="normal"/>
+					<font-triplet name="Azo Sans" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-BoldItalic.ttf">
-					<font-triplet name="AzoSans" style="italic" weight="bold"/>
+					<font-triplet name="Azo Sans" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-Light.ttf">
-					<font-triplet name="AzoSans-Light" style="normal" weight="normal"/>
+					<font-triplet name="Azo Sans Lt" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-Light.ttf" simulate-style="true">
-					<font-triplet name="AzoSans-Light" style="normal" weight="bold"/>
+					<font-triplet name="Azo Sans Lt" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-LightItalic.ttf">
-					<font-triplet name="AzoSans-Light" style="italic" weight="normal"/>
+					<font-triplet name="Azo Sans Lt" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="AzoSans-LightItalic.ttf" simulate-style="true">
-					<font-triplet name="AzoSans-Light" style="italic" weight="bold"/>
+					<font-triplet name="Azo Sans Lt" style="italic" weight="bold"/>
 				</font>
 				
 				<!-- SourceSansPro-Light font -->
-				<font kerning="yes" embed-url="SourceSansPro-Light.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-Light.ttf" mn_default="true">
 						<font-triplet name="SourceSansPro-Light" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro-Light" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro-Light" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
+				<font kerning="yes" embed-url="SourceSansPro-It.ttf" mn_default="true">
 					<font-triplet name="SourceSansPro-Light" style="italic" weight="bold"/>
 				</font>
 				<!-- SourceSansPro font -->
-				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf">
-						<font-triplet name="SourceSansPro" style="normal" weight="normal"/>
+				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf" mn_default="true">
+						<font-triplet name="Source Sans Pro" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceSansPro-Bold.ttf">
-					<font-triplet name="SourceSansPro" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="SourceSansPro-Bold.ttf" mn_default="true">
+					<font-triplet name="Source Sans Pro" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-It.ttf">
-					<font-triplet name="SourceSansPro" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="SourceSansPro-It.ttf" mn_default="true">
+					<font-triplet name="Source Sans Pro" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-BoldIt.ttf">
-					<font-triplet name="SourceSansPro" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="SourceSansPro-BoldIt.ttf" mn_default="true">
+					<font-triplet name="Source Sans Pro" style="italic" weight="bold"/>
 				</font>
 				<!-- SourceSerifPro font -->
-				<font kerning="yes" embed-url="SourceSerifPro-Regular.ttf">
-						<font-triplet name="SourceSerifPro" style="normal" weight="normal"/>
+				<font kerning="yes" embed-url="SourceSerifPro-Regular.ttf" mn_default="true">
+						<font-triplet name="Source Serif Pro" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceSerifPro-Bold.ttf">
-					<font-triplet name="SourceSerifPro" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="SourceSerifPro-Bold.ttf" mn_default="true">
+					<font-triplet name="Source Serif Pro" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-It.ttf">
-					<font-triplet name="SourceSerifPro" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="SourceSerifPro-It.ttf" mn_default="true">
+					<font-triplet name="Source Serif Pro" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSerifPro-BoldIt.ttf">
-					<font-triplet name="SourceSerifPro" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="SourceSerifPro-BoldIt.ttf" mn_default="true">
+					<font-triplet name="Source Serif Pro" style="italic" weight="bold"/>
 				</font>
 				<!-- SourceCodePro font -->
-				<font kerning="yes" embed-url="SourceCodePro-Regular.ttf">
-						<font-triplet name="SourceCodePro" style="normal" weight="normal"/>
+				<font kerning="yes" embed-url="SourceCodePro-Regular.ttf" mn_default="true">
+						<font-triplet name="Source Code Pro" style="normal" weight="normal"/>
 					</font>
-				<font kerning="yes" embed-url="SourceCodePro-Bold.ttf">
-					<font-triplet name="SourceCodePro" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="SourceCodePro-Bold.ttf" mn_default="true">
+					<font-triplet name="Source Code Pro" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="SourceCodePro-It.ttf">
-					<font-triplet name="SourceCodePro" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="SourceCodePro-It.ttf" mn_default="true">
+					<font-triplet name="Source Code Pro" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="SourceCodePro-BoldIt.ttf">
-					<font-triplet name="SourceCodePro" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="SourceCodePro-BoldIt.ttf" mn_default="true">
+					<font-triplet name="Source Code Pro" style="italic" weight="bold"/>
 				</font>
 				
 				<!-- For mathml display -->
-				<font kerning="yes" embed-url="STIX2Math.otf" simulate-style="true">
+				<font kerning="yes" embed-url="STIX2Math.otf" simulate-style="true" mn_default="true">
 					<font-triplet name="STIX Two Math" style="normal" weight="normal"/>
 					<font-triplet name="STIX Two Math" style="normal" weight="700"/>
 					<font-triplet name="STIX Two Math" style="italic" weight="normal"/>
@@ -330,28 +330,28 @@ Relative config URLs are resolved relative to location of this file.
 					<alternate embed-url="cour.ttf"/>
 					<alternate embed-url="Courier New.ttf"/>
 					<alternate embed-url="SourceCodePro-Regular.ttf"/>
-					<font-triplet name="SFMono-Regular" style="normal" weight="normal"/>
+					<font-triplet name="SF Mono" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="SFMono.ttf" simulate-style="true">
 					<alternate embed-url="consolab.ttf"/>
 					<alternate embed-url="courbd.ttf"/>
 					<alternate embed-url="Courier New Bold.ttf"/>
 					<alternate embed-url="SourceCodePro-Bold.ttf"/>
-					<font-triplet name="SFMono-Regular" style="normal" weight="bold"/>
+					<font-triplet name="SF Mono" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="SFMono.ttf" simulate-style="true">
 					<alternate embed-url="consolai.ttf"/>
 					<alternate embed-url="couri.ttf"/>
 					<alternate embed-url="Courier New Italic.ttf"/>
 					<alternate embed-url="SourceCodePro-It.ttf"/>
-					<font-triplet name="SFMono-Regular" style="italic" weight="normal"/>
+					<font-triplet name="SF Mono" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="SFMono.ttf" simulate-style="true">
 					<alternate embed-url="consolaz.ttf"/>
 					<alternate embed-url="courbi.ttf"/>
 					<alternate embed-url="Courier New Bold Italic.ttf"/>
 					<alternate embed-url="SourceCodePro-BoldIt.ttf"/>
-					<font-triplet name="SFMono-Regular" style="italic" weight="bold"/>
+					<font-triplet name="SF Mono" style="italic" weight="bold"/>
 				</font>
 				
 				<!-- Lato -->
@@ -367,88 +367,80 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="Lato-BoldItalic.ttf">
 					<font-triplet name="Lato" style="italic" weight="bold"/>
 				</font>
-				
-				<!-- Lato Light -->
 				<font kerning="yes" embed-url="Lato-Light.ttf">
-					<font-triplet name="Lato Light" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="Lato-Regular.ttf">
-					<font-triplet name="Lato Light" style="normal" weight="bold"/>
+					<font-triplet name="Lato" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="Lato-LightItalic.ttf">
-					<font-triplet name="Lato Light" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="Lato-Italic.ttf">
-					<font-triplet name="Lato Light" style="italic" weight="bold"/>
+					<font-triplet name="Lato" style="italic" weight="300"/>
 				</font>
 				
 				<!-- FiraCode -->
 				<font kerning="yes" embed-url="FiraCode-Regular.ttf">
-					<font-triplet name="FiraCode" style="normal" weight="normal"/>
+					<font-triplet name="Fira Code" style="normal" weight="normal"/>
 				</font>
 				
-				<!-- WorkSans -->
+				<!-- Work Sans -->
 				<!-- Thin -->
 				<font kerning="yes" embed-url="WorkSans-Thin.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="100"/>
+					<font-triplet name="Work Sans" style="normal" weight="100"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-ThinItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="100"/>
+					<font-triplet name="Work Sans" style="italic" weight="100"/>
 				</font>
 				<!-- Extra Light -->
 				<font kerning="yes" embed-url="WorkSans-ExtraLight.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="200"/>
+					<font-triplet name="Work Sans" style="normal" weight="200"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-ExtraLightItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="200"/>
+					<font-triplet name="Work Sans" style="italic" weight="200"/>
 				</font>				
 				<!-- Light -->
 				<font kerning="yes" embed-url="WorkSans-Light.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="300"/>
+					<font-triplet name="Work Sans" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-LightItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="300"/>
+					<font-triplet name="Work Sans" style="italic" weight="300"/>
 				</font>
 				<!-- Regular -->
 				<font kerning="yes" embed-url="WorkSans-Regular.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="normal"/>
+					<font-triplet name="Work Sans" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-Italic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="normal"/>
+					<font-triplet name="Work Sans" style="italic" weight="normal"/>
 				</font>
 				<!-- Medium -->
 				<font kerning="yes" embed-url="WorkSans-Medium.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="500"/>
+					<font-triplet name="Work Sans" style="normal" weight="500"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-MediumItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="500"/>
+					<font-triplet name="Work Sans" style="italic" weight="500"/>
 				</font>
 				<!-- Semibold -->
 				<font kerning="yes" embed-url="WorkSans-SemiBold.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="600"/>
+					<font-triplet name="Work Sans" style="normal" weight="600"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-SemiBoldItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="600"/>
+					<font-triplet name="Work Sans" style="italic" weight="600"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-Bold.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="bold"/>
+					<font-triplet name="Work Sans" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-BoldItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="bold"/>
+					<font-triplet name="Work Sans" style="italic" weight="bold"/>
 				</font>
 				<!-- ExtraBold -->
 				<font kerning="yes" embed-url="WorkSans-ExtraBold.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="800"/>
+					<font-triplet name="Work Sans" style="normal" weight="800"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-ExtraBoldItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="800"/>
+					<font-triplet name="Work Sans" style="italic" weight="800"/>
 				</font>
 				<!-- Black -->
 				<font kerning="yes" embed-url="WorkSans-Black.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="900"/>
+					<font-triplet name="Work Sans" style="normal" weight="900"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-BlackItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="900"/>
+					<font-triplet name="Work Sans" style="italic" weight="900"/>
 				</font>
 				
 				<font kerning="yes" embed-url="TestFont.ttf" simulate-style="true">

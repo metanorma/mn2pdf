@@ -1,5 +1,6 @@
 package com.metanorma.fop;
 
+import static com.metanorma.fop.mn2pdf.DEBUG;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,13 +12,20 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
+import java.security.CodeSource;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.xpath.XPathFactory;
 
 /**
  *
@@ -51,7 +59,7 @@ public class Util {
     }
     
     // https://www.baeldung.com/java-compress-and-uncompress
-    public static void unzipFile(Path zipPath, String destPath, ArrayList<String> defaultFontList) {
+    public static void unzipFile(Path zipPath, String destPath, List<String> defaultFontList) {
         try {
             File destDir = new File(destPath);
             byte[] buffer = new byte[1024];
@@ -147,4 +155,24 @@ public class Util {
         }
         System.out.println("====================");
     }
+    
+    
+    public static void OutputJaxpImplementationInfo() {
+        if (DEBUG) {
+            System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
+            System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
+            System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
+            System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
+        }
+    }
+
+    private static String getJaxpImplementationInfo(String componentName, Class componentClass) {
+        CodeSource source = componentClass.getProtectionDomain().getCodeSource();
+        return MessageFormat.format(
+                "{0} implementation: {1} loaded from: {2}",
+                componentName,
+                componentClass.getName(),
+                source == null ? "Java Runtime" : source.getLocation());
+    }
+    
 }

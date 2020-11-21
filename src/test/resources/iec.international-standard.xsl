@@ -149,7 +149,7 @@
 	<xsl:template match="/">
 		<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
 		<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
-		<fo:root font-family="Arial, Times New Roman, STIX2Math, HanSans" font-size="10pt" xml:lang="{$lang}">
+		<fo:root font-family="Arial, Times New Roman, STIX Two Math, HanSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover pages -->
 				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -4414,7 +4414,7 @@
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring($str, 1, 1)))"/>
 		<xsl:value-of select="substring($str, 2)"/>		
 	</xsl:template><xsl:template match="mathml:math">
-		<fo:inline font-family="STIX2Math">
+		<fo:inline font-family="STIX Two Math">
 			<fo:instream-foreign-object fox:alt-text="Math"> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
