@@ -158,16 +158,16 @@ Relative config URLs are resolved relative to location of this file.
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
 				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" mn_default="true">
-					<font-triplet name="HanSans" style="normal" weight="normal"/>
+					<font-triplet name="Source Han Sans" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" mn_default="true">
-					<font-triplet name="HanSans" style="italic" weight="normal"/>
+					<font-triplet name="Source Han Sans" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" mn_default="true">
-					<font-triplet name="HanSans" style="italic" weight="bold"/>
+					<font-triplet name="Source Han Sans" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold" mn_default="true">
-					<font-triplet name="HanSans" style="normal" weight="bold"/>
+					<font-triplet name="Source Han Sans" style="normal" weight="bold"/>
 				</font>
 				
 				<!-- AzoSans font -->
