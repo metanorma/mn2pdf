@@ -2,12 +2,9 @@ package com.metanorma.fop;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.cos.COSName;
 

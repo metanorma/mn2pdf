@@ -387,68 +387,68 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="FiraCode" style="normal" weight="normal"/>
 				</font>
 				
-				<!-- WorkSans -->
+				<!-- Work Sans -->
 				<!-- Thin -->
 				<font kerning="yes" embed-url="WorkSans-Thin.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="100"/>
+					<font-triplet name="Work Sans" style="normal" weight="100"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-ThinItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="100"/>
+					<font-triplet name="Work Sans" style="italic" weight="100"/>
 				</font>
 				<!-- Extra Light -->
 				<font kerning="yes" embed-url="WorkSans-ExtraLight.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="200"/>
+					<font-triplet name="Work Sans" style="normal" weight="200"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-ExtraLightItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="200"/>
+					<font-triplet name="Work Sans" style="italic" weight="200"/>
 				</font>				
 				<!-- Light -->
 				<font kerning="yes" embed-url="WorkSans-Light.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="300"/>
+					<font-triplet name="Work Sans" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-LightItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="300"/>
+					<font-triplet name="Work Sans" style="italic" weight="300"/>
 				</font>
 				<!-- Regular -->
 				<font kerning="yes" embed-url="WorkSans-Regular.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="normal"/>
+					<font-triplet name="Work Sans" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-Italic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="normal"/>
+					<font-triplet name="Work Sans" style="italic" weight="normal"/>
 				</font>
 				<!-- Medium -->
 				<font kerning="yes" embed-url="WorkSans-Medium.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="500"/>
+					<font-triplet name="Work Sans" style="normal" weight="500"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-MediumItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="500"/>
+					<font-triplet name="Work Sans" style="italic" weight="500"/>
 				</font>
 				<!-- Semibold -->
 				<font kerning="yes" embed-url="WorkSans-SemiBold.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="600"/>
+					<font-triplet name="Work Sans" style="normal" weight="600"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-SemiBoldItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="600"/>
+					<font-triplet name="Work Sans" style="italic" weight="600"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-Bold.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="bold"/>
+					<font-triplet name="Work Sans" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-BoldItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="bold"/>
+					<font-triplet name="Work Sans" style="italic" weight="bold"/>
 				</font>
 				<!-- ExtraBold -->
 				<font kerning="yes" embed-url="WorkSans-ExtraBold.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="800"/>
+					<font-triplet name="Work Sans" style="normal" weight="800"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-ExtraBoldItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="800"/>
+					<font-triplet name="Work Sans" style="italic" weight="800"/>
 				</font>
 				<!-- Black -->
 				<font kerning="yes" embed-url="WorkSans-Black.ttf">
-					<font-triplet name="WorkSans" style="normal" weight="900"/>
+					<font-triplet name="Work Sans" style="normal" weight="900"/>
 				</font>
 				<font kerning="yes" embed-url="WorkSans-BlackItalic.ttf">
-					<font-triplet name="WorkSans" style="italic" weight="900"/>
+					<font-triplet name="Work Sans" style="italic" weight="900"/>
 				</font>
 				
 				<font kerning="yes" embed-url="TestFont.ttf" simulate-style="true">

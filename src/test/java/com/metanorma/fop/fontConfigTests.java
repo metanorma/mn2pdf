@@ -3,13 +3,9 @@ package com.metanorma.fop;
 import com.metanorma.fop.fonts.FOPFont;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.apache.commons.cli.ParseException;
 
 import org.junit.Rule;
@@ -47,13 +43,36 @@ public class fontConfigTests {
         XSLTconverter xsltConverter = new XSLTconverter(new File(xsl));
         xsltConverter.transform(sourceXMLDocument);
         
-        fontConfig fontcfg = new fontConfig();        
+        fontConfig fontcfg = new fontConfig();
         fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
         List<FOPFont> fonts = fontcfg.getUsedFonts();
         
         assertTrue(!fonts.isEmpty());
         assertTrue(fonts.size() == 13);
     }
-    
+
+    @Test
+    public void TestGetFontStyles() {
+        fontConfig fontcfg = new fontConfig();
+        Map<String,String> tc1 = fontcfg.getFontStyles("Regular");
+        assertTrue(tc1.get("weight").equals("normal"));
+        assertTrue(tc1.get("style").equals("normal"));
+        
+        Map<String,String> tc2 = fontcfg.getFontStyles("Bold");
+        assertTrue(tc2.get("weight").equals("bold"));
+        assertTrue(tc2.get("style").equals("normal"));
+        
+        Map<String,String> tc3 = fontcfg.getFontStyles("Bold Italic");
+        assertTrue(tc3.get("weight").equals("bold"));
+        assertTrue(tc3.get("style").equals("italic"));
+        
+        Map<String,String> tc4 = fontcfg.getFontStyles("Thin");
+        assertTrue(tc4.get("weight").equals("100"));
+        assertTrue(tc4.get("style").equals("normal"));
+        
+        Map<String,String> tc5 = fontcfg.getFontStyles("SemiBold Italic");
+        assertTrue(tc5.get("weight").equals("600"));
+        assertTrue(tc5.get("style").equals("italic"));   
+    }
     
 }

@@ -33,6 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -133,29 +134,11 @@ class fontConfig {
                     
                     for (Map.Entry<String, Object> fontEntry : fontEntries.entrySet()) {
                     
-                        String fontWeight_ = "normal";
-                        String fontStyle_ = "normal";
+                        // Regular, Bold Italic, etc.
+                        Map<String,String> fontStyles = getFontStyles(fontEntry.getKey());
                         
-                        String fontStyles = fontEntry.getKey();
-                        switch (fontStyles)  {
-                            case ("Regular"):
-                                break;
-                            case ("Bold"):
-                                fontWeight_ = "bold";
-                                break;
-                            case ("Italic"):
-                                fontStyle_ = "italic";
-                                break;
-                            case ("Bold Italic"):
-                                fontWeight_ = "bold";
-                                fontStyle_ = "italic";
-                                break;
-                            default:
-                                break;
-                        }
-
-                        final String fontWeight = fontWeight_;
-                        final String fontStyle = fontStyle_;
+                        final String fontWeight = fontStyles.get("weight");
+                        final String fontStyle = fontStyles.get("style");
 
                         for(String fontPath : (List<String>)fontEntry.getValue()) {
 
@@ -206,6 +189,64 @@ class fontConfig {
                 System.out.println("ERROR: Error in processing font manifest file: " + ex.toString());
             }
         }
+    }
+    
+    public Map<String,String> getFontStyles(String style) {
+        Map<String,String> fontstyle = new HashMap<>();
+        
+        String fontWeight = "normal"; // default value, Regular
+        String fontStyle = "normal"; // default value, Regular
+        
+        String fontStyle_weight = style.toLowerCase();
+        String fontStyle_style = style.toLowerCase();
+        
+        if (style.contains(" ")) {
+            String[] fontStyleParts = style.toLowerCase().split(" ");
+            fontStyle_weight = fontStyleParts[0];
+            fontStyle_style = fontStyleParts[1];
+        }
+        
+        switch (fontStyle_weight)  {
+            case ("black"):
+                fontWeight = "900";
+                break;
+            case ("extrabold"):
+                fontWeight = "800";
+                break;
+            case ("bold"):
+                fontWeight = "bold";
+                break;
+            case ("semibold"):
+                fontWeight = "600";
+                break;
+            case ("medium"):
+                fontWeight = "500";
+                break;
+            case ("light"):
+                fontWeight = "300";
+                break;
+            case ("extralight"):
+                fontWeight = "200";
+                break;
+            case ("thin"):
+                fontWeight = "100";
+                break;
+            default: // regular
+                break;
+        }
+        
+        switch (fontStyle_style) {
+            case ("italic"):
+                   fontStyle = "italic";
+                   break;
+            default: // regular
+                break;
+        }
+        
+        fontstyle.put("weight", fontWeight);
+        fontstyle.put("style", fontStyle);
+        
+        return fontstyle;
     }
     
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
