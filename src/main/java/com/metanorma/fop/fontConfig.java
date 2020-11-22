@@ -150,6 +150,7 @@ class fontConfig {
                                     .collect(Collectors.toList());
 
                                 if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
+                                    System.out.println("Create a new font: " + fontName + " " + fontWeight + " " + fontStyle);
                                     FOPFontTriplet fopFontTriplet = new FOPFontTriplet();
                                     fopFontTriplet.setName(fontName);
                                     fopFontTriplet.setWeight(fontWeight);
@@ -162,8 +163,10 @@ class fontConfig {
                                     }
                                     newFOPFont.setReadyToUse(true);
                                     newFOPFont.setSource("manifest");
+                                    fopFonts.add(newFOPFont);
                                     
                                 } else { //if there is font in array
+                                    System.out.println("Update font: " + fontName + " to " + fontPath_);
                                     fopFontsByNameWeightStyle.stream()
                                             .forEach(f -> {
                                                 f.setEmbed_url(fontPath_);
@@ -178,7 +181,7 @@ class fontConfig {
                                 }
 
                             } else {
-                                System.out.println("WARNING: font path '" + fontPath + "' in the manifest file doesn't exist!");
+                                System.out.println("WARNING: font path '" + fontPath + "' from the manifest file doesn't exist!");
                             }
                         }
                     }
@@ -550,6 +553,7 @@ class fontConfig {
             {
                 bw.write(xmlString);
             }
+            System.out.println(xmlString);
         } 
         catch (TransformerException e) 
         {
