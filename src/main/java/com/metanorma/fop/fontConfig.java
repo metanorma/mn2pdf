@@ -151,6 +151,7 @@ class fontConfig {
                             if (new File(fontPath_).exists()) {
 
                                 List<FOPFont> fopFontsByNameWeightStyle = fopFonts.stream()
+                                    .filter(fopFont -> !fopFont.isReadyToUse())
                                     .filter(fopFont -> fopFont.contains(fontName, fontWeight, fontStyle))                            
                                     .collect(Collectors.toList());
 
@@ -186,17 +187,20 @@ class fontConfig {
                                                 f.setReadyToUse(true);
                                                 f.setSource("manifest");
                                             });
-
+                                    
+                                    // change sub-font, in case if file names in embed-url and in manifest file are different                                    
                                     if (fontPath_.toLowerCase().endsWith(".ttc")) {
                                         fopFontsByNameWeightStyle.stream()
+                                            .filter(f -> !fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()))
                                             .forEach(f -> f.setSub_font(fontName));
                                     }
                                     
                                     //List<FOPFont> fopFontsWithSimulateStyleByName
-                                    // set mebed-url path for fonts with simulate-style="true"
+                                    // set mebed-url path for fonts with simulate-style="true" and similar font filename
                                     fopFonts.stream()
                                         .filter(f -> !f.isReadyToUse())
                                         .filter(f -> f.getSimulate_style() != null && f.getSimulate_style().equals("true"))
+                                        .filter(f -> fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()))
                                         .filter(f -> f.contains(fontName))
                                         .forEach(f -> {
                                             f.setEmbed_url(fontPath_);
