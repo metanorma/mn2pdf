@@ -108,6 +108,11 @@ class fontConfig {
     
     public void setFontPath(String fontPath) {
         this.fontPath = fixFontPath(fontPath);
+        try {
+            new File(this.fontPath).mkdirs();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
     }
     
     public void setFontManifest(File fFontManifest) {
@@ -150,7 +155,9 @@ class fontConfig {
                                     .collect(Collectors.toList());
 
                                 if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
-                                    System.out.println("Create a new font: " + fontName + " " + fontWeight + " " + fontStyle);
+                                    if (DEBUG) {
+                                        System.out.println("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")");
+                                    }
                                     FOPFontTriplet fopFontTriplet = new FOPFontTriplet();
                                     fopFontTriplet.setName(fontName);
                                     fopFontTriplet.setWeight(fontWeight);
@@ -170,7 +177,9 @@ class fontConfig {
                                     fopFonts.add(newFOPFont);
                                     
                                 } else { //if there is font in array
-                                    System.out.println("Update font: " + fontName + " to " + fontPath_);
+                                    if (DEBUG) {
+                                        System.out.println("Update font entry: " + fontName + " to " + fontPath_);
+                                    }
                                     fopFontsByNameWeightStyle.stream()
                                             .forEach(f -> {
                                                 f.setEmbed_url(fontPath_);
@@ -514,6 +523,10 @@ class fontConfig {
                 
                 try {
                     String fopFontString = new XmlMapper().writeValueAsString(fopFont);
+                    if (DEBUG) {
+                        System.out.println("DEBUG: FOP config font entry:");
+                        System.out.println(fopFontString);
+                    }
                     Node newNodeFont =  DocumentBuilderFactory
                         .newInstance()
                         .newDocumentBuilder()
@@ -569,7 +582,6 @@ class fontConfig {
             {
                 bw.write(xmlString);
             }
-            System.out.println(xmlString);
         } 
         catch (TransformerException e) 
         {
