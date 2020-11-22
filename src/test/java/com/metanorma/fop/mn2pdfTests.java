@@ -150,7 +150,7 @@ public class mn2pdfTests {
         } catch (MalformedURLException ex) {}*/
         String newPath = Paths.get(fontpath, "SourceSansPro-Regular.ttf").toString();
         assertTrue(systemOutRule.getLog().contains(
-            String.format(fontConfig.WARNING_FONT, embed_url, "normal", "normal", newPath)));
+            String.format(fontConfig.WARNING_FONT, embed_url, "TestFont", "normal", "normal", newPath)));
         assertTrue(Files.exists(pdf));
     }
     

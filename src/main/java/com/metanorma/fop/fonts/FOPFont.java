@@ -147,7 +147,12 @@ public class FOPFont {
         this.source = source;
     }
     
-    
+    @JsonIgnore
+    public boolean contains(String fontName) {
+        return font_triplet.stream()
+                .filter(f -> f.getName().equals(fontName))                
+                .toArray().length != 0;        
+    }
     
     @JsonIgnore
     public boolean contains(String fontName, String fontWeight, String fontStyle) {

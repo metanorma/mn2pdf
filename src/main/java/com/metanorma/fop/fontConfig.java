@@ -64,7 +64,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 class fontConfig {
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
-    static final String WARNING_FONT = "WARNING: Font file '%s' (font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
+    static final String WARNING_FONT = "WARNING: Font file '%s' (font name '%s', font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     
@@ -155,7 +155,9 @@ class fontConfig {
                                     fopFontTriplet.setName(fontName);
                                     fopFontTriplet.setWeight(fontWeight);
                                     fopFontTriplet.setStyle(fontStyle);
-
+                                    List<FOPFontTriplet> fopFontTriplets = new ArrayList<>();
+                                    fopFontTriplets.add(fopFontTriplet);
+                                    
                                     FOPFont newFOPFont = new FOPFont();
                                     newFOPFont.setEmbed_url(fontPath_);
                                     if (fontPath_.toLowerCase().endsWith(".ttc")) {
@@ -163,6 +165,8 @@ class fontConfig {
                                     }
                                     newFOPFont.setReadyToUse(true);
                                     newFOPFont.setSource("manifest");
+                                    newFOPFont.setFont_triplet(fopFontTriplets);
+                                    
                                     fopFonts.add(newFOPFont);
                                     
                                 } else { //if there is font in array
@@ -178,6 +182,18 @@ class fontConfig {
                                         fopFontsByNameWeightStyle.stream()
                                             .forEach(f -> f.setSub_font(fontName));
                                     }
+                                    
+                                    //List<FOPFont> fopFontsWithSimulateStyleByName
+                                    // set mebed-url path for fonts with simulate-style="true"
+                                    fopFonts.stream()
+                                        .filter(f -> !f.isReadyToUse())
+                                        .filter(f -> f.getSimulate_style() != null && f.getSimulate_style().equals("true"))
+                                        .filter(f -> f.contains(fontName))
+                                        .forEach(f -> {
+                                            f.setEmbed_url(fontPath_);
+                                            f.setReadyToUse(true);
+                                        });
+                                    
                                 }
 
                             } else {
@@ -425,7 +441,7 @@ class fontConfig {
                                 
                                 //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
                                 //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
 
                                 /*try{
                                     font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
