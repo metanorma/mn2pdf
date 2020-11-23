@@ -54,7 +54,8 @@ public class DefaultFonts {
     //download Source family fonts and STIX2Math into fontPath
     public void downloadDefaultFonts(String fontDestinationPath) throws IOException, Exception {
 
-        fontDestinationPath = fontDestinationPath.replace("~", System.getProperty("user.home"));
+        //fontDestinationPath = fontDestinationPath.replace("~", System.getProperty("user.home"));
+        fontDestinationPath = Util.fixFontPath(fontDestinationPath);
         new File(fontDestinationPath).mkdirs();
         
         ArrayList<String> fontstocopy = new ArrayList<>();

@@ -175,4 +175,12 @@ public class Util {
                 source == null ? "Java Runtime" : source.getLocation());
     }
     
+    public static String fixFontPath(String fontPath) {
+        //return fontPath.replace("~", System.getProperty("user.home"));
+        if (fontPath.startsWith("~")) {
+            return System.getProperty("user.home") + fontPath.substring(1);
+        }
+        return fontPath;
+    }
+    
 }

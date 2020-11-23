@@ -7,6 +7,7 @@ import com.metanorma.fop.fonts.FOPFont;
 import com.metanorma.fop.fonts.FOPFontAlternate;
 import com.metanorma.fop.fonts.FOPFontTriplet;
 import static com.metanorma.fop.mn2pdf.DEBUG;
+import static com.metanorma.fop.mn2pdf.ERROR_EXIT_CODE;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -107,7 +108,7 @@ class fontConfig {
     }
     
     public void setFontPath(String fontPath) {
-        this.fontPath = fixFontPath(fontPath);
+        this.fontPath = Util.fixFontPath(fontPath);
         try {
             new File(this.fontPath).mkdirs();
         } catch (Exception ex) {
@@ -117,7 +118,7 @@ class fontConfig {
     
     public void setFontManifest(File fFontManifest) {
         this.fFontManifest = fFontManifest;
-        /* Example:
+        /* Example expected format:
         Cambria:
             Regular:
             - "/Users/user/.fontist/fonts/CAMBRIA.TTC"
@@ -147,7 +148,7 @@ class fontConfig {
 
                         for(String fontPath : (List<String>)fontEntry.getValue()) {
 
-                            String fontPath_ = fixFontPath(fontPath);
+                            String fontPath_ = Util.fixFontPath(fontPath);
                             if (new File(fontPath_).exists()) {
 
                                 List<FOPFont> fopFontsByNameWeightStyle = fopFonts.stream()
@@ -206,9 +207,7 @@ class fontConfig {
                                             f.setEmbed_url(fontPath_);
                                             f.setReadyToUse(true);
                                         });
-                                    
                                 }
-
                             } else {
                                 System.out.println("WARNING: font path '" + fontPath + "' from the manifest file doesn't exist!");
                             }
@@ -216,9 +215,22 @@ class fontConfig {
                     }
                 }
             } catch (FileNotFoundException ex) {
-                System.out.println("ERROR" + ex.toString()); // checking in main
+                // make no sense, checking in main method
             } catch (Exception ex) {
                 System.out.println("ERROR: Error in processing font manifest file: " + ex.toString());
+                System.out.println("Expected format:");
+                System.out.println("Cambria:");
+                System.out.println("  Regular:");
+                System.out.println("  - \"~/.fontist/fonts/CAMBRIA.TTC\"");
+                System.out.println("  Bold:");
+                System.out.println("  - \"~/.fontist/fonts/CAMBRIAB.TTF\"");
+                System.out.println("  Cambria Math:");
+                System.out.println("    Regular:");
+                System.out.println("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
+                System.out.println("STIX Two Math:");
+                System.out.println("  Regular:");
+                System.out.println("  - \"~/.fontist/fonts/STIX2Math.otf\"");
+                System.exit(ERROR_EXIT_CODE);
             }
         }
     }
@@ -626,9 +638,6 @@ class fontConfig {
                 getUsedFonts().stream()
                         .filter(f -> !f.getSource().equals("system"))
                         .forEach(f -> fontfiles.add(f.getEmbed_url()));
-                /*for(FOPFont usedFOPFont : getUsedFonts()) {
-                    fontfiles.add(usedFOPFont.getEmbed_url());
-                }*/
                 
                 for(String fontfile : fontfiles) {
                     try {
@@ -697,7 +706,4 @@ class fontConfig {
         return stream;
     }
     
-    private String fixFontPath(String fontPath) {
-        return fontPath.replace("~", System.getProperty("user.home"));
-    }
 }

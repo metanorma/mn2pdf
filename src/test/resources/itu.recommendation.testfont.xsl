@@ -60,7 +60,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
+		<!-- <xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message> -->
 		<fo:root font-family="TestFont, STIX Two Math" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->

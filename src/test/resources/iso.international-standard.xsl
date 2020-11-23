@@ -175,7 +175,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
+		<!-- <xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message> -->
 		<fo:root font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!--   -->
 			<fo:layout-master-set>
 				
