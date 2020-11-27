@@ -198,17 +198,12 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- SourceSansPro-Light font -->
 				<font kerning="yes" embed-url="SourceSansPro-Light.ttf" mn_default="true">
-						<font-triplet name="SourceSansPro-Light" style="normal" weight="normal"/>
-					</font>
-				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf" mn_default="true">
-					<font-triplet name="SourceSansPro-Light" style="normal" weight="bold"/>
+					<font-triplet name="Source Sans Pro" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf" mn_default="true">
-					<font-triplet name="SourceSansPro-Light" style="italic" weight="normal"/>
+					<font-triplet name="Source Sans Pro" style="italic" weight="300"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-It.ttf" mn_default="true">
-					<font-triplet name="SourceSansPro-Light" style="italic" weight="bold"/>
-				</font>
+				
 				<!-- SourceSansPro font -->
 				<font kerning="yes" embed-url="SourceSansPro-Regular.ttf" mn_default="true">
 						<font-triplet name="Source Sans Pro" style="normal" weight="normal"/>
