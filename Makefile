@@ -2,7 +2,7 @@
 SHELL ?= /bin/bash
 
 #JAR_VERSION := $(shell mvn -q -Dexec.executable="echo" -Dexec.args='$${project.version}' --non-recursive exec:exec -DforceStdout)
-JAR_VERSION := 1.24a
+JAR_VERSION := 1.24
 JAR_FILE := mn2pdf-$(JAR_VERSION).jar
 
 all: target/$(JAR_FILE)
