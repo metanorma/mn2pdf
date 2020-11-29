@@ -146,7 +146,12 @@ class fontConfig {
                         final String fontWeight = fontStyles.get("weight");
                         final String fontStyle = fontStyles.get("style");
 
-                        for(String fontPath : (List<String>)fontEntry.getValue()) {
+                        Map<String, Object> fontNamePathsEntries = (Map<String, Object>) fontEntry.getValue();
+                        
+                        String fontFullName = (String) fontNamePathsEntries.get("full_name");
+ 
+                        //for(String fontPath : (List<String>)fontEntry.getValue()) {
+                        for(String fontPath : (List<String>)fontNamePathsEntries.get("paths")) {
 
                             String fontPath_ = Util.fixFontPath(fontPath);
                             if (new File(fontPath_).exists()) {
@@ -170,7 +175,8 @@ class fontConfig {
                                     FOPFont newFOPFont = new FOPFont();
                                     newFOPFont.setEmbed_url(fontPath_);
                                     if (fontPath_.toLowerCase().endsWith(".ttc")) {
-                                        newFOPFont.setSub_font(fontName);
+                                        //newFOPFont.setSub_font(fontName);
+                                        newFOPFont.setSub_font(fontFullName);
                                     }
                                     newFOPFont.setReadyToUse(true);
                                     newFOPFont.setSource("manifest");
@@ -189,11 +195,12 @@ class fontConfig {
                                                 f.setSource("manifest");
                                             });
                                     
-                                    // change sub-font, in case if file names in embed-url and in manifest file are different                                    
+                                    // change sub-font for ttc fonts
                                     if (fontPath_.toLowerCase().endsWith(".ttc")) {
                                         fopFontsByNameWeightStyle.stream()
-                                            .filter(f -> !fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()))
-                                            .forEach(f -> f.setSub_font(fontName));
+                                            //.filter(f -> !fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase())) // in case if file names in embed-url and in manifest file are different
+                                            //.forEach(f -> f.setSub_font(fontName));
+                                            .forEach(f -> f.setSub_font(fontFullName));
                                     }
                                     
                                     //List<FOPFont> fopFontsWithSimulateStyleByName
@@ -221,15 +228,20 @@ class fontConfig {
                 System.out.println("Expected format:");
                 System.out.println("Cambria:");
                 System.out.println("  Regular:");
-                System.out.println("  - \"~/.fontist/fonts/CAMBRIA.TTC\"");
+                System.out.println("    full_name: Cambria");
+                System.out.println("    paths:");
+                System.out.println("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
                 System.out.println("  Bold:");
-                System.out.println("  - \"~/.fontist/fonts/CAMBRIAB.TTF\"");
-                System.out.println("  Cambria Math:");
-                System.out.println("    Regular:");
+                System.out.println("    paths:");
+                System.out.println("    - \"~/.fontist/fonts/CAMBRIAB.TTF\"");
+                System.out.println("Cambria Math:");
+                System.out.println("  Regular:");
+                System.out.println("    paths:");
                 System.out.println("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
                 System.out.println("STIX Two Math:");
                 System.out.println("  Regular:");
-                System.out.println("  - \"~/.fontist/fonts/STIX2Math.otf\"");
+                System.out.println("    paths:");
+                System.out.println("    - \"~/.fontist/fonts/STIX2Math.otf\"");
                 System.exit(ERROR_EXIT_CODE);
             }
         }
