@@ -21,7 +21,7 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract libxml2-utils 
+          sudo apt-get -y install gettext-base cabextract libxml2-utils
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
