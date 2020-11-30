@@ -1,6 +1,11 @@
 Cambria:
   Regular:
-  - "~/.fontist/fonts/CAMBRIA.TTC"
+    full_name: Cambria
+    paths:
+    - ~/.fontist/fonts/CAMBRIA.TTC
 Cambria Math:
   Regular:
-  - "~/.fontist/fonts/CAMBRIA.TTC"
+    full_name: Cambria Math
+    paths:
+    - ~/.fontist/fonts/CAMBRIA.TTC
+

@@ -302,7 +302,7 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				
 				<!-- Helvetica Neue -->
-				<font kerning="yes" embed-url="HelveticaNeue-Roman.ttf">
+				<!-- <font kerning="yes" embed-url="HelveticaNeue-Roman.ttf">
 					<alternate embed-url="arial.ttf"/>
 					<font-triplet name="Helvetica Neue" style="normal" weight="normal"/>
 				</font>
@@ -317,10 +317,10 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="HelveticaNeue-BoldItalic.ttf">
 					<alternate embed-url="arialbi.ttf"/>									
 					<font-triplet name="Helvetica Neue" style="italic" weight="bold"/>
-				</font>
+				</font> -->
 				
 				<!-- SFMono-Regular -->
-				<font kerning="yes" embed-url="SFMono.ttf">
+				<!-- <font kerning="yes" embed-url="SFMono.ttf">
 					<alternate embed-url="consola.ttf"/>
 					<alternate embed-url="cour.ttf"/>
 					<alternate embed-url="Courier New.ttf"/>
@@ -347,7 +347,7 @@ Relative config URLs are resolved relative to location of this file.
 					<alternate embed-url="Courier New Bold Italic.ttf"/>
 					<alternate embed-url="SourceCodePro-BoldIt.ttf"/>
 					<font-triplet name="SF Mono" style="italic" weight="bold"/>
-				</font>
+				</font> -->
 				
 				<!-- Lato -->
 				<font kerning="yes" embed-url="Lato-Regular.ttf">
