@@ -127,8 +127,8 @@ public class LayoutContextImpl implements MutableLayoutContext, Serializable {
         fontsScript.add("Edwardian Script ITC");
         fontsScript.add("Lucida Handwriting");
         fontsScript.add("Santa Fe LET");*/
-        fontsScript.add("Monotype Corsiva");
         fontsScript.add("TeXGyreChorus");
+				fontsScript.add("Monotype Corsiva");
         fontsScript.add("EUSM10");
         fontsScript.add("cmsy10");
         fontsScript.add("Math5");
