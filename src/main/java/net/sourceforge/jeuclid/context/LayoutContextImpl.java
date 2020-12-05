@@ -115,7 +115,7 @@ public class LayoutContextImpl implements MutableLayoutContext, Serializable {
                 .unmodifiableList(fontsMonospaced));
 
         final List<String> fontsScript = new ArrayList<String>(12);
-        fontsScript.add("Monotype Corsiva");
+        /*fontsScript.add("Monotype Corsiva");
         fontsScript.add("EUSM10");
         fontsScript.add("cmsy10");
         fontsScript.add("Math5");
@@ -126,7 +126,20 @@ public class LayoutContextImpl implements MutableLayoutContext, Serializable {
         fontsScript.add("Apple Chancery");
         fontsScript.add("Edwardian Script ITC");
         fontsScript.add("Lucida Handwriting");
+        fontsScript.add("Santa Fe LET");*/
+        fontsScript.add("Monotype Corsiva");
+        fontsScript.add("TeXGyreChorus");
+        fontsScript.add("EUSM10");
+        fontsScript.add("cmsy10");
+        fontsScript.add("Math5");
+        fontsScript.add("Mathematica5");
+        fontsScript.add("Apple Chancery");
+        fontsScript.add("Lucida Handwriting");
+        fontsScript.add("Savoye LET");
+        fontsScript.add("Brush Script MT");
         fontsScript.add("Santa Fe LET");
+        fontsScript.add("Zapfino");
+        fontsScript.add("Edwardian Script ITC");
         this.context.put(Parameter.FONTS_SCRIPT, Collections
                 .unmodifiableList(fontsScript));
 
