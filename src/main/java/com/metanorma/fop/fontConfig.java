@@ -401,7 +401,7 @@ class fontConfig {
     public List<FOPFont> getUsedFonts ()
     {
         List<FOPFont> fonts = fopFonts.stream()
-            .filter(fopFont -> fopFont.isUsing())
+            .filter(fopFont -> fopFont.isUsing() || fopFont.getSource().equals("manifest"))
             .collect(Collectors.toList());
             
         return fonts;
