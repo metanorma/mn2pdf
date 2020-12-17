@@ -86,6 +86,8 @@ class fontConfig {
     
     //private final List<String> defaultFontList = new DefaultFonts().getDefaultFonts();
     
+    StringBuilder fontManifestLog = new StringBuilder();
+    StringBuilder fopFontsLog = new StringBuilder();
 
     public fontConfig() {
         
@@ -126,6 +128,7 @@ class fontConfig {
             Regular:
             - "/Users/user/.fontist/fonts/CAMBRIA.TTC"
         */
+
         if (fFontManifest != null) {
             Yaml yaml = new Yaml();
             Map<String, Object> obj;
@@ -163,7 +166,8 @@ class fontConfig {
 
                                 if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
                                     if (DEBUG) {
-                                        System.out.println("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")");
+                                        //System.out.println("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")");
+                                        fontManifestLog.append("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")").append("\n");
                                     }
                                     FOPFontTriplet fopFontTriplet = new FOPFontTriplet();
                                     fopFontTriplet.setName(fontName);
@@ -186,7 +190,8 @@ class fontConfig {
                                     
                                 } else { //if there is font in array
                                     if (DEBUG) {
-                                        System.out.println("Update font entry: " + fontName + " to " + fontPath_);
+                                        //System.out.println("Update font entry: " + fontName + " to " + fontPath_);
+                                        fontManifestLog.append("Update font entry: " + fontName + " to " + fontPath_).append("\n");
                                     }
                                     fopFontsByNameWeightStyle.stream()
                                             .forEach(f -> {
@@ -244,6 +249,13 @@ class fontConfig {
                 System.out.println("    - \"~/.fontist/fonts/STIX2Math.otf\"");
                 System.exit(ERROR_EXIT_CODE);
             }
+        }
+    }
+    
+    public void outputFontManifestLog(Path logPath) {
+        if(DEBUG) {
+            Util.outputLog(logPath, fontManifestLog.toString());
+            System.out.println("Font manifest reading log saved to '" + logPath + "'.");
         }
     }
     
@@ -353,13 +365,19 @@ class fontConfig {
             //write updated FOP config file
             writeFOPConfigFile(FOPconfigXML);
 
-            
-
-            if (DEBUG) {
+            /*if (DEBUG) {
                 Util.showAvailableAWTFonts();
-            }
+            }*/
             isReady = true;
         }
+    }
+    
+    public void outputAvailableAWTFonts(Path logPath) {
+        if(DEBUG) {
+            String awtFonts = Util.showAvailableAWTFonts();
+            Util.outputLog(logPath, awtFonts);
+            System.out.println("Available AWT fonts list saved to '" + logPath + "'.");
+        }    
     }
     
     private Document getSourceFOPConfigFile()  {
@@ -552,8 +570,9 @@ class fontConfig {
                 try {
                     String fopFontString = new XmlMapper().writeValueAsString(fopFont);
                     if (DEBUG) {
-                        System.out.println("DEBUG: FOP config font entry:");
-                        System.out.println(fopFontString);
+                        //System.out.println("DEBUG: FOP config font entry:");
+                        //System.out.println(fopFontString);
+                        fopFontsLog.append(fopFontString).append("\n");
                     }
                     Node newNodeFont =  DocumentBuilderFactory
                         .newInstance()
@@ -580,6 +599,13 @@ class fontConfig {
         } catch (XPathExpressionException ex) {
             System.out.println(ex.toString());
         } 
+    }
+    
+    public void outputFOPFontsLog(Path logPath) {
+        if(DEBUG) {
+            Util.outputLog(logPath, fopFontsLog.toString());
+            System.out.println("FOP fonts config items saved to '" + logPath + "'.");
+        }    
     }
     
     private void removeChilds(Node node) {

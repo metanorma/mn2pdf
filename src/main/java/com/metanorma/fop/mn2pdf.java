@@ -253,6 +253,10 @@ public class mn2pdf {
             System.out.println("Transforming...");
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             FopFactory fopFactory = FopFactory.newInstance(fontcfg.getConfig());
+            
+            //debug
+            fontcfg.outputFOPFontsLog(Paths.get(pdf.getAbsolutePath() + ".fopfonts.log.txt"));
+            fontcfg.outputAvailableAWTFonts(Paths.get(pdf.getAbsolutePath() + ".awtfonts.log.txt"));
 
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
@@ -492,6 +496,10 @@ public class mn2pdf {
                 fontcfg.setFontPath(argFontsPath);
                 
                 fontcfg.setFontManifest(fFontManifest);
+                
+                //debug
+                fontcfg.outputFontManifestLog(Paths.get(fPDF.getAbsolutePath() + ".fontmanifest.log.txt"));
+                
                 
                 try {
                     mn2pdf app = new mn2pdf();

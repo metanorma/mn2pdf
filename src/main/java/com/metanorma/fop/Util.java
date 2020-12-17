@@ -2,6 +2,7 @@ package com.metanorma.fop;
 
 import static com.metanorma.fop.mn2pdf.DEBUG;
 import java.awt.GraphicsEnvironment;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.CodeSource;
 import java.text.MessageFormat;
@@ -146,14 +148,16 @@ public class Util {
         }*/
     }
     
-    public static void showAvailableAWTFonts() {
+    public static String showAvailableAWTFonts() {
         final String[] fam = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        System.out.println("====================");
-        System.out.println("Available fonts:");
+        StringBuilder log = new StringBuilder();
+        log.append("====================").append("\n");
+        log.append("Available fonts:").append("\n");
         for (final String element : fam) {
-            System.out.println(element);
+            log.append(element).append("\n");
         }
-        System.out.println("====================");
+        log.append("====================").append("\n");
+        return log.toString();
     }
     
     
@@ -181,6 +185,17 @@ public class Util {
             return System.getProperty("user.home") + fontPath.substring(1);
         }
         return fontPath;
+    }
+    
+    public static void outputLog(Path file, String content) {
+        try {
+            try ( 
+            BufferedWriter writer = Files.newBufferedWriter(file)) {   
+                writer.write(content);
+            } 
+        } catch (IOException ex) {
+            System.out.println("Can't create a log file: " + ex.toString());
+        }
     }
     
 }
