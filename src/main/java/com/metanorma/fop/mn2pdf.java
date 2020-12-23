@@ -3,10 +3,10 @@ package com.metanorma.fop;
 import static com.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,35 +14,19 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.CodeSource;
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
-import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.ErrorListener;
-//import javax.xml.transform.ErrorListener;
-import javax.xml.transform.OutputKeys;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -67,11 +51,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.fop.render.intermediate.IFContext;
+import org.apache.fop.render.intermediate.IFDocumentHandler;
+import org.apache.fop.render.intermediate.IFSerializer;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
@@ -91,6 +75,8 @@ public class mn2pdf {
     static final String WARNING_NONPDFUA = "WARNING: PDF generated in non PDF/UA-1 mode.";
     
     static boolean DEBUG = false;
+    
+    static boolean SKIP_PDF = false;
     
     static boolean SPLIT_BY_LANGUAGE = false;
     
@@ -154,9 +140,14 @@ public class mn2pdf {
                 .build()); 
             addOption(Option.builder("d")
                 .longOpt("debug")
-                .desc("write intermediate fo.xml file")
+                .desc("debug mode, write intermediate fo.xml file and log files")
                 .required(false)
-                .build()); 
+                .build());
+            addOption(Option.builder("skippdf")
+                .longOpt("skip-pdf-generation")
+                .desc("skip PDF generation (in debug mode only)")
+                .required(false)
+                .build());
             addOption(Option.builder("split")
                 .longOpt("split-by-language")
                 .desc("additionally create a PDF for each language in XML")
@@ -190,13 +181,23 @@ public class mn2pdf {
         
         String imagesxml = sourceXMLDocument.getImageFilePath();
                 
+        String indexxml = sourceXMLDocument.getIndexFilePath();
+        
         try {
+            
+            File fileXmlIF = new File(indexxml);
+            
             //Setup XSLT
             
             Properties xslparams = new Properties();
             xslparams.setProperty("svg_images", imagesxml);
+            if (fileXmlIF.exists()) {
+                // for document by language
+                // index.xml was created for bilingual document
+                xslparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
+            }
             xsltConverter.setParams(xslparams);
-            
+            System.out.println("[INFO] XSL-FO file preparation...");
             // transform XML to XSL-FO (XML .fo file)
             xsltConverter.transform(sourceXMLDocument);
 
@@ -219,9 +220,14 @@ public class mn2pdf {
             
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
             
+            Source src = new StreamSource(new StringReader(xmlFO));
+            
+            src = runSecondPass (indexxml, src, fontcfg, xslparams, sourceXMLDocument, xsltConverter, pdf);
+            
+            
             // FO processing by FOP
             
-            Source  src = new StreamSource(new StringReader(xmlFO));
+            //src = new StreamSource(new StringReader(xmlFO));
             
             runFOP(fontcfg, src, pdf);
             
@@ -287,10 +293,13 @@ public class mn2pdf {
             transformer.setErrorListener(new DefaultErrorListener());
             
             // Start XSLT transformation and FOP processing
-            // Setup input stream                        
-            transformer.transform(src, res);  
+            // Setup input stream   
             
-            this.pageCount = fop.getResults().getPageCount();
+            if (!SKIP_PDF) {
+                transformer.transform(src, res);  
+
+                this.pageCount = fop.getResults().getPageCount();
+            }
             
         } catch (Exception e) {
             String excstr=e.toString();
@@ -460,6 +469,7 @@ public class mn2pdf {
                 File fPDF = new File(argPDF);
 
                 DEBUG = cmd.hasOption("debug");
+                SKIP_PDF = cmd.hasOption("skip-pdf-generation") && cmd.hasOption("debug");
                 
                 SPLIT_BY_LANGUAGE = cmd.hasOption("split-by-language");
 
@@ -594,4 +604,110 @@ public class mn2pdf {
         return pageCount;
     }
 
+
+    private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
+        Source src = sourceFO;
+        
+        File fileXmlIF = new File(indexxml);
+        
+        if (!indexxml.isEmpty() && !fileXmlIF.exists()) { //there is index
+             // if file exist - it means that now document by language is processing
+            // and don't need to create intermediate file again
+
+
+            // run 1st pass to produce FOP Intermediate Format
+            FopFactory fopFactory = FopFactory.newInstance(fontcfg.getConfig());
+            //Create a user agent
+            FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            //Create an instance of the target document handler so the IFSerializer
+            //can use its font setup
+            IFDocumentHandler targetHandler = userAgent.getRendererFactory().createDocumentHandler(
+                    userAgent, MimeConstants.MIME_PDF);
+            //Create the IFSerializer to write the intermediate format
+            IFSerializer ifSerializer = new IFSerializer(new IFContext(userAgent));
+            //Tell the IFSerializer to mimic the target format
+            ifSerializer.mimicDocumentHandler(targetHandler);
+            //Make sure the prepared document handler is used
+            userAgent.setDocumentHandlerOverride(ifSerializer);
+            userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
+            JEuclidFopFactoryConfigurator.configure(fopFactory);
+
+            // Setup output
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            //out = new java.io.BufferedOutputStream(out);
+            //String ifFilename = indexxml + ".if";
+            //OutputStream out = new java.io.FileOutputStream(new File(ifFilename));
+            String xmlIF = "";
+            try {
+                // Construct FOP (the MIME type here is unimportant due to the override
+                // on the user agent)
+                Fop fop = fopFactory.newFop(null, userAgent, out);
+
+                Result res = new SAXResult(fop.getDefaultHandler());
+
+                // Setup XSLT
+                TransformerFactory factory = TransformerFactory.newInstance();
+                Transformer transformer = factory.newTransformer(); // identity transformer
+
+                transformer.setErrorListener(new DefaultErrorListener());
+                System.out.println("[INFO] Rendering into intermediate format for index preparation...");
+                // Start XSLT transformation and FOP processing
+                transformer.transform(src, res);
+
+                xmlIF = out.toString("UTF-8");
+
+            } finally {
+                out.close();
+            }
+            Util.createIndexFile(indexxml, xmlIF);
+
+            if (fileXmlIF.exists()) {
+                // pass index.xml path to xslt (for second pass)
+                xslparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
+
+                xsltConverter.setParams(xslparams);
+
+                System.out.println("[INFO] XSL-FO file preparation (second pass)...");
+                // transform XML to XSL-FO (XML .fo file)
+                xsltConverter.transform(sourceXMLDocument);
+
+                String xmlFO = sourceXMLDocument.getXMLFO();
+
+                if (DEBUG) {   
+                    //DEBUG: write intermediate FO to file                
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.2nd.xml"))) {
+                            writer.write(xmlFO);                    
+                    }
+                }
+                src = new StreamSource(new StringReader(xmlFO));
+            }
+        }
+        return src;
+    }
+
+    
+    /** A simple event listener that writes the events to stdout and sterr. */
+    private static class SecondPassSysOutEventListener implements org.apache.fop.events.EventListener {
+
+        /** {@inheritDoc} */
+        public void processEvent(Event event) {
+            String msg = EventFormatter.format(event);
+            EventSeverity severity = event.getSeverity();
+            if (severity == EventSeverity.INFO) {
+                if(msg.startsWith("Rendered page #")) {
+                    System.out.println("[INFO] Intermediate format. " + msg);
+                }
+            } else if (severity == EventSeverity.WARN) {
+                //System.out.println("[WARN] " + msg);
+            } else if (severity == EventSeverity.ERROR) {
+                System.err.println("[ERROR] " + msg);
+            } else if (severity == EventSeverity.FATAL) {
+                System.err.println("[FATAL] " + msg);
+            } else {
+                assert false;
+            }
+        }
+    }
+    
 }

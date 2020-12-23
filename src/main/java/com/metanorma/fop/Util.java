@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -14,9 +15,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
@@ -24,10 +25,19 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -197,5 +207,69 @@ public class Util {
             System.out.println("Can't create a log file: " + ex.toString());
         }
     }
+    
+    public static void createIndexFile(String indexxmlFilePath, String intermediateXML) {
+        StringBuilder indexxml = new StringBuilder();
+        try {
+            InputSource is = new InputSource(new StringReader(intermediateXML));
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            //Document sourceXML = dBuilder.parse(new File(intermediateXMLFilePath));
+            Document sourceXML = dBuilder.parse(is);
+            
+            XPath xPath = XPathFactory.newInstance().newXPath();
+           
+            NodeList pageNumberCitations = sourceXML.getElementsByTagName("fo:page-number-citation");
+            for (int i = 0; i < pageNumberCitations.getLength(); i++) {
+                Node pageNumberCitation = pageNumberCitations.item(i);
+                Node structId = pageNumberCitation.getAttributes().getNamedItem("foi:struct-id");
+                String structIdValue = structId.getTextContent();
+                
+                XPathExpression query = xPath.compile("//text[@struct-ref = '" + structIdValue + "'][preceding-sibling::*[1][local-name() = 'id']][1]");
+                Node textElement = (Node)query.evaluate(sourceXML, XPathConstants.NODE);
+                /* <id name="4_2">
+                ->   <text foi:struct-ref="4c7">12</text> */
+                if(textElement != null) {
+                    String pageNum = textElement.getTextContent(); //12    
+                    
+                    XPathExpression queryId = xPath.compile("//text[@struct-ref = '" + structIdValue + "']/preceding-sibling::id[1]");
+                    Node idElement = (Node)queryId.evaluate(sourceXML, XPathConstants.NODE);
+                    String name = "";
+                    /* -> <id name="4_2">
+                       <text foi:struct-ref="4c7">12</text> */
+                    if (idElement != null) {
+                        try {
+                            name = idElement.getAttributes().getNamedItem("name").getTextContent();
+                        } catch (Exception ex) {}
+                    }
+                    
+                    if (!pageNum.isEmpty() && !name.isEmpty()) {
+                        indexxml.append("<item id=\"");
+                        indexxml.append(name);
+                        indexxml.append("\">");
+                        indexxml.append(pageNum);
+                        indexxml.append("</item>\n");
+                    }
+                }    
+            }
+
+            if (indexxml.length() != 0) {
+                indexxml.insert(0, "<index>\n");
+                indexxml.append("</index>");
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(indexxmlFilePath))) {
+                        writer.write(indexxml.toString());                    
+                }
+            }
+               
+        } catch (XPathExpressionException ex) {
+            System.out.println(ex.toString());
+        }    
+        catch (Exception ex) {
+            System.err.println("Can't save index.xml into temporary folder");
+            ex.printStackTrace();
+        }    
+    }
+    
     
 }

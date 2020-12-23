@@ -181,6 +181,34 @@ public class SourceXMLDocument {
         return "";
     } 
     
+    public String getIndexFilePath() {
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query;
+            try {
+                query = xPath.compile("//clause[@type = 'index']");
+                NodeList nList = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
+                if (nList.getLength() != 0) {
+                    try {
+                        Files.createDirectories(tmpfilepath);
+                        Path outputPath = Paths.get(tmpfilepath.toString(), "index.xml");
+                        return outputPath.toString();
+                    } catch (IOException ex) {
+                        System.err.println("Can't create a temporary directory " + tmpfilepath.toString());
+                        ex.printStackTrace();;
+                    }
+                }
+            } catch (XPathExpressionException ex) {
+                System.out.println(ex.toString());
+            }
+            
+        } catch (Exception ex) {
+            System.err.println("Can't save index.xml into temporary folder");
+            ex.printStackTrace();
+        }
+        return "";
+    }
+            
     public ArrayList<String> getLanguagesList () {
         ArrayList<String> languagesList = new ArrayList<>();
         try {            
