@@ -245,7 +245,7 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				
 				<!-- For mathml display -->
-				<font kerning="yes" embed-url="STIX2Math.otf" simulate-style="true" mn_default="true">
+				<font kerning="yes" embed-url="STIXTwoMath-Regular.otf" simulate-style="true" mn_default="true">
 					<font-triplet name="STIX Two Math" style="normal" weight="normal"/>
 					<font-triplet name="STIX Two Math" style="normal" weight="700"/>
 					<font-triplet name="STIX Two Math" style="italic" weight="normal"/>

@@ -246,7 +246,7 @@ class fontConfig {
                 System.out.println("STIX Two Math:");
                 System.out.println("  Regular:");
                 System.out.println("    paths:");
-                System.out.println("    - \"~/.fontist/fonts/STIX2Math.otf\"");
+                System.out.println("    - \"~/.fontist/fonts/STIXTwoMath-Regular.otf\"");
                 System.exit(ERROR_EXIT_CODE);
             }
         }
