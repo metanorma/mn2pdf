@@ -39,7 +39,7 @@ public class DefaultFonts {
            Stream.of("Normal", "Bold").forEach(
                suffix -> add(DEFAULTFONT_PREFIX + "HanSans" + "-" + suffix + ".ttc"));
 
-           add("STIXTwoMath-Regular.otf");
+           add("STIX2Math.otf");
        } 
     };
     
@@ -90,7 +90,7 @@ public class DefaultFonts {
         if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith("STIX"))) {
             String url = getFontsURL("URL.STIX2Mathfont");
             int remotefilesize = Util.getFileSize(new URL(url));
-            final Path destPath = Paths.get(fontDestinationPath, "STIXTwoMath-Regular.otf");
+            final Path destPath = Paths.get(fontDestinationPath, "STIX2Math.otf");
             if (!destPath.toFile().exists() || Files.size(destPath) != remotefilesize) {
                 // download a file
                 Util.downloadFile(url, destPath);
