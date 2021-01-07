@@ -655,6 +655,14 @@ public class mn2pdf {
                 transformer.transform(src, res);
 
                 xmlIF = out.toString("UTF-8");
+                
+                if (DEBUG) {   
+                    //DEBUG: write intermediate IF to file                
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xml"))) {
+                            writer.write(xmlIF);                    
+                    }
+                }
 
             } finally {
                 out.close();
@@ -666,22 +674,23 @@ public class mn2pdf {
                 xslparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
 
                 xsltConverter.setParams(xslparams);
-
-                System.out.println("[INFO] XSL-FO file preparation (second pass)...");
-                // transform XML to XSL-FO (XML .fo file)
-                xsltConverter.transform(sourceXMLDocument);
-
-                String xmlFO = sourceXMLDocument.getXMLFO();
-
-                if (DEBUG) {   
-                    //DEBUG: write intermediate FO to file                
-                    try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.2nd.xml"))) {
-                            writer.write(xmlFO);                    
-                    }
-                }
-                src = new StreamSource(new StringReader(xmlFO));
             }
+            
+            System.out.println("[INFO] XSL-FO file preparation (second pass)...");
+            // transform XML to XSL-FO (XML .fo file)
+            xsltConverter.transform(sourceXMLDocument);
+
+            String xmlFO = sourceXMLDocument.getXMLFO();
+
+            if (DEBUG) {   
+                //DEBUG: write intermediate FO to file                
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.2nd.xml"))) {
+                        writer.write(xmlFO);                    
+                }
+            }
+            src = new StreamSource(new StringReader(xmlFO));
+            
         }
         return src;
     }
