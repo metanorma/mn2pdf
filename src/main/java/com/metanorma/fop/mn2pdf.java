@@ -1,5 +1,6 @@
 package com.metanorma.fop;
 
+import static com.metanorma.fop.Util.getStreamFromResources;
 import static com.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -27,10 +28,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.fop.apps.FOPException;
@@ -56,7 +59,9 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFSerializer;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import org.xml.sax.SAXException;
 
@@ -667,7 +672,8 @@ public class mn2pdf {
             } finally {
                 out.close();
             }
-            Util.createIndexFile(indexxml, xmlIF);
+            //Util.createIndexFile(indexxml, xmlIF);
+            createIndexFile(indexxml, xmlIF);
 
             if (fileXmlIF.exists()) {
                 // pass index.xml path to xslt (for second pass)
@@ -695,6 +701,29 @@ public class mn2pdf {
         return src;
     }
 
+    
+    private void createIndexFile(String indexxmlFilePath, String intermediateXML) {
+        try {
+            Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), "index.xsl"));
+            TransformerFactory factory = TransformerFactory.newInstance();
+            Transformer transformer = factory.newTransformer(srcXSL);
+            Source src = new StreamSource(new StringReader(intermediateXML));
+            StringWriter resultWriter = new StringWriter();
+            StreamResult sr = new StreamResult(resultWriter);
+            transformer.transform(src, sr);
+            String xmlIndex = resultWriter.toString();
+            if (xmlIndex.length() != 0) {
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(indexxmlFilePath))) {
+                        writer.write(xmlIndex.toString());                    
+                }
+            }
+        }    
+        catch (Exception ex) {
+            System.err.println("Can't save index.xml into temporary folder");
+            ex.printStackTrace();
+        }    
+    }
     
     /** A simple event listener that writes the events to stdout and sterr. */
     private static class SecondPassSysOutEventListener implements org.apache.fop.events.EventListener {

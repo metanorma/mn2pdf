@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -208,7 +209,7 @@ public class Util {
         }
     }
     
-    public static void createIndexFile(String indexxmlFilePath, String intermediateXML) {
+    public static void createIndexFile_Old(String indexxmlFilePath, String intermediateXML) {
         StringBuilder indexxml = new StringBuilder();
         try {
             InputSource is = new InputSource(new StringReader(intermediateXML));
@@ -271,5 +272,12 @@ public class Util {
         }    
     }
     
-    
+    // get file from classpath, resources folder
+    public static InputStream getStreamFromResources(ClassLoader classLoader, String fileName) throws Exception {
+        InputStream stream = classLoader.getResourceAsStream(fileName);
+        if(stream == null) {
+            throw new Exception("Cannot get resource \"" + fileName + "\" from Jar file.");
+        }
+        return stream;
+    }
 }

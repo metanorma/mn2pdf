@@ -384,7 +384,7 @@ class fontConfig {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            InputStream config = getStreamFromResources(CONFIG_NAME);
+            InputStream config = Util.getStreamFromResources(getClass().getClassLoader(), CONFIG_NAME);
             Document sourceFOPConfig = dBuilder.parse(config);
             return sourceFOPConfig;
         } catch (Exception ex) {
@@ -734,14 +734,4 @@ class fontConfig {
         
     }
 
-    // get file from classpath, resources folder
-    private InputStream getStreamFromResources(String fileName) throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream stream = classLoader.getResourceAsStream(fileName);
-        if(stream == null) {
-            throw new Exception("Cannot get resource \"" + fileName + "\" from Jar file.");
-        }
-        return stream;
-    }
-    
 }

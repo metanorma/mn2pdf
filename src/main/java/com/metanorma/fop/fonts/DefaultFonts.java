@@ -100,17 +100,9 @@ public class DefaultFonts {
     
     private String getFontsURL(String property) throws Exception {
         Properties appProps = new Properties();
-        appProps.load(getStreamFromResources("app.properties"));
+        appProps.load(Util.getStreamFromResources(getClass().getClassLoader(), "app.properties"));
         return appProps.getProperty(property);
     }
     
-    // get file from classpath, resources folder
-    private InputStream getStreamFromResources(String fileName) throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream stream = classLoader.getResourceAsStream(fileName);
-        if(stream == null) {
-            throw new Exception("Cannot get resource \"" + fileName + "\" from Jar file.");
-        }
-        return stream;
-    }
+
 }
