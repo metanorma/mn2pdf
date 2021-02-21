@@ -186,7 +186,8 @@ public class SourceXMLDocument {
             XPath xPath = XPathFactory.newInstance().newXPath();
             XPathExpression query;
             try {
-                query = xPath.compile("//clause[@type = 'index']");
+                //query = xPath.compile("//clause[@type = 'index']");
+                query = xPath.compile("//indexsect");
                 NodeList nList = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
                 if (nList.getLength() != 0) {
                     try {
