@@ -56,6 +56,9 @@ public class SourceXMLDocument {
     public SourceXMLDocument(File fXML) {
         this.fXML = fXML;
         this.documentFilePath = this.fXML.getParent();
+        if (this.documentFilePath == null) {
+            this.documentFilePath = System.getProperty("user.dir");
+        }
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
