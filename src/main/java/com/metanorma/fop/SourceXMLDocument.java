@@ -47,12 +47,15 @@ public class SourceXMLDocument {
     static final String TMPDIR = System.getProperty("java.io.tmpdir");
     final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
     
+    String documentFilePath;
+    
     File fXML;
     
     String xmlFO = "";
     
     public SourceXMLDocument(File fXML) {
         this.fXML = fXML;
+        this.documentFilePath = this.fXML.getParent();
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -257,5 +260,9 @@ public class SourceXMLDocument {
     
     public String getTempPath() {
         return tmpfilepath.toString();
+    }
+
+    public String getDocumentFilePath() {
+        return documentFilePath;
     }
 }

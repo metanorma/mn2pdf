@@ -201,6 +201,7 @@ public class mn2pdf {
                 // index.xml was created for bilingual document
                 xslparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
             }
+            xslparams.setProperty("basepath", sourceXMLDocument.getDocumentFilePath() + File.separator);
             xsltConverter.setParams(xslparams);
             System.out.println("[INFO] XSL-FO file preparation...");
             // transform XML to XSL-FO (XML .fo file)
