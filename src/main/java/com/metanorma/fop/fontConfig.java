@@ -88,7 +88,7 @@ class fontConfig {
     
     StringBuilder fontManifestLog = new StringBuilder();
     StringBuilder fopFontsLog = new StringBuilder();
-
+    
     public fontConfig() {
         
         setFontPath(DEFAULT_FONT_PATH);
@@ -275,6 +275,9 @@ class fontConfig {
         }
         
         switch (fontStyle_weight)  {
+            case ("heavy"):
+                fontWeight = "900";
+                break;
             case ("black"):
                 fontWeight = "900";
                 break;
