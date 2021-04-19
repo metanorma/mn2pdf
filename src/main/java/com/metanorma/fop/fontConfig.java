@@ -296,6 +296,9 @@ class fontConfig {
             case ("light"):
                 fontWeight = "300";
                 break;
+            case ("hairline"):
+                fontWeight = "200";
+                break;
             case ("extralight"):
                 fontWeight = "200";
                 break;
