@@ -438,6 +438,19 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Work Sans" style="italic" weight="900"/>
 				</font>
 				
+				<font kerning="yes" embed-url="trado.ttf">
+					<font-triplet name="Traditional Arabic" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="tradbdo.ttf">
+					<font-triplet name="Traditional Arabic" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="trado.ttf" simulate-style="true">
+					<font-triplet name="Traditional Arabic" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="tradbdo.ttf" simulate-style="true">
+					<font-triplet name="Traditional Arabic" style="italic" weight="bold"/>
+				</font>
+				
 				<font kerning="yes" embed-url="TestFont.ttf" simulate-style="true">
 					<font-triplet name="TestFont" style="normal" weight="normal"/>
 					<font-triplet name="TestFont" style="normal" weight="bold"/>
