@@ -458,6 +458,26 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="TestFont" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- BSI Gesta OTF -->
+				<font kerning="yes" embed-url="BSIGesta.otf">
+					<font-triplet name="Gesta" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="BSIGesta-Bold.otf">
+					<font-triplet name="Gesta" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="BSIGesta-Italic.otf">
+					<font-triplet name="Gesta" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="BSIGesta-BoldItalic.otf">
+					<font-triplet name="Gesta" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="BSIGesta-Light.otf">
+					<font-triplet name="Gesta" style="normal" weight="300"/>
+				</font>
+				<font kerning="yes" embed-url="BSIGesta-Medium.otf">
+					<font-triplet name="Gesta" style="normal" weight="500"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
