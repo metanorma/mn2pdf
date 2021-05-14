@@ -478,6 +478,23 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Gesta" style="normal" weight="500"/>
 				</font>
 				
+				<!-- Frutiger -->
+				<font kerning="yes" embed-url="FrutigerLTStd-Roman.ttf">
+					<font-triplet name="Frutiger" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="FrutigerLTStd-Light.ttf">
+					<font-triplet name="Frutiger" style="normal" weight="300"/>
+				</font>
+				<font kerning="yes" embed-url="FrutigerLTStd-Bold.ttf">
+					<font-triplet name="Frutiger" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="FrutigerLTStd-Italic.ttf">
+					<font-triplet name="Frutiger" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="FrutigerLTStd-BoldItalic.ttf">
+					<font-triplet name="Frutiger" style="italic" weight="bold"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
