@@ -495,6 +495,23 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Frutiger" style="italic" weight="bold"/>
 				</font>
 				
+				<!-- OpenSans -->
+				<font kerning="yes" embed-url="OpenSans-Regular.ttf">
+					<font-triplet name="OpenSans" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-Light.ttf">
+					<font-triplet name="OpenSans" style="normal" weight="300"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-Bold.ttf">
+					<font-triplet name="OpenSans" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-Italic.ttf">
+					<font-triplet name="OpenSans" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-BoldItalic.ttf">
+					<font-triplet name="OpenSans" style="italic" weight="bold"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
