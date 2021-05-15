@@ -203,9 +203,15 @@ public class mn2pdf {
             }
             xslparams.setProperty("basepath", sourceXMLDocument.getDocumentFilePath() + File.separator);
             xsltConverter.setParams(xslparams);
+            
             System.out.println("[INFO] XSL-FO file preparation...");
             // transform XML to XSL-FO (XML .fo file)
+            long startTime = System.currentTimeMillis();
             xsltConverter.transform(sourceXMLDocument);
+            long endTime = System.currentTimeMillis();
+            if (DEBUG) {
+                System.out.println("processing time: " + (endTime - startTime) + " milliseconds");
+            }
 
             String xmlFO = sourceXMLDocument.getXMLFO();
             
