@@ -70,7 +70,7 @@ import org.xml.sax.SAXException;
  */
 public class mn2pdf {
 
-    static final String CMD = "java -Xss5m -Xmx1024m -jar mn2pdf.jar";
+    static final String CMD = "java -Xss5m -Xmx2048m -jar mn2pdf.jar";
     static final String INPUT_NOT_FOUND = "Error: %s file '%s' not found!";
     static final String FONTS_FOLDER_INPUT = "Fonts path";
     static final String XML_INPUT = "XML";
