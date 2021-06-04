@@ -303,20 +303,28 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- Helvetica Neue -->
 				<!-- <font kerning="yes" embed-url="HelveticaNeue-Roman.ttf">
-					<alternate embed-url="arial.ttf"/>
 					<font-triplet name="Helvetica Neue" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="HelveticaNeue-Bold.ttf">
-					<alternate embed-url="arialbd.ttf"/>
 					<font-triplet name="Helvetica Neue" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="HelveticaNeue-Italic.ttf">
-					<alternate embed-url="ariali.ttf"/>					
 					<font-triplet name="Helvetica Neue" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="HelveticaNeue-BoldItalic.ttf">
-					<alternate embed-url="arialbi.ttf"/>									
 					<font-triplet name="Helvetica Neue" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-Light.ttf">
+					<font-triplet name="Helvetica Neue" style="normal" weight="300"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-LightItalic.ttf">
+					<font-triplet name="Helvetica Neue" style="italic" weight="300"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-Medium.ttf">
+					<font-triplet name="Helvetica Neue" style="normal" weight="500"/>
+				</font>
+				<font kerning="yes" embed-url="HelveticaNeue-MediumItalic.ttf">
+					<font-triplet name="Helvetica Neue" style="italic" weight="500"/>
 				</font> -->
 				
 				<!-- SFMono-Regular -->
@@ -480,18 +488,23 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- Frutiger -->
 				<font kerning="yes" embed-url="FrutigerLTStd-Roman.ttf">
+					<alternate embed-url="OpenSans-Regular.ttf"/>
 					<font-triplet name="Frutiger" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-Light.ttf">
+					<alternate embed-url="OpenSans-Light.ttf"/>
 					<font-triplet name="Frutiger" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-Bold.ttf">
+					<alternate embed-url="OpenSans-Bold.ttf"/>
 					<font-triplet name="Frutiger" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-Italic.ttf">
+					<alternate embed-url="OpenSans-Italic.ttf"/>
 					<font-triplet name="Frutiger" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-BoldItalic.ttf">
+					<alternate embed-url="OpenSans-BoldItalic.ttf"/>
 					<font-triplet name="Frutiger" style="italic" weight="bold"/>
 				</font>
 				
@@ -502,6 +515,9 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="OpenSans-Light.ttf">
 					<font-triplet name="OpenSans" style="normal" weight="300"/>
 				</font>
+				<font kerning="yes" embed-url="OpenSans-LightItalic.ttf">
+					<font-triplet name="OpenSans" style="italic" weight="300"/>
+				</font>
 				<font kerning="yes" embed-url="OpenSans-Bold.ttf">
 					<font-triplet name="OpenSans" style="normal" weight="bold"/>
 				</font>
@@ -511,7 +527,18 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="OpenSans-BoldItalic.ttf">
 					<font-triplet name="OpenSans" style="italic" weight="bold"/>
 				</font>
-				
+				<font kerning="yes" embed-url="OpenSans-SemiBold.ttf">
+					<font-triplet name="OpenSans" style="normal" weight="600"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-SemiBoldItalic.ttf">
+					<font-triplet name="OpenSans" style="italic" weight="600"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-ExtraBold.ttf">
+					<font-triplet name="OpenSans" style="normal" weight="800"/>
+				</font>
+				<font kerning="yes" embed-url="OpenSans-ExtraBoldItalic.ttf">
+					<font-triplet name="OpenSans" style="italic" weight="800"/>
+				</font>
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
