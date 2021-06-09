@@ -468,21 +468,27 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- BSI Gesta OTF -->
 				<font kerning="yes" embed-url="BSIGesta.otf">
+					<alternate embed-url="OpenSans-Regular.ttf"/>
 					<font-triplet name="Gesta" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Bold.otf">
+					<alternate embed-url="OpenSans-Bold.ttf"/>
 					<font-triplet name="Gesta" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Italic.otf">
+					<alternate embed-url="OpenSans-Italic.ttf"/>
 					<font-triplet name="Gesta" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-BoldItalic.otf">
+					<alternate embed-url="OpenSans-BoldItalic.ttf"/>
 					<font-triplet name="Gesta" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Light.otf">
+					<alternate embed-url="OpenSans-Light.ttf"/>
 					<font-triplet name="Gesta" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Medium.otf">
+					<alternate embed-url="OpenSans-SemiBold.ttf"/>
 					<font-triplet name="Gesta" style="normal" weight="500"/>
 				</font>
 				
