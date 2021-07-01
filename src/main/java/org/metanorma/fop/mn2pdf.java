@@ -217,10 +217,10 @@ public class mn2pdf {
             
             if (DEBUG) {   
                 //DEBUG: write intermediate FO to file                
-                
+                String xmlFO_UTF8 = xmlFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.xml"))) {
-                        writer.write(xmlFO);                    
+                        writer.write(xmlFO_UTF8);                    
                 }
                 //Setup output
                 //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
