@@ -44,7 +44,7 @@ Update version in `pom.xml`, e.g.:
 
 [source,xml]
 ----
-<groupId>com.metanorma.fop</groupId>
+<groupId>org.metanorma.fop</groupId>
 <artifactId>mn2pdf</artifactId>
 <version>1.32</version>
 <name>Metanorma XML to PDF converter</name>

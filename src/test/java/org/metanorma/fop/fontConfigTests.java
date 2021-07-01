@@ -1,6 +1,6 @@
-package com.metanorma.fop;
+package org.metanorma.fop;
 
-import com.metanorma.fop.fonts.FOPFont;
+import org.metanorma.fop.fonts.FOPFont;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

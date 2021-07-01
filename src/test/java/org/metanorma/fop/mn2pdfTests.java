@@ -1,4 +1,4 @@
-package com.metanorma.fop;
+package org.metanorma.fop;
 
 import java.io.File;
 import java.io.IOException;
