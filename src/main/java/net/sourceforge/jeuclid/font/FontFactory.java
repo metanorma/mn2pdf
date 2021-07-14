@@ -127,6 +127,21 @@ public abstract class FontFactory {
 	public abstract Font getFont(final List<String> preferredFonts,
 								 final int codepoint, final int style, final float size);
 
+        
+        /**
+	 * Create a font object which is able to display the requested code point.
+	 * If no matching font is found null is returned.
+	 *
+	 * @param preferredFonts List of preferred fonts
+	 * @param codepoint      code point which must be displayable
+	 * @param style          font style
+	 * @param size           font size
+	 * @return a valid Font instance or null if no font could be found.
+	 */
+	public abstract Font getFontWithoutSearch(final List<String> preferredFonts,
+								 final int codepoint, final int style, final float size);
+
+        
 	/**
 	 * Load an external font from a file and 'register' (aka 'cache') it for
 	 * future use.

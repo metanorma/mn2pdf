@@ -150,6 +150,17 @@ public class DefaultFontFactory extends FontFactory {
 		return font;
 	}
 
+        /**
+	 * {@inheritDoc}
+	 */
+	@Override
+        public Font getFontWithoutSearch(final List<String> preferredFonts,
+						final int codepoint, final int style, final float size) {
+		Font font = this.searchFontList(preferredFonts, codepoint, style,
+				size);
+		return font;
+	}
+        
 	private Font searchFontList(final Collection<String> fontList,
 								final int codepoint, final int style, final float size) {
 		for (final String fontName : fontList) {

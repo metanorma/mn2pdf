@@ -139,6 +139,14 @@ public enum Parameter {
             "fontsDoublestruck", "list of font families for Double-Struck"),
 
     /**
+     * String of main font.
+     * 
+     * @see Parameter
+     */
+    FONT_MAIN(TLIListTypeWrapper.getInstance(), false,
+            "fontDefault", "main font"),
+    
+    /**
      * If true, &lt;mfrac&gt; element will NEVER increase children's
      * scriptlevel (in violation of the spec); otherwise it will behave with
      * accordance to the spec.

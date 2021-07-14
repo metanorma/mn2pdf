@@ -39,6 +39,7 @@ import net.sourceforge.jeuclid.elements.AbstractJEuclidElement;
 import net.sourceforge.jeuclid.elements.JEuclidElement;
 import net.sourceforge.jeuclid.elements.support.GraphicsSupport;
 import net.sourceforge.jeuclid.elements.support.attributes.MathVariant;
+import net.sourceforge.jeuclid.font.FontFactory;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -96,8 +97,22 @@ public final class StringUtil {
 
                 final CodePointAndVariant cpav1 = new CodePointAndVariant(
                         plainString.codePointAt(i), baseVariant);
-                final Object[] codeAndFont = StringUtil.mapCpavToCpaf(cpav1,
-                        fontSize, context);
+                
+                int codepoint = plainString.codePointAt(i);
+                boolean isHighplaneMathChar = codepoint >= 0x1D400;
+                boolean isContainsCodePoint = isMainFontContainsCodePoint(codepoint, fontSize, context);
+                final Object[] codeAndFont;
+                
+                if (isHighplaneMathChar && isContainsCodePoint) {
+                    final CodePointAndVariant cpHighplane = new CodePointAndVariant(codepoint, MathVariant.NORMAL);
+                    Font font_main = cpHighplane.getVariant().createFont(fontSize, codepoint,
+                        context, false);
+                    codeAndFont = new Object[] { codepoint, font_main };
+                } else {
+                    codeAndFont = StringUtil.mapCpavToCpaf(cpav1,
+                            fontSize, context);
+                }
+                
                 final int codePoint = (Integer) codeAndFont[0];
                 final Font font = (Font) codeAndFont[1];
 
@@ -130,6 +145,28 @@ public final class StringUtil {
         return aString;
     }
 
+    /**
+    * Check main font contains code point
+    * 
+    * @param size
+    *            size of the font to create
+    * @param codepoint
+    *            a character that must exist in this font
+    * @param context
+    *            LayoutContext to use.
+
+    * @return boolean.
+    */
+    private static boolean isMainFontContainsCodePoint(final int codepoint, final float fontSize,
+            final LayoutContext context) {
+        
+        final Font font = FontFactory.getInstance().getFontWithoutSearch(
+                (List<String>) context.getParameter(Parameter.FONT_MAIN), codepoint,
+                0, fontSize);
+        
+        return font != null;
+    }
+    
     /**
      * Provide the text content of the current element as
      * AttributedCharacterIterator.

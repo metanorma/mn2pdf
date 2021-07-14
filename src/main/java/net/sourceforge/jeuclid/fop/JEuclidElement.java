@@ -149,7 +149,13 @@ public class JEuclidElement extends JEuclidObj {
         }
         final FontInfo fi = this.getFOEventHandler().getFontInfo();
         final FontTriplet[] fontkeys = commonFont.getFontState(fi);
-
+        
+        List<String> main_fonts = new ArrayList<>();
+        if (fontkeys.length != 0) {
+            main_fonts.add(fontkeys[0].getName());
+        }
+        this.layoutContext.setParameter(Parameter.FONT_MAIN, main_fonts);
+        
         this.layoutContext.setParameter(Parameter.MATHSIZE, msize);
         final List<String> defaultFonts = (List<String>) this.layoutContext
                 .getParameter(Parameter.FONTS_SERIF);
