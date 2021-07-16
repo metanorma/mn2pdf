@@ -32,6 +32,23 @@ java -Xss5m -Xmx2048m -jar target/mn2pdf-1.33.jar --xml-file tests/G.191.xml --x
 
 == Building the package
 
+mn2pdf depends on another packages which published in GitHub Packages registry. Regarding https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry you need an access token to install these packages.
+Please set the environment variable GH_TOKEN for building the mn2pdf package.
+
+For Windows OS:
+[source,sh]
+----
+SET GH_TOKEN=<your GitHub token>
+----
+
+For Linux:
+[source,sh]
+----
+GH_TOKEN=<your GitHub token>
+----
+
+To build:
+
 [source,sh]
 ----
 make all
