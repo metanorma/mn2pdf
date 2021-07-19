@@ -344,7 +344,7 @@ public class Util {
                 
             }
         } catch (Exception ex) {
-            System.err.println("Can't read image: " + ex.toString());
+            System.err.println("Can't read DPI from image: " + ex.toString());
         }
         
         return "100";
