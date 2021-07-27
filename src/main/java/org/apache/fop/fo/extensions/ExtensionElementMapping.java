@@ -54,6 +54,8 @@ public class ExtensionElementMapping extends ElementMapping {
         PROPERTY_ATTRIBUTES.add("alt-text");
         PROPERTY_ATTRIBUTES.add("header");
         PROPERTY_ATTRIBUTES.add("abbreviation");
+        // Added for mn2pdf mathml text
+        PROPERTY_ATTRIBUTES.add("actual-text");
         //fox:border-*-radius-*
         PROPERTY_ATTRIBUTES.add("border-before-radius-start");
         PROPERTY_ATTRIBUTES.add("border-before-radius-end");

@@ -243,6 +243,11 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
                 altTextNode = "No alternate text specified";
             }
             structElem.put("Alt", altTextNode);
+            
+            String actualTextNode = attributes.getValue(ExtensionElementMapping.URI, "actual-text");
+            if (actualTextNode != null) {
+                structElem.put("ActualText", actualTextNode);
+            }
         }
 
     }

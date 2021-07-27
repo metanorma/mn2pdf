@@ -70,6 +70,7 @@ public abstract class AbstractGraphics extends FObj
     private int textAlign;
     private Length width;
     private String altText;
+    private String actualText;
     private StructureTreeElement structureTreeElement;
     // Unused but valid items, commented out for performance:
     //     private CommonAccessibility commonAccessibility;
@@ -118,6 +119,7 @@ public abstract class AbstractGraphics extends FObj
                 getFOValidationEventProducer().altTextMissing(this, getLocalName(), getLocator());
             }
         }
+        actualText = pList.get(PR_X_ACTUAL_TEXT).getString();
     }
 
     /** {@inheritDoc} */
@@ -234,6 +236,11 @@ public abstract class AbstractGraphics extends FObj
     /** @return  the alternative text property. */
     public String getAltText() {
         return altText;
+    }
+    
+    /** @return  the actual text property. */
+    public String getActualText() {
+        return actualText;
     }
 
     /** @return the graphic's intrinsic width in millipoints */
