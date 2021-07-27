@@ -2660,6 +2660,12 @@ public final class FOPropertyMapping implements Constants {
         m.setInherited(false);
         m.setDefault("");
         addPropertyMaker("fox:alt-text", m);
+        
+        // fox:actual-text, used for mn2pdf mathml text
+        m = new StringProperty.Maker(PR_X_ACTUAL_TEXT);
+        m.setInherited(false);
+        m.setDefault("");
+        addPropertyMaker("fox:actual-text", m);
 
         //fox:abbreviation used for accessibility
         m = new StringProperty.Maker(PR_X_ABBREVIATION);

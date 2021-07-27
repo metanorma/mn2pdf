@@ -384,7 +384,7 @@ class StructureTreeEventTrigger extends FOEventHandler {
 
     @Override
     public void startLink(BasicLink basicLink) {
-        startElementWithIDAndAltText(basicLink, basicLink.getAltText());
+        startElementWithIDAndAltText(basicLink, basicLink.getAltText(), null);
     }
 
     @Override
@@ -394,13 +394,13 @@ class StructureTreeEventTrigger extends FOEventHandler {
 
     @Override
     public void image(ExternalGraphic eg) {
-        startElementWithIDAndAltText(eg, eg.getAltText());
+        startElementWithIDAndAltText(eg, eg.getAltText(), null);
         endElement(eg);
     }
 
     @Override
     public void startInstreamForeignObject(InstreamForeignObject ifo) {
-        startElementWithIDAndAltText(ifo, ifo.getAltText());
+        startElementWithIDAndAltText(ifo, ifo.getAltText(), ifo.getActualText());
     }
 
     @Override
@@ -523,12 +523,14 @@ class StructureTreeEventTrigger extends FOEventHandler {
                         node.getParent().getStructureTreeElement()));
     }
 
-    private void startElementWithIDAndAltText(FObj node, String altText) {
+    private void startElementWithIDAndAltText(FObj node, String altText, String actualText) {
         AttributesImpl attributes = new AttributesImpl();
         String localName = node.getLocalName();
         addRole((CommonAccessibilityHolder)node, attributes);
         addAttribute(attributes, ExtensionElementMapping.URI, "alt-text",
                 ExtensionElementMapping.STANDARD_PREFIX, altText);
+        addAttribute(attributes, ExtensionElementMapping.URI, "actual-text",
+                ExtensionElementMapping.STANDARD_PREFIX, actualText);
         node.setStructureTreeElement(
                 structureTreeEventHandler.startImageNode(localName, attributes,
                         node.getParent().getStructureTreeElement()));
