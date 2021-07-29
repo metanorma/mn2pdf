@@ -4,11 +4,16 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 
 
 public class LineCatcher extends PDFGraphicsStreamEngine
@@ -16,9 +21,19 @@ public class LineCatcher extends PDFGraphicsStreamEngine
     private final GeneralPath linePath = new GeneralPath();
     private int clipWindingRule = -1;
 
+    private boolean isClosedPath = false;
+    private boolean isFillPath = false;
+   
+    private float lastX;
+    private float lastY;
+    
+    private PDPage currpage;
+    
+    private List<PDAnnotation> annotations;
     public LineCatcher(PDPage page)
     {
         super(page);
+        currpage = page;
     }
 
     public static void main(String[] args) throws IOException
@@ -27,8 +42,26 @@ public class LineCatcher extends PDFGraphicsStreamEngine
         try (PDDocument document = PDDocument.load(new File(filepath)))
         {
             PDPage page = document.getPage(0);
+            
             LineCatcher test = new LineCatcher(page);
+            test.annotations = page.getAnnotations();
             test.processPage(page);
+            
+            //PDPageContentStream contentStream = new PDPageContentStream(document,page);
+            
+            /*for (PDAnnotation a:test.annotations) {
+                PDRectangle r = a.getRectangle();
+                contentStream.setNonStrokingColor(235,34,12);
+                float width = r.getWidth();
+                contentStream.addRect(r.getLowerLeftX(), r.getLowerLeftY(), width, r.getHeight());
+                contentStream.fill();
+                contentStream.setNonStrokingColor(0,0,0);
+            }*/
+            
+            //page.setAnnotations(test.annotations);
+            
+            //contentStream.close();
+            
             document.save(new File(filepath+"2.pdf"));
         }
     }
@@ -59,6 +92,7 @@ public class LineCatcher extends PDFGraphicsStreamEngine
     @Override
     public void clip(int windingRule) throws IOException
     {
+        System.out.println("Clip");
         // the clipping path will not be updated until the succeeding painting operator is called
         clipWindingRule = windingRule;
 
@@ -70,6 +104,29 @@ public class LineCatcher extends PDFGraphicsStreamEngine
         linePath.moveTo(x, y);
         linePath.lineTo(x, y);
         System.out.println("moveTo:" + "x=" + x + ", y=" + y);
+        
+        if (isClosedPath && !isFillPath) {
+            System.out.println("New formula:" + "x=" + lastX + ", y=" + lastY);
+            
+            PDRectangle position = new PDRectangle();
+            position.setLowerLeftX(lastX);
+            position.setLowerLeftY(lastY);
+
+            position.setUpperRightX(lastX + 20);
+            position.setUpperRightY(lastY + 20);
+
+            PDAnnotationText text = new PDAnnotationText();
+            text.setContents("Mathml text");
+            text.setRectangle(position);
+            text.setOpen(true);
+            text.setConstantOpacity(50f);
+            annotations.add(text);
+
+            
+        }
+        
+        isClosedPath = false;
+        isFillPath = false;
     }
 
     @Override
@@ -89,6 +146,7 @@ public class LineCatcher extends PDFGraphicsStreamEngine
     @Override
     public Point2D getCurrentPoint() throws IOException
     {
+        System.out.println("getCurrentPoint");
         return linePath.getCurrentPoint();
     }
 
@@ -96,12 +154,20 @@ public class LineCatcher extends PDFGraphicsStreamEngine
     public void closePath() throws IOException
     {
         System.out.println("Closing path x=" + linePath.getCurrentPoint().getX() + ", y=" + + linePath.getCurrentPoint().getY());
+        
+        isClosedPath = true;
+        lastX = (float)linePath.getCurrentPoint().getX();
+        lastY = (float)linePath.getCurrentPoint().getY();
+        
+        
+        
         linePath.closePath();
     }
 
     @Override
     public void endPath() throws IOException
     {
+        System.out.println("End path");
         if (clipWindingRule != -1)
         {
             linePath.setWindingRule(clipWindingRule);
@@ -116,6 +182,7 @@ public class LineCatcher extends PDFGraphicsStreamEngine
     public void strokePath() throws IOException
     {
         // do stuff
+        System.out.println("Stroke path");
         System.out.println(linePath.getBounds2D());
 
         linePath.reset();
@@ -124,18 +191,22 @@ public class LineCatcher extends PDFGraphicsStreamEngine
     @Override
     public void fillPath(int windingRule) throws IOException
     {
+        System.out.println("Fill path");
+        isFillPath = true;
         linePath.reset();
     }
 
     @Override
     public void fillAndStrokePath(int windingRule) throws IOException
     {
+        System.out.println("FillAndStroke path");
         linePath.reset();
     }
 
     @Override
     public void shadingFill(COSName cosn) throws IOException
     {
+        System.out.println("shadingFill");
     }
 
     
