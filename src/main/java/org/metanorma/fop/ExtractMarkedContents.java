@@ -12,8 +12,11 @@ import java.util.Map.Entry;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.cos.COSFloat;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureElement;
@@ -42,8 +45,33 @@ public class ExtractMarkedContents {
             
             Map<PDPage, Map<Integer, PDMarkedContent>> markedContents = new HashMap<>();
             
+            COSDocument cosDoc=document.getDocument();
+            
+            List<COSObject> listObj = cosDoc.getObjects();
+            
+            for (COSObject o: listObj) {
+                long on = o.getObjectNumber();
+                
+                COSArray fieldAreaArray = (COSArray) o.getDictionaryObject(COSName.RECT);
+                
+                if (fieldAreaArray != null) {
+                    float left = (float) ((COSFloat) fieldAreaArray.get(0)).doubleValue();
+                    float bottom = (float) ((COSFloat) fieldAreaArray.get(1)).doubleValue();
+                    float right = (float) ((COSFloat) fieldAreaArray.get(2)).doubleValue();
+                    float top = (float) ((COSFloat) fieldAreaArray.get(3)).doubleValue();
+                }
+            }
+            
+            
             for( PDPage page : document.getPages() )
             {
+                
+                /*COSDictionary cosd = page.getCOSObject();
+                for(Entry<COSName, COSBase> e:cosd.entrySet()) {
+                    System.out.println("Key=" + e.getKey());
+                    System.out.println("Value=" + e.getValue());
+                }*/
+                
                 PDFMarkedContentExtractor extractor = new PDFMarkedContentExtractor();
                 extractor.processPage(page);
                 
@@ -85,13 +113,21 @@ public class ExtractMarkedContents {
         System.out.printf("<%s>\n", structType);
         
         if (structType != null && structType.equals("Figure")) {
+            
+            
+            //COSArray fieldAreaArray = (COSArray) node.getCOSObject().getDictionaryObject(COSName.RECT);
+            
             COSDictionary dict = node.getCOSObject();
+//            String actual_text = dict.getDictionaryObject(COSName.ACTUAL_TEXT);
+            
             for(Entry<COSName, COSBase> e:dict.entrySet()) {
                 System.out.println("Key=" + e.getKey());
                 System.out.println("Value=" + e.getValue());
             }
+            
         }
         for (Object object : node.getKids()) {
+            
             if (object instanceof COSArray) {
                 for (COSBase base : (COSArray) object) {
                     if (base instanceof COSDictionary) {
