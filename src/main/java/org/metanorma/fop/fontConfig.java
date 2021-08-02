@@ -69,6 +69,8 @@ class fontConfig {
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     
+    private final String FONT_WEIGHT_DEFAULT = "normal";
+    
     private final Document FOPconfigXML;
 
     static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
@@ -137,8 +139,21 @@ class fontConfig {
                 //DEBUG
                 //System.out.println(obj);
                 for (Map.Entry<String, Object> entry : obj.entrySet()) {
-                    final String fontName = entry.getKey();
 
+                    String entryFontName = entry.getKey();
+                    
+                    Map<String,String> fontVariant1 = new HashMap<>();
+                    fontVariant1.put("font-name", entryFontName);
+                    
+                    final  Map<String,String> fontStylesDefault = getFontDefaultProperties(entryFontName);
+                    String fontWeightPreferred = fontStylesDefault.get("font-weight");
+                    
+                    Map<String,String> fontVariant2 = null;
+                    if (!(fontStylesDefault.get("font-name").equals(entryFontName)) || !(fontWeightPreferred.equals(FONT_WEIGHT_DEFAULT))) {
+                        fontVariant2 = fontStylesDefault;
+                    }
+                    
+                    
                     Map<String, Object> fontEntries = (Map<String, Object>) entry.getValue();
                     
                     for (Map.Entry<String, Object> fontEntry : fontEntries.entrySet()) {
@@ -146,9 +161,18 @@ class fontConfig {
                         // Regular, Bold Italic, etc.
                         Map<String,String> fontStyles = getFontStyles(fontEntry.getKey());
                         
-                        final String fontWeight = fontStyles.get("weight");
-                        final String fontStyle = fontStyles.get("style");
-
+                        fontVariant1.put("font-weight", fontStyles.get("weight"));
+                        fontVariant1.put("font-style", fontStyles.get("style"));
+                        
+                        
+                        
+                        List<Map<String,String>> fontVariants = new ArrayList<>();
+                        fontVariants.add(fontVariant1);
+                        if (fontVariant2 != null) {
+                            fontVariant2.put("font-style", fontStyles.get("style"));
+                            fontVariants.add(fontVariant2);
+                        }
+                        
                         Map<String, Object> fontNamePathsEntries = (Map<String, Object>) fontEntry.getValue();
                         
                         String fontFullName = (String) fontNamePathsEntries.get("full_name");
@@ -159,66 +183,73 @@ class fontConfig {
                             String fontPath_ = Util.fixFontPath(fontPath);
                             if (new File(fontPath_).exists()) {
 
-                                List<FOPFont> fopFontsByNameWeightStyle = fopFonts.stream()
-                                    .filter(fopFont -> !fopFont.isReadyToUse())
-                                    .filter(fopFont -> fopFont.contains(fontName, fontWeight, fontStyle))                            
-                                    .collect(Collectors.toList());
+                                
+                                for (Map<String,String> fontVariant: fontVariants) {
+                                    final String fontName = fontVariant.get("font-name");
+                                    final String fontWeight = fontVariant.get("font-weight");
+                                    final String fontStyle = fontVariant.get("font-style");
+                                
+                                    List<FOPFont> fopFontsByNameWeightStyle = fopFonts.stream()
+                                        .filter(fopFont -> !fopFont.isReadyToUse())
+                                        .filter(fopFont -> fopFont.contains(fontName, fontWeight, fontStyle))                            
+                                        .collect(Collectors.toList());
 
-                                if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
-                                    if (DEBUG) {
-                                        //System.out.println("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")");
-                                        fontManifestLog.append("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")").append("\n");
-                                    }
-                                    FOPFontTriplet fopFontTriplet = new FOPFontTriplet();
-                                    fopFontTriplet.setName(fontName);
-                                    fopFontTriplet.setWeight(fontWeight);
-                                    fopFontTriplet.setStyle(fontStyle);
-                                    List<FOPFontTriplet> fopFontTriplets = new ArrayList<>();
-                                    fopFontTriplets.add(fopFontTriplet);
-                                    
-                                    FOPFont newFOPFont = new FOPFont();
-                                    newFOPFont.setEmbed_url(fontPath_);
-                                    if (fontPath_.toLowerCase().endsWith(".ttc")) {
-                                        //newFOPFont.setSub_font(fontName);
-                                        newFOPFont.setSub_font(fontFullName);
-                                    }
-                                    newFOPFont.setReadyToUse(true);
-                                    newFOPFont.setSource("manifest");
-                                    newFOPFont.setFont_triplet(fopFontTriplets);
-                                    
-                                    fopFonts.add(newFOPFont);
-                                    
-                                } else { //if there is font in array
-                                    if (DEBUG) {
-                                        //System.out.println("Update font entry: " + fontName + " to " + fontPath_);
-                                        fontManifestLog.append("Update font entry: " + fontName + " to " + fontPath_).append("\n");
-                                    }
-                                    fopFontsByNameWeightStyle.stream()
+                                    if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
+                                        if (DEBUG) {
+                                            //System.out.println("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")");
+                                            fontManifestLog.append("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")").append("\n");
+                                        }
+                                        FOPFontTriplet fopFontTriplet = new FOPFontTriplet();
+                                        fopFontTriplet.setName(fontName);
+                                        fopFontTriplet.setWeight(fontWeight);
+                                        fopFontTriplet.setStyle(fontStyle);
+                                        List<FOPFontTriplet> fopFontTriplets = new ArrayList<>();
+                                        fopFontTriplets.add(fopFontTriplet);
+
+                                        FOPFont newFOPFont = new FOPFont();
+                                        newFOPFont.setEmbed_url(fontPath_);
+                                        if (fontPath_.toLowerCase().endsWith(".ttc")) {
+                                            //newFOPFont.setSub_font(fontName);
+                                            newFOPFont.setSub_font(fontFullName);
+                                        }
+                                        newFOPFont.setReadyToUse(true);
+                                        newFOPFont.setSource("manifest");
+                                        newFOPFont.setFont_triplet(fopFontTriplets);
+
+                                        fopFonts.add(newFOPFont);
+
+                                    } else { //if there is font in array
+                                        if (DEBUG) {
+                                            //System.out.println("Update font entry: " + fontName + " to " + fontPath_);
+                                            fontManifestLog.append("Update font entry: " + fontName + " to " + fontPath_).append("\n");
+                                        }
+                                        fopFontsByNameWeightStyle.stream()
+                                                .forEach(f -> {
+                                                    f.setEmbed_url(fontPath_);
+                                                    f.setReadyToUse(true);
+                                                    f.setSource("manifest");
+                                                });
+
+                                        // change sub-font for ttc fonts
+                                        if (fontPath_.toLowerCase().endsWith(".ttc")) {
+                                            fopFontsByNameWeightStyle.stream()
+                                                //.filter(f -> !fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase())) // in case if file names in embed-url and in manifest file are different
+                                                //.forEach(f -> f.setSub_font(fontName));
+                                                .forEach(f -> f.setSub_font(fontFullName));
+                                        }
+
+                                        //List<FOPFont> fopFontsWithSimulateStyleByName
+                                        // set embed-url path for fonts with simulate-style="true" and similar font filename
+                                        fopFonts.stream()
+                                            .filter(f -> !f.isReadyToUse())
+                                            .filter(f -> f.getSimulate_style() != null && f.getSimulate_style().equals("true"))
+                                            .filter(f -> fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()))
+                                            .filter(f -> f.contains(fontName))
                                             .forEach(f -> {
                                                 f.setEmbed_url(fontPath_);
                                                 f.setReadyToUse(true);
-                                                f.setSource("manifest");
                                             });
-                                    
-                                    // change sub-font for ttc fonts
-                                    if (fontPath_.toLowerCase().endsWith(".ttc")) {
-                                        fopFontsByNameWeightStyle.stream()
-                                            //.filter(f -> !fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase())) // in case if file names in embed-url and in manifest file are different
-                                            //.forEach(f -> f.setSub_font(fontName));
-                                            .forEach(f -> f.setSub_font(fontFullName));
                                     }
-                                    
-                                    //List<FOPFont> fopFontsWithSimulateStyleByName
-                                    // set mebed-url path for fonts with simulate-style="true" and similar font filename
-                                    fopFonts.stream()
-                                        .filter(f -> !f.isReadyToUse())
-                                        .filter(f -> f.getSimulate_style() != null && f.getSimulate_style().equals("true"))
-                                        .filter(f -> fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()))
-                                        .filter(f -> f.contains(fontName))
-                                        .forEach(f -> {
-                                            f.setEmbed_url(fontPath_);
-                                            f.setReadyToUse(true);
-                                        });
                                 }
                             } else {
                                 System.out.println("WARNING: font path '" + fontPath + "' from the manifest file doesn't exist!");
@@ -262,8 +293,8 @@ class fontConfig {
     public Map<String,String> getFontStyles(String style) {
         Map<String,String> fontstyle = new HashMap<>();
         
-        String fontWeight = "normal"; // default value, Regular
-        String fontStyle = "normal"; // default value, Regular
+        String fontWeight = FONT_WEIGHT_DEFAULT; // default value
+        String fontStyle = "normal"; // default value
         
         String fontStyle_weight = style.toLowerCase();
         String fontStyle_style = style.toLowerCase();
@@ -274,7 +305,28 @@ class fontConfig {
             fontStyle_style = fontStyleParts[1];
         }
         
-        switch (fontStyle_weight)  {
+        fontWeight = getFontWeight(fontStyle_weight);
+        if (fontWeight.isEmpty()) {
+            fontWeight = FONT_WEIGHT_DEFAULT;
+        }
+        
+        switch (fontStyle_style) {
+            case ("italic"):
+                   fontStyle = "italic";
+                   break;
+            default: // regular
+                break;
+        }
+        
+        fontstyle.put("weight", fontWeight);
+        fontstyle.put("style", fontStyle);
+        
+        return fontstyle;
+    }
+    
+    private String getFontWeight(String fontStyle_weight) {
+        String fontWeight = "";
+        switch (fontStyle_weight.toLowerCase())  {
             case ("heavy"):
                 fontWeight = "900";
                 break;
@@ -305,22 +357,40 @@ class fontConfig {
             case ("thin"):
                 fontWeight = "100";
                 break;
-            default: // regular
+            case ("normal"):
+                fontWeight = FONT_WEIGHT_DEFAULT;
+                break;
+            default:
                 break;
         }
+        return fontWeight;
+    }
+    
+    // Work Sans Black -> Work Sans and weight = 900
+    public Map<String,String> getFontDefaultProperties(String font) {
+        Map<String,String> fontproperties = new HashMap<>();
         
-        switch (fontStyle_style) {
-            case ("italic"):
-                   fontStyle = "italic";
-                   break;
-            default: // regular
-                break;
+        String fontName = font;
+        String fontWeight = FONT_WEIGHT_DEFAULT; // default value
+        String fontStyle = "normal"; // default value
+        
+        String fontName_lc = font.toLowerCase();
+        if (fontName_lc.contains(" ")) {
+            fontWeight = fontName_lc.substring(fontName_lc.lastIndexOf(" ") + 1);
+            fontWeight = getFontWeight(fontWeight);
+            if (!fontWeight.isEmpty()){
+                fontName = fontName.substring(0, fontName.lastIndexOf(" "));
+            }
+            if (fontWeight.isEmpty()) {
+                fontWeight = FONT_WEIGHT_DEFAULT;
+            }
         }
         
-        fontstyle.put("weight", fontWeight);
-        fontstyle.put("style", fontStyle);
+        fontproperties.put("font-name", fontName);
+        fontproperties.put("font-weight", fontWeight);
+        fontproperties.put("font-style", fontStyle);
         
-        return fontstyle;
+        return fontproperties;
     }
     
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
