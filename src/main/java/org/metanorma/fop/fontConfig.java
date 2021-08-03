@@ -142,15 +142,15 @@ class fontConfig {
 
                     String entryFontName = entry.getKey();
                     
-                    Map<String,String> fontVariant1 = new HashMap<>();
-                    fontVariant1.put("font-name", entryFontName);
                     
-                    final  Map<String,String> fontStylesDefault = getFontDefaultProperties(entryFontName);
-                    String fontWeightPreferred = fontStylesDefault.get("font-weight");
+                    FOPFontTriplet fopFontTripletVariant1 = new FOPFontTriplet();
+                    fopFontTripletVariant1.setName(entryFontName);
                     
-                    Map<String,String> fontVariant2 = null;
-                    if (!(fontStylesDefault.get("font-name").equals(entryFontName)) || !(fontWeightPreferred.equals(FONT_WEIGHT_DEFAULT))) {
-                        fontVariant2 = fontStylesDefault;
+                    FOPFontTriplet fopFontTripletDefault = getFontDefaultProperties(entryFontName);
+                    
+                    FOPFontTriplet fopFontTripletVariant2 = null;
+                    if (!(fopFontTripletDefault.getName().equals(entryFontName)) || !(fopFontTripletDefault.getWeight().equals(FONT_WEIGHT_DEFAULT))) {
+                        fopFontTripletVariant2 = fopFontTripletDefault;
                     }
                     
                     
@@ -161,16 +161,14 @@ class fontConfig {
                         // Regular, Bold Italic, etc.
                         Map<String,String> fontStyles = getFontStyles(fontEntry.getKey());
                         
-                        fontVariant1.put("font-weight", fontStyles.get("weight"));
-                        fontVariant1.put("font-style", fontStyles.get("style"));
+                        fopFontTripletVariant1.setWeight(fontStyles.get("weight"));
+                        fopFontTripletVariant1.setStyle(fontStyles.get("style"));
                         
-                        
-                        
-                        List<Map<String,String>> fontVariants = new ArrayList<>();
-                        fontVariants.add(fontVariant1);
-                        if (fontVariant2 != null) {
-                            fontVariant2.put("font-style", fontStyles.get("style"));
-                            fontVariants.add(fontVariant2);
+                        List<FOPFontTriplet> fontVariants = new ArrayList<>();
+                        fontVariants.add(fopFontTripletVariant1);
+                        if (fopFontTripletVariant2 != null) {
+                            fopFontTripletVariant2.setStyle(fontStyles.get("style"));
+                            fontVariants.add(fopFontTripletVariant2);
                         }
                         
                         Map<String, Object> fontNamePathsEntries = (Map<String, Object>) fontEntry.getValue();
@@ -183,11 +181,10 @@ class fontConfig {
                             String fontPath_ = Util.fixFontPath(fontPath);
                             if (new File(fontPath_).exists()) {
 
-                                
-                                for (Map<String,String> fontVariant: fontVariants) {
-                                    final String fontName = fontVariant.get("font-name");
-                                    final String fontWeight = fontVariant.get("font-weight");
-                                    final String fontStyle = fontVariant.get("font-style");
+                                for (FOPFontTriplet fontVariant: fontVariants) {
+                                    final String fontName = fontVariant.getName();
+                                    final String fontWeight = fontVariant.getWeight();
+                                    final String fontStyle = fontVariant.getStyle();
                                 
                                     List<FOPFont> fopFontsByNameWeightStyle = fopFonts.stream()
                                         .filter(fopFont -> !fopFont.isReadyToUse())
@@ -197,12 +194,10 @@ class fontConfig {
                                     if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
                                         if (DEBUG) {
                                             //System.out.println("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")");
-                                            fontManifestLog.append("Create a new font entry: " + fontPath_ + " (" + fontName + " " + fontWeight + " " + fontStyle + ")").append("\n");
+                                            fontManifestLog.append("Create a new font entry: " + fontPath_ + " (" + fontName + ", font-weight='" + fontWeight + "', font-style='" + fontStyle + "')").append("\n");
                                         }
-                                        FOPFontTriplet fopFontTriplet = new FOPFontTriplet();
-                                        fopFontTriplet.setName(fontName);
-                                        fopFontTriplet.setWeight(fontWeight);
-                                        fopFontTriplet.setStyle(fontStyle);
+                                        FOPFontTriplet fopFontTriplet = new FOPFontTriplet(fontName, fontWeight, fontStyle);
+                                        
                                         List<FOPFontTriplet> fopFontTriplets = new ArrayList<>();
                                         fopFontTriplets.add(fopFontTriplet);
 
@@ -218,6 +213,16 @@ class fontConfig {
 
                                         fopFonts.add(newFOPFont);
 
+                                        
+                                        // set embed-url path for fonts with simulate-style="true" and similar sub-font
+                                        fopFonts.stream()
+                                            .filter(f -> !f.isReadyToUse())
+                                            .filter(f -> f.getSimulate_style() != null && f.getSimulate_style().equals("true"))
+                                            .filter(f -> f.getSub_font() != null && fontFullName.toLowerCase().equals(f.getSub_font().toLowerCase()))
+                                            .forEach(f -> {
+                                                f.setEmbed_url(fontPath_);
+                                            });
+                                        
                                     } else { //if there is font in array
                                         if (DEBUG) {
                                             //System.out.println("Update font entry: " + fontName + " to " + fontPath_);
@@ -367,7 +372,7 @@ class fontConfig {
     }
     
     // Work Sans Black -> Work Sans and weight = 900
-    public Map<String,String> getFontDefaultProperties(String font) {
+    public FOPFontTriplet getFontDefaultProperties(String font) {
         Map<String,String> fontproperties = new HashMap<>();
         
         String fontName = font;
@@ -386,11 +391,9 @@ class fontConfig {
             }
         }
         
-        fontproperties.put("font-name", fontName);
-        fontproperties.put("font-weight", fontWeight);
-        fontproperties.put("font-style", fontStyle);
+        FOPFontTriplet fontTriplet = new FOPFontTriplet(fontName, fontWeight, fontStyle);
         
-        return fontproperties;
+        return fontTriplet;
     }
     
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
@@ -512,78 +515,81 @@ class fontConfig {
             .filter(fopFont -> !fopFont.getEmbed_url().isEmpty())
             .filter(fopFont -> !fopFont.isReadyToUse())
             .forEach(fopFont -> {
-
-                String msg = "";
-                String embed_url = Paths.get(fontPath, fopFont.getEmbed_url()).toString();
-                /*try {
-                    embed_url = new File(embed_url).toURI().toURL().toString();
-                } catch (MalformedURLException ex) {
-                    System.out.println("Can't obtain a font path: " + ex.toString());
-                }*/
-                fopFont.setEmbed_url(embed_url);
                 
-                //if font is using only (skip unused font processing)
-                // skip default fonts
-                if (fopFont.isUsing() && !fopFont.isMn_default()) {
+                if (!(new File (fopFont.getEmbed_url()).exists())){
                     
-                    File file_embed_url = new File (embed_url);
-                    if (!file_embed_url.exists()) { // if font file doesn't exist
-                        //msg = "WARNING: Font file '" + embed_url + "'";
-                        //try to find system font (example for Windows - C:/Windows/fonts/)
-                        String fontfilename = file_embed_url.getName();
-                        String font_replacementpath = null;
-                        String font_source = "";
-                        for (String url: machineFontList) {
-                            if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
-                                font_replacementpath = url;
-                                font_source = "system";
-                                break;
-                            }
-                        }
-                        // if there isn't system font, then try to find system font with alternate name
-                        // Example: timesbd.ttf -> Times New Roman Bold.ttf
-                        if (font_replacementpath == null) {
-                            List<FOPFontAlternate> fopFontsAlternate = fopFont.getAlternate();
-                            
-                            for(FOPFontAlternate fopFontAlternate : fopFontsAlternate) {
-                                if (font_replacementpath != null) {
+                    String msg = "";
+                    String embed_url = Paths.get(fontPath, fopFont.getEmbed_url()).toString();
+                    /*try {
+                        embed_url = new File(embed_url).toURI().toURL().toString();
+                    } catch (MalformedURLException ex) {
+                        System.out.println("Can't obtain a font path: " + ex.toString());
+                    }*/
+                    fopFont.setEmbed_url(embed_url);
+
+                    //if font is using only (skip unused font processing)
+                    // skip default fonts
+                    if (fopFont.isUsing() && !fopFont.isMn_default()) {
+
+                        File file_embed_url = new File (embed_url);
+                        if (!file_embed_url.exists()) { // if font file doesn't exist
+                            //msg = "WARNING: Font file '" + embed_url + "'";
+                            //try to find system font (example for Windows - C:/Windows/fonts/)
+                            String fontfilename = file_embed_url.getName();
+                            String font_replacementpath = null;
+                            String font_source = "";
+                            for (String url: machineFontList) {
+                                if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
+                                    font_replacementpath = url;
+                                    font_source = "system";
                                     break;
                                 }
-                                for (String url: machineFontList) {
-                                    if (url.toLowerCase().endsWith(fopFontAlternate.getEmbed_url().toLowerCase())) {
-                                        font_replacementpath = url;
-                                        font_source = "system";
-                                        fopFont.setSub_font(fopFontAlternate.getSub_font());                                        
-                                        fopFont.setSimulate_style(fopFontAlternate.getSimulate_style());                                        
+                            }
+                            // if there isn't system font, then try to find system font with alternate name
+                            // Example: timesbd.ttf -> Times New Roman Bold.ttf
+                            if (font_replacementpath == null) {
+                                List<FOPFontAlternate> fopFontsAlternate = fopFont.getAlternate();
+
+                                for(FOPFontAlternate fopFontAlternate : fopFontsAlternate) {
+                                    if (font_replacementpath != null) {
                                         break;
+                                    }
+                                    for (String url: machineFontList) {
+                                        if (url.toLowerCase().endsWith(fopFontAlternate.getEmbed_url().toLowerCase())) {
+                                            font_replacementpath = url;
+                                            font_source = "system";
+                                            fopFont.setSub_font(fopFontAlternate.getSub_font());                                        
+                                            fopFont.setSimulate_style(fopFontAlternate.getSimulate_style());                                        
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        // if font didn't find on machine
-                        if (font_replacementpath == null) {
-                            //iterate each font-triplet
-                            for(FOPFontTriplet fopFontTriplet: fopFont.getFont_triplet()) {
-                                
-                                String fontFamilySubst = fopFontTriplet.getFontSubstituionByDefault();
-                                
-                                font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
-                                
-                                //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
-                                //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                            // if font didn't find on machine
+                            if (font_replacementpath == null) {
+                                //iterate each font-triplet
+                                for(FOPFontTriplet fopFontTriplet: fopFont.getFont_triplet()) {
 
-                                /*try{
-                                    font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
-                                } catch (MalformedURLException ex) {
-                                    System.out.println("Can't obtain a font path: " + ex.toString());
-                                }*/
+                                    String fontFamilySubst = fopFontTriplet.getFontSubstituionByDefault();
+
+                                    font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
+
+                                    //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
+                                    //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                    fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+
+                                    /*try{
+                                        font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
+                                    } catch (MalformedURLException ex) {
+                                        System.out.println("Can't obtain a font path: " + ex.toString());
+                                    }*/
+                                }
                             }
-                        }
-                        if (font_replacementpath != null) {
-                            fopFont.setEmbed_url(font_replacementpath);
-                            fopFont.setSource(font_source);
+                            if (font_replacementpath != null) {
+                                fopFont.setEmbed_url(font_replacementpath);
+                                fopFont.setSource(font_source);
+                            }
                         }
                     }
                 }

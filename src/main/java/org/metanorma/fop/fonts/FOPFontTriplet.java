@@ -20,6 +20,16 @@ public class FOPFontTriplet {
     @JacksonXmlProperty(isAttribute=true)
     String weight;
 
+    public FOPFontTriplet() {
+        
+    }
+    
+    public FOPFontTriplet(String name, String weight, String style) {
+        this.name = name;
+        this.weight = weight;
+        this.style = style;
+    }
+    
     public String getName() {
         return name;
     }
