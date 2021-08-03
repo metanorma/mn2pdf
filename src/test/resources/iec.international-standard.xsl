@@ -3049,7 +3049,7 @@
 		
 		
 		
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
@@ -4088,7 +4088,7 @@
 			<xsl:apply-templates/>
 		</fo:inline>
 	</xsl:template><xsl:template match="*[local-name()='tt']">
-		<fo:inline font-family="Courier New" font-size="10pt">			
+		<fo:inline font-family="Courier" font-size="10pt">			
 			<xsl:apply-templates/>
 		</fo:inline>
 	</xsl:template><xsl:template match="*[local-name()='del']">

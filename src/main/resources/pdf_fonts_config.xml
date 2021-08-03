@@ -141,19 +141,19 @@ Relative config URLs are resolved relative to location of this file.
 				</font>
 				<font kerning="yes" embed-url="cour.ttf">
 					<alternate embed-url="Courier New.ttf"/>
-					<font-triplet name="Courier New" style="normal" weight="normal"/>
+					<font-triplet name="Courier" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="courbd.ttf">
 					<alternate embed-url="Courier New Bold.ttf"/>
-					<font-triplet name="Courier New" style="normal" weight="bold"/>
+					<font-triplet name="Courier" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="courbi.ttf">
 					<alternate embed-url="Courier New Bold Italic.ttf"/>
-					<font-triplet name="Courier New" style="italic" weight="bold"/>
+					<font-triplet name="Courier" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="couri.ttf">
 					<alternate embed-url="Courier New Italic.ttf"/>
-					<font-triplet name="Courier New" style="italic" weight="normal"/>
+					<font-triplet name="Courier" style="italic" weight="normal"/>
 				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
