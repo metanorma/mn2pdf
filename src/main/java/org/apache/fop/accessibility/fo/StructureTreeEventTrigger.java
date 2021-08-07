@@ -529,8 +529,10 @@ class StructureTreeEventTrigger extends FOEventHandler {
         addRole((CommonAccessibilityHolder)node, attributes);
         addAttribute(attributes, ExtensionElementMapping.URI, "alt-text",
                 ExtensionElementMapping.STANDARD_PREFIX, altText);
-        addAttribute(attributes, ExtensionElementMapping.URI, "actual-text",
-                ExtensionElementMapping.STANDARD_PREFIX, actualText);
+        if (actualText != null) {
+            addAttribute(attributes, ExtensionElementMapping.URI, "actual-text",
+                    ExtensionElementMapping.STANDARD_PREFIX, actualText);
+        }
         node.setStructureTreeElement(
                 structureTreeEventHandler.startImageNode(localName, attributes,
                         node.getParent().getStructureTreeElement()));
