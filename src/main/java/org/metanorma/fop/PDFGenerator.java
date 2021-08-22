@@ -337,15 +337,14 @@ public class PDFGenerator {
         OutputStream out = null;
         try {
             
-            
-
             if (isAddMathAsText) {
                 logger.info("Adding Math as text...");
-                logger.info("Transforming to Intermediat Format...");
+                logger.info("Transforming to Intermediate Format...");
                 String xmlIF = generateFOPIntermediatFormat(src, fontcfg.getConfig(), pdf);
-                logger.info("Updating Intermediat Format...");
+                logger.info("Updating Intermediate Format...");
+                xmlIF = applyXSLT("add_hidden_math.xsl ", xmlIF);
+                src = new StreamSource(new StringReader(xmlIF));
             }
-            
             
             logger.info("Transforming to PDF...");
             
@@ -518,14 +517,8 @@ public class PDFGenerator {
     
     private void createIndexFile(String indexxmlFilePath, String intermediateXML) {
         try {
-            Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), "index.xsl"));
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(srcXSL);
-            Source src = new StreamSource(new StringReader(intermediateXML));
-            StringWriter resultWriter = new StringWriter();
-            StreamResult sr = new StreamResult(resultWriter);
-            transformer.transform(src, sr);
-            String xmlIndex = resultWriter.toString();
+            String xmlIndex = applyXSLT("index.xsl", intermediateXML);
+            
             if (xmlIndex.length() != 0) {
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(indexxmlFilePath))) {
@@ -540,10 +533,25 @@ public class PDFGenerator {
         }    
     }
     
+    // Apply XSL tranformation (file xsltfile) for xml string
+    private String applyXSLT(String xsltfile, String xmlStr) throws Exception {
+        
+        Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(srcXSL);
+        Source src = new StreamSource(new StringReader(xmlStr));
+        StringWriter resultWriter = new StringWriter();
+        StreamResult sr = new StreamResult(resultWriter);
+        transformer.transform(src, sr);
+        String xmlResult = resultWriter.toString();
+        
+        return xmlResult;
+    }
+    
     private class DefaultErrorListener implements javax.xml.transform.ErrorListener {
 
         public void warning(TransformerException exc) {
-            System.err.println(exc.toString());
+            logger.severe(exc.toString());
         }
 
         public void error(TransformerException exc)
