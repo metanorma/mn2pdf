@@ -1,6 +1,5 @@
 package org.metanorma.fop;
 
-import static org.metanorma.fop.mn2pdf.ERROR_EXIT_CODE;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -13,6 +12,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import static org.metanorma.Constants.ERROR_EXIT_CODE;
 
 /**
  *

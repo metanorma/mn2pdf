@@ -1,6 +1,5 @@
 package org.metanorma.fop;
 
-import static org.metanorma.fop.mn2pdf.DEBUG;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -45,6 +44,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import static org.metanorma.Constants.DEBUG;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -383,6 +383,30 @@ public class Util {
         NodeList pixelSizes = dimension.getElementsByTagName(elementName);
         IIOMetadataNode pixelSize = pixelSizes.getLength() > 0 ? (IIOMetadataNode) pixelSizes.item(0) : null;
         return pixelSize != null ? Float.parseFloat(pixelSize.getAttribute("value")) : -1;
+    }
+    
+    public static int getCoverPagesCount (File fXSL) {
+        int countpages = 0;
+        try {            
+            // open XSL and find 
+            // <xsl:variable name="coverpages_count">2</xsl:variable>
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputStream xmlstream = new FileInputStream(fXSL);
+            Document sourceXML = dBuilder.parse(xmlstream);
+            
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            XPathExpression expr = xpath.compile("//*[local-name() = 'variable'][@name='coverpages_count']");
+            NodeList vars = (NodeList) expr.evaluate(sourceXML, XPathConstants.NODESET);
+            if (vars.getLength() > 0) {
+                countpages = Integer.valueOf(vars.item(0).getTextContent());
+            }
+        } catch (Exception ex) {
+            System.err.println("Can't read coverpages_count variable from source XSL.");
+            ex.printStackTrace();
+        }        
+        return countpages;
     }
     
 }
