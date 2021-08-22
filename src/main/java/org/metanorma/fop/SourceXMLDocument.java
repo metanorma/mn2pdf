@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,6 +30,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import static org.metanorma.fop.PDFGenerator.logger;
+import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,6 +45,8 @@ import org.xml.sax.SAXException;
  * @author Alexander Dyuzhev
  */
 public class SourceXMLDocument {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     Document sourceXML;
 
@@ -65,7 +71,7 @@ public class SourceXMLDocument {
             InputStream xmlstream = new FileInputStream(fXML);
             sourceXML = dBuilder.parse(xmlstream);
         } catch (Exception ex) {
-            System.err.println("Can't read source XML.");
+            logger.severe("Can't read source XML.");
             ex.printStackTrace();
         }
     }
@@ -112,10 +118,10 @@ public class SourceXMLDocument {
                     }
 
                 } catch (XPathExpressionException ex) {
-                    System.out.println(ex.toString());
+                    logger.info(ex.toString());
                 }
             } catch (ParserConfigurationException | SAXException | IOException e) {
-                System.out.println(e.toString());
+                logger.info(e.toString());
             }
         }
         
@@ -147,7 +153,7 @@ public class SourceXMLDocument {
                             }
                             svgmap.put(id, svgpath.toFile().toURI().toURL().toString());
                         } catch (IOException ex) {
-                            System.err.println("Can't save svg file into a temporary directory " + tmpfilepath.toString());
+                            logger.log(Level.SEVERE, "Can''t save svg file into a temporary directory {0}", tmpfilepath.toString());
                             ex.printStackTrace();;
                         }
                     }
@@ -181,7 +187,7 @@ public class SourceXMLDocument {
                 return outputPath.toString();
             }
         } catch (Exception ex) {
-            System.err.println("Can't save images.xml into temporary folder");
+            logger.severe("Can't save images.xml into temporary folder");
             ex.printStackTrace();
         }
         return "";
@@ -201,16 +207,16 @@ public class SourceXMLDocument {
                         Path outputPath = Paths.get(tmpfilepath.toString(), "index.xml");
                         return outputPath.toString();
                     } catch (IOException ex) {
-                        System.err.println("Can't create a temporary directory " + tmpfilepath.toString());
+                        logger.severe("Can't create a temporary directory " + tmpfilepath.toString());
                         ex.printStackTrace();;
                     }
                 }
             } catch (XPathExpressionException ex) {
-                System.out.println(ex.toString());
+                logger.info(ex.toString());
             }
             
         } catch (Exception ex) {
-            System.err.println("Can't save index.xml into temporary folder");
+            logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
         }
         return "";
@@ -239,7 +245,7 @@ public class SourceXMLDocument {
             }
 
         } catch (Exception ex) {
-            System.err.println("Can't read language list from source XML.");
+            logger.severe("Can't read language list from source XML.");
             ex.printStackTrace();
         }
         

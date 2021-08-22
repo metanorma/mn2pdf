@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.logging.Logger;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -13,12 +14,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
+import org.metanorma.utils.LoggerHelper;
 
 /**
  *
  * @author Alexander Dyuzhev
  */
 public class XSLTconverter {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     Properties xslparams = new Properties();
     

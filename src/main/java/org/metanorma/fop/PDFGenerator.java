@@ -23,6 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
@@ -76,6 +77,10 @@ public class PDFGenerator {
     
     private boolean isSplitByLanguage = false;
     
+    private boolean isAddMathAsText = false;
+    
+    private boolean isAddMathAsAttachment = false;
+    
     private Properties xsltParams = new Properties();
     
     int pageCount = 0;
@@ -102,6 +107,15 @@ public class PDFGenerator {
         this.isSplitByLanguage = isSplitByLanguage;
     }
 
+    public void setAddMathAsText(boolean isAddMathAsText) {
+        this.isAddMathAsText = isAddMathAsText;
+    }
+    
+    public void setAddMathAsAttachment(boolean isAddMathAsAttachment) {
+        this.isAddMathAsAttachment = isAddMathAsAttachment;
+    }
+    
+    
     public void setXSLTParams(Properties xsltParams) {
         this.xsltParams = xsltParams;
     }
@@ -201,8 +215,8 @@ public class PDFGenerator {
                     argPDFsplit = argPDFsplit.substring(0, argPDFsplit.lastIndexOf(".")) + "_" + languages.get(i) + argPDFsplit.substring(argPDFsplit.lastIndexOf("."));
                     File fPDFsplit = new File(argPDFsplit);
 
-                    System.out.println("Generate PDF for language '" + languages.get(i) + "'.");
-                    System.out.println("Output: PDF (" + fPDFsplit + ")");
+                    logger.log(Level.INFO, "Generate PDF for language ''{0}''.", languages.get(i));
+                    logger.log(Level.INFO, "Output: PDF ({0})", fPDFsplit);
 
                     convertmn2pdf(fontcfg, sourceXMLDocument, xsltConverter, fPDFsplit);
 
@@ -300,15 +314,15 @@ public class PDFGenerator {
             runFOP(fontcfg, src, pdf);
             
             if(PDFUA_error) {
-                System.out.println("WARNING: Trying to generate PDF in non PDF/UA-1 mode.");
+                logger.info("WARNING: Trying to generate PDF in non PDF/UA-1 mode.");
                 fontcfg.setPDFUAmode("DISABLED");
                 src = new StreamSource(new StringReader(xmlFO));
                 runFOP(fontcfg, src, pdf);
-                System.out.println(WARNING_NONPDFUA);
+                logger.info(WARNING_NONPDFUA);
             }
             
             for(String msg: fontcfg.getMessages()) {
-            	System.out.println(msg);
+            	logger.info(msg);
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -323,11 +337,23 @@ public class PDFGenerator {
         OutputStream out = null;
         try {
             
+            
+
+            if (isAddMathAsText) {
+                logger.info("Adding Math as text...");
+                logger.info("Transforming to Intermediat Format...");
+                String xmlIF = generateFOPIntermediatFormat(src, fontcfg.getConfig(), pdf);
+                logger.info("Updating Intermediat Format...");
+            }
+            
+            
+            logger.info("Transforming to PDF...");
+            
             TransformerFactory factory = TransformerFactory.newInstance();            
             Transformer transformer = factory.newTransformer(); // identity transformer
             
             //System.out.println("Transforming...");
-            logger.info("Transforming...");
+            
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             FopFactory fopFactory = FopFactory.newInstance(fontcfg.getConfig());
             
@@ -399,59 +425,9 @@ public class PDFGenerator {
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
+            String xmlIF = generateFOPIntermediatFormat(sourceFO, fontcfg.getConfig(), pdf);
 
-            // run 1st pass to produce FOP Intermediate Format
-            FopFactory fopFactory = FopFactory.newInstance(fontcfg.getConfig());
-            //Create a user agent
-            FOUserAgent userAgent = fopFactory.newFOUserAgent();
-            //Create an instance of the target document handler so the IFSerializer
-            //can use its font setup
-            IFDocumentHandler targetHandler = userAgent.getRendererFactory().createDocumentHandler(
-                    userAgent, MimeConstants.MIME_PDF);
-            //Create the IFSerializer to write the intermediate format
-            IFSerializer ifSerializer = new IFSerializer(new IFContext(userAgent));
-            //Tell the IFSerializer to mimic the target format
-            ifSerializer.mimicDocumentHandler(targetHandler);
-            //Make sure the prepared document handler is used
-            userAgent.setDocumentHandlerOverride(ifSerializer);
-            userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
-            JEuclidFopFactoryConfigurator.configure(fopFactory);
-
-            // Setup output
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            //out = new java.io.BufferedOutputStream(out);
-            //String ifFilename = indexxml + ".if";
-            //OutputStream out = new java.io.FileOutputStream(new File(ifFilename));
-            String xmlIF = "";
-            try {
-                // Construct FOP (the MIME type here is unimportant due to the override
-                // on the user agent)
-                Fop fop = fopFactory.newFop(null, userAgent, out);
-
-                Result res = new SAXResult(fop.getDefaultHandler());
-
-                // Setup XSLT
-                TransformerFactory factory = TransformerFactory.newInstance();
-                Transformer transformer = factory.newTransformer(); // identity transformer
-
-                transformer.setErrorListener(new DefaultErrorListener());
-                System.out.println("[INFO] Rendering into intermediate format for index preparation...");
-                // Start XSLT transformation and FOP processing
-                transformer.transform(src, res);
-
-                xmlIF = out.toString("UTF-8");
-                
-                if (DEBUG) {   
-                    //DEBUG: write intermediate IF to file                
-                    try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xml"))) {
-                            writer.write(xmlIF);                    
-                    }
-                }
-
-            } finally {
-                out.close();
-            }
+            
             //Util.createIndexFile(indexxml, xmlIF);
             createIndexFile(indexxml, xmlIF);
 
@@ -479,6 +455,65 @@ public class PDFGenerator {
             
         }
         return src;
+    }
+    
+    
+    private String generateFOPIntermediatFormat(Source src, File fontConfig, File pdf) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
+        String xmlIF = "";
+        
+        // run 1st pass to produce FOP Intermediate Format
+        FopFactory fopFactory = FopFactory.newInstance(fontConfig);
+        //Create a user agent
+        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        //Create an instance of the target document handler so the IFSerializer
+        //can use its font setup
+        IFDocumentHandler targetHandler = userAgent.getRendererFactory().createDocumentHandler(
+                userAgent, MimeConstants.MIME_PDF);
+        //Create the IFSerializer to write the intermediate format
+        IFSerializer ifSerializer = new IFSerializer(new IFContext(userAgent));
+        //Tell the IFSerializer to mimic the target format
+        ifSerializer.mimicDocumentHandler(targetHandler);
+        //Make sure the prepared document handler is used
+        userAgent.setDocumentHandlerOverride(ifSerializer);
+        userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
+        JEuclidFopFactoryConfigurator.configure(fopFactory);
+        
+        // Setup output
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        //out = new java.io.BufferedOutputStream(out);
+        //String ifFilename = indexxml + ".if";
+        //OutputStream out = new java.io.FileOutputStream(new File(ifFilename));
+        try {
+            // Construct FOP (the MIME type here is unimportant due to the override
+            // on the user agent)
+            Fop fop = fopFactory.newFop(null, userAgent, out);
+
+            Result res = new SAXResult(fop.getDefaultHandler());
+
+            // Setup XSLT
+            TransformerFactory factory = TransformerFactory.newInstance();
+            Transformer transformer = factory.newTransformer(); // identity transformer
+
+            transformer.setErrorListener(new DefaultErrorListener());
+            System.out.println("[INFO] Rendering into intermediate format for index preparation...");
+            // Start XSLT transformation and FOP processing
+            transformer.transform(src, res);
+
+            xmlIF = out.toString("UTF-8");
+
+            if (DEBUG) {   
+                //DEBUG: write intermediate IF to file                
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xml"))) {
+                        writer.write(xmlIF);                    
+                }
+            }
+
+        } finally {
+            out.close();
+        }
+        
+        return xmlIF;
     }
     
     private void createIndexFile(String indexxmlFilePath, String intermediateXML) {

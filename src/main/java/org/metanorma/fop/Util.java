@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
@@ -45,6 +47,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import static org.metanorma.Constants.DEBUG;
+import static org.metanorma.fop.PDFGenerator.logger;
+import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -55,6 +59,8 @@ import org.xml.sax.InputSource;
  * @author Alexander Dyuzhev
  */
 public class Util {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     public static int getFileSize(URL url) {
         URLConnection conn = null;
@@ -71,13 +77,13 @@ public class Util {
     }
     
     public static void downloadFile(String url, Path destPath) {
-        System.out.println("Downloading " + url + "...");
+        logger.info("Downloading " + url + "...");
         try {
             ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
             FileOutputStream fileOutputStream = new FileOutputStream(destPath.toString());
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         } catch (Exception ex) {
-            System.out.println("Can't downloaded a file: " + ex.getMessage());
+            logger.log(Level.INFO, "Can''t downloaded a file: {0}", ex.getMessage());
         }
     }
     
@@ -94,7 +100,7 @@ public class Util {
                     if (defaultFontList.contains(zipEntryName)) {
                         //File newFile = newFile(destDir, zipEntry);
                         File newFile = new File(destDir, zipEntryName);
-                        System.out.println("Extracting font file " + newFile.getAbsolutePath() + "...");
+                        logger.log(Level.INFO, "Extracting font file {0}...", newFile.getAbsolutePath());
                         FileOutputStream fos = new FileOutputStream(newFile);
                         int len;
                         while ((len = zis.read(buffer)) > 0) {
@@ -108,7 +114,7 @@ public class Util {
             zis.closeEntry();
             zis.close();
         } catch (Exception ex) {
-            System.out.println("Can't unzip a file: " + ex.getMessage());
+            logger.log(Level.INFO, "Can''t unzip a file: {0}", ex.getMessage());
         }
     }
     
@@ -184,10 +190,10 @@ public class Util {
     
     public static void OutputJaxpImplementationInfo() {
         if (DEBUG) {
-            System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
         }
     }
 
@@ -215,7 +221,7 @@ public class Util {
                 writer.write(content);
             } 
         } catch (IOException ex) {
-            System.out.println("Can't create a log file: " + ex.toString());
+            logger.log(Level.INFO, "Can''t create a log file: {0}", ex.toString());
         }
     }
     
@@ -274,10 +280,10 @@ public class Util {
             }
                
         } catch (XPathExpressionException ex) {
-            System.out.println(ex.toString());
+            logger.info(ex.toString());
         }    
         catch (Exception ex) {
-            System.err.println("Can't save index.xml into temporary folder");
+            logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
         }    
     }
@@ -344,7 +350,7 @@ public class Util {
                 
             }
         } catch (Exception ex) {
-            System.err.println("Can't read DPI from image: " + ex.toString());
+            logger.log(Level.SEVERE, "Can''t read DPI from image: {0}", ex.toString());
         }
         
         return "100";
@@ -374,7 +380,7 @@ public class Util {
             }   
         }
         
-        System.err.println("Could not read image DPI, use default value " + default_DPI + " DPI");
+        logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
         return default_DPI; //default DPI
     }
     
@@ -403,7 +409,7 @@ public class Util {
                 countpages = Integer.valueOf(vars.item(0).getTextContent());
             }
         } catch (Exception ex) {
-            System.err.println("Can't read coverpages_count variable from source XSL.");
+            logger.severe("Can't read coverpages_count variable from source XSL.");
             ex.printStackTrace();
         }        
         return countpages;

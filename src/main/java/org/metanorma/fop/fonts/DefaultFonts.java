@@ -12,13 +12,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.metanorma.utils.LoggerHelper;
 
 /**
  *
  * @author Alexander Dyuzhev
  */
 public class DefaultFonts {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     public static final String DEFAULTFONT_PREFIX = "Source";
     public static final String DEFAULTFONT_SUFFIX = "Pro";
@@ -83,7 +87,7 @@ public class DefaultFonts {
             for (String fontfilename: defaultFontList) {
                 final Path destPath = Paths.get(fontDestinationPath, fontfilename);
                 if (!destPath.toFile().exists()) {
-                    System.out.println("Can't find a font file: " + destPath.toString());
+                    logger.info("Can't find a font file: " + destPath.toString());
                 }
             }
         }

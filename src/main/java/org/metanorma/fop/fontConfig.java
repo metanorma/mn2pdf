@@ -54,6 +54,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.apache.fop.fonts.autodetect.FontFileFinder;
+import static org.metanorma.fop.PDFGenerator.logger;
+import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.yaml.snakeyaml.Yaml;
@@ -64,6 +66,9 @@ import org.yaml.snakeyaml.Yaml;
  * @author Alexander Dyuzhev
  */
 class fontConfig {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
+    
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
     static final String WARNING_FONT = "WARNING: Font file '%s' (font name '%s', font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
@@ -116,7 +121,7 @@ class fontConfig {
         try {
             new File(this.fontPath).mkdirs();
         } catch (Exception ex) {
-            System.out.println(ex.toString());
+            logger.severe(ex.toString());
         }
     }
     
@@ -257,7 +262,7 @@ class fontConfig {
                                     }
                                 }
                             } else {
-                                System.out.println("WARNING: font path '" + fontPath + "' from the manifest file doesn't exist!");
+                                logger.log(Level.INFO, "WARNING: font path ''{0}'' from the manifest file doesn''t exist!", fontPath);
                             }
                         }
                     }
@@ -265,24 +270,24 @@ class fontConfig {
             } catch (FileNotFoundException ex) {
                 // make no sense, checking in main method
             } catch (Exception ex) {
-                System.out.println("ERROR: Error in processing font manifest file: " + ex.toString());
-                System.out.println("Expected format:");
-                System.out.println("Cambria:");
-                System.out.println("  Regular:");
-                System.out.println("    full_name: Cambria");
-                System.out.println("    paths:");
-                System.out.println("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
-                System.out.println("  Bold:");
-                System.out.println("    paths:");
-                System.out.println("    - \"~/.fontist/fonts/CAMBRIAB.TTF\"");
-                System.out.println("Cambria Math:");
-                System.out.println("  Regular:");
-                System.out.println("    paths:");
-                System.out.println("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
-                System.out.println("STIX Two Math:");
-                System.out.println("  Regular:");
-                System.out.println("    paths:");
-                System.out.println("    - \"~/.fontist/fonts/STIX2Math.otf\"");
+                logger.log(Level.INFO, "ERROR: Error in processing font manifest file: {0}", ex.toString());
+                logger.info("Expected format:");
+                logger.info("Cambria:");
+                logger.info("  Regular:");
+                logger.info("    full_name: Cambria");
+                logger.info("    paths:");
+                logger.info("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
+                logger.info("  Bold:");
+                logger.info("    paths:");
+                logger.info("    - \"~/.fontist/fonts/CAMBRIAB.TTF\"");
+                logger.info("Cambria Math:");
+                logger.info("  Regular:");
+                logger.info("    paths:");
+                logger.info("    - \"~/.fontist/fonts/CAMBRIA.TTC\"");
+                logger.info("STIX Two Math:");
+                logger.info("  Regular:");
+                logger.info("    paths:");
+                logger.info("    - \"~/.fontist/fonts/STIX2Math.otf\"");
                 System.exit(ERROR_EXIT_CODE);
             }
         }
@@ -291,7 +296,7 @@ class fontConfig {
     public void outputFontManifestLog(Path logPath) {
         if(DEBUG) {
             Util.outputLog(logPath, fontManifestLog.toString());
-            System.out.println("Font manifest reading log saved to '" + logPath + "'.");
+            logger.log(Level.INFO, "Font manifest reading log saved to ''{0}''.", logPath);
         }
     }
     
@@ -455,7 +460,7 @@ class fontConfig {
         if(DEBUG) {
             String awtFonts = Util.showAvailableAWTFonts();
             Util.outputLog(logPath, awtFonts);
-            System.out.println("Available AWT fonts list saved to '" + logPath + "'.");
+            logger.log(Level.INFO, "Available AWT fonts list saved to ''{0}''.", logPath);
         }    
     }
     
@@ -467,7 +472,7 @@ class fontConfig {
             Document sourceFOPConfig = dBuilder.parse(config);
             return sourceFOPConfig;
         } catch (Exception ex) {
-            System.out.println(ex);
+            logger.severe(ex.toString());
             return null;
         }
     }
@@ -488,8 +493,8 @@ class fontConfig {
                 FOPFont fopfont = xmlMapper.readValue(innerXml(fontNode), FOPFont.class);
                 fonts.add(fopfont);
             } catch (JsonProcessingException ex) {
-                System.out.println("Error in reading font information: "+ ex.toString());
-                System.out.println("XML fragment: " + innerXml(fontNode));
+                logger.log(Level.SEVERE, "Error in reading font information: {0}", ex.toString());
+                logger.log(Level.SEVERE, "XML fragment: {0}", innerXml(fontNode));
             }
         }        
         return fonts;
@@ -675,18 +680,18 @@ class fontConfig {
                     }*/
                     
                 } catch (SAXException | IOException | ParserConfigurationException ex) {
-                    System.out.println("Error in FOP font xml processing: " + ex.toString());
+                    logger.log(Level.SEVERE, "Error in FOP font xml processing: {0}", ex.toString());
                 }
             }
         } catch (XPathExpressionException ex) {
-            System.out.println(ex.toString());
+            logger.severe(ex.toString());
         } 
     }
     
     public void outputFOPFontsLog(Path logPath) {
         if(DEBUG) {
             Util.outputLog(logPath, fopFontsLog.toString());
-            System.out.println("FOP fonts config items saved to '" + logPath + "'.");
+            logger.log(Level.INFO, "FOP fonts config items saved to ''{0}''.", logPath);
         }    
     }
     
@@ -784,7 +789,7 @@ class fontConfig {
     
     private void printMessage(String msg) {
         if (!msg.isEmpty()) {
-            System.out.println(msg);
+            logger.info(msg);
             messages.add(msg);
         }
     }
