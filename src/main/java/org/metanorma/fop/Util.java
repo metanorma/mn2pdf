@@ -1,6 +1,11 @@
 package org.metanorma.fop;
 
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -48,6 +53,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import static org.metanorma.Constants.DEBUG;
 import static org.metanorma.fop.PDFGenerator.logger;
+import static org.metanorma.fop.fontConfig.fopFonts;
+import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -413,6 +420,77 @@ public class Util {
             ex.printStackTrace();
         }        
         return countpages;
+    }
+    
+    public static String unescape(String str) {
+        return org.apache.commons.lang3.StringEscapeUtils.unescapeXml(str);
+    }
+    
+    private static String previousFontName = "";
+    
+    public static String getFontSize(String text, String fontName, int width, int height) {
+        
+        if (!previousFontName.equals(fontName)) {
+            // Register font for rendering string
+            Font[] fonts;
+            fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+            boolean isExist = false;
+            for (Font font : fonts) {
+                /*System.out.print(font.getFontName() + " : ");
+                System.out.print(font.getFamily() + " : ");
+                System.out.print(font.getName());
+                System.out.println();*/
+                if (font.getFontName().equals(fontName)) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                for(FOPFont fopFont: fontConfig.fopFonts) {
+                    if (fopFont.isUsing() && fopFont.getName().equals(fontName)) {
+                        previousFontName = fontName;
+                        fontConfig.registerFont(null, fopFont.getPath());
+                        isExist = true;
+                        break;
+                    }
+                }
+            }
+            if (!isExist) {
+                 fontName = "Serif"; // use it if font not found
+            }
+        }
+        
+        Font font = new Font(fontName, Font.PLAIN, 12);
+        float fontSize = 12.0f; // start value
+        
+        int renderedWidth = 20000000;
+        int renderedHeight = 20000000;
+        
+        if (DEBUG) {
+            System.out.println("Math object width=" + width);
+            System.out.println("Math object height=" + height);
+        }
+        
+        while ((renderedWidth > width || renderedHeight > height) && fontSize >= 1.0f) {
+            fontSize-=1.0f;
+            font = font.deriveFont(fontSize);
+            FontRenderContext frc = new FontRenderContext(null, false, false);
+            TextLayout tl = new TextLayout(text, font, frc);
+            Rectangle rect = tl.getPixelBounds(frc, 0f, 0f);
+            Rectangle2D rect2d = tl.getBounds();
+            
+            renderedWidth = (int) (rect2d.getWidth() * 1000);
+            renderedHeight = (int) (rect2d.getHeight()* 1000);
+            
+            if (DEBUG) {
+                System.out.println("font-size=" + fontSize);
+                System.out.println("width=" + renderedWidth);
+                System.out.println("height=" + renderedHeight);
+            }
+        }
+        
+        return String.valueOf((int)(fontSize * 1000));
+        
     }
     
 }

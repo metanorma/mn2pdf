@@ -44,7 +44,9 @@ import org.apache.fop.events.EventFormatter;
 import org.apache.fop.events.model.EventSeverity;
 import org.apache.fop.render.intermediate.IFContext;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
+import org.apache.fop.render.intermediate.IFParser;
 import org.apache.fop.render.intermediate.IFSerializer;
+import org.apache.fop.render.intermediate.IFUtil;
 import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
@@ -337,12 +339,20 @@ public class PDFGenerator {
         OutputStream out = null;
         try {
             
+            String mime = MimeConstants.MIME_PDF;
+            
             if (isAddMathAsText) {
                 logger.info("Adding Math as text...");
                 logger.info("Transforming to Intermediate Format...");
-                String xmlIF = generateFOPIntermediatFormat(src, fontcfg.getConfig(), pdf);
+                String xmlIF = generateFOPIntermediatFormat(src, fontcfg.getConfig(), pdf, false);
                 logger.info("Updating Intermediate Format...");
                 xmlIF = applyXSLT("add_hidden_math.xsl ", xmlIF);
+                if (DEBUG) {   //DEBUG: write intermediate IF to file
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.mathtext.xml"))) {
+                        writer.write(xmlIF);                    
+                }
+            }
                 src = new StreamSource(new StringReader(xmlIF));
             }
             
@@ -374,27 +384,51 @@ public class PDFGenerator {
             // for performance reasons (helpful with FileOutputStreams).
             out = new FileOutputStream(pdf);
             out = new BufferedOutputStream(out);
-
-            // Construct fop with desired output format
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
-
-            // Setup JAXP using identity transformer
-            //factory = TransformerFactory.newInstance();
-            //transformer = factory.newTransformer(); // identity transformer
-
             
-            // Resulting SAX events (the generated FO) must be piped through to FOP
-            Result res = new SAXResult(fop.getDefaultHandler());
-            
-            transformer.setErrorListener(new DefaultErrorListener());
-            
-            // Start XSLT transformation and FOP processing
-            // Setup input stream   
-            
-            if (!isSkipPDFGeneration) {
-                transformer.transform(src, res);  
+            if (isAddMathAsText) { // process IF to PDF
+                //Setup target handler
+                IFDocumentHandler targetHandler = fopFactory.getRendererFactory().createDocumentHandler(
+                        foUserAgent, mime);
+                //Setup fonts
+                IFUtil.setupFonts(targetHandler);
+                targetHandler.setResult(new StreamResult(out));
+                
+                IFParser parser = new IFParser();
+                
+                //Send XSLT result to AreaTreeParser
+                SAXResult res = new SAXResult(parser.getContentHandler(targetHandler, foUserAgent));
+                
+                //Start area tree parsing
+                if (!isSkipPDFGeneration) {
+                    transformer.transform(src, res);
+                    //this.pageCount = fop.getResults().getPageCount();
+                }
+            } 
+                
+            else {
 
-                this.pageCount = fop.getResults().getPageCount();
+
+                // Construct fop with desired output format
+                Fop fop = fopFactory.newFop(mime, foUserAgent, out);
+
+                // Setup JAXP using identity transformer
+                //factory = TransformerFactory.newInstance();
+                //transformer = factory.newTransformer(); // identity transformer
+
+
+                // Resulting SAX events (the generated FO) must be piped through to FOP
+                Result res = new SAXResult(fop.getDefaultHandler());
+
+                transformer.setErrorListener(new DefaultErrorListener());
+
+                // Start XSLT transformation and FOP processing
+                // Setup input stream   
+
+                if (!isSkipPDFGeneration) {
+                    transformer.transform(src, res);  
+
+                    this.pageCount = fop.getResults().getPageCount();
+                }
             }
             
         } catch (Exception e) {
@@ -424,7 +458,7 @@ public class PDFGenerator {
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
-            String xmlIF = generateFOPIntermediatFormat(sourceFO, fontcfg.getConfig(), pdf);
+            String xmlIF = generateFOPIntermediatFormat(sourceFO, fontcfg.getConfig(), pdf, true);
 
             
             //Util.createIndexFile(indexxml, xmlIF);
@@ -457,7 +491,7 @@ public class PDFGenerator {
     }
     
     
-    private String generateFOPIntermediatFormat(Source src, File fontConfig, File pdf) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
+    private String generateFOPIntermediatFormat(Source src, File fontConfig, File pdf, boolean isSecondPass) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
         String xmlIF = "";
         
         // run 1st pass to produce FOP Intermediate Format
@@ -474,7 +508,9 @@ public class PDFGenerator {
         ifSerializer.mimicDocumentHandler(targetHandler);
         //Make sure the prepared document handler is used
         userAgent.setDocumentHandlerOverride(ifSerializer);
-        userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
+        if (isSecondPass) {
+            userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
+        }
         JEuclidFopFactoryConfigurator.configure(fopFactory);
         
         // Setup output

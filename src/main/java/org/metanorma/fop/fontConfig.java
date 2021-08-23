@@ -85,7 +85,7 @@ class fontConfig {
     private String fontPath;
     private List<String> messages = new ArrayList<>();;
     
-    List<FOPFont> fopFonts = new ArrayList<>();
+    static List<FOPFont> fopFonts = new ArrayList<>();
     
     private File fFontManifest;
     
@@ -644,11 +644,11 @@ class fontConfig {
             // add 'font' from fopFonts array
             for(FOPFont fopFont: fopFonts) {
                 
-                 String embed_url = fopFont.getEmbed_url();
+                String embed_url = fopFont.getEmbed_url();
                 try {
                     if (!embed_url.startsWith("file:")) {
                         // add file: prefix and update xml attribute embed-url
-                        embed_url = new File(embed_url).toURI().toURL().toString();                            
+                        embed_url = new File(embed_url).toURI().toURL().toString();
                     }
                 }
                 catch (MalformedURLException ex) { }
@@ -764,28 +764,36 @@ class fontConfig {
                         .filter(f -> !f.getSource().equals("system"))
                         .forEach(f -> fontfiles.add(f.getEmbed_url()));
                 
-                for(String fontfile : fontfiles) {
-                    try {
-                        Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontfile));            
-                        //register the font
-                        ge.registerFont(ttfFont);
-                    } catch(FontFormatException e) {
-                        try {
-                            Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontfile));            
-                            //register the font
-                            ge.registerFont(type1Font);
-                        } catch(FontFormatException e1) {
-                            e1.printStackTrace();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }                
+                fontfiles.forEach(fontfile -> {
+                    registerFont(ge, fontfile);
+            });                
         } catch (IOException e) {
                 e.printStackTrace();
         }
     }
     
+    public static void registerFont(GraphicsEnvironment ge, String fontFile){
+        if (ge == null) {
+            ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        }
+        try {
+            Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));            
+            //register the font
+            ge.registerFont(ttfFont);
+        } catch(FontFormatException e) {
+            try {
+                Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontFile));            
+                //register the font
+                ge.registerFont(type1Font);
+            } catch(FontFormatException e1) {
+                e1.printStackTrace();
+            }  catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     private void printMessage(String msg) {
         if (!msg.isEmpty()) {
