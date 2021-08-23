@@ -20,62 +20,50 @@
 	</xsl:template>
 	
 	<xsl:variable name="instream-foreign-objects_">
-		<xsl:for-each select="//fo:instream-foreign-object[@fox:actual-text != '']">
+		<xsl:for-each select="//fo:instream-foreign-object[@fox:alt-text != '']">
 			<xsl:copy-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
 	
 	<xsl:variable name="instream-foreign-objects" select="xalan:nodeset($instream-foreign-objects_)" />
 	
-	
-	
-	<xsl:template match="im:image[math:math]">
-		<xsl:variable name="ref" select="@foi:struct-ref"/>
+	<xsl:template match="im:font[following-sibling::*[1][self::im:image[math:math]]]">
+		<xsl:variable name="image_" select="following-sibling::*[1][self::im:image[math:math]]"/>
+		<xsl:variable name="image" select="xalan:nodeset($image_)"/>
 		
-		<xsl:variable name="width" select="@width"/>
-		<xsl:variable name="height" select="@height"/>
+		<xsl:variable name="ref" select="$image/@foi:struct-ref"/>
 		
-		<xsl:variable name="instream-foreign-object_actual-text" select="$instream-foreign-objects//fo:instream-foreign-object[@foi:struct-id = $ref]/@fox:actual-text"/>
+		<xsl:variable name="instream-foreign-object_alt-text" select="$instream-foreign-objects//fo:instream-foreign-object[@foi:struct-id = $ref]/@fox:alt-text"/>
 		
-		<xsl:variable name="font_color_preceding" select="preceding-sibling::im:font[@color][1]/@color"/>
-		<xsl:variable name="font_color_main">
-			<xsl:choose>
-				<xsl:when test="$font_color_preceding != ''">
-					<xsl:value-of select="$font_color_preceding"/>
-				</xsl:when>
-				<xsl:otherwise>#000000</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
+		<xsl:variable name="width" select="$image/@width"/>
+		<xsl:variable name="height" select="$image/@height"/>
 		
-		<xsl:variable name="font_family" select="preceding-sibling::im:font[@family][1]/@family | ancestor::*[im:font[@family]][1]/im:font/@family"/>
-		
-		<xsl:element name="font" namespace="http://xmlgraphics.apache.org/fop/intermediate">
-			<xsl:attribute name="color">#FFFFFF</xsl:attribute>
-			<xsl:attribute name="family"><xsl:value-of select="$font_family"/></xsl:attribute>
-			<!-- <xsl:variable name="fontsize" select="java:org.metanorma.fop.Util.getFontSize(font_family, $width, $height)"/> -->
-			<xsl:variable name="fontsize">1000</xsl:variable>
-			<xsl:attribute name="size">
-				<xsl:value-of select="$fontsize"/>
-			</xsl:attribute>
-		</xsl:element>
-		
-		<xsl:variable name="text_x" select="@x"/>
-		<xsl:variable name="text_y" select="@y + @height"/>
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			
+				<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
+				<!-- <xsl:variable name="fontsize" select="java:org.metanorma.fop.Util.getFontSize($font_family, $width, $height)"/> -->
+				<xsl:variable name="fontsize">10000</xsl:variable>
+				<xsl:attribute name="size">
+					<xsl:value-of select="$fontsize"/>
+				</xsl:attribute>
+			</xsl:if>
+			
+		</xsl:copy>
 		
 		
-		<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
-			<xsl:attribute name="x"><xsl:value-of select="$text_x"/></xsl:attribute>
-			<xsl:attribute name="y"><xsl:value-of select="$text_y"/></xsl:attribute>
-			<xsl:attribute name="foi:struct-ref"><xsl:value-of select="$ref"/></xsl:attribute>
-			<xsl:value-of select="$instream-foreign-object_actual-text"/>
-		</xsl:element>
+		<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
+			<xsl:variable name="text_x" select="$image/@x"/>
+			<xsl:variable name="text_y" select="$image/@y + $image/@height"/>
+
+			<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
+				<xsl:attribute name="x"><xsl:value-of select="$text_x"/></xsl:attribute>
+				<xsl:attribute name="y"><xsl:value-of select="$text_y"/></xsl:attribute>
+				<xsl:attribute name="foi:struct-ref"><xsl:value-of select="$ref"/></xsl:attribute>
+				<xsl:value-of select="$instream-foreign-object_alt-text"/>
+			</xsl:element>
+		</xsl:if>
 		
-		
-		<xsl:element name="font" namespace="http://xmlgraphics.apache.org/fop/intermediate">
-			<xsl:attribute name="color"><xsl:value-of select="$font_color_main"/></xsl:attribute>
-		</xsl:element>
-		
-		<xsl:copy-of select="."/>
 	</xsl:template>
 
 </xsl:stylesheet>
