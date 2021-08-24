@@ -4,10 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -17,9 +15,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -29,10 +26,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 import net.sourceforge.jeuclid.fop.plugin.JEuclidFopFactoryConfigurator;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -51,8 +44,6 @@ import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 import org.metanorma.utils.LoggerHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -344,9 +335,9 @@ public class PDFGenerator {
             if (isAddMathAsText) {
                 logger.info("Adding Math as text...");
                 logger.info("Transforming to Intermediate Format...");
-                String xmlIF = generateFOPIntermediatFormat(src, fontcfg.getConfig(), pdf, false);
+                String xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false);
                 logger.info("Updating Intermediate Format...");
-                xmlIF = applyXSLT("add_hidden_math.xsl ", xmlIF);
+                xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
                 if (DEBUG) {   //DEBUG: write intermediate IF to file
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.mathtext.xml"))) {
@@ -458,7 +449,7 @@ public class PDFGenerator {
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
-            String xmlIF = generateFOPIntermediatFormat(sourceFO, fontcfg.getConfig(), pdf, true);
+            String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true);
 
             
             //Util.createIndexFile(indexxml, xmlIF);
@@ -491,7 +482,7 @@ public class PDFGenerator {
     }
     
     
-    private String generateFOPIntermediatFormat(Source src, File fontConfig, File pdf, boolean isSecondPass) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
+    private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
         String xmlIF = "";
         
         // run 1st pass to produce FOP Intermediate Format
@@ -506,6 +497,7 @@ public class PDFGenerator {
         IFSerializer ifSerializer = new IFSerializer(new IFContext(userAgent));
         //Tell the IFSerializer to mimic the target format
         ifSerializer.mimicDocumentHandler(targetHandler);
+        ifSerializer.setEncoding("UTF-16");
         //Make sure the prepared document handler is used
         userAgent.setDocumentHandlerOverride(ifSerializer);
         if (isSecondPass) {
@@ -530,11 +522,13 @@ public class PDFGenerator {
             Transformer transformer = factory.newTransformer(); // identity transformer
 
             transformer.setErrorListener(new DefaultErrorListener());
-            System.out.println("[INFO] Rendering into intermediate format for index preparation...");
+            if (isSecondPass) {
+                System.out.println("[INFO] Rendering into intermediate format for index preparation...");
+            }
             // Start XSLT transformation and FOP processing
             transformer.transform(src, res);
 
-            xmlIF = out.toString("UTF-8");
+            xmlIF = out.toString("UTF-16");
 
             if (DEBUG) {   
                 //DEBUG: write intermediate IF to file                
@@ -570,11 +564,14 @@ public class PDFGenerator {
     }
     
     // Apply XSL tranformation (file xsltfile) for xml string
-    private String applyXSLT(String xsltfile, String xmlStr) throws Exception {
+    private String applyXSLT(String xsltfile, String xmlStr, boolean... fixSurrogatePairs) throws Exception {
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer(srcXSL);
+        if (fixSurrogatePairs[0]) {
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+        }
         Source src = new StreamSource(new StringReader(xmlStr));
         StringWriter resultWriter = new StringWriter();
         StreamResult sr = new StreamResult(resultWriter);
