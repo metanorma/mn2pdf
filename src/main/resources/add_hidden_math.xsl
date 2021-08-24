@@ -35,8 +35,8 @@
 	
 	<xsl:variable name="instream-foreign-objects" select="xalan:nodeset($instream-foreign-objects_)" />
 	
-	<xsl:template match="im:font[following-sibling::*[1][self::im:image[math:math]]]">
-		<xsl:variable name="image_" select="following-sibling::*[1][self::im:image[math:math]]"/>
+	<xsl:template match="im:font[following-sibling::*[1][self::im:image[math:math]]] | im:font[following-sibling::*[1][self::im:id]][following-sibling::*[2][self::im:image[math:math]]]">
+		<xsl:variable name="image_" select="following-sibling::im:image[math:math]"/>
 		<xsl:variable name="image" select="xalan:nodeset($image_)"/>
 		
 		<xsl:variable name="ref" select="$image/@foi:struct-ref"/>

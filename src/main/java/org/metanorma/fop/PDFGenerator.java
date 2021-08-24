@@ -339,11 +339,12 @@ public class PDFGenerator {
                 logger.info("Updating Intermediate Format...");
                 xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
                 if (DEBUG) {   //DEBUG: write intermediate IF to file
-                try ( 
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.mathtext.xml"))) {
-                        writer.write(xmlIF);                    
+                    String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.mathtext.xml"))) {
+                            writer.write(xmlIFtmp);                    
+                    }
                 }
-            }
                 src = new StreamSource(new StringReader(xmlIF));
             }
             
@@ -531,10 +532,11 @@ public class PDFGenerator {
             xmlIF = out.toString("UTF-16");
 
             if (DEBUG) {   
+                String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 //DEBUG: write intermediate IF to file                
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xml"))) {
-                        writer.write(xmlIF);                    
+                        writer.write(xmlIFtmp);                    
                 }
             }
 
