@@ -36,6 +36,8 @@ import org.apache.fop.util.GenerationHelperContentHandler;
  */
 public abstract class AbstractXMLWritingIFDocumentHandler extends AbstractIFDocumentHandler {
 
+    private String encoding = "";
+    
     /**
      * Default SAXTransformerFactory that can be used by subclasses.
      */
@@ -79,6 +81,9 @@ public abstract class AbstractXMLWritingIFDocumentHandler extends AbstractIFDocu
             Transformer transformer = tHandler.getTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            if (!encoding.isEmpty()) {
+                transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
+            }
             tHandler.setResult(result);
             return tHandler;
         } catch (TransformerConfigurationException tce) {
@@ -87,4 +92,7 @@ public abstract class AbstractXMLWritingIFDocumentHandler extends AbstractIFDocu
         }
     }
 
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
 }
