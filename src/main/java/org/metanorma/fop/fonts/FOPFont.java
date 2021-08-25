@@ -33,6 +33,9 @@ public class FOPFont {
     @JacksonXmlProperty(isAttribute=true)
     boolean mn_default = false;
     
+    @JacksonXmlProperty(isAttribute=true, localName = "embedding-mode")
+    String embedding_mode;
+    
     @JacksonXmlElementWrapper(useWrapping = false)
     List<FOPFontAlternate> alternate = new ArrayList<>();
     
@@ -78,6 +81,11 @@ public class FOPFont {
         this.embed_url = embed_url;
         if (!embed_url.startsWith("file:")) {
             path = embed_url;
+        }
+        if (embed_url.toLowerCase().endsWith(".otf")) {
+            embedding_mode = "full";
+        } else {
+            embedding_mode = null;
         }
     }
     
