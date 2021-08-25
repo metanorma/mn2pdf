@@ -98,16 +98,6 @@ public class mn2pdf {
                 .desc("additionally create a PDF for each language in XML")
                 .required(false)
                 .build());
-            addOption(Option.builder("addmathtext")
-                .longOpt("add-math-as-text")
-                .desc("add Math content as text")
-                .required(false)
-                .build());
-            addOption(Option.builder("addmathfile")
-                .longOpt("add-math-as-attachment")
-                .desc("add Math content as attachment")
-                .required(false)
-                .build());
             addOption(Option.builder("v")
                .longOpt("version")
                .desc("display application version")
@@ -179,9 +169,6 @@ public class mn2pdf {
                 if (cmd.hasOption("param")) {
                     pdfGenerator.setXSLTParams(cmd.getOptionProperties("param"));
                 }                
-                
-                pdfGenerator.setAddMathAsText(cmd.hasOption("addmathtext"));
-                pdfGenerator.setAddMathAsAttachment(cmd.hasOption("addmathattachment"));
                 
                 try {
                     if (!pdfGenerator.process()) {

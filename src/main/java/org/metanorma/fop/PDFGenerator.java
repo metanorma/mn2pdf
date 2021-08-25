@@ -100,14 +100,6 @@ public class PDFGenerator {
         this.isSplitByLanguage = isSplitByLanguage;
     }
 
-    public void setAddMathAsText(boolean isAddMathAsText) {
-        this.isAddMathAsText = isAddMathAsText;
-    }
-    
-    public void setAddMathAsAttachment(boolean isAddMathAsAttachment) {
-        this.isAddMathAsAttachment = isAddMathAsAttachment;
-    }
-    
     
     public void setXSLTParams(Properties xsltParams) {
         this.xsltParams = xsltParams;
@@ -173,6 +165,14 @@ public class PDFGenerator {
             
             logger.info(String.format(OUTPUT_LOG, PDF_OUTPUT, fPDF));
             logger.info("");
+            
+            
+            // read XSL to string and find param values
+            String add_math_as_text = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_text']");
+            isAddMathAsText = add_math_as_text.equalsIgnoreCase("true");
+            
+            String add_math_as_attachment = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_attachment']");
+            isAddMathAsAttachment = add_math_as_attachment.equalsIgnoreCase("true");
             
             SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(fXML);
             
