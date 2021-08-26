@@ -1,7 +1,11 @@
 package org.metanorma.fop;
 
-import static org.metanorma.fop.mn2pdf.DEBUG;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -28,6 +32,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
@@ -45,6 +51,10 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import static org.metanorma.Constants.DEBUG;
+import static org.metanorma.fop.SourceXMLDocument.tmpfilepath;
+import org.metanorma.fop.fonts.FOPFont;
+import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -55,6 +65,8 @@ import org.xml.sax.InputSource;
  * @author Alexander Dyuzhev
  */
 public class Util {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     public static int getFileSize(URL url) {
         URLConnection conn = null;
@@ -71,13 +83,13 @@ public class Util {
     }
     
     public static void downloadFile(String url, Path destPath) {
-        System.out.println("Downloading " + url + "...");
+        logger.info("Downloading " + url + "...");
         try {
             ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
             FileOutputStream fileOutputStream = new FileOutputStream(destPath.toString());
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         } catch (Exception ex) {
-            System.out.println("Can't downloaded a file: " + ex.getMessage());
+            logger.log(Level.INFO, "Can''t downloaded a file: {0}", ex.getMessage());
         }
     }
     
@@ -94,7 +106,7 @@ public class Util {
                     if (defaultFontList.contains(zipEntryName)) {
                         //File newFile = newFile(destDir, zipEntry);
                         File newFile = new File(destDir, zipEntryName);
-                        System.out.println("Extracting font file " + newFile.getAbsolutePath() + "...");
+                        logger.log(Level.INFO, "Extracting font file {0}...", newFile.getAbsolutePath());
                         FileOutputStream fos = new FileOutputStream(newFile);
                         int len;
                         while ((len = zis.read(buffer)) > 0) {
@@ -108,7 +120,7 @@ public class Util {
             zis.closeEntry();
             zis.close();
         } catch (Exception ex) {
-            System.out.println("Can't unzip a file: " + ex.getMessage());
+            logger.log(Level.INFO, "Can''t unzip a file: {0}", ex.getMessage());
         }
     }
     
@@ -184,10 +196,10 @@ public class Util {
     
     public static void OutputJaxpImplementationInfo() {
         if (DEBUG) {
-            System.out.println(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
-            System.out.println(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("DocumentBuilderFactory", DocumentBuilderFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("XPathFactory", XPathFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("TransformerFactory", TransformerFactory.newInstance().getClass()));
+            logger.info(getJaxpImplementationInfo("SAXParserFactory", SAXParserFactory.newInstance().getClass()));
         }
     }
 
@@ -215,7 +227,7 @@ public class Util {
                 writer.write(content);
             } 
         } catch (IOException ex) {
-            System.out.println("Can't create a log file: " + ex.toString());
+            logger.log(Level.INFO, "Can''t create a log file: {0}", ex.toString());
         }
     }
     
@@ -274,10 +286,10 @@ public class Util {
             }
                
         } catch (XPathExpressionException ex) {
-            System.out.println(ex.toString());
+            logger.info(ex.toString());
         }    
         catch (Exception ex) {
-            System.err.println("Can't save index.xml into temporary folder");
+            logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
         }    
     }
@@ -344,7 +356,7 @@ public class Util {
                 
             }
         } catch (Exception ex) {
-            System.err.println("Can't read DPI from image: " + ex.toString());
+            logger.log(Level.SEVERE, "Can''t read DPI from image: {0}", ex.toString());
         }
         
         return "100";
@@ -374,7 +386,7 @@ public class Util {
             }   
         }
         
-        System.err.println("Could not read image DPI, use default value " + default_DPI + " DPI");
+        logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
         return default_DPI; //default DPI
     }
     
@@ -383,6 +395,138 @@ public class Util {
         NodeList pixelSizes = dimension.getElementsByTagName(elementName);
         IIOMetadataNode pixelSize = pixelSizes.getLength() > 0 ? (IIOMetadataNode) pixelSizes.item(0) : null;
         return pixelSize != null ? Float.parseFloat(pixelSize.getAttribute("value")) : -1;
+    }
+    
+    public static int getCoverPagesCount (File fXSL) {
+        int countpages = 0;
+        try {            
+            // open XSL and find 
+            // <xsl:variable name="coverpages_count">2</xsl:variable>
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputStream xmlstream = new FileInputStream(fXSL);
+            Document sourceXML = dBuilder.parse(xmlstream);
+            
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            XPathExpression expr = xpath.compile("//*[local-name() = 'variable'][@name='coverpages_count']");
+            NodeList vars = (NodeList) expr.evaluate(sourceXML, XPathConstants.NODESET);
+            if (vars.getLength() > 0) {
+                countpages = Integer.valueOf(vars.item(0).getTextContent());
+            }
+        } catch (Exception ex) {
+            logger.severe("Can't read coverpages_count variable from source XSL.");
+            ex.printStackTrace();
+        }        
+        return countpages;
+    }
+    
+    public static String readValueFromXML(File file, String xpath) {
+        String value = "";
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document sourceXML = dBuilder.parse(file);
+            
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            XPathExpression query = xPath.compile(xpath);
+            Node textElement = (Node)query.evaluate(sourceXML, XPathConstants.NODE);
+            if(textElement != null) {
+                value = textElement.getTextContent();
+            }        
+            
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        
+        return value;
+    }
+        
+    public static String unescape(String str) {
+        return org.apache.commons.lang3.StringEscapeUtils.unescapeXml(str);
+    }
+    
+    private static String previousFontName = "";
+    
+    public static String getFontSize(String text, String fontName, int width, int height) {
+        
+        if (!previousFontName.equals(fontName)) {
+            // Register font for rendering string
+            Font[] fonts;
+            fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+            boolean isExist = false;
+            for (Font font : fonts) {
+                /*System.out.print(font.getFontName() + " : ");
+                System.out.print(font.getFamily() + " : ");
+                System.out.print(font.getName());
+                System.out.println();*/
+                if (font.getFontName().equals(fontName)) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                for(FOPFont fopFont: fontConfig.fopFonts) {
+                    if (fopFont.isUsing() && fopFont.getName().equals(fontName)) {
+                        previousFontName = fontName;
+                        fontConfig.registerFont(null, fopFont.getPath());
+                        isExist = true;
+                        break;
+                    }
+                }
+            }
+            if (!isExist) {
+                 fontName = "Serif"; // use it if font not found
+            }
+        }
+        
+        Font font = new Font(fontName, Font.PLAIN, 12);
+        float fontSize = 12.0f; // start value
+        
+        int renderedWidth = 20000000;
+        int renderedHeight = 20000000;
+        
+        if (DEBUG) {
+            System.out.println("Math object width=" + width);
+            System.out.println("Math object height=" + height);
+        }
+        
+        while ((renderedWidth > width || renderedHeight > height) && fontSize >= 1.0f) {
+            fontSize-=1.0f;
+            font = font.deriveFont(fontSize);
+            FontRenderContext frc = new FontRenderContext(null, false, false);
+            TextLayout tl = new TextLayout(text, font, frc);
+            Rectangle rect = tl.getPixelBounds(frc, 0f, 0f);
+            Rectangle2D rect2d = tl.getBounds();
+            
+            renderedWidth = (int) (rect2d.getWidth() * 1000);
+            renderedHeight = (int) (rect2d.getHeight()* 1000);
+            
+            if (DEBUG) {
+                System.out.println("font-size=" + fontSize);
+                System.out.println("width=" + renderedWidth);
+                System.out.println("height=" + renderedHeight);
+            }
+        }
+        
+        return String.valueOf((int)(fontSize * 1000));
+        
+    }
+    
+    public static String saveFileToDisk(String filename, String content) {
+        try {
+            Files.createDirectories(tmpfilepath);
+            Path filepath = Paths.get(tmpfilepath.toString(), filename);
+            try (BufferedWriter bw = Files.newBufferedWriter(filepath)) {
+                bw.write(content);
+            }
+            return filepath.toString();
+        } catch (IOException ex) {
+        logger.log(Level.SEVERE, "Can't save a file into a temporary directory {0}", tmpfilepath.toString());
+        ex.printStackTrace();
+        }
+        return "";
     }
     
 }

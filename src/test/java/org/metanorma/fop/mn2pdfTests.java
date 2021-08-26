@@ -1,10 +1,15 @@
 package org.metanorma.fop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.cos.COSName;
 
@@ -18,14 +23,23 @@ import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.metanorma.Constants;
+import org.metanorma.utils.LoggerHelper;
 
 public class mn2pdfTests {
 
+    private static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
+
+    private static OutputStream logCapturingStream;
+    private static StreamHandler customLogHandler;
+    
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
@@ -38,13 +52,36 @@ public class mn2pdfTests {
     @Rule
     public final EnvironmentVariables envVarRule = new EnvironmentVariables();
 
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        LoggerHelper.setupLogger();
+    }
+    
+    @Before
+    public void attachLogCapturer()
+    {
+        logCapturingStream = new ByteArrayOutputStream();
+        Handler[] handlers = logger.getParent().getHandlers();
+        customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
+        logger.addHandler(customLogHandler);
+    }
+    
+    public String getTestCapturedLog() throws IOException
+    {
+        customLogHandler.flush();
+        return logCapturingStream.toString();
+    }
+    
     @Test
-    public void notEnoughArguments() throws ParseException {
+    public void notEnoughArguments() throws ParseException, IOException {
         exitRule.expectSystemExitWithStatus(-1);
         String[] args = new String[]{"1", "2", "3"};
         mn2pdf.main(args);
 
-        assertTrue(systemOutRule.getLog().contains(mn2pdf.USAGE));
+        String capturedLog = getTestCapturedLog();
+        //assertTrue(systemOutRule.getLog().contains(mn2pdf.USAGE));
+        assertTrue(capturedLog.contains(mn2pdf.USAGE));
     }
 
     /*@Test
@@ -62,7 +99,7 @@ public class mn2pdfTests {
     }*/
     
     @Test
-    public void xmlNotExists() throws ParseException {
+    public void xmlNotExists() throws ParseException, IOException {
         exitRule.expectSystemExitWithStatus(-1);
 
         String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
@@ -70,12 +107,14 @@ public class mn2pdfTests {
         String[] args = new String[]{"--xml-file", "1", "--xsl-file", "2", "--pdf-file", "3"};
         mn2pdf.main(args);
 
-        assertTrue(systemOutRule.getLog().contains(
-                String.format(mn2pdf.INPUT_NOT_FOUND, mn2pdf.XML_INPUT, args[1])));
+        String capturedLog = getTestCapturedLog();
+        //assertTrue(systemOutRule.getLog().contains(
+        assertTrue(capturedLog.contains(
+                String.format(Constants.INPUT_NOT_FOUND, Constants.XML_INPUT, args[1])));
     }
 
     @Test
-    public void xslNotExists() throws ParseException {
+    public void xslNotExists() throws ParseException, IOException {
         exitRule.expectSystemExitWithStatus(-1);
 
         ClassLoader classLoader = getClass().getClassLoader();
@@ -85,8 +124,10 @@ public class mn2pdfTests {
         String[] args = new String[]{"--xml-file", xml, "--xsl-file", "3", "--pdf-file", "4"};
         mn2pdf.main(args);
 
-        assertTrue(systemOutRule.getLog().contains(
-                String.format(mn2pdf.INPUT_NOT_FOUND, mn2pdf.XSL_INPUT, args[2])));
+        String capturedLog = getTestCapturedLog();
+        //assertTrue(systemOutRule.getLog().contains(
+        assertTrue(capturedLog.contains(
+                String.format(Constants.INPUT_NOT_FOUND, Constants.XSL_INPUT, args[2])));
     }
 
     /*@Test
@@ -119,7 +160,7 @@ public class mn2pdfTests {
     }
     
     @Test
-    public void additionalXMLnotfound() throws ParseException {
+    public void additionalXMLnotfound() throws ParseException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("iec-rice.xml").getFile();
@@ -128,12 +169,13 @@ public class mn2pdfTests {
 
         String additionalXMLs = "iec-rice.fr.xml";
         String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--param", "additionalXMLs=" + additionalXMLs, "--pdf-file", pdf.toAbsolutePath().toString()};
-        mn2pdf.main(args);        
+        mn2pdf.main(args);
+        
         assertTrue(systemErrRule.getLog().contains(additionalXMLs + " (")); //"Can not load requested doc"
     }
     
     @Test
-    public void successFontReplacement() throws ParseException {
+    public void successFontReplacement() throws ParseException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         
@@ -149,13 +191,16 @@ public class mn2pdfTests {
             embed_url = new File(embed_url).toURI().toURL().toString();
         } catch (MalformedURLException ex) {}*/
         String newPath = Paths.get(fontpath, "SourceSansPro-Regular.ttf").toString();
-        assertTrue(systemOutRule.getLog().contains(
+        
+        String capturedLog = getTestCapturedLog();
+        //assertTrue(systemOutRule.getLog().contains(
+        assertTrue(capturedLog.contains(
             String.format(fontConfig.WARNING_FONT, embed_url, "TestFont", "normal", "normal", newPath)));
         assertTrue(Files.exists(pdf));
     }
     
     @Test
-    public void successNonPDFUAmode() throws ParseException {
+    public void successNonPDFUAmode() throws ParseException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("rice-en.svgtest.xml").getFile();
@@ -165,7 +210,9 @@ public class mn2pdfTests {
         String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
         mn2pdf.main(args);
         
-        assertTrue(systemOutRule.getLog().contains(mn2pdf.WARNING_NONPDFUA));
+        String capturedLog = getTestCapturedLog();
+        //assertTrue(systemOutRule.getLog().contains(Constants.WARNING_NONPDFUA));
+        assertTrue(capturedLog.contains(Constants.WARNING_NONPDFUA));
         assertTrue(Files.exists(pdf));
     }
     

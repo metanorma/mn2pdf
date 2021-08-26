@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,9 @@ public class FOPFont {
     @JacksonXmlProperty(isAttribute=true)
     boolean mn_default = false;
     
+    @JacksonXmlProperty(isAttribute=true, localName = "embedding-mode")
+    String embedding_mode;
+    
     @JacksonXmlElementWrapper(useWrapping = false)
     List<FOPFontAlternate> alternate = new ArrayList<>();
     
@@ -51,6 +55,8 @@ public class FOPFont {
     @JsonIgnore
     boolean readyToUse = false;
     
+    @JsonIgnore
+    String path;
     
     public FOPFont () {
         //test
@@ -73,6 +79,14 @@ public class FOPFont {
 
     public void setEmbed_url(String embed_url) {
         this.embed_url = embed_url;
+        if (!embed_url.startsWith("file:")) {
+            path = embed_url;
+        }
+        if (embed_url.toLowerCase().endsWith(".otf")) {
+            embedding_mode = "full";
+        } else {
+            embedding_mode = null;
+        }
     }
     
     public String getSub_font() {
@@ -186,6 +200,12 @@ public class FOPFont {
         this.readyToUse = readyToUse;
     }
     
-    
+    @JsonIgnore
+    public String getPath() {
+        if (path != null) {
+            return path;
+        }
+        return embed_url;
+    }
     
 }
