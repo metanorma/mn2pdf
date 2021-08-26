@@ -1,5 +1,6 @@
 package org.metanorma.fop;
 
+import java.awt.image.RenderedImage;
 import static org.metanorma.fop.Util.getStreamFromResources;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import java.io.BufferedOutputStream;
@@ -17,6 +18,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -57,6 +59,21 @@ import org.apache.commons.cli.ParseException;
 import org.apache.fop.render.intermediate.IFContext;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFSerializer;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
+import org.apache.pdfbox.pdmodel.graphics.color.PDGamma;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationSquareCircle;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationMarkup;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -250,6 +267,8 @@ public class mn2pdf {
                 runFOP(fontcfg, src, pdf);
                 System.out.println(WARNING_NONPDFUA);
             }
+            
+            addMathInComments(pdf, new File(pdf.getAbsolutePath() + ".if.xml"));
             
             for(String msg: fontcfg.getMessages()) {
             	System.out.println(msg);
@@ -753,6 +772,113 @@ public class mn2pdf {
                 assert false;
             }
         }
+    }
+    
+    private void addMathInComments(File pdf, File intermediateformat) {
+        File pdfMath = new File(pdf.getAbsolutePath()+ ".math.pdf");
+        
+        
+        
+        /*XPath xPath = XPathFactory.newInstance().newXPath();
+        XPathExpression query;
+        try {
+            query = xPath.compile("//*[local-name() = 'page'");
+
+        } catch (XPathExpressionException ex) {
+            System.out.println(ex.toString());
+        }*/
+
+        PDDocument doc;
+        try {
+            doc = PDDocument.load(pdf);
+            
+            PDColor colorBlue = new PDColor(new float[] { 0, 0, 1 }, PDDeviceRGB.INSTANCE);
+            PDColor colorYellow = new PDColor(new float[] { 255, 209, 0 }, PDDeviceRGB.INSTANCE);
+            
+            
+            PDPage page = doc.getPage(0);
+            List<PDAnnotation> annotations = page.getAnnotations();
+            
+            float pw = page.getMediaBox().getWidth();
+            float pj = page.getMediaBox().getHeight();
+            
+            PDRectangle position = new PDRectangle();
+            int x = 89;
+            int y = 759;
+            position.setLowerLeftX(x);
+            position.setLowerLeftY(y);
+
+            position.setUpperRightX(x + 46);
+            position.setUpperRightY(769);
+
+            //PDAnnotationText text = new PDAnnotationText();
+            PDAnnotationSquareCircle text = new PDAnnotationSquareCircle(PDAnnotationSquareCircle.SUB_TYPE_SQUARE);
+            text.setContents("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n" +
+"	<apply>\n" +
+"		<plus/>\n" +
+"		<ci>a</ci>\n" +
+"		<apply>\n" +
+"			<minus/>\n" +
+"			<ci>b</ci>\n" +
+"			<ci>c</ci>\n" +
+"		</apply>\n" +
+"	</apply>\n" +
+"</math>");
+            text.setRectangle(position);
+            text.setColor(colorYellow);
+            
+            //text.setOpen(false);
+            //text.setConstantOpacity(0.15f);
+            text.setConstantOpacity(0f);
+            
+            text.setReadOnly(true);
+            annotations.add(text);
+            
+            PDAnnotationSquareCircle text2 = new PDAnnotationSquareCircle(PDAnnotationSquareCircle.SUB_TYPE_SQUARE);
+            
+            text2.setContents("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n" +
+"	<apply>\n" +
+"		<plus/>\n" +
+"		<apply>\n" +
+"			<minus/>\n" +
+"			<cn>1</cn>\n" +
+"		</apply>\n" +
+"		<cn>7</cn>\n" +
+"	</apply>\n" +
+"</math>");
+            
+            PDRectangle position2 = new PDRectangle();
+            int x2 = 182;
+            int y2 = 759;
+            position2.setLowerLeftX(x2);
+            position2.setLowerLeftY(y2);
+
+            position2.setUpperRightX(x2 + 36);
+            position2.setUpperRightY(769);
+        
+            text2.setRectangle(position2);
+            text2.setColor(colorYellow);
+            
+            //text.setOpen(false);
+            //text.setConstantOpacity(0.15f);
+            text2.setConstantOpacity(0f);
+            
+            text2.setReadOnly(true);
+            annotations.add(text2);
+            
+            if (!annotations.isEmpty()) {
+                page.setAnnotations(annotations);
+            }
+            
+            
+            doc.save(pdfMath);
+            
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        
+        
+        
     }
     
 }
