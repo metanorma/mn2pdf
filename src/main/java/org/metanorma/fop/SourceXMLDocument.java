@@ -51,7 +51,7 @@ public class SourceXMLDocument {
     Document sourceXML;
 
     static final String TMPDIR = System.getProperty("java.io.tmpdir");
-    final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
+    static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
     
     String documentFilePath;
     
@@ -153,7 +153,7 @@ public class SourceXMLDocument {
                             }
                             svgmap.put(id, svgpath.toFile().toURI().toURL().toString());
                         } catch (IOException ex) {
-                            logger.log(Level.SEVERE, "Can''t save svg file into a temporary directory {0}", tmpfilepath.toString());
+                            logger.log(Level.SEVERE, "Can't save svg file into a temporary directory {0}", tmpfilepath.toString());
                             ex.printStackTrace();;
                         }
                     }

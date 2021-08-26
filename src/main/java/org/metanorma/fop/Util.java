@@ -52,8 +52,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import static org.metanorma.Constants.DEBUG;
-import static org.metanorma.fop.PDFGenerator.logger;
-import static org.metanorma.fop.fontConfig.fopFonts;
+import static org.metanorma.fop.SourceXMLDocument.tmpfilepath;
 import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
@@ -513,6 +512,21 @@ public class Util {
         
         return String.valueOf((int)(fontSize * 1000));
         
+    }
+    
+    public static String saveFileToDisk(String filename, String content) {
+        try {
+            Files.createDirectories(tmpfilepath);
+            Path filepath = Paths.get(tmpfilepath.toString(), filename);
+            try (BufferedWriter bw = Files.newBufferedWriter(filepath)) {
+                bw.write(content);
+            }
+            return filepath.toString();
+        } catch (IOException ex) {
+        logger.log(Level.SEVERE, "Can't save a file into a temporary directory {0}", tmpfilepath.toString());
+        ex.printStackTrace();
+        }
+        return "";
     }
     
 }
