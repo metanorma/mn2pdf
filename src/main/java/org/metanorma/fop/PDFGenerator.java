@@ -549,7 +549,7 @@ public class PDFGenerator {
     
     private void createIndexFile(String indexxmlFilePath, String intermediateXML) {
         try {
-            String xmlIndex = applyXSLT("index.xsl", intermediateXML);
+            String xmlIndex = applyXSLT("index.xsl", intermediateXML, false);
             
             if (xmlIndex.length() != 0) {
                 try ( 
@@ -566,12 +566,12 @@ public class PDFGenerator {
     }
     
     // Apply XSL tranformation (file xsltfile) for xml string
-    private String applyXSLT(String xsltfile, String xmlStr, boolean... fixSurrogatePairs) throws Exception {
+    private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer(srcXSL);
-        if (fixSurrogatePairs[0]) {
+        if (fixSurrogatePairs) {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
         }
         Source src = new StreamSource(new StringReader(xmlStr));
