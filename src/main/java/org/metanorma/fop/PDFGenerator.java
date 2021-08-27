@@ -80,6 +80,8 @@ public class PDFGenerator {
     
     boolean PDFUA_error = false;
     
+    private String debugXSLFO = "";
+    
     public void setFontsPath(String fontsPath) {
         this.fontsPath = fontsPath;
     }
@@ -277,7 +279,7 @@ public class PDFGenerator {
             }
 
             String xmlFO = sourceXMLDocument.getXMLFO();
-            
+            debugXSLFO = xmlFO;
             if (DEBUG) {   
                 //DEBUG: write intermediate FO to file                
                 String xmlFO_UTF8 = xmlFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -338,6 +340,7 @@ public class PDFGenerator {
                 String xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false);
                 logger.info("Updating Intermediate Format...");
                 xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
+                debugXSLFO = xmlIF;
                 if (DEBUG) {   //DEBUG: write intermediate IF to file
                     String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     try ( 
@@ -431,6 +434,15 @@ public class PDFGenerator {
                 PDFUA_error = true;
             } else {
                 e.printStackTrace(System.err);
+                if (!debugXSLFO.isEmpty()) {
+                    debugXSLFO = debugXSLFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    String debugXSLFOfile = pdf.getAbsolutePath() + ".fo.debug.xml";
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(debugXSLFOfile))) {
+                            writer.write(debugXSLFO);                    
+                    }
+                    logger.log(Level.INFO, "XSL-FO file for debugging saved into: {0}", debugXSLFOfile);
+                }
                 System.exit(ERROR_EXIT_CODE);
             } 
             
@@ -468,7 +480,7 @@ public class PDFGenerator {
             xsltConverter.transform(sourceXMLDocument);
 
             String xmlFO = sourceXMLDocument.getXMLFO();
-
+            debugXSLFO = xmlFO;
             if (DEBUG) {   
                 //DEBUG: write intermediate FO to file                
                 try ( 
@@ -530,7 +542,7 @@ public class PDFGenerator {
             transformer.transform(src, res);
 
             xmlIF = out.toString("UTF-16");
-
+            debugXSLFO = xmlIF;
             if (DEBUG) {   
                 String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 //DEBUG: write intermediate IF to file                
