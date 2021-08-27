@@ -86,10 +86,10 @@ jobs:
           asset_name: mn2pdf-${{ steps.get_version.outputs.VERSION }}.jar
           asset_content_type: application/java-archive
 
-#      - name: Notify mn2pdf-ruby
-#        uses: peter-evans/repository-dispatch@v1
-#        with:
-#          token: ${{ secrets.PAT_TOKEN }}
-#          repository: metanorma/mn2pdf-ruby
-#          event-type: metanorma/mn2pdf
-#          client-payload: '{ "ref": "${{ github.ref }}" }'
+      - name: Notify mn2pdf-ruby
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          repository: metanorma/mn2pdf-ruby
+          event-type: metanorma/mn2pdf
+          client-payload: '{ "ref": "${{ github.ref }}" }'
