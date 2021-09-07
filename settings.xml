@@ -31,8 +31,8 @@
     <servers>
         <server>
             <id>metanorma</id>
-            <username>${env.GH_USERNAME}</username>
-            <password>${env.GH_TOKEN}</password>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
         </server>
         <server>
             <id>metanorma_mn2pdf</id>

@@ -1,0 +1,58 @@
+name: test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 1.8 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        experimental: [ false ]
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo gem install fontist
+
+      - if: matrix.os != 'ubuntu-latest'
+        run: gem install fontist
+
+      - run: |
+          fontist update
+          fontist manifest-install --confirm-license .github/mscorefonts.yml
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.fontist
+          key: fontist-${{ runner.os }}
+          restore-keys: fontist-${{ runner.os }}
+
+      # - if: matrix.os == 'windows-latest'
+      #   run: choco install --no-progress make
+
+      - run: make all
+
+      - run: make test
