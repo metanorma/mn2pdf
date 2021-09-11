@@ -122,7 +122,7 @@ public class GlyphMapping {
         if ((script == null) || "auto".equals(script)) {
             script = CharScript.scriptTagFromCode(CharScript.dominantScript(ics));
         }
-        if ((language == null) || "none".equals(language)) {
+        if ((language == null) || "none".equals(language) || "ar".equals(language)) {
             language = "dflt";
         }
 
