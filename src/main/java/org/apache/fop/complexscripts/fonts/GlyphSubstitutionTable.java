@@ -97,7 +97,8 @@ public class GlyphSubstitutionTable extends GlyphTable {
     public GlyphSequence substitute(GlyphSequence gs, String script, String language) {
         GlyphSequence ogs;
         Map<LookupSpec, List<LookupTable>> lookups = matchLookups(script, language, "*");
-        if ((lookups != null) && (lookups.size() > 0)) {
+        if ((lookups != null) && (lookups.size() > 0) && 
+                (language.equals("ar") || language.equals("dflt"))) {
             ScriptProcessor sp = ScriptProcessor.getInstance(script, processors);
             ogs = sp.substitute(this, gs, script, language, lookups);
         } else {
