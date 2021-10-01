@@ -28,13 +28,13 @@ jobs:
 
       - run: make test
 
-      - name: Deploy to Maven
-        env:
-          # for deploy mn2pdf
-          GITHUB_PUBLISH_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-          GITHUB_PUBLISH_USERNAME: metanorma-ci
-        run: |
-          make deploy
+#      - name: Deploy to Maven
+#        env:
+#          # for deploy mn2pdf
+#          GITHUB_PUBLISH_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+#          GITHUB_PUBLISH_USERNAME: metanorma-ci
+#        run: |
+#          make deploy
 
       - name: Create Release
         id: create_release
