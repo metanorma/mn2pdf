@@ -17,12 +17,12 @@ jobs:
         with:
           java-version: 1.8
 
+      - uses: actions/checkout@master
+
       - run: |
           sudo gem install fontist
           fontist update
           fontist manifest-install --confirm-license .github/mscorefonts.yml
-
-      - uses: actions/checkout@master
 
       - run: make all
 
