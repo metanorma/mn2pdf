@@ -28,13 +28,13 @@ jobs:
 
       - run: make test
 
-#      - name: Deploy to Maven
-#        env:
-#          # for deploy mn2pdf
-#          GITHUB_PUBLISH_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-#          GITHUB_PUBLISH_USERNAME: metanorma-ci
-#        run: |
-#          make deploy
+      - name: Deploy to Maven
+        env:
+          # for deploy mn2pdf
+          GITHUB_PUBLISH_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          GITHUB_PUBLISH_USERNAME: metanorma-ci
+        run: |
+          make deploy
 
       - name: Create Release
         id: create_release
@@ -63,10 +63,10 @@ jobs:
           asset_name: mn2pdf-${{ steps.get_version.outputs.VERSION }}.jar
           asset_content_type: application/java-archive
 
-#      - name: Notify mn2pdf-ruby
-#        uses: peter-evans/repository-dispatch@v1
-#        with:
-#          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-#          repository: metanorma/mn2pdf-ruby
-#          event-type: metanorma/mn2pdf
-#          client-payload: '{ "ref": "${{ github.ref }}" }'
+      - name: Notify mn2pdf-ruby
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/mn2pdf-ruby
+          event-type: metanorma/mn2pdf
+          client-payload: '{ "ref": "${{ github.ref }}" }'
