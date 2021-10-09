@@ -263,7 +263,12 @@ public class PDFGenerator {
                 // index.xml was created for bilingual document
                 additionalXSLTparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
             }
-            additionalXSLTparams.setProperty("basepath", sourceXMLDocument.getDocumentFilePath() + File.separator);
+            String basepath = sourceXMLDocument.getDocumentFilePath() + File.separator;
+            // redefine basepath 
+            if (xsltParams.containsKey("baseassetpath")) {
+                basepath = xsltParams.getProperty("baseassetpath") + File.separator;
+            }
+            additionalXSLTparams.setProperty("basepath", basepath);
             xsltConverter.setParams(additionalXSLTparams);
             
             //System.out.println("[INFO] XSL-FO file preparation...");
