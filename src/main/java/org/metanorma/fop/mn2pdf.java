@@ -98,6 +98,107 @@ public class mn2pdf {
                 .desc("additionally create a PDF for each language in XML")
                 .required(false)
                 .build());
+            addOption(Option.builder("ep")
+                .longOpt("encryption-parameters")
+                .desc("path to YAML file with encryption parameters")
+                .hasArg()
+                .argName("file")
+                .required(false)
+                .build());
+            addOption(Option.builder("el")
+                .longOpt("encryption-length")
+                .desc("encryption length in bit (default 128)")
+                .hasArg()
+                .argName("integer")
+                .type(Number.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("op")
+                .longOpt("owner-password")
+                .desc("owner password")
+                .hasArg()
+                .argName("string")
+                .required(false)
+                .build());
+            addOption(Option.builder("up")
+                .longOpt("user-password")
+                .desc("user password")
+                .hasArg()
+                .argName("string")
+                .required(false)
+                .build());
+            addOption(Option.builder("ap")
+                .longOpt("allow-print")
+                .desc("allow printing")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("aph")
+                .longOpt("allow-print-hq")
+                .desc("allow high quality printing")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("ac")
+                .longOpt("allow-copy-content")
+                .desc("allow copy content")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("aec")
+                .longOpt("allow-edit-content")
+                .desc("allow editing")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("aea")
+                .longOpt("allow-edit-annotations")
+                .desc("allow editing of annotations")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("af")
+                .longOpt("allow-fill-in-forms")
+                .desc("allow filling in forms")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("aac")
+                .longOpt("allow-access-content")
+                .desc("allow text and graphics extraction for accessibility purposes")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("aad")
+                .longOpt("allow-assemble-document")
+                .desc("allow assembling documents")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
+            addOption(Option.builder("em")
+                .longOpt("encrypt-metadata")
+                .desc("encrypt the Metadata stream")
+                .hasArg()
+                .argName("true(default)|false")
+                .type(Boolean.class)
+                .required(false)
+                .build());
             addOption(Option.builder("v")
                .longOpt("version")
                .desc("display application version")
@@ -168,7 +269,59 @@ public class mn2pdf {
 
                 if (cmd.hasOption("param")) {
                     pdfGenerator.setXSLTParams(cmd.getOptionProperties("param"));
-                }                
+                }
+                
+                if (cmd.hasOption("encryption-parameters")) {
+                    pdfGenerator.setEncryptionParametersFile(cmd.getOptionValue("encryption-parameters"));
+                }
+
+                if (cmd.hasOption("encryption-length")) {
+                    pdfGenerator.setEncryptionLength(Integer.valueOf(cmd.getOptionValue("encryption-length")));
+                }
+
+                if (cmd.hasOption("owner-password")) {
+                    pdfGenerator.setOwnerPassword(cmd.getOptionValue("owner-password"));
+                }
+
+                if (cmd.hasOption("user-password")) {
+                    pdfGenerator.setUserPassword(cmd.getOptionValue("user-password"));
+                }
+
+                if (cmd.hasOption("allow-print")) {
+                    pdfGenerator.setAllowPrint(Boolean.valueOf(cmd.getOptionValue("allow-print")));
+                }
+                
+                if (cmd.hasOption("allow-print-hq")) {
+                    pdfGenerator.setAllowPrintHQ(Boolean.valueOf(cmd.getOptionValue("allow-print-hq")));
+                }
+
+                if (cmd.hasOption("allow-copy-content")) {
+                    pdfGenerator.setAllowCopyContent(Boolean.valueOf(cmd.getOptionValue("allow-copy-content")));
+                }
+                
+                if (cmd.hasOption("allow-edit-content")) {
+                    pdfGenerator.setAllowEditContent(Boolean.valueOf(cmd.getOptionValue("allow-edit-content")));
+                }
+                
+                if (cmd.hasOption("allow-edit-annotations")) {
+                    pdfGenerator.setAllowEditAnnotations(Boolean.valueOf(cmd.getOptionValue("allow-edit-annotations")));
+                }
+                
+                if (cmd.hasOption("allow-fill-in-forms")) {
+                    pdfGenerator.setAllowFillInForms(Boolean.valueOf(cmd.getOptionValue("allow-fill-in-forms")));
+                }
+
+                if (cmd.hasOption("allow-access-content")) {
+                    pdfGenerator.setAllowAccessContent(Boolean.valueOf(cmd.getOptionValue("allow-access-content")));
+                }
+                
+                if (cmd.hasOption("allow-assemble-document")) {
+                    pdfGenerator.setAllowAssembleDocument(Boolean.valueOf(cmd.getOptionValue("allow-assemble-document")));
+                }
+                
+                if (cmd.hasOption("encrypt-metadata")) {
+                    pdfGenerator.setEncryptMetadata(Boolean.valueOf(cmd.getOptionValue("encrypt-metadata")));
+                }
                 
                 try {
                     if (!pdfGenerator.process()) {

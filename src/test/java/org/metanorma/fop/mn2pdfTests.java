@@ -19,6 +19,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -275,4 +277,61 @@ public class mn2pdfTests {
         
     }
 
+    @Test
+    public void checkResultedEncryptedPDF() throws ParseException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("rice-en.final.metadata.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        String encryption_params = classLoader.getResource("pdf-encryption.yaml").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso-rice.encrypted.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--encryption-parameters", encryption_params};
+        mn2pdf.main(args);
+        
+        // check pdf permissions
+        int encryptionLength = 128;
+        boolean allowPrint = true;
+        boolean allowPrintHQ = true;
+        boolean allowCopyContent = true;
+        boolean allowEditContent = true;
+        boolean allowEditAnnotations = true;
+        boolean allowFillInForms = true;
+        boolean allowAccessContent = true;
+        boolean allowAssembleDocument = true;
+        boolean encryptMetadata = false;
+                
+        PDDocument  doc;
+        try {
+            doc = PDDocument.load(pdf.toFile(), "userpass");
+        
+            AccessPermission ap = doc.getCurrentAccessPermission();
+            allowPrint = ap.canPrint();
+            allowPrintHQ = ap.canPrintDegraded();
+            allowCopyContent = ap.canExtractContent();
+            allowEditContent = ap.canModify();
+            allowEditAnnotations = ap.canModifyAnnotations();
+            allowFillInForms = ap.canFillInForm();
+            allowAccessContent = ap.canExtractForAccessibility();
+            allowAssembleDocument = ap.canAssembleDocument();
+            PDEncryption penc = doc.getEncryption();
+            encryptionLength = penc.getLength();
+            encryptMetadata = penc.isEncryptMetaData();
+            
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        
+        assertTrue(encryptionLength == 256);
+        assertTrue(allowPrint == false);
+        assertTrue(allowPrintHQ == false);
+        assertTrue(allowCopyContent == false);
+        assertTrue(allowEditContent == false);
+        assertTrue(allowEditAnnotations == false);
+        assertTrue(allowFillInForms == false);
+        assertTrue(allowAccessContent == false);
+        assertTrue(allowAssembleDocument == false);
+        assertTrue(encryptMetadata == true);
+        
+    }
 }

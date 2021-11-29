@@ -4,14 +4,19 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +40,7 @@ import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventFormatter;
 import org.apache.fop.events.model.EventSeverity;
+import org.apache.fop.pdf.PDFEncryptionParams;
 import org.apache.fop.render.intermediate.IFContext;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFParser;
@@ -45,6 +51,7 @@ import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.SAXException;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  *
@@ -76,6 +83,10 @@ public class PDFGenerator {
     
     private Properties xsltParams = new Properties();
     
+    private String encryptionParametersFile = "";
+    
+    private Map<String,Object> encryptionParams = new HashMap<>();
+    
     int pageCount = 0;
     
     boolean PDFUA_error = false;
@@ -106,8 +117,58 @@ public class PDFGenerator {
     public void setXSLTParams(Properties xsltParams) {
         this.xsltParams = xsltParams;
     }
-    
-    
+
+    public void setEncryptionParametersFile(String encryptionParametersFile) {
+        this.encryptionParametersFile = encryptionParametersFile;
+    }
+
+    public void setEncryptionLength(int encryptionLength) { 
+        encryptionParams.put("encryption-length", encryptionLength);
+    }
+
+    public void setOwnerPassword(String ownerPassword) {
+        encryptionParams.put("owner-password", ownerPassword);
+    }
+
+    public void setUserPassword(String userPassword) {
+        encryptionParams.put("user-password", userPassword);
+    }
+
+    public void setAllowPrint(boolean isAllowPrint) {
+        encryptionParams.put("noprint", !isAllowPrint);
+    }
+
+    public void setAllowPrintHQ(boolean isAllowPrintHQ) {
+        encryptionParams.put("noprinthq", !isAllowPrintHQ);
+    }
+
+    public void setAllowCopyContent(boolean isAllowCopyContent) {
+        encryptionParams.put("nocopy", !isAllowCopyContent);
+    }
+
+    public void setAllowEditContent(boolean isAllowEditContent) {
+        encryptionParams.put("noedit", !isAllowEditContent);
+    }
+
+    public void setAllowEditAnnotations(boolean isAllowEditAnnotations) {
+        encryptionParams.put("noannotations", !isAllowEditAnnotations);
+    }
+
+    public void setAllowFillInForms(boolean isAllowFillInForms) {
+        encryptionParams.put("nofillinforms", !isAllowFillInForms);
+    }
+
+    public void setAllowAccessContent(boolean isAllowAccessContent) {
+        encryptionParams.put("noaccesscontent", !isAllowAccessContent);
+    }
+
+    public void setAllowAssembleDocument(boolean isAllowAssembleDocument) {
+        encryptionParams.put("noassembledoc", !isAllowAssembleDocument);
+    }
+
+    public void setEncryptMetadata(boolean isEncryptMetadata) {
+        encryptionParams.put("encrypt-metadata", isEncryptMetadata);
+    }
     
     
     public PDFGenerator (String inputXMLFilePath, String inputXSLFilePath, String outputPDFFilePath) {
@@ -143,6 +204,16 @@ public class PDFGenerator {
                     //System.exit(ERROR_EXIT_CODE);
                     return false;
                 }
+            }
+            
+            File fEncryptionParameters = null;
+            if (!encryptionParametersFile.isEmpty()) {
+                fEncryptionParameters = new File(encryptionParametersFile);
+                if (!fEncryptionParameters.exists()) {
+                    logger.severe(String.format(INPUT_NOT_FOUND, "Encryption parameters file", fEncryptionParameters));
+                    return false;
+                }
+                readEncryptionParameters(fEncryptionParameters);
             }
             
             File fPDF = new File(outputPDFFilePath);
@@ -374,6 +445,7 @@ public class PDFGenerator {
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent
             foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
+            setEncryptionParams(foUserAgent);
             
             //Adding a simple logging listener that writes to stdout and stderr            
             //foUserAgent.getEventBroadcaster().addEventListener(new SysOutEventListener());
@@ -711,6 +783,92 @@ public class PDFGenerator {
     
     private int getPageCount() {
         return pageCount;
+    }
+    
+    private void setEncryptionParams(FOUserAgent userAgent) {
+        for (Map.Entry<String, Object> entry : encryptionParams.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            userAgent.getRendererOptions().put(key, value); // not working for 'encryption-length', see below
+        }
+        
+        if (encryptionParams.containsKey("encryption-length")) {
+            PDFEncryptionParams encryptionConfig = new PDFEncryptionParams();
+            encryptionConfig.setEncryptionLengthInBits((int)encryptionParams.get("encryption-length"));
+            userAgent.getRendererOptions().put("encryption-params", encryptionConfig);
+        }
+    }
+    
+    private void readEncryptionParameters(File fEncryptionParameters) {
+        Yaml yaml = new Yaml();
+        try {
+            Map<String, Object> obj = yaml.load(new FileInputStream(fEncryptionParameters));
+            
+            for (Map.Entry<String, Object> entry : obj.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+            
+                switch(key) {
+                    case "encryption-length":
+                        setEncryptionLength((int)(value));
+                        break;
+                    case "owner-password":
+                        setOwnerPassword((String)value);
+                        break;
+                    case "user-password":
+                        setUserPassword((String)value);
+                        break;
+                    case "allow-print":
+                        setAllowPrint((Boolean)value);
+                        break;
+                    case "allow-print-hq":
+                        setAllowPrintHQ((Boolean)value);
+                        break;
+                    case "allow-copy-content":
+                        setAllowCopyContent((Boolean)value);
+                        break;
+                    case "allow-edit-content":
+                        setAllowEditContent((Boolean)value);
+                        break;
+                    case "allow-edit-annotations":
+                        setAllowEditAnnotations((Boolean)value);
+                        break;
+                    case "allow-fill-in-forms":
+                        setAllowFillInForms((Boolean)value);
+                        break;
+                    case "allow-access-content":
+                        setAllowAccessContent((Boolean)value);
+                        break;
+                    case "allow-assemble-document":
+                        setAllowAssembleDocument((Boolean)value);
+                        break;
+                    case "encrypt-metadata":
+                        setEncryptMetadata((Boolean)value);
+                        break;
+                    default:
+                        logger.log(Level.INFO, "Unknown key in encryption parameters file: {0}", key);
+                        break;
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            // make no sense, checking in main method
+        } catch (Exception ex) {
+            logger.log(Level.INFO, "ERROR: Error in processing encryption parameters file: {0}", ex.toString());
+            logger.info("Expected format:");
+            logger.info("encryption-length: 128");
+            logger.info("owner-password: mypass");
+            logger.info("user-password: userpass");
+            logger.info("allow-print: false");
+            logger.info("allow-print-hq: true");
+            logger.info("allow-copy-content: true");
+            logger.info("allow-edit-content: false");
+            logger.info("allow-edit-annotations: true");
+            logger.info("allow-fill-in-forms: false");
+            logger.info("allow-access-content: true");
+            logger.info("allow-assemble-document: false");
+            logger.info("encrypt-metadata: true");
+            System.exit(ERROR_EXIT_CODE);
+        }
     }
     
 }
