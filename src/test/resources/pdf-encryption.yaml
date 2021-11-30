@@ -1,0 +1,12 @@
+encryption-length: 256
+owner-password: mypass
+user-password: userpass
+allow-print: false
+allow-print-hq: false
+allow-copy-content: false
+allow-edit-content: false
+allow-edit-annotations: false
+allow-fill-in-forms: false
+allow-access-content: false
+allow-assemble-document: false
+encrypt-metadata: true
