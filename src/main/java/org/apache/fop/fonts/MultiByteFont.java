@@ -674,6 +674,13 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
             }
             notifyMapOperation();
             gi = findGlyphIndex(cc);
+            
+            if (gi == SingleByteEncoding.NOT_FOUND_CODE_POINT && cc == 0x061C) { // ARABIC LETTER MARK
+                //replace to ZERO-WIDTH SPACE
+                cc = 0x200B;
+                gi = findGlyphIndex(cc);
+            }
+            
             if (gi == SingleByteEncoding.NOT_FOUND_CODE_POINT) {
                 warnMissingGlyph((char) cc);
                 gi = giMissing;
