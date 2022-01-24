@@ -4,12 +4,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.cos.COSName;
 
@@ -34,6 +41,7 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.metanorma.Constants;
 import org.metanorma.utils.LoggerHelper;
+import org.w3c.dom.Node;
 
 public class mn2pdfTests {
 
@@ -334,4 +342,18 @@ public class mn2pdfTests {
         assertTrue(encryptMetadata == true);
         
     }
+    
+
+    @Test
+    public void testSyntaxHighlight() throws TransformerException, TransformerConfigurationException  {
+        String code = "<root><a></a><b>text</b><c key='value'/></root>";
+        Node node = Util.syntaxHighlight(code, "xml");
+        StringWriter writer = new StringWriter();
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.transform(new DOMSource(node), new StreamResult(writer));
+        String value = writer.toString();
+        String exprectedValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><syntax><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">root</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">b</span>&gt;</span>text<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">b</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">c</span> <span class=\"hljs-attr\">key</span>=<span class=\"hljs-string\">'value'</span>/&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">root</span>&gt;</span></syntax>";
+        assertTrue(value.equals(exprectedValue));
+    }
+    
 }
