@@ -586,7 +586,7 @@ public class Util {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() { 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    files.add(file.getFileName().toString());
+                    files.add(folder + "/" + file.getFileName().toString());
                     return FileVisitResult.CONTINUE;
                 }
             });

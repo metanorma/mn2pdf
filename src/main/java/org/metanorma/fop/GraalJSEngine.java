@@ -13,6 +13,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import static org.metanorma.Constants.DEBUG;
 import static org.metanorma.fop.Util.logger;
+import org.metanorma.utils.PropertiesReader;
+
 
 /**
  *
@@ -39,19 +41,36 @@ public class GraalJSEngine {
             graalEngine = new ScriptEngineManager().getEngineByName("graal.js");
             bindings = graalEngine.getBindings(ScriptContext.ENGINE_SCOPE);
             
-            List<String> jsModules = new ArrayList<>();
-            jsModules.add("highlight.min.js"); // this module should be first
-            
             try {
-                List<String> resourceFolderFiles = Util.getResourceFolderFiles("highlightjs");
-                resourceFolderFiles.stream().filter(f -> (f.endsWith(".js") && !f.endsWith("highlight.min.js"))).forEach(jsModules::add);
+                
+                PropertiesReader propertiesReader = new PropertiesReader("properties-from-pom.properties"); 
+                String highlightis_version = propertiesReader.getProperty("highlightis.version");
+
+                String folder_highlightjs = String.join("/", "highlightjs", "cdn-release-" + highlightis_version, "build");
+
+                List<String> jsModules = new ArrayList<>();
+                jsModules.add(folder_highlightjs + "/highlight.min.js"); // this module should be first
+                
+                List<String> resourceFolderFiles = Util.getResourceFolderFiles(folder_highlightjs + "/languages");
+                resourceFolderFiles.stream().filter(f -> (f.endsWith(".js") &&
+                        !(f.contains("/bash.min.js") || f.contains("/c.min.js") || f.contains("/cpp.min.js") ||
+                          f.contains("/csharp.min.js") || f.contains("/css.min.js") || f.contains("/diff.min.js") ||
+                        f.contains("/go.min.js") || f.contains("/ini.min.js") || f.contains("/java.min.js") ||
+                        f.contains("/javascript.min.js") || f.contains("/json.min.js") || f.contains("/kotlin.min.js") ||
+                        f.contains("/less.min.js") || f.contains("/lua.min.js") || f.contains("/makefile.min.js") ||
+                        f.contains("/markdown.min.js") || f.contains("/objectivec.min.js") || f.contains("/perl.min.js") ||
+                        f.contains("/php-template.min.js") || f.contains("/php.min.js") || f.contains("/plaintext.min.js") || 
+                        f.contains("/python-repl.min.js") || f.contains("/python.min.js") || f.contains("/r.min.js") || 
+                        f.contains("/ruby.min.js") || f.contains("/rust.min.js") || f.contains("/scss.min.js") || 
+                        f.contains("/shell.min.js") || f.contains("/sql.min.js") || f.contains("/swift.min.js") || 
+                        f.contains("/typescript.min.js") || f.contains("/vbnet.min.js") || f.contains("/xml.min.js") || 
+                        f.contains("/yaml.min.js") ))).forEach(jsModules::add);
 
                 for(String jsModule:jsModules) {
                     if (DEBUG) {
                         logger.log(Level.INFO, "Loading \"highlight.js\" module ''{0}''", jsModule);
                     }
-
-                    InputStream jsIS = Util.getStreamFromResources(GraalJSEngine.class.getClassLoader(), "highlightjs/" + jsModule);
+                    InputStream jsIS = Util.getStreamFromResources(GraalJSEngine.class.getClassLoader(), jsModule);
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(jsIS))) {
                         graalEngine.eval(reader);
                     }

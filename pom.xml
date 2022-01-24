@@ -16,6 +16,7 @@
 		<jarname>${project.artifactId}-${project.version}.jar</jarname>
 		<exec.mainClass>org.metanorma.fop.mn2pdf</exec.mainClass>
 		<junit.version>5.4.2</junit.version>
+		<highlightis.version>11.4.0</highlightis.version>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -49,6 +50,42 @@
 	</repositories>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>write-project-properties</goal>
+						</goals>
+						<id>write-project-properties</id>
+					</execution>
+				</executions>
+				<configuration>
+					<outputFile>${project.build.outputDirectory}/properties-from-pom.properties</outputFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<version>1.6.8</version>
+				<executions>
+					<execution>
+						<id>install-highlightis</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<url>https://github.com/highlightjs/cdn-release/archive/refs/tags/${highlightis.version}.zip</url>
+					<unpack>true</unpack>
+					<outputDirectory>${project.build.directory}/classes/highlightjs</outputDirectory>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
