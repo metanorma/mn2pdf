@@ -87,6 +87,8 @@ public class PDFGenerator {
     
     private Map<String,Object> encryptionParams = new HashMap<>();
     
+    private boolean isSyntaxHighlight = false;
+    
     int pageCount = 0;
     
     boolean PDFUA_error = false;
@@ -170,6 +172,9 @@ public class PDFGenerator {
         encryptionParams.put("encrypt-metadata", isEncryptMetadata);
     }
     
+    public void setSyntaxHighlight(boolean isSyntaxHighlight) {
+        this.isSyntaxHighlight = isSyntaxHighlight;
+    }
     
     public PDFGenerator (String inputXMLFilePath, String inputXSLFilePath, String outputPDFFilePath) {
         this.inputXMLFilePath = inputXMLFilePath;
@@ -250,6 +255,10 @@ public class PDFGenerator {
             SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(fXML);
             
             XSLTconverter xsltConverter = new XSLTconverter(fXSL);
+
+            if (isSyntaxHighlight) {
+                xsltParams.put("syntax-highlight", "true");
+            }
             xsltConverter.setParams(xsltParams);
             
             fontConfig fontcfg = new fontConfig();

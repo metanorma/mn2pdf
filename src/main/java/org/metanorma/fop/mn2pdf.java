@@ -98,6 +98,11 @@ public class mn2pdf {
                 .desc("additionally create a PDF for each language in XML")
                 .required(false)
                 .build());
+            addOption(Option.builder("hl")
+                .longOpt("syntax-highlight")
+                .desc("source code syntax highlighting")
+                .required(false)
+                .build());
             addOption(Option.builder("ep")
                 .longOpt("encryption-parameters")
                 .desc("path to YAML file with encryption parameters")
@@ -322,6 +327,8 @@ public class mn2pdf {
                 if (cmd.hasOption("encrypt-metadata")) {
                     pdfGenerator.setEncryptMetadata(Boolean.valueOf(cmd.getOptionValue("encrypt-metadata")));
                 }
+                
+                pdfGenerator.setSyntaxHighlight(cmd.hasOption("syntax-highlight"));
                 
                 try {
                     if (!pdfGenerator.process()) {
