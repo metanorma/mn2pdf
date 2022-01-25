@@ -16,17 +16,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.CodeSource;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -527,6 +536,62 @@ public class Util {
         ex.printStackTrace();
         }
         return "";
+    }
+    
+    
+    public static Node syntaxHighlight(String code, String lang)  {
+        try {
+            if (DEBUG) {
+                logger.info("Start syntaxHighlight");
+            }
+            
+            GraalJSEngine graalEngine = GraalJSEngine.getInstance();
+            String highlightedCode = graalEngine.eval(code, lang);
+            
+            if (highlightedCode.isEmpty()) {
+                return null;
+            }
+            
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document parsed = builder.parse(new InputSource(new StringReader(highlightedCode)));
+            Node node = parsed.getDocumentElement();
+
+            if (DEBUG) {
+                logger.info("End syntaxHighlight");
+            }
+            return node;
+        }
+        
+        catch (Exception ex) {
+            logger.log(Level.SEVERE, "Can't highlight syntax for the string '{0}'", code);
+            ex.printStackTrace();
+        }
+        
+        return null;
+    }
+    
+    // Get list of files on resource folder (both for IDE and jar)
+    public static List<String> getResourceFolderFiles(String folder) throws URISyntaxException, IOException {
+        URI uri = mn2pdf.class.getClassLoader().getResource(folder).toURI();
+        List<String> files = new ArrayList<>();
+        try (FileSystem fileSystem = (uri.getScheme().equals("jar") ? FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap()) : null)) {
+            Path path;
+            if (fileSystem != null) { // from .jar
+                path = fileSystem.getPath(folder);
+            } else { // from IDE
+                path = Paths.get(uri);
+            }
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() { 
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    files.add(folder + "/" + file.getFileName().toString());
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+        return files;
     }
     
 }
