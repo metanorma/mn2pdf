@@ -17,7 +17,7 @@ You will need the Java Development Kit (JDK) version 8, Update 241 (8u241) or hi
 
 [source,sh]
 ----
-java -Xss5m -Xmx2048m -jar target/mn2pdf-1.41.jar --xml-file <XML-FileName> --xsl-file <XSLT-FileName> --pdf-file <Output-PDF-FileName>
+java -Xss5m -Xmx2048m -jar target/mn2pdf-1.41.jar --xml-file <XML-FileName> --xsl-file <XSLT-FileName> --pdf-file <Output-PDF-FileName> [--syntax-highlight]
 ----
 
 e.g.
