@@ -139,33 +139,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
-			<version>2.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>xmlgraphics-commons</artifactId>
-			<version>2.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-all</artifactId>
-			<version>1.14</version> <!-- 1.9.1 -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.python</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.avalon.framework</groupId>
-			<artifactId>avalon-framework-api</artifactId>
-			<version>4.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.avalon.framework</groupId>
-			<artifactId>avalon-framework-impl</artifactId>
-			<version>4.3.1</version>
+			<version>2.5</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/de.rototor.jeuclid/jeuclid-fop -->
 		<dependency>
@@ -177,12 +151,6 @@
 			<groupId>de.rototor.jeuclid</groupId>
 			<artifactId>jeuclid-core</artifactId>
 			<version>3.1.14</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.xmlgraphics</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
@@ -208,6 +176,16 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-all</artifactId>
+			<version>1.9.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.python</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
 			<artifactId>barcode4j-fop-ext</artifactId>
 			<version>2.1</version>
@@ -216,6 +194,11 @@
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
 			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.avalon.framework</groupId>
+			<artifactId>avalon-framework-api</artifactId>
+			<version>4.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.stefanbirkner</groupId>
