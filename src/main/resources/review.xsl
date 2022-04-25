@@ -31,6 +31,9 @@
 				<xsl:variable name="element_from_" select="$if_xml//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
 				<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
 				
+				
+				<page><xsl:value-of select="count($element_from/ancestor::*[local-name() = 'page']/preceding-sibling::*[local-name() = 'page']) + 1"/></page>
+				
 				<xsl:variable name="viewport_from_">
 					<xsl:apply-templates select="$element_from/ancestor::*[local-name() = 'viewport'][1]"/>
 				</xsl:variable>
