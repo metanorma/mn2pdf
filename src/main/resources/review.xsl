@@ -41,8 +41,8 @@
 				
 				<text>
 					<xsl:copy-of select="$element_from/@*"/>
-					<xsl:attribute name="x"><xsl:value-of select="$viewport_from/viewport/x + $element_from/@x"/></xsl:attribute>
-					<xsl:attribute name="y"><xsl:value-of select="$viewport_from/viewport/y + $element_from/@y"/></xsl:attribute>
+					<xsl:attribute name="x"><xsl:value-of select="($viewport_from/viewport/x + $element_from/@x) div 1000"/></xsl:attribute>
+					<xsl:attribute name="y"><xsl:value-of select="($viewport_from/viewport/y + $element_from/@y) div 1000"/></xsl:attribute>
 					<xsl:copy-of select="$element_from/node()"/>
 				</text>
 				
@@ -56,8 +56,8 @@
 						
 						<text>
 							<xsl:copy-of select="@*"/>
-							<xsl:attribute name="x"><xsl:value-of select="$viewport_to/viewport/x + @x"/></xsl:attribute>
-							<xsl:attribute name="y"><xsl:value-of select="$viewport_to/viewport/y + @y"/></xsl:attribute>
+							<xsl:attribute name="x"><xsl:value-of select="($viewport_to/viewport/x + @x) div 1000"/></xsl:attribute>
+							<xsl:attribute name="y"><xsl:value-of select="($viewport_to/viewport/y + @y) div 1000"/></xsl:attribute>
 							<xsl:copy-of select="node()"/>
 						</text>
 						
