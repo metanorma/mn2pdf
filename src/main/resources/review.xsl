@@ -95,7 +95,6 @@
 			...
 		</annotations>
 	-->
-	
 	<xsl:template match="/">
 		
 		<xsl:element name="annotations">
@@ -114,22 +113,21 @@
 					<xsl:variable name="element_from_" select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
 					<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
 					
-					
-					<xsl:element name="page">
-						<xsl:value-of select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
-					</xsl:element>
-					
+					<xsl:variable name="page" select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
 					
 					<xsl:element name="text">
 						<xsl:copy-of select="$element_from/@*"/>
+						<xsl:attribute name="page"><xsl:value-of select="$page"/></xsl:attribute>
 						<xsl:copy-of select="$element_from/node()"/>
 					</xsl:element>
 					
 					<xsl:if test="$id_to != ''">
 						<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
-						
+							<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
+							
 							<xsl:element name="text">
 								<xsl:copy-of select="@*"/>
+								<xsl:attribute name="page"><xsl:value-of select="$page_to"/></xsl:attribute>
 								<xsl:copy-of select="node()"/>
 							</xsl:element>
 							
