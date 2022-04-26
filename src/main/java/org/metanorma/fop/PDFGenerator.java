@@ -81,6 +81,8 @@ public class PDFGenerator {
     
     private boolean isAddMathAsAttachment = false;
     
+    private boolean isAddAnnotations = false;
+    
     private Properties xsltParams = new Properties();
     
     private String encryptionParametersFile = "";
@@ -244,10 +246,15 @@ public class PDFGenerator {
             logger.info(String.format(OUTPUT_LOG, PDF_OUTPUT, fPDF));
             logger.info("");
             
+            // read input XML to XML document and find tag '<review'
+            String element_review =  Util.readValueFromXML(fXML, "//*[local-name() = 'review'][1]");
+            isAddAnnotations = element_review.length() != 0;
             
-            // read XSL to string and find param values
+            String element_math = Util.readValueFromXML(fXML, "//*[local-name() = 'math'][1]");
+            
+            // read XSL to XML Document and find param values
             String add_math_as_text = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_text']");
-            isAddMathAsText = add_math_as_text.equalsIgnoreCase("true");
+            isAddMathAsText = add_math_as_text.equalsIgnoreCase("true") && element_math.length() != 0;
             
             String add_math_as_attachment = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_attachment']");
             isAddMathAsAttachment = add_math_as_attachment.equalsIgnoreCase("true");
@@ -415,16 +422,22 @@ public class PDFGenerator {
     
     private void runFOP (fontConfig fontcfg, Source src, File pdf) throws IOException, FOPException, SAXException, TransformerException {
         OutputStream out = null;
+        String xmlIF = null;
         try {
             
             String mime = MimeConstants.MIME_PDF;
             
-            if (isAddMathAsText) {
-                logger.info("Adding Math as text...");
+            if (isAddMathAsText || isAddAnnotations) {
+                if (isAddMathAsText) {
+                    logger.info("Adding Math as text...");
+                }
                 logger.info("Transforming to Intermediate Format...");
-                String xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false);
-                logger.info("Updating Intermediate Format...");
-                xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
+                xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false);
+                
+                if (isAddMathAsText) {
+                    logger.info("Updating Intermediate Format (adding hidden math)...");
+                    xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
+                }
                 debugXSLFO = xmlIF;
                 if (DEBUG) {   //DEBUG: write intermediate IF to file
                     String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -466,7 +479,7 @@ public class PDFGenerator {
             out = new FileOutputStream(pdf);
             out = new BufferedOutputStream(out);
             
-            if (isAddMathAsText) { // process IF to PDF
+            if (isAddMathAsText || isAddAnnotations) { // process IF to PDF
                 //Setup target handler
                 IFDocumentHandler targetHandler = fopFactory.getRendererFactory().createDocumentHandler(
                         foUserAgent, mime);
@@ -537,6 +550,18 @@ public class PDFGenerator {
                 out.close();
             }
         }
+        
+        if (isAddAnnotations) {
+            /*Annotation annotations = new Annotation();
+            try {
+                annotations.process(pdf, applyXSLT("review.xsl", xmlIF, false));
+            } catch (Exception ex) {
+                logger.severe("Can't add annotation.");
+                ex.printStackTrace();
+                System.exit(ERROR_EXIT_CODE);
+            }*/
+        }
+        
     }
     
     private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
