@@ -13,12 +13,11 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:param name="if_xml_file"/>
-	
-	<xsl:variable name="if_xml" select="document($if_xml_file)"/>
+	<xsl:param name="if_xml"/>
 	
 	<xsl:variable name="if_xml_flatten_">
-		<xsl:apply-templates select="document($if_xml_file)" mode="if_flat"/>
+		<!-- for command line debug: <xsl:apply-templates select="document($if_xml)" mode="if_flat"/> -->
+		<xsl:apply-templates select="xalan:nodeset($if_xml)" mode="if_flat"/>
 	</xsl:variable>
 	<xsl:variable name="if_xml_flatten" select="xalan:nodeset($if_xml_flatten_)"/>
 	
@@ -73,70 +72,6 @@
 		<xsl:copy>
 				<xsl:apply-templates select="@*|node()" mode="if_flat"/>
 		</xsl:copy>
-	</xsl:template>
-	<!-- ===================================================================== -->
-	<!-- flatten Apache FOP intermediate format: only 'text' and 'id' elements -->
-	<!-- ===================================================================== -->
-	
-	
-	<!-- Review text coordinates calculation based on values from Apache FOP Intermediate Format -->
-	
-	<!-- Output xml:
-		<annotations>
-			<annotation id="_" reviewer="ISO" date="2017-01-01T00:00:00Z" from="foreword" to="foreword">
-				<data>
-					<p xmlns="https://www.metanorma.org/ns/iso" id="_">A Foreword shall appear in each document. The generic text is shown here. It does not contain requirements, recommendations or permissions.</p>
-					<p xmlns="https://www.metanorma.org/ns/iso" id="_">For further information on the Foreword, see <strong>ISO/IEC Directives, Part 2, 2016, Clause 12.</strong>
-					</p>
-				</data>
-				<page>5</page>
-				<text x="70.866" y="146.218" foi:struct-ref="125" xmlns:foi="http://xmlgraphics.apache.org/fop/internal"> </text>
-			</annotation>
-			...
-		</annotations>
-	-->
-	<xsl:template match="/">
-		
-		<xsl:element name="annotations">
-		
-			<xsl:for-each select="//*[local-name() = 'review']">
-				<xsl:variable name="id_from" select="@from"/>
-				<xsl:variable name="id_to" select="@to"/>
-			
-				<xsl:element name="annotation">
-					<xsl:copy-of select="@*" />
-					
-					<xsl:element name="data">
-						<xsl:copy-of select="node()"/>
-					</xsl:element>
-					
-					<xsl:variable name="element_from_" select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
-					<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
-					
-					<xsl:variable name="page" select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
-					
-					<xsl:element name="text">
-						<xsl:copy-of select="$element_from/@*"/>
-						<xsl:attribute name="page"><xsl:value-of select="$page"/></xsl:attribute>
-						<xsl:copy-of select="$element_from/node()"/>
-					</xsl:element>
-					
-					<xsl:if test="$id_to != ''">
-						<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
-							<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
-							
-							<xsl:element name="text">
-								<xsl:copy-of select="@*"/>
-								<xsl:attribute name="page"><xsl:value-of select="$page_to"/></xsl:attribute>
-								<xsl:copy-of select="node()"/>
-							</xsl:element>
-							
-						</xsl:for-each>
-					</xsl:if>
-					
-				</xsl:element>
-			</xsl:for-each>
-		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'viewport']">
@@ -202,6 +137,93 @@
 		</xsl:choose>
 		
 	</xsl:template>
+	<!-- ===================================================================== -->
+	<!-- flatten Apache FOP intermediate format: only 'text' and 'id' elements -->
+	<!-- ===================================================================== -->
 	
+	
+	<!-- Review text coordinates calculation based on values from Apache FOP Intermediate Format -->
+	
+	<!-- Output xml:
+		<annotations>
+			<annotation id="_" reviewer="ISO" date="2017-01-01T00:00:00Z" from="foreword" to="foreword">
+				<data>
+					<p xmlns="https://www.metanorma.org/ns/iso" id="_">A Foreword shall appear in each document. The generic text is shown here. It does not contain requirements, recommendations or permissions.</p>
+					<p xmlns="https://www.metanorma.org/ns/iso" id="_">For further information on the Foreword, see <strong>ISO/IEC Directives, Part 2, 2016, Clause 12.</strong>
+					</p>
+				</data>
+				<page>5</page>
+				<text x="70.866" y="146.218" foi:struct-ref="125" xmlns:foi="http://xmlgraphics.apache.org/fop/internal"> </text>
+			</annotation>
+			...
+		</annotations>
+	-->
+	
+	<xsl:variable name="hair_space">&#x200A;</xsl:variable>
+
+	<xsl:template match="/">
+		
+		<xsl:element name="annotations">
+		
+			<xsl:for-each select="//*[local-name() = 'review']">
+				<xsl:variable name="id_from">
+					<xsl:choose>
+						<xsl:when test="normalize-space(@from) != ''"><xsl:value-of select="@from"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="@id"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:variable name="id_to" select="@to"/>
+			
+				<xsl:element name="annotation">
+					<xsl:copy-of select="@*" />
+					
+					<xsl:element name="data">
+						<xsl:copy-of select="node()"/>
+					</xsl:element>
+					
+					<xsl:variable name="texts_">
+					
+						<xsl:variable name="element_from_" select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
+						<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
+						
+						<xsl:variable name="page" select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
+						
+						<xsl:element name="text">
+							<xsl:copy-of select="$element_from/@*"/>
+							<xsl:attribute name="page"><xsl:value-of select="$page"/></xsl:attribute>
+							<xsl:copy-of select="$element_from/node()"/>
+						</xsl:element>
+						
+						<xsl:if test="$id_to != ''">
+							<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
+								<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
+								
+								<xsl:element name="text">
+									<xsl:copy-of select="@*"/>
+									<xsl:attribute name="page"><xsl:value-of select="$page_to"/></xsl:attribute>
+									<xsl:copy-of select="node()"/>
+								</xsl:element>
+								
+							</xsl:for-each>
+						</xsl:if>
+					</xsl:variable>
+					
+					<xsl:variable name="texts" select="xalan:nodeset($texts_)"/>
+					
+					<xsl:choose>
+						<xsl:when test="count($texts//text) &gt; 1">
+							<xsl:for-each select="xalan:nodeset($texts)//text[normalize-space() != $hair_space]">
+								<xsl:copy-of select="."/>
+							</xsl:for-each>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="$texts"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+				</xsl:element>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
 	
 </xsl:stylesheet>
