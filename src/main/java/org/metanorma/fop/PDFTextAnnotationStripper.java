@@ -59,11 +59,14 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
     private float x = 0f;
     private float y = 0f;
     
+    private Calendar date = null;
+    
     private boolean highlighted = false;
     
-    public PDFTextAnnotationStripper(String author, String text, String criteria, float x, float y)  throws IOException {
+    public PDFTextAnnotationStripper(String author, Calendar date, String text, String criteria, float x, float y)  throws IOException {
         super();
         this.reviewer = author;
+        this.date = date;
         this.annotation_text = text;
         this.criteria = criteria;
         this.x = x;
@@ -199,7 +202,9 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     //highlight.setRichContents("Rich content");
                     highlight.setSubject("Highlight");
                     highlight.setTitlePopup(reviewer);
-                    //highlight.setModifiedDate(Calendarr);
+                    if (date != null) {
+                        highlight.setModifiedDate(date);
+                    }
                     //highlight.setModifiedDate(new Calendar("20180125T0121"));
                     annotations.add(highlight);
                     System.out.println("The string '" + criteria + "' highlighted!");

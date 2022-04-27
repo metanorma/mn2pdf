@@ -560,7 +560,6 @@ public class PDFGenerator {
         }
         
         if (isAddAnnotations) {
-            /*Annotation annotations = new Annotation();
             try {
                 String xml_review = applyXSLTExtended("review.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
                 if (DEBUG) {   //DEBUG: write review xml file
