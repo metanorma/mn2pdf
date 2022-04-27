@@ -48,6 +48,8 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
+    private boolean DEBUG = false;
+    
     private String reviewer = "";
     
     private String annotation_text = "";
@@ -66,7 +68,6 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
         this.criteria = criteria;
         this.x = x;
         this.y = y;
-        
     }
 
     
@@ -91,95 +92,121 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                 isFound = true;
             } 
         }*/
-        if ((!criteria.isEmpty() && criteria.equals('\u200a') && !string.contains(criteria)) ||
-            (!highlighted && !criteria.isEmpty() && string.contains(criteria)) ) {
+        
+        boolean start_pos_found = false;
+        boolean end_pos_found = false;
+        
+        if (!criteria.isEmpty()) {
+        
+            System.out.println("Current string: '" + string + "'");
             
-            if (!criteria.isEmpty() && criteria.equals("\u200a") && !string.contains(criteria)) {
-                posXInit = x;
-                posXEnd  = x+20;
-                posYInit = y;
-                posYEnd  = y+20;
-                width    = 20;
-                height   = 20;
-                highlighted = true;
-            }
-            if (!highlighted && !criteria.isEmpty() && string.contains(criteria))  {
-            
-                System.out.println("Determine exactly start position:");
-                int start_pos = 0;
-                for(int j = 0; j < textPositions.size(); j++) {
-                    System.out.println(textPositions.get(j).getUnicode());
-                    if (textPositions.get(j).getXDirAdj() == x && textPositions.get(j).getYDirAdj() == y) {
-                        start_pos = j;
-                        System.out.println("Start position: " + j);
-                        break;
+            if ((criteria.equals('\u200a') && !string.contains(criteria)) ||
+                (!highlighted && string.contains(criteria)) ) {
+
+                if (criteria.equals('\u200a') && !string.contains(criteria)) {
+                    posXInit = x;
+                    posXEnd  = x+20;
+                    posYInit = y;
+                    posYEnd  = y+20;
+                    width    = 20;
+                    height   = 20;
+                    highlighted = true;
+                }
+                if (!highlighted && !criteria.isEmpty() && string.contains(criteria))  {
+
+                    System.out.println("Determine exactly start position:");
+                    int start_pos = 0;
+
+                    if (string.contains("proflie") || string.contains("power system")) {
+                        System.out.println("DEBUG found");
                     }
-                }
-                
-                if (string.contains("proflie")) {
-                    System.out.println("proflie");
-                }
-                
-                System.out.println("Determine exactly end position:");
-                int end_pos = textPositions.size() - 1;
-                StringBuilder phrase = new StringBuilder();
-                for(int j = start_pos; j < textPositions.size(); j++) {
-                    System.out.println(textPositions.get(j).getUnicode());
-                    phrase.append(textPositions.get(j).getUnicode());
-                    if (phrase.toString().equals(criteria)) {
-                        end_pos = j;
-                        System.out.println("End position: " + j);
-                        break;
-                    }
-                }
                     
+                    for(int j = 0; j < textPositions.size(); j++) {
+                        //System.out.println("Char: " + textPositions.get(j).getUnicode());
+                        // for compare 100.12 (IF xml) and 10.1234 (PDFBox) 
+                        if (Math.abs(textPositions.get(j).getXDirAdj() - x) < 0.01 && Math.abs(textPositions.get(j).getYDirAdj() - y) < 0.01) {
+                            start_pos = j;
+                            System.out.println("Start position: " + j);
+                            start_pos_found = true;
+                            break;
+                        }
+                    }
+
+                    
+
+                    System.out.println("Determine exactly end position:");
+                    int end_pos = textPositions.size() - 1;
+
+                    StringBuilder phrase = new StringBuilder();
+                    for(int j = start_pos; j < textPositions.size(); j++) {
+                        //System.out.println(textPositions.get(j).getUnicode());
+                        phrase.append(textPositions.get(j).getUnicode());
+                        if (string.contains("power ")) {
+                            System.out.println(phrase.toString());
+                        }
+                        if (phrase.toString().equals(criteria)) {
+                            end_pos = j;
+                            System.out.println("End position: " + j);
+                            end_pos_found = true;
+                            break;
+                        }
+                    }
+
+                    
+                    
+                    posXInit = textPositions.get(start_pos).getXDirAdj();
+                    posXEnd  = textPositions.get(end_pos).getXDirAdj() + textPositions.get(end_pos).getWidth();
+                    posYInit = textPositions.get(start_pos).getPageHeight() - textPositions.get(start_pos).getYDirAdj();
+                    posYEnd  = textPositions.get(start_pos).getPageHeight() - textPositions.get(end_pos).getYDirAdj();
+                    width    = textPositions.get(start_pos).getWidthDirAdj();
+                    height   = textPositions.get(start_pos).getHeightDir();
+                }
+
+
+                //System.out.println(string + " X-Init = " + posXInit + "; Y-Init = " + posYInit + "; X-End = " + posXEnd + "; Y-End = " + posYEnd + "; Font-Height = " + fontHeight);
+
+                /* numeration is index-based. Starts from 0 */
+
+                float quadPoints[] = {posXInit, posYEnd + height + 2, posXEnd, posYEnd + height + 2, posXInit, posYInit - 2, posXEnd, posYEnd - 2};
+
+                if (start_pos_found && end_pos_found) {
                 
-                posXInit = textPositions.get(start_pos).getXDirAdj();
-                posXEnd  = textPositions.get(end_pos).getXDirAdj() + textPositions.get(end_pos).getWidth();
-                posYInit = textPositions.get(start_pos).getPageHeight() - textPositions.get(start_pos).getYDirAdj();
-                posYEnd  = textPositions.get(start_pos).getPageHeight() - textPositions.get(end_pos).getYDirAdj();
-                width    = textPositions.get(start_pos).getWidthDirAdj();
-                height   = textPositions.get(start_pos).getHeightDir();
+                    List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
+                    PDAnnotationTextMarkup highlight = new PDAnnotationTextMarkup(PDAnnotationTextMarkup.SUB_TYPE_HIGHLIGHT);
+
+                    PDRectangle position = new PDRectangle();
+                    position.setLowerLeftX(posXInit);
+                    position.setLowerLeftY(posYEnd);
+                    position.setUpperRightX(posXEnd);
+                    position.setUpperRightY(posYEnd + height);
+
+                    highlight.setRectangle(position);
+
+                    // quadPoints is array of x,y coordinates in Z-like order (top-left, top-right, bottom-left,bottom-right) 
+                    // of the area to be highlighted
+
+                    highlight.setQuadPoints(quadPoints);
+
+                    PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
+                    highlight.setColor(orange);
+                    highlight.setConstantOpacity(0.3f); // 30% transparent
+
+                    //PDAnnotationPopup popup = new PDAnnotationPopup();
+                    //highlight.setPopup(popup);
+                    //highlight.setAnnotationName("My Annotation Name");
+                    highlight.setContents(annotation_text);
+                    //highlight.setIntent("My intent");
+                    //highlight.setRichContents("Rich content");
+                    highlight.setSubject("Highlight");
+                    highlight.setTitlePopup(reviewer);
+                    //highlight.setModifiedDate(Calendarr);
+                    //highlight.setModifiedDate(new Calendar("20180125T0121"));
+                    annotations.add(highlight);
+                    System.out.println("The string '" + criteria + "' highlighted!");
+                } else {
+                    System.out.println("The string '" + criteria + "' can't be found and highlighted!");
+                }
             }
-            
-            
-            System.out.println(string + " X-Init = " + posXInit + "; Y-Init = " + posYInit + "; X-End = " + posXEnd + "; Y-End = " + posYEnd + "; Font-Height = " + fontHeight);
-
-            /* numeration is index-based. Starts from 0 */
-
-            float quadPoints[] = {posXInit, posYEnd + height + 2, posXEnd, posYEnd + height + 2, posXInit, posYInit - 2, posXEnd, posYEnd - 2};
-
-            List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
-            PDAnnotationTextMarkup highlight = new PDAnnotationTextMarkup(PDAnnotationTextMarkup.SUB_TYPE_HIGHLIGHT);
-
-            PDRectangle position = new PDRectangle();
-            position.setLowerLeftX(posXInit);
-            position.setLowerLeftY(posYEnd);
-            position.setUpperRightX(posXEnd);
-            position.setUpperRightY(posYEnd + height);
-
-            highlight.setRectangle(position);
-
-            // quadPoints is array of x,y coordinates in Z-like order (top-left, top-right, bottom-left,bottom-right) 
-            // of the area to be highlighted
-
-            highlight.setQuadPoints(quadPoints);
-
-            PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
-            highlight.setColor(orange);
-            highlight.setConstantOpacity(0.3f); // 30% transparent
-            
-            //PDAnnotationPopup popup = new PDAnnotationPopup();
-            //highlight.setPopup(popup);
-            //highlight.setAnnotationName("My Annotation Name");
-            highlight.setContents(annotation_text);
-            //highlight.setIntent("My intent");
-            //highlight.setRichContents("Rich content");
-            highlight.setSubject("Highlight");
-            highlight.setTitlePopup(reviewer);
-            //highlight.setModifiedDate(Calendarr);
-            //highlight.setModifiedDate(new Calendar("20180125T0121"));
-            annotations.add(highlight);
         }
     }
 

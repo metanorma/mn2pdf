@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -50,8 +52,12 @@ import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 import org.metanorma.utils.LoggerHelper;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.yaml.snakeyaml.Yaml;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
 
 /**
  *
@@ -66,6 +72,8 @@ public class PDFGenerator {
     private String fontsManifest = "";
     
     final private String inputXMLFilePath;
+    
+    SourceXMLDocument sourceXMLDocument;
     
     final private String inputXSLFilePath;
     
@@ -259,7 +267,7 @@ public class PDFGenerator {
             String add_math_as_attachment = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_attachment']");
             isAddMathAsAttachment = add_math_as_attachment.equalsIgnoreCase("true");
             
-            SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(fXML);
+            sourceXMLDocument = new SourceXMLDocument(fXML);
             
             XSLTconverter xsltConverter = new XSLTconverter(fXSL);
 
@@ -276,7 +284,7 @@ public class PDFGenerator {
             //debug
             fontcfg.outputFontManifestLog(Paths.get(fPDF.getAbsolutePath() + ".fontmanifest.log.txt"));
             
-            convertmn2pdf(fontcfg, sourceXMLDocument, xsltConverter, fPDF);
+            convertmn2pdf(fontcfg, xsltConverter, fPDF);
             
             
             if (isSplitByLanguage) {
@@ -300,7 +308,7 @@ public class PDFGenerator {
                     logger.log(Level.INFO, "Generate PDF for language ''{0}''.", languages.get(i));
                     logger.log(Level.INFO, "Output: PDF ({0})", fPDFsplit);
 
-                    convertmn2pdf(fontcfg, sourceXMLDocument, xsltConverter, fPDFsplit);
+                    convertmn2pdf(fontcfg, xsltConverter, fPDFsplit);
 
                     // initial page number for 'next' document
                     initial_page_number = (getPageCount() - coverpages_count) + 1;
@@ -332,7 +340,7 @@ public class PDFGenerator {
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
      */
-    private void convertmn2pdf(fontConfig fontcfg, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
+    private void convertmn2pdf(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
         
         String imagesxml = sourceXMLDocument.getImageFilePath();
                 
@@ -391,7 +399,7 @@ public class PDFGenerator {
             
             Source src = new StreamSource(new StringReader(xmlFO));
             
-            src = runSecondPass (indexxml, src, fontcfg, additionalXSLTparams, sourceXMLDocument, xsltConverter, pdf);
+            src = runSecondPass (indexxml, src, fontcfg, additionalXSLTparams, xsltConverter, pdf);
             
             
             // FO processing by FOP
@@ -554,17 +562,25 @@ public class PDFGenerator {
         if (isAddAnnotations) {
             /*Annotation annotations = new Annotation();
             try {
-                annotations.process(pdf, applyXSLT("review.xsl", xmlIF, false));
+                String xml_review = applyXSLTExtended("review.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
+                if (DEBUG) {   //DEBUG: write review xml file
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.review.xml"))) {
+                            writer.write(xml_review);                    
+                    }
+                }
+                Annotation annotations = new Annotation();
+                annotations.process(pdf, xml_review);
             } catch (Exception ex) {
                 logger.severe("Can't add annotation.");
                 ex.printStackTrace();
                 System.exit(ERROR_EXIT_CODE);
-            }*/
+            }
         }
         
     }
     
-    private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, SourceXMLDocument sourceXMLDocument, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
+    private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
         Source src = sourceFO;
         
         File fileXmlIF = new File(indexxml);
@@ -706,6 +722,33 @@ public class PDFGenerator {
         return xmlResult;
     }
     
+    // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
+    private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
+        
+        Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(srcXSL);
+        if (fixSurrogatePairs) {
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+        }
+        
+        // pass Apache FOP Intermediate Format XML via parameter 'if_xml'
+        InputSource xmlIFIS = new InputSource(new StringReader(xmlIFStr));
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document xmlIFDocument = dBuilder.parse(xmlIFIS);
+        NodeList xmlIFDocumentNodeList = xmlIFDocument.getDocumentElement().getChildNodes();
+        transformer.setParameter("if_xml", xmlIFDocumentNodeList);
+        // ====================================================================
+        
+        StringWriter resultWriter = new StringWriter();
+        StreamResult sr = new StreamResult(resultWriter);
+        transformer.transform(sourceXML, sr);
+        String xmlResult = resultWriter.toString();
+        
+        return xmlResult;
+    }
+            
     private class DefaultErrorListener implements javax.xml.transform.ErrorListener {
 
         public void warning(TransformerException exc) {
