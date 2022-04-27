@@ -101,7 +101,9 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
         
         if (!criteria.isEmpty()) {
         
-            System.out.println("Current string: '" + string + "'");
+            if (DEBUG) {
+                System.out.println("Current string: '" + string + "'");
+            }
             
             if ((criteria.equals('\u200a') && !string.contains(criteria)) ||
                 (!highlighted && string.contains(criteria)) ) {
@@ -117,10 +119,13 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                 }
                 if (!highlighted && !criteria.isEmpty() && string.contains(criteria))  {
 
-                    System.out.println("Determine exactly start position:");
+                    if (DEBUG) {
+                        System.out.println("Determine exactly start position:");
+                    }
+                    
                     int start_pos = 0;
 
-                    if (string.contains("proflie") || string.contains("power system")) {
+                    if (DEBUG && string.contains("proflie") || string.contains("power system")) {
                         System.out.println("DEBUG found");
                     }
                     
@@ -129,7 +134,9 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                         // for compare 100.12 (IF xml) and 10.1234 (PDFBox) 
                         if (Math.abs(textPositions.get(j).getXDirAdj() - x) < 0.01 && Math.abs(textPositions.get(j).getYDirAdj() - y) < 0.01) {
                             start_pos = j;
-                            System.out.println("Start position: " + j);
+                            if (DEBUG) {
+                                System.out.println("Start position: " + j);
+                            }
                             start_pos_found = true;
                             break;
                         }
@@ -137,19 +144,23 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
                     
 
-                    System.out.println("Determine exactly end position:");
+                    if (DEBUG) {
+                        System.out.println("Determine exactly end position:");
+                    }
                     int end_pos = textPositions.size() - 1;
 
                     StringBuilder phrase = new StringBuilder();
                     for(int j = start_pos; j < textPositions.size(); j++) {
                         //System.out.println(textPositions.get(j).getUnicode());
                         phrase.append(textPositions.get(j).getUnicode());
-                        if (string.contains("power ")) {
+                        if (DEBUG && string.contains("power ")) {
                             System.out.println(phrase.toString());
                         }
                         if (phrase.toString().equals(criteria)) {
                             end_pos = j;
-                            System.out.println("End position: " + j);
+                            if (DEBUG) {
+                                System.out.println("End position: " + j);
+                            }
                             end_pos_found = true;
                             break;
                         }
@@ -207,9 +218,13 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     }
                     //highlight.setModifiedDate(new Calendar("20180125T0121"));
                     annotations.add(highlight);
-                    System.out.println("The string '" + criteria + "' highlighted!");
+                    if (DEBUG) {
+                        System.out.println("The string '" + criteria + "' highlighted!");
+                    }
                 } else {
-                    System.out.println("The string '" + criteria + "' can't be found and highlighted!");
+                    if (DEBUG) {
+                        System.out.println("The string '" + criteria + "' can't be found and highlighted!");
+                    }
                 }
             }
         }

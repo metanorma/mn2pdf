@@ -45,14 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class Annotation {
     
-    private String criteria = "";
-    
-    private String reviewer = "";
-    
-    private String annotation_text = "";
-    
-    private float x = 0f;
-    private float y = 0f;
+    private boolean DEBUG = false;
     
     public void process(File pdf, String xmlReview) throws IOException {
         PDDocument document = null;
@@ -73,15 +66,29 @@ public class Annotation {
                 NodeList nodes_annotations = sourceXML.getElementsByTagName("annotation");
                 for (int i = 0; i < nodes_annotations.getLength(); i++) {
                     Node node_annotation = nodes_annotations.item(i);
-                    reviewer = node_annotation.getAttributes().getNamedItem("reviewer").getTextContent();
                     
-                    System.out.println("Author=" + reviewer);
+                    String reviewer = "";
+                    try {
+                        reviewer = node_annotation.getAttributes().getNamedItem("reviewer").getTextContent();
+                    } catch (Exception ex) { }
+                    
+                    String date = "";
+                    Calendar cal = null;
+                    try {
+                        date = node_annotation.getAttributes().getNamedItem("date").getTextContent();
+                        cal = Util.getCalendarDate(date);
+                    } catch (Exception ex) {}
+                    
                     
                     NodeList annotations_data = ((Element)node_annotation).getElementsByTagName("data");
                     Node annotation_data = annotations_data.item(0);
-                    annotation_text = annotation_data.getTextContent();
+                    String annotation_text = annotation_data.getTextContent();
                     
-                    System.out.println("Annotation=" + annotation_text);
+                    if (DEBUG) {
+                        System.out.println("Author=" + reviewer);
+                        System.out.println("Date=" + date);
+                        System.out.println("Annotation=" + annotation_text);
+                    }
                     
                     NodeList nodes_texts = ((Element)node_annotation).getElementsByTagName("text");
                     
@@ -89,16 +96,21 @@ public class Annotation {
                         Node node_text = nodes_texts.item(j);
                         NamedNodeMap node_text_att = node_text.getAttributes();
                         int page = Integer.parseInt(node_text_att.getNamedItem("page").getTextContent());
-                        System.out.println("page=" + page);
-                        x = Float.parseFloat(node_text_att.getNamedItem("x").getTextContent());
-                        System.out.println("x=" + x);
-                        y = Float.parseFloat(node_text_att.getNamedItem("y").getTextContent());
-                        System.out.println("y=" + y);
                         
-                        criteria = node_text.getTextContent();
-                        System.out.println("text=" + criteria);
+                        float x = Float.parseFloat(node_text_att.getNamedItem("x").getTextContent());
                         
-                        PDFTextStripper stripper = new PDFTextAnnotationStripper(reviewer, annotation_text, criteria, x, y);
+                        float y = Float.parseFloat(node_text_att.getNamedItem("y").getTextContent());
+                        
+                        String criteria = node_text.getTextContent();
+                        
+                        if (DEBUG) {
+                            System.out.println("page=" + page);
+                            System.out.println("x=" + x);
+                            System.out.println("y=" + y);
+                            System.out.println("text=" + criteria);
+                        }
+                        
+                        PDFTextStripper stripper = new PDFTextAnnotationStripper(reviewer, cal, annotation_text, criteria, x, y);
                         stripper.setSortByPosition(true);
                         
                         //stripper.setStartPage( 0 );
