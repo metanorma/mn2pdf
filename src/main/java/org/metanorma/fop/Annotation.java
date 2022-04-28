@@ -37,6 +37,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 /**
@@ -82,7 +84,7 @@ public class Annotation {
                     
                     NodeList annotations_data = ((Element)node_annotation).getElementsByTagName("data");
                     Node annotation_data = annotations_data.item(0);
-                    String annotation_text = annotation_data.getTextContent();
+                    String annotation_text = innerXml(annotation_data); //.getTextContent();
                     
                     if (DEBUG) {
                         System.out.println("Author=" + reviewer);
@@ -147,6 +149,18 @@ public class Annotation {
             }
         }
         
+    }
+    
+    private String innerXml(Node node) {
+        DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        LSSerializer lsSerializer = lsImpl.createLSSerializer();
+        lsSerializer.getDomConfig().setParameter("xml-declaration", false);
+        NodeList childNodes = node.getChildNodes();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+           sb.append(lsSerializer.writeToString(childNodes.item(i)));
+        }
+        return sb.toString(); 
     }
     
 }

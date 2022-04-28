@@ -89,13 +89,6 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
               width     = 0, 
               height    = 0, 
               fontHeight = 0;
-        //String[] criteria = {"proflie"}; //, "Word2", "Word3", ....
-
-        /*for (int i = 0; i < criteria.length; i++) {
-            if (string.contains(criteria[i])) {
-                isFound = true;
-            } 
-        }*/
         
         boolean start_pos_found = false;
         boolean end_pos_found = false;
@@ -208,30 +201,35 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     highlight.setQuadPoints(quadPoints);
                     highlight.setColor(orange);
                     highlight.setConstantOpacity(0.3f); // 30% transparent
+                    highlight.setSubject("Highlight");
+                    
                     //PDAnnotationPopup popup = new PDAnnotationPopup();
                     //highlight.setPopup(popup);
-                    //highlight.setAnnotationName("My Annotation Name");
-                    
+                    //highlight.setAnnotationName("My Annotation Name");                    
                     /*
                     highlight.setContents(annotation_text);
                     //highlight.setIntent("My intent");
                     //highlight.setRichContents("Rich content");
-                    highlight.setSubject("Highlight");
                     highlight.setTitlePopup(reviewer);
                     if (date != null) {
                         highlight.setModifiedDate(date);
                     }*/
-                    //highlight.setModifiedDate(new Calendar("20180125T0121"));
                     annotations.add(highlight);
                     
                     
                     PDAnnotationText text = new PDAnnotationText();
-                    text.setContents(annotation_text);
+                    //text.setContents(annotation_text);
+                    text.setRichContents("<body xmlns=\"http://www.w3.org/1999/xhtml\">" + 
+                        annotation_text + 
+                        "</body>");
                     text.setRectangle(position);
                     text.setColor(orange);
                     text.setOpen(true);
                     text.setConstantOpacity(0.6f);
                     text.setTitlePopup(reviewer);
+                    if (date != null) {
+                        text.setModifiedDate(date);
+                    }
                     annotations.add(text);
                     
                     

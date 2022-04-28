@@ -148,9 +148,10 @@
 		<annotations>
 			<annotation id="_" reviewer="ISO" date="2017-01-01T00:00:00Z" from="foreword" to="foreword">
 				<data>
-					<p xmlns="https://www.metanorma.org/ns/iso" id="_">A Foreword shall appear in each document. The generic text is shown here. It does not contain requirements, recommendations or permissions.</p>
-					<p xmlns="https://www.metanorma.org/ns/iso" id="_">For further information on the Foreword, see <strong>ISO/IEC Directives, Part 2, 2016, Clause 12.</strong>
-					</p>
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<p dir="ltr">A Foreword shall appear in each document. The generic text is shown here. It does not contain requirements, recommendations or permissions.</p>
+						<p dir="ltr">For further information on the Foreword, see <span style="font-weight:bold">ISO/IEC Directives</span>, Part 2, 2016, Clause 12..</p>
+					</body>
 				</data>
 				<page>5</page>
 				<text x="70.866" y="146.218" foi:struct-ref="125" xmlns:foi="http://xmlgraphics.apache.org/fop/internal"> </text>
@@ -178,7 +179,8 @@
 					<xsl:copy-of select="@*" />
 					
 					<xsl:element name="data">
-						<xsl:copy-of select="node()"/>
+						<xsl:apply-templates mode="pdf_richtext"/>
+						<!-- <xsl:copy-of select="node()"/> -->
 					</xsl:element>
 					
 					<xsl:variable name="texts_">
@@ -225,5 +227,54 @@
 			</xsl:for-each>
 		</xsl:element>
 	</xsl:template>
+
+	<!-- ==================== -->
+	<!-- PDF rich text format -->
+	<!-- ==================== -->
+	<xsl:variable name="namespace_xhtml">http://www.w3.org/1999/xhtml</xsl:variable>
+	<xsl:template match="@*|*" mode="pdf_richtext">
+		<xsl:apply-templates select="@*|node()" mode="pdf_richtext"/>
+	</xsl:template>
+	<xsl:template match="text()" mode="pdf_richtext">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'strong']" mode="pdf_richtext">
+		<xsl:element name="span" namespace="{$namespace_xhtml}">
+			<xsl:attribute name="style">font-weight:bold</xsl:attribute>
+			<xsl:apply-templates mode="pdf_richtext"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'em']" mode="pdf_richtext">
+		<xsl:element name="span" namespace="{$namespace_xhtml}">
+			<xsl:attribute name="style">font-style:italic</xsl:attribute>
+			<xsl:apply-templates mode="pdf_richtext"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'underline']" mode="pdf_richtext">
+		<xsl:element name="span" namespace="{$namespace_xhtml}">
+			<xsl:attribute name="style">text-decoration:underline</xsl:attribute>
+			<xsl:apply-templates mode="pdf_richtext"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'p']" mode="pdf_richtext">
+		<xsl:element name="{local-name()}" namespace="{$namespace_xhtml}">
+			<xsl:attribute name="dir">ltr</xsl:attribute>
+			<xsl:apply-templates mode="pdf_richtext"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'sub' or local-name() = 'sup']" mode="pdf_richtext">
+		<xsl:element name="{local-name()}" namespace="{$namespace_xhtml}">
+			<xsl:apply-templates mode="pdf_richtext"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<!-- ==================== -->
+	<!-- END: PDF rich text format -->
+	<!-- ==================== -->
 	
 </xsl:stylesheet>
