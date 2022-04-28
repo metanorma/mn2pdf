@@ -172,7 +172,7 @@ public class mn2pdfTests {
         assertTrue(Files.exists(pdf));
     }
     
-    @Test
+    /*@Test
     public void additionalXMLnotfound() throws ParseException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
@@ -185,7 +185,7 @@ public class mn2pdfTests {
         mn2pdf.main(args);
         
         assertTrue(systemErrRule.getLog().contains(additionalXMLs + " (")); //"Can not load requested doc"
-    }
+    }*/
     
     @Test
     public void successFontReplacement() throws ParseException, IOException {

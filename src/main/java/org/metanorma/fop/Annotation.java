@@ -99,9 +99,15 @@ public class Annotation {
                         NamedNodeMap node_text_att = node_text.getAttributes();
                         int page = Integer.parseInt(node_text_att.getNamedItem("page").getTextContent());
                         
-                        float x = Float.parseFloat(node_text_att.getNamedItem("x").getTextContent());
+                        float x = 100;
+                        try {
+                            x = Float.parseFloat(node_text_att.getNamedItem("x").getTextContent());
+                        } catch (Exception ex) {}
                         
-                        float y = Float.parseFloat(node_text_att.getNamedItem("y").getTextContent());
+                        float y = 100;
+                        try {
+                            y = Float.parseFloat(node_text_att.getNamedItem("y").getTextContent());
+                        } catch (Exception ex) {}
                         
                         String criteria = node_text.getTextContent();
                         
