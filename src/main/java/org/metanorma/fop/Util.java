@@ -32,10 +32,14 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.CodeSource;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -592,6 +596,45 @@ public class Util {
             });
         }
         return files;
+    }
+
+    public static Calendar getCalendarDate(String dateStr) {
+        Calendar cal = Calendar.getInstance();
+        
+        // 2017-01-01T00:00:00Z
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");      
+        try {
+            Date date1 = sdf1.parse(dateStr);
+            cal.setTime(date1);
+            return cal;
+        } catch (ParseException ex) {}
+        
+        // 20220422T000000
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+        try {
+            Date date2 = sdf2.parse(dateStr);
+            cal.setTime(date2);
+            return cal;
+        } catch (ParseException ex) {}
+        
+        //20180125T0121
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyyMMdd'T'HHmm");
+        try {
+            Date date3 = sdf3.parse(dateStr);
+            cal.setTime(date3);
+            return cal;
+        } catch (ParseException ex) {}
+        
+        // convert to simple format 20220422
+        String dateStrDefault = dateStr.replaceAll("-", "").substring(0,7);
+        SimpleDateFormat sdf_default = new SimpleDateFormat("yyyymmdd");
+        try {
+            Date dateDefault =  sdf_default.parse(dateStrDefault);
+            cal.setTime(dateDefault);
+            return cal;
+        } catch (ParseException ex) {}
+        
+        return cal;
     }
     
 }
