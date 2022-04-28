@@ -26,6 +26,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationPopup;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationText;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationTextMarkup;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
@@ -124,8 +125,9 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     }
                     
                     int start_pos = 0;
+                    int end_pos = textPositions.size() - 1;
 
-                    if (DEBUG && string.contains("proflie") || string.contains("power system")) {
+                    if (DEBUG && (string.contains("proflie") || string.contains("power system"))) {
                         System.out.println("DEBUG found");
                     }
                     
@@ -143,30 +145,29 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     }
 
                     
+                    if (start_pos_found) { // find end position if start position found only
 
-                    if (DEBUG) {
-                        System.out.println("Determine exactly end position:");
-                    }
-                    int end_pos = textPositions.size() - 1;
-
-                    StringBuilder phrase = new StringBuilder();
-                    for(int j = start_pos; j < textPositions.size(); j++) {
-                        //System.out.println(textPositions.get(j).getUnicode());
-                        phrase.append(textPositions.get(j).getUnicode());
-                        if (DEBUG && string.contains("power ")) {
-                            System.out.println(phrase.toString());
+                        if (DEBUG) {
+                            System.out.println("Determine exactly end position:");
                         }
-                        if (phrase.toString().equals(criteria)) {
-                            end_pos = j;
-                            if (DEBUG) {
-                                System.out.println("End position: " + j);
+                        
+                        StringBuilder phrase = new StringBuilder();
+                        for(int j = start_pos; j < textPositions.size(); j++) {
+                            //System.out.println(textPositions.get(j).getUnicode());
+                            phrase.append(textPositions.get(j).getUnicode());
+                            if (DEBUG && string.contains("power ")) {
+                                System.out.println(phrase.toString());
                             }
-                            end_pos_found = true;
-                            break;
+                            if (phrase.toString().equals(criteria)) {
+                                end_pos = j;
+                                if (DEBUG) {
+                                    System.out.println("End position: " + j);
+                                }
+                                end_pos_found = true;
+                                break;
+                            }
                         }
                     }
-
-                    
                     
                     posXInit = textPositions.get(start_pos).getXDirAdj();
                     posXEnd  = textPositions.get(end_pos).getXDirAdj() + textPositions.get(end_pos).getWidth();
@@ -186,28 +187,32 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                 if (start_pos_found && end_pos_found) {
                 
                     List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
-                    PDAnnotationTextMarkup highlight = new PDAnnotationTextMarkup(PDAnnotationTextMarkup.SUB_TYPE_HIGHLIGHT);
+                    
 
                     PDRectangle position = new PDRectangle();
                     position.setLowerLeftX(posXInit);
                     position.setLowerLeftY(posYEnd);
                     position.setUpperRightX(posXEnd);
-                    position.setUpperRightY(posYEnd + height);
+                    position.setUpperRightY(posYEnd + height + 15);
 
+                    PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
+                    
+                    
+                    
+                    PDAnnotationTextMarkup highlight = new PDAnnotationTextMarkup(PDAnnotationTextMarkup.SUB_TYPE_HIGHLIGHT);
+                    
                     highlight.setRectangle(position);
 
                     // quadPoints is array of x,y coordinates in Z-like order (top-left, top-right, bottom-left,bottom-right) 
                     // of the area to be highlighted
-
                     highlight.setQuadPoints(quadPoints);
-
-                    PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
                     highlight.setColor(orange);
                     highlight.setConstantOpacity(0.3f); // 30% transparent
-
                     //PDAnnotationPopup popup = new PDAnnotationPopup();
                     //highlight.setPopup(popup);
                     //highlight.setAnnotationName("My Annotation Name");
+                    
+                    /*
                     highlight.setContents(annotation_text);
                     //highlight.setIntent("My intent");
                     //highlight.setRichContents("Rich content");
@@ -215,9 +220,21 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     highlight.setTitlePopup(reviewer);
                     if (date != null) {
                         highlight.setModifiedDate(date);
-                    }
+                    }*/
                     //highlight.setModifiedDate(new Calendar("20180125T0121"));
                     annotations.add(highlight);
+                    
+                    
+                    PDAnnotationText text = new PDAnnotationText();
+                    text.setContents(annotation_text);
+                    text.setRectangle(position);
+                    text.setColor(orange);
+                    text.setOpen(true);
+                    text.setConstantOpacity(0.6f);
+                    text.setTitlePopup(reviewer);
+                    annotations.add(text);
+                    
+                    
                     if (DEBUG) {
                         System.out.println("The string '" + criteria + "' highlighted!");
                     }
