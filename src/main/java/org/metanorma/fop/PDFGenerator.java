@@ -573,7 +573,7 @@ public class PDFGenerator {
             } catch (Exception ex) {
                 logger.severe("Can't add annotation.");
                 ex.printStackTrace();
-                System.exit(ERROR_EXIT_CODE);
+                //System.exit(ERROR_EXIT_CODE);
             }
         }
         
