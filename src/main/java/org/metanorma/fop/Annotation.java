@@ -109,16 +109,26 @@ public class Annotation {
                             y = Float.parseFloat(node_text_att.getNamedItem("y").getTextContent());
                         } catch (Exception ex) {}
                         
-                        String criteria = node_text.getTextContent();
+                        String highlight_text = node_text.getTextContent();
+                        
+                        boolean doHighlight = false;
+                        try {
+                            doHighlight = Boolean.parseBoolean(node_text_att.getNamedItem("highlight").getTextContent());
+                        } catch (Exception ex) {}
+                        
+                        boolean doPostIt = true;
+                        try {
+                            doPostIt = Boolean.parseBoolean(node_text_att.getNamedItem("postit").getTextContent());
+                        } catch (Exception ex) {}
                         
                         if (DEBUG) {
                             System.out.println("page=" + page);
                             System.out.println("x=" + x);
                             System.out.println("y=" + y);
-                            System.out.println("text=" + criteria);
+                            System.out.println("text=" + highlight_text);
                         }
                         
-                        PDFTextStripper stripper = new PDFTextAnnotationStripper(reviewer, cal, annotation_text, criteria, x, y);
+                        PDFTextStripper stripper = new PDFTextAnnotationStripper(reviewer, cal, annotation_text, highlight_text, doPostIt, doHighlight, x, y);
                         stripper.setSortByPosition(true);
                         
                         //stripper.setStartPage( 0 );

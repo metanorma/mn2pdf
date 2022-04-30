@@ -55,21 +55,35 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
     
     private String annotation_text = "";
     
-    private String criteria = "";
+    private String highlight_text = "";
+    private boolean doHighlight = false;
+    private boolean doPostIt = false;
     
     private float x = 0f;
     private float y = 0f;
     
     private Calendar date = null;
     
-    private boolean highlighted = false;
+    private boolean processedAlready = false;
+    private boolean postItAlready = false;
+    private boolean highlightedAlready = false;
+
+    private PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
     
-    public PDFTextAnnotationStripper(String author, Calendar date, String text, String criteria, float x, float y)  throws IOException {
+    
+    public PDFTextAnnotationStripper(String author, Calendar date, String text, String highlight_text, boolean doPostIt, boolean doHighlight, float x, float y)  throws IOException {
         super();
         this.reviewer = author;
         this.date = date;
         this.annotation_text = text;
-        this.criteria = criteria;
+        this.highlight_text = highlight_text;
+        
+        this.doHighlight = doHighlight;
+        this.highlightedAlready = doHighlight == false;
+        
+        this.doPostIt = doPostIt;
+        this.postItAlready = doPostIt == false;
+        
         this.x = x;
         this.y = y;
     }
@@ -81,119 +95,138 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
     @Override
     protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
-        boolean isFound = false;
-        float posXInit  = 0, 
-              posXEnd   = 0, 
-              posYInit  = 0,
-              posYEnd   = 0,
-              width     = 0, 
-              height    = 0, 
-              fontHeight = 0;
         
-        boolean start_pos_found = false;
-        boolean end_pos_found = false;
+        if (!processedAlready) { // && !highlight_text.isEmpty()
         
-        if (!criteria.isEmpty()) {
-        
+            float posXInit  = 0, 
+                  posXEnd   = 0, 
+                  posYInit  = 0,
+                  posYEnd   = 0,
+                  width     = 0, 
+                  height    = 0, 
+                  fontHeight = 0;
+
+            boolean start_pos_found = false;
+            boolean end_pos_found = false;
+
             if (DEBUG) {
                 System.out.println("Current string: '" + string + "'");
             }
-            
-            if ((criteria.equals('\u200a') && !string.contains(criteria)) ||
-                (!highlighted && string.contains(criteria)) ) {
 
-                if (criteria.equals('\u200a') && !string.contains(criteria)) {
-                    posXInit = x;
-                    posXEnd  = x+20;
-                    posYInit = y;
-                    posYEnd  = y+20;
-                    width    = 20;
-                    height   = 20;
-                    highlighted = true;
+            
+            if (doPostIt && !postItAlready) {
+                // add post-it annotation (popup window)
+
+                posXInit = x;
+                posXEnd  = x+20;
+                posYInit = textPositions.get(0).getPageHeight() - y;
+                float y_shift = 25; // to move a bit higher, otherwise post-it note will overlap highlighted text
+                posYEnd  = textPositions.get(0).getPageHeight() - y + y_shift;
+                
+                PDRectangle position = new PDRectangle();
+                position.setLowerLeftX(posXInit);
+                position.setLowerLeftY(posYInit);
+                position.setUpperRightX(posXEnd);
+                position.setUpperRightY(posYEnd);
+                
+                List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
+                
+                PDAnnotationText text = new PDAnnotationText();
+
+                text.setRichContents("<body xmlns=\"http://www.w3.org/1999/xhtml\">" + 
+                    annotation_text + 
+                    "</body>");
+                //text.setContents("Simple text content.");
+                text.setRectangle(position);
+                text.setColor(orange);
+                text.setOpen(true);
+                text.setConstantOpacity(0.6f);
+                text.setTitlePopup(reviewer);
+                if (date != null) {
+                    text.setModifiedDate(date);
                 }
-                if (!highlighted && !criteria.isEmpty() && string.contains(criteria))  {
+                annotations.add(text);
+                
+                postItAlready = true;
+                
+            } 
+            
+            if (doHighlight && !highlightedAlready && string.contains(highlight_text)) {
+                
+                if (DEBUG) {
+                    System.out.println("Determine exactly start position:");
+                }
+                
+                int start_pos = 0;
+                int end_pos = textPositions.size() - 1;
+
+                if (DEBUG && (string.contains("proflie") || string.contains("power system"))) {
+                    System.out.println("DEBUG found");
+                }
+                
+                for(int j = 0; j < textPositions.size(); j++) {
+                    //System.out.println("Char: " + textPositions.get(j).getUnicode());
+                    // for compare 100.12 (IF xml) and 10.1234 (PDFBox) 
+                    if (Math.abs(textPositions.get(j).getXDirAdj() - x) < 0.01 && Math.abs(textPositions.get(j).getYDirAdj() - y) < 0.01) {
+                        start_pos = j;
+                        if (DEBUG) {
+                            System.out.println("Start position: " + j);
+                        }
+                        start_pos_found = true;
+                        break;
+                    }
+                } // start position
+
+                if (start_pos_found) { // find end position if start position found only
 
                     if (DEBUG) {
-                        System.out.println("Determine exactly start position:");
+                        System.out.println("Determine exactly end position:");
                     }
-                    
-                    int start_pos = 0;
-                    int end_pos = textPositions.size() - 1;
 
-                    if (DEBUG && (string.contains("proflie") || string.contains("power system"))) {
-                        System.out.println("DEBUG found");
-                    }
-                    
-                    for(int j = 0; j < textPositions.size(); j++) {
-                        //System.out.println("Char: " + textPositions.get(j).getUnicode());
-                        // for compare 100.12 (IF xml) and 10.1234 (PDFBox) 
-                        if (Math.abs(textPositions.get(j).getXDirAdj() - x) < 0.01 && Math.abs(textPositions.get(j).getYDirAdj() - y) < 0.01) {
-                            start_pos = j;
+                    StringBuilder phrase = new StringBuilder();
+                    for(int j = start_pos; j < textPositions.size(); j++) {
+                        //System.out.println(textPositions.get(j).getUnicode());
+                        phrase.append(textPositions.get(j).getUnicode());
+                        if (DEBUG && string.contains("power ")) {
+                            System.out.println(phrase.toString());
+                        }
+                        if (phrase.toString().equals(highlight_text)) {
+                            end_pos = j;
                             if (DEBUG) {
-                                System.out.println("Start position: " + j);
+                                System.out.println("End position: " + j);
                             }
-                            start_pos_found = true;
+                            end_pos_found = true;
                             break;
                         }
                     }
+                } // end position
 
-                    
-                    if (start_pos_found) { // find end position if start position found only
-
-                        if (DEBUG) {
-                            System.out.println("Determine exactly end position:");
-                        }
-                        
-                        StringBuilder phrase = new StringBuilder();
-                        for(int j = start_pos; j < textPositions.size(); j++) {
-                            //System.out.println(textPositions.get(j).getUnicode());
-                            phrase.append(textPositions.get(j).getUnicode());
-                            if (DEBUG && string.contains("power ")) {
-                                System.out.println(phrase.toString());
-                            }
-                            if (phrase.toString().equals(criteria)) {
-                                end_pos = j;
-                                if (DEBUG) {
-                                    System.out.println("End position: " + j);
-                                }
-                                end_pos_found = true;
-                                break;
-                            }
-                        }
-                    }
-                    
+                
+                if (start_pos_found && end_pos_found) {
+                
                     posXInit = textPositions.get(start_pos).getXDirAdj();
                     posXEnd  = textPositions.get(end_pos).getXDirAdj() + textPositions.get(end_pos).getWidth();
                     posYInit = textPositions.get(start_pos).getPageHeight() - textPositions.get(start_pos).getYDirAdj();
                     posYEnd  = textPositions.get(start_pos).getPageHeight() - textPositions.get(end_pos).getYDirAdj();
                     width    = textPositions.get(start_pos).getWidthDirAdj();
                     height   = textPositions.get(start_pos).getHeightDir();
-                }
 
+                    if (DEBUG) {
+                        System.out.println(string + " X-Init = " + posXInit + "; Y-Init = " + posYInit + "; X-End = " + posXEnd + "; Y-End = " + posYEnd + "; Font-Height = " + fontHeight);
+                    }
 
-                //System.out.println(string + " X-Init = " + posXInit + "; Y-Init = " + posYInit + "; X-End = " + posXEnd + "; Y-End = " + posYEnd + "; Font-Height = " + fontHeight);
+                    float quadPoints[] = {posXInit, posYEnd + height + 2, posXEnd, posYEnd + height + 2, posXInit, posYInit - 2, posXEnd, posYEnd - 2};
 
-                /* numeration is index-based. Starts from 0 */
-
-                float quadPoints[] = {posXInit, posYEnd + height + 2, posXEnd, posYEnd + height + 2, posXInit, posYInit - 2, posXEnd, posYEnd - 2};
-
-                if (start_pos_found && end_pos_found) {
-                
                     List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
-                    
 
                     PDRectangle position = new PDRectangle();
                     position.setLowerLeftX(posXInit);
                     position.setLowerLeftY(posYEnd);
                     position.setUpperRightX(posXEnd);
                     position.setUpperRightY(posYEnd + height + 15);
-
-                    PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
-                    
-                    
-                    
+                
                     PDAnnotationTextMarkup highlight = new PDAnnotationTextMarkup(PDAnnotationTextMarkup.SUB_TYPE_HIGHLIGHT);
-                    
+
                     highlight.setRectangle(position);
 
                     // quadPoints is array of x,y coordinates in Z-like order (top-left, top-right, bottom-left,bottom-right) 
@@ -202,48 +235,34 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     highlight.setColor(orange);
                     highlight.setConstantOpacity(0.3f); // 30% transparent
                     highlight.setSubject("Highlight");
-                    
+                
+                    highlight.setTitlePopup(reviewer);
+                    if (date != null) {
+                        highlight.setModifiedDate(date);
+                    }
                     //PDAnnotationPopup popup = new PDAnnotationPopup();
                     //highlight.setPopup(popup);
                     //highlight.setAnnotationName("My Annotation Name");                    
                     /*
-                    highlight.setContents(annotation_text);
                     //highlight.setIntent("My intent");
-                    //highlight.setRichContents("Rich content");
-                    highlight.setTitlePopup(reviewer);
-                    if (date != null) {
-                        highlight.setModifiedDate(date);
-                    }*/
+                    */
                     annotations.add(highlight);
                     
-                    
-                    PDAnnotationText text = new PDAnnotationText();
-                    //text.setContents(annotation_text);
-                    text.setRichContents("<body xmlns=\"http://www.w3.org/1999/xhtml\">" + 
-                        annotation_text + 
-                        "</body>");
-                    text.setRectangle(position);
-                    text.setColor(orange);
-                    text.setOpen(true);
-                    text.setConstantOpacity(0.6f);
-                    text.setTitlePopup(reviewer);
-                    if (date != null) {
-                        text.setModifiedDate(date);
-                    }
-                    annotations.add(text);
-                    
+                    highlightedAlready = true;
                     
                     if (DEBUG) {
-                        System.out.println("The string '" + criteria + "' highlighted!");
+                        System.out.println("The string '" + highlight_text + "' highlighted!");
                     }
                 } else {
                     if (DEBUG) {
-                        System.out.println("The string '" + criteria + "' can't be found and highlighted!");
+                        System.out.println("The string '" + highlight_text + "' can't be found and highlighted!");
                     }
                 }
+                
             }
+
+            processedAlready = postItAlready && highlightedAlready;
         }
     }
-
    
 }

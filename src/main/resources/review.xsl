@@ -183,7 +183,7 @@
 						<!-- <xsl:copy-of select="node()"/> -->
 					</xsl:element>
 					
-					<xsl:variable name="texts_">
+					<!-- <xsl:variable name="texts_"> -->
 					
 						<xsl:variable name="element_from_" select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
 						<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
@@ -193,6 +193,10 @@
 						<xsl:element name="text">
 							<xsl:copy-of select="$element_from/@*"/>
 							<xsl:attribute name="page"><xsl:value-of select="$page"/></xsl:attribute>
+							<xsl:attribute name="highlight">
+								<xsl:value-of select="normalize-space($element_from/node()) != $hair_space"/>
+							</xsl:attribute>
+							<xsl:attribute name="postit">true</xsl:attribute>
 							<xsl:copy-of select="$element_from/node()"/>
 						</xsl:element>
 						
@@ -203,12 +207,14 @@
 								<xsl:element name="text">
 									<xsl:copy-of select="@*"/>
 									<xsl:attribute name="page"><xsl:value-of select="$page_to"/></xsl:attribute>
+									<xsl:attribute name="highlight">true</xsl:attribute>
+									<xsl:attribute name="postit">false</xsl:attribute>
 									<xsl:copy-of select="node()"/>
 								</xsl:element>
 								
 							</xsl:for-each>
 						</xsl:if>
-					</xsl:variable>
+					<!-- </xsl:variable>
 					
 					<xsl:variable name="texts" select="xalan:nodeset($texts_)"/>
 					
@@ -221,7 +227,7 @@
 						<xsl:otherwise>
 							<xsl:copy-of select="$texts"/>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose> -->
 					
 				</xsl:element>
 			</xsl:for-each>
