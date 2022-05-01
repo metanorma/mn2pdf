@@ -67,7 +67,8 @@ public class FOPFontTriplet {
         }*/
         String substprefix = getSubstFontPrefix(name);
         String substsuffix = getSubstFontSuffix(name, weight, style);
-        String fontFamilySubst = DefaultFonts.DEFAULTFONT_PREFIX + substprefix + DefaultFonts.DEFAULTFONT_SUFFIX + "-" + substsuffix;
+        //String fontFamilySubst = DefaultFonts.DEFAULTFONT_PREFIX + substprefix + DefaultFonts.DEFAULTFONT_SUFFIX + "-" + substsuffix;
+        String fontFamilySubst = DefaultFonts.DEFAULTFONT_NOTO_PREFIX + substprefix + DefaultFonts.DEFAULTFONT_NOTO_SUFFIX + "-" + substsuffix;
         return fontFamilySubst;
     }
  
@@ -82,7 +83,8 @@ public class FOPFontTriplet {
         } else if (fontname.toLowerCase().contains("calibri")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("cour")) {
-            substprefix = "Code";
+            //substprefix = "Code";
+            substprefix = "SansMono";
         } else if (fontname.toLowerCase().contains("sans")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("serif")) {
@@ -94,20 +96,23 @@ public class FOPFontTriplet {
     private String getSubstFontSuffix(String fontname, String fontweight, String fontstyle) {
         String substsuffix = "Regular";
         String pfx = "";
-        if (fontname.contains("Light")) {
+        if (fontname.contains("Light") || fontname.contains("Lt")) {
             pfx = "Light";
             substsuffix = "Light";
         }
         if (fontstyle.equals("italic")) {
             if (fontweight.equals("bold")) {
-                substsuffix = "BoldIt";
+                //substsuffix = "BoldIt";
+                substsuffix = "BoldItalic";
             } else {
-                substsuffix = pfx + "It";
+                //substsuffix = pfx + "It";
+                substsuffix = pfx + "Italic";
             }
         }
         if (fontweight.equals("bold")) {
             if (fontstyle.equals("italic")) {
-                substsuffix = "BoldIt";
+                //substsuffix = "BoldIt";
+                substsuffix = "BoldItalic";
             } else {
                 substsuffix = "Bold";
             }

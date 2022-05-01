@@ -25,20 +25,38 @@ public class DefaultFonts {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     public static final String DEFAULTFONT_PREFIX = "Source";
+    public static final String DEFAULTFONT_NOTO_PREFIX = "Noto";
+    
     public static final String DEFAULTFONT_SUFFIX = "Pro";
+    public static final String DEFAULTFONT_NOTO_SUFFIX = "";
     
     private final List<String> defaultFontList = new ArrayList<String>() { 
        { 
            // Example
            // add("SourceSansPro-Regular.ttf");
-           Stream.of("Sans", "Serif", "Code").forEach(
-                   prefix -> Stream.of("Regular", "Bold", "It", "BoldIt").forEach(
-                           suffix -> add(DEFAULTFONT_PREFIX + prefix + DEFAULTFONT_SUFFIX + "-" + suffix + ".ttf"))
+           //Stream.of("Sans", "Serif", "Code").forEach(
+           //        prefix -> Stream.of("Regular", "Bold", "It", "BoldIt").forEach(
+           //                suffix -> add(DEFAULTFONT_PREFIX + prefix + DEFAULTFONT_SUFFIX + "-" + suffix + ".ttf"))
+           //);
+           
+           // Example
+           // add("NotoSans-Regular.ttf");
+           Stream.of("Sans", "Serif", "SansMono").forEach(
+                   prefix -> Stream.of("Regular", "Bold", "Italic", "BoldItalic").forEach(
+                           suffix -> add(DEFAULTFONT_NOTO_PREFIX + prefix + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".ttf"))
            );
+           
+           //Stream.of("Sans").forEach(
+           //        prefix -> Stream.of("Light", "LightIt").forEach(
+           //                suffix -> add(DEFAULTFONT_PREFIX + prefix + DEFAULTFONT_SUFFIX + "-" + suffix + ".ttf"))
+           //);
+           
+           // NotoSans-Light.ttf
            Stream.of("Sans").forEach(
-                   prefix -> Stream.of("Light", "LightIt").forEach(
-                           suffix -> add(DEFAULTFONT_PREFIX + prefix + DEFAULTFONT_SUFFIX + "-" + suffix + ".ttf"))
+                   prefix -> Stream.of("Light", "LightItalic").forEach(
+                           suffix -> add(DEFAULTFONT_NOTO_PREFIX + prefix + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".ttf"))
            );
+           
            // add("SourceHanSans-Normal.ttc");
            Stream.of("Normal", "Bold").forEach(
                suffix -> add(DEFAULTFONT_PREFIX + "HanSans" + "-" + suffix + ".ttc"));
@@ -91,6 +109,27 @@ public class DefaultFonts {
                 }
             }
         }
+        
+        // download Noto family fonts
+        if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(DefaultFonts.DEFAULTFONT_NOTO_PREFIX))) {
+            String url = getFontsURL("URL.notofonts");
+            int remotefilesize = Util.getFileSize(new URL(url));
+            final Path destZipPath = Paths.get(fontDestinationPath, "noto-fonts.zip");
+            if (!destZipPath.toFile().exists() || Files.size(destZipPath) != remotefilesize) {
+                // download a file
+                Util.downloadFile(url, destZipPath);
+            }
+            // unzip file to fontPath
+            Util.unzipFile(destZipPath, fontDestinationPath, defaultFontList);
+            // check existing files
+            for (String fontfilename: defaultFontList) {
+                final Path destPath = Paths.get(fontDestinationPath, fontfilename);
+                if (!destPath.toFile().exists()) {
+                    logger.info("Can't find a font file: " + destPath.toString());
+                }
+            }
+        }
+        
         if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith("STIX"))) {
             String url = getFontsURL("URL.STIX2Mathfont");
             int remotefilesize = Util.getFileSize(new URL(url));

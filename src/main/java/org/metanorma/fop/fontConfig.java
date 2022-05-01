@@ -431,6 +431,7 @@ class fontConfig {
                     messages.stream()
                     .filter(f -> f.contains("Replaced by"))
                     .filter(f -> f.contains(DefaultFonts.DEFAULTFONT_PREFIX) ||
+                            f.contains(DefaultFonts.DEFAULTFONT_NOTO_PREFIX) ||
                             f.contains("STIX"))
                     .count() > 0;
             
