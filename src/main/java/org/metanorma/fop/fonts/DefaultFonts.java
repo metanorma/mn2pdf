@@ -41,10 +41,15 @@ public class DefaultFonts {
            
            // Example
            // add("NotoSans-Regular.ttf");
-           Stream.of("Sans", "Serif", "SansMono").forEach(
+           Stream.of("Sans", "Serif").forEach(
                    prefix -> Stream.of("Regular", "Bold", "Italic", "BoldItalic").forEach(
                            suffix -> add(DEFAULTFONT_NOTO_PREFIX + prefix + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".ttf"))
            );
+           Stream.of("SansMono").forEach(
+                   prefix -> Stream.of("Regular", "Bold").forEach(
+                           suffix -> add(DEFAULTFONT_NOTO_PREFIX + prefix + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".ttf"))
+           );
+           
            
            //Stream.of("Sans").forEach(
            //        prefix -> Stream.of("Light", "LightIt").forEach(
