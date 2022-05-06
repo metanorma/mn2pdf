@@ -2,17 +2,13 @@ package org.metanorma.fop.annotations;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import org.metanorma.fop.annotations.PDFTextAnnotationStripper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
-
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,27 +29,19 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.xml.sax.InputSource;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.fdf.FDFAnnotation;
 import org.apache.pdfbox.pdmodel.fdf.FDFDocument;
-import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationPopup;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationTextMarkup;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.pdfbox.text.TextPosition;
 import org.metanorma.fop.Util;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
@@ -68,7 +56,7 @@ public class Annotation {
     
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
-    private boolean DEBUG = true;
+    private boolean DEBUG = false;
     
     public void process(File pdf, String xmlReview) throws IOException {
         PDDocument document = null;
@@ -155,38 +143,30 @@ public class Annotation {
                     Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
                     stripper.writeText(document, dummy);
 
-                    StringBuilder sb_rect = new StringBuilder();
-                    sb_rect.append(annotationArea.getPosition().getLowerLeftX());
-                    sb_rect.append(",");
-                    float y_lower = annotationArea.getPosition().getLowerLeftY();
-                    sb_rect.append(y_lower);
-                    sb_rect.append(",");
-                    float y_upper = annotationArea.getPosition().getUpperRightX();
-                    sb_rect.append(y_upper);
-                    sb_rect.append(",");
-                    sb_rect.append(annotationArea.getPosition().getUpperRightY());
+                    String str_rect = Arrays.toString(annotationArea.getPosition()).replace("[","").replace("]","").replace(" ","");
                     
-                    att_rect.setTextContent(sb_rect.toString());
+                    float y_lower = annotationArea.getPosition()[1];
+                    float y_upper = annotationArea.getPosition()[3];
+                    
+                    att_rect.setTextContent(str_rect);
                     
                     if (doHighlight) {
                         Node att_coords = node_annotation.getAttributes().getNamedItem("coords");
                         att_coords.setTextContent(Arrays.toString(annotationArea.getQuadPoints()).replace("[", "").replace("]", "").replace(" ", ""));
                     }
                     
-                    System.out.println("postItPopup position=" + annotationArea.getPosition().getLowerLeftX());
+                    if (DEBUG) {
+                        System.out.println("postItPopup position=" + Arrays.toString(annotationArea.getPosition()));
+                    }
                     
                     Node node_popup = ((Element)node_annotation).getElementsByTagName("popup").item(0);
                     
                     Node att_popup_rect = node_popup.getAttributes().getNamedItem("rect");
-                    StringBuilder sb_popup_rect = new StringBuilder();
-                    sb_popup_rect.append(595);
-                    sb_popup_rect.append(",");
-                    sb_popup_rect.append(y_lower - 100);
-                    sb_popup_rect.append(",");
-                    sb_popup_rect.append(790);
-                    sb_popup_rect.append(",");
-                    sb_popup_rect.append(y_upper);
-                    att_popup_rect.setTextContent(sb_popup_rect.toString());
+                    
+                    float[] popup_rect = {595,y_lower - 100,790,y_upper};
+                    String str_popup_rect = Arrays.toString(popup_rect).replace("[","").replace("]","").replace(" ","");
+                    
+                    att_popup_rect.setTextContent(str_popup_rect);
                 }
                 
                 
@@ -205,55 +185,46 @@ public class Annotation {
                     }
                 }
                                 
+                
+                // import XFDF annotation xml
+                
                 FDFDocument fdfDoc = FDFDocument.loadXFDF(new ByteArrayInputStream(updatedXMLReview.getBytes(StandardCharsets.UTF_8)));
                 List<FDFAnnotation> fdfAnnots = fdfDoc.getCatalog().getFDF().getAnnotations();
                 
                 // group annotations relate to one page and add them into page
-                int page = 0;
-                int prev_page = -1;
-                HashMap<Integer,List<PDAnnotation>> hash_pdfannots = new HashMap<>();
+                HashMap<Integer,List<PDAnnotation>> map_pdfannots = new HashMap<>();
                 
-                List<PDAnnotation> pdfannots = new ArrayList<>();
                 for (int i=0; i<fdfDoc.getCatalog().getFDF().getAnnotations().size(); i++) {
                     FDFAnnotation fdfannot = fdfAnnots.get(i);
-                    page = fdfannot.getPage();
+                    int page = fdfannot.getPage();
                     
                     PDAnnotation pdfannot = PDAnnotation.createAnnotation(fdfannot.getCOSObject());
 
-                    if (page != prev_page && prev_page != -1) {
-                        document.getPage(page).setAnnotations(pdfannots);
-                        pdfannots.clear();
-                        prev_page = page;
+                    if (map_pdfannots.get(page) == null) {
+                        map_pdfannots.put(page, new ArrayList<PDAnnotation>());
                     }
-                    pdfannots.add(pdfannot);
-                }
-                if (!pdfannots.isEmpty()) {
-                    document.getPage(page).setAnnotations(pdfannots);
+                    map_pdfannots.get(page).add(pdfannot);
                 }
                 
-                
+                for (Map.Entry<Integer,List<PDAnnotation>> set: map_pdfannots.entrySet()) {
+                    document.getPage(set.getKey()).setAnnotations(set.getValue());
+                }
                 
                 fdfDoc.close();
                 
                 document.save(pdf);
-                //document.close();
-                
-                
                 
             } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException | XPathException ex) {
                 logger.severe("Can't read annotation data from xml.");
                 ex.printStackTrace();
             } 
             
-
-            //document.save(pdf);
             
         } finally {
             if( document != null ) {
                 document.close();
             }
         }
-        
         
     }
     

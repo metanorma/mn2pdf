@@ -1,7 +1,5 @@
 package org.metanorma.fop.annotations;
 
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-
 /**
  *
  * @author Alexander Dyuzhev
@@ -10,7 +8,7 @@ public class AnnotationArea {
     
     private float quadPoints[] = {};
     
-    private PDRectangle position = new PDRectangle();
+    private float position[] = {};
     
     public AnnotationArea() {
         
@@ -24,11 +22,11 @@ public class AnnotationArea {
         this.quadPoints = quadPoints;
     }
 
-    public PDRectangle getPosition() {
+    public float[] getPosition() {
         return position;
     }
 
-    public void setPosition(PDRectangle position) {
+    public void setPosition(float[] position) {
         this.position = position;
     }
     

@@ -1,6 +1,7 @@
 package org.metanorma.fop.annotations;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -94,18 +95,15 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                 posYInit = textPositions.get(0).getPageHeight() - y + y_shift;
                 posYEnd  = textPositions.get(0).getPageHeight() - y + y_shift + height_note;
                 
-                PDRectangle position = new PDRectangle();
+                float[] position = {posXInit, posYInit, posXEnd, posYEnd};
+                /*PDRectangle position = new PDRectangle();
                 position.setLowerLeftX(posXInit);
                 position.setLowerLeftY(posYInit);
                 position.setUpperRightX(posXEnd);
-                position.setUpperRightY(posYEnd);
+                position.setUpperRightY(posYEnd);*/
                 
                 if (DEBUG) {
-                    System.out.println("Position popup:");
-                    System.out.println("LowerLeftX:" + position.getLowerLeftX());
-                    System.out.println("LowerLeftY:" + position.getLowerLeftY());
-                    System.out.println("UpperRightX:" + position.getUpperRightX());
-                    System.out.println("UpperRightLowerLeftY:" + position.getUpperRightY());
+                    System.out.println("Position popup: " + Arrays.toString(position));
                 }
                 
                 annotationArea.setPosition(position);
@@ -181,30 +179,13 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
                     annotationArea.setQuadPoints(quadPoints);
                     
-                    PDRectangle position = new PDRectangle();
-                    position.setLowerLeftX(posXInit);
-                    position.setLowerLeftY(posYEnd);
-                    position.setUpperRightX(posXEnd);
-                    position.setUpperRightY(posYEnd + height + 15);
-                
+                    float[] position = {posXInit, posYEnd, posXEnd, posYEnd + height + 15};
+                    
                     annotationArea.setPosition(position);
                     
                     if (DEBUG) {
-                        System.out.println("Position highlight:");
-                        System.out.println("LowerLeftX:" + position.getLowerLeftX());
-                        System.out.println("LowerLeftY:" + position.getLowerLeftY());
-                        System.out.println("UpperRightX:" + position.getUpperRightX());
-                        System.out.println("UpperRightLowerLeftY:" + position.getUpperRightY());
-
-                        System.out.println("Quad points highlight:");
-                        System.out.println(quadPoints[0]);
-                        System.out.println(quadPoints[1]);
-                        System.out.println(quadPoints[2]);
-                        System.out.println(quadPoints[3]);
-                        System.out.println(quadPoints[4]);
-                        System.out.println(quadPoints[5]);
-                        System.out.println(quadPoints[6]);
-                        System.out.println(quadPoints[7]);
+                        System.out.println("Position highlight: " + Arrays.toString(position));
+                        System.out.println("Quad points highlight: " + Arrays.toString(quadPoints));
                     }
                     
                     highlightedAlready = true;
