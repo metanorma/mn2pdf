@@ -263,6 +263,8 @@
 								 <xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
 								</popup>
 								
+								<hightlighttext><xsl:copy-of select="node()"/></hightlighttext>
+								
 							</highlight>
 							
 						</xsl:for-each>

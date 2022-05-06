@@ -561,10 +561,10 @@ public class PDFGenerator {
         
         if (isAddAnnotations) {
             try {
-                String xml_review = applyXSLTExtended("review.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
+                String xml_review = applyXSLTExtended("xfdf.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
                 if (DEBUG) {   //DEBUG: write review xml file
                     try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.review.xml"))) {
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xfdf.xml"))) {
                             writer.write(xml_review);                    
                     }
                 }

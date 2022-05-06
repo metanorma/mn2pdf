@@ -6,13 +6,13 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
  *
  * @author Alexander Dyuzhev
  */
-public class HighlightArea {
+public class AnnotationArea {
     
     private float quadPoints[] = {};
     
     private PDRectangle position = new PDRectangle();
     
-    public HighlightArea() {
+    public AnnotationArea() {
         
     }
 

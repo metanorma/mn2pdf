@@ -54,7 +54,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
     
     private String reviewer = "";
     
-    private String annotation_text = "";
+    //private String annotation_text = "";
     
     private String highlight_text = "";
     private boolean doHighlight = false;
@@ -63,8 +63,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
     private float x = 0f;
     private float y = 0f;
     
-    HighlightArea highlightArea = null;
-    HighlightArea postItPopup = null;
+    AnnotationArea annotationArea = null;
     
     private Calendar date = null;
     
@@ -75,15 +74,15 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
     private PDColor orange = new PDColor(new float[]{1, 195 / 255F, 51 / 255F}, PDDeviceRGB.INSTANCE);
     
     
-    public PDFTextAnnotationStripper(String author, Calendar date, String text, String highlight_text, 
+    //String author, Calendar date, String text,
+    public PDFTextAnnotationStripper( String highlight_text, 
             boolean doPostIt, boolean doHighlight, 
             float x, float y,
-            HighlightArea highlightArea,
-            HighlightArea postItPopup)  throws IOException {
+            AnnotationArea annotationArea)  throws IOException {
         super();
-        this.reviewer = author;
-        this.date = date;
-        this.annotation_text = text;
+        //this.reviewer = author;
+        //this.date = date;
+        //this.annotation_text = text;
         this.highlight_text = highlight_text;
         
         this.doHighlight = doHighlight;
@@ -95,8 +94,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
         this.x = x;
         this.y = y;
         
-        this.highlightArea = highlightArea;
-        this.postItPopup = postItPopup;
+        this.annotationArea = annotationArea;
     }
 
     
@@ -130,9 +128,10 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
                 posXInit = x;
                 posXEnd  = x+20;
-                posYInit = textPositions.get(0).getPageHeight() - y;
-                float y_shift = 25; // to move a bit higher, otherwise post-it note will overlap highlighted text
-                posYEnd  = textPositions.get(0).getPageHeight() - y + y_shift;
+                float y_shift = 0; // to move a bit higher, otherwise post-it note will overlap highlighted text
+                float height_note = 25;
+                posYInit = textPositions.get(0).getPageHeight() - y + y_shift;
+                posYEnd  = textPositions.get(0).getPageHeight() - y + y_shift + height_note;
                 
                 PDRectangle position = new PDRectangle();
                 position.setLowerLeftX(posXInit);
@@ -140,9 +139,18 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                 position.setUpperRightX(posXEnd);
                 position.setUpperRightY(posYEnd);
                 
-                postItPopup.setPosition(position);
+                System.out.println("Position popup:");
+                System.out.println("LowerLeftX:" + position.getLowerLeftX());
+                System.out.println("LowerLeftY:" + position.getLowerLeftY());
+                System.out.println("UpperRightX:" + position.getUpperRightX());
+                System.out.println("UpperRightLowerLeftY:" + position.getUpperRightY());
                 
+                annotationArea.setPosition(position);
+                
+                
+                /*
                 List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
+                
                 
                 PDAnnotationText text = new PDAnnotationText();
 
@@ -159,7 +167,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     text.setModifiedDate(date);
                 }
                 
-                annotations.add(text);
+                annotations.add(text);*/
                 
                 postItAlready = true;
                 
@@ -231,7 +239,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
                     float quadPoints[] = {posXInit, posYEnd + height + 2, posXEnd, posYEnd + height + 2, posXInit, posYInit - 2, posXEnd, posYEnd - 2};
 
-                    highlightArea.setQuadPoints(quadPoints);
+                    annotationArea.setQuadPoints(quadPoints);
                     
                     PDRectangle position = new PDRectangle();
                     position.setLowerLeftX(posXInit);
@@ -239,9 +247,26 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     position.setUpperRightX(posXEnd);
                     position.setUpperRightY(posYEnd + height + 15);
                 
+                    System.out.println("Position highlight:");
+                    System.out.println("LowerLeftX:" + position.getLowerLeftX());
+                    System.out.println("LowerLeftY:" + position.getLowerLeftY());
+                    System.out.println("UpperRightX:" + position.getUpperRightX());
+                    System.out.println("UpperRightLowerLeftY:" + position.getUpperRightY());
                     
-                    highlightArea.setPosition(position);
                     
+                    System.out.println("Quad points highlight:");
+                    System.out.println(quadPoints[0]);
+                    System.out.println(quadPoints[1]);
+                    System.out.println(quadPoints[2]);
+                    System.out.println(quadPoints[3]);
+                    System.out.println(quadPoints[4]);
+                    System.out.println(quadPoints[5]);
+                    System.out.println(quadPoints[6]);
+                    System.out.println(quadPoints[7]);
+                    
+                    annotationArea.setPosition(position);
+                    
+                    /*
                     List<PDAnnotation> annotations = document.getPage(this.getCurrentPageNo() - 1).getAnnotations();
                     
                     PDAnnotationTextMarkup highlight = new PDAnnotationTextMarkup(PDAnnotationTextMarkup.SUB_TYPE_HIGHLIGHT);
@@ -256,9 +281,13 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     highlight.setSubject("Highlight");
                 
                     highlight.setTitlePopup(reviewer);
+                    
                     if (date != null) {
                         highlight.setModifiedDate(date);
                     }
+                    */
+                    
+                    
                     //PDAnnotationPopup popup = new PDAnnotationPopup();
                     //highlight.setPopup(popup);
                     //highlight.setAnnotationName("My Annotation Name");                    
@@ -266,7 +295,9 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                     //highlight.setIntent("My intent");
                     */
                     
-                    annotations.add(highlight);
+                    
+                    
+                    //annotations.add(highlight);
                     
                     highlightedAlready = true;
                     
@@ -281,7 +312,8 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                 
             }
 
-            processedAlready = postItAlready && highlightedAlready;
+            //processedAlready = postItAlready && highlightedAlready;
+            processedAlready = postItAlready || highlightedAlready;
         }
     }
    

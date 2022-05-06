@@ -640,6 +640,18 @@ public class Util {
         return cal;
     }
     
+    // D:20220422000000
+    public static String getXFDFDate(String dateStr) {
+        Calendar cal = getCalendarDate(dateStr);
+        
+        StringBuilder sb_dateXFDF = new StringBuilder();
+        sb_dateXFDF.append("D:");
+        SimpleDateFormat format_xfdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        sb_dateXFDF.append(format_xfdf.format(cal.getTime()));
+        
+        return sb_dateXFDF.toString();
+    }
+    
     public static String readFile (String path) throws IOException {
         String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         return content;
