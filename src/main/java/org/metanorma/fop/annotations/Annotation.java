@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import java.util.logging.Logger;
@@ -30,6 +31,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.xml.sax.InputSource;
@@ -80,15 +83,16 @@ public class Annotation {
                 InputSource is = new InputSource(new StringReader(xmlReview));
                 
                 Document sourceXML = dBuilder.parse(is);
-                //XPath xPath = XPathFactory.newInstance().newXPath();
-
-                //NodeList nodes_annotations = sourceXML.getElementsByTagName("annotation");
                 
                 // iteration for each popup (Post-It) annotations
-                NodeList nodes_annotations = sourceXML.getElementsByTagName("text");
+                //NodeList nodes_annotations = sourceXML.getElementsByTagName("text");
+                XPath xPath = XPathFactory.newInstance().newXPath();
+                NodeList nodes_annotations = (NodeList) xPath.compile("//*[local-name() = 'text' or local-name() = 'highlight']").evaluate(sourceXML, XPathConstants.NODESET);
                 
                 for (int i = 0; i < nodes_annotations.getLength(); i++) {
                     Node node_annotation = nodes_annotations.item(i);
+                    
+                    String element_name = node_annotation.getNodeName();
                     
                     // format 'date'
                     try {
@@ -104,6 +108,8 @@ public class Annotation {
                     String rect = att_rect.getTextContent();
                     String[] rect_components = rect.split(",");
                     
+                    
+                    // evaluate start position for find
                     float x = 100;
                     try {
                         x = Float.parseFloat(rect_components[0]);
@@ -114,8 +120,11 @@ public class Annotation {
                         y = Float.parseFloat(rect_components[1]);
                     } catch (Exception ex) {}
                     
+                    boolean doPostIt = false;
+                    doPostIt = element_name.equals("text");
                     boolean doHighlight = false;
-                    boolean doPostIt = true;
+                    doHighlight = element_name.equals("highlight");
+                    
                     
                     if (DEBUG) {
                         System.out.println("page=" + page);
@@ -123,19 +132,24 @@ public class Annotation {
                         System.out.println("y=" + y);
                     }
                     
-                    
                     AnnotationArea annotationArea = new AnnotationArea();
                     
-                    PDFTextStripper stripper = new PDFTextAnnotationStripper("", 
+                    String highlight_text = "";
+                    
+                    if (doHighlight) {
+                        try {
+                            Node node_hightlighttext = ((Element)node_annotation).getElementsByTagName("hightlighttext").item(0);  
+                            highlight_text = node_hightlighttext.getTextContent();
+                        } catch (Exception ex) {}
+                    }
+                    
+                    PDFTextStripper stripper = new PDFTextAnnotationStripper(highlight_text, 
                             doPostIt, doHighlight, 
                             x, y,
                             annotationArea);
                     stripper.setSortByPosition(true);
 
-
-                    //stripper.setStartPage( 0 );
                     stripper.setStartPage(page + 1);
-                    //stripper.setEndPage( document.getNumberOfPages() );
                     stripper.setEndPage(page + 1);
 
                     Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
@@ -154,6 +168,11 @@ public class Annotation {
                     
                     att_rect.setTextContent(sb_rect.toString());
                     
+                    if (doHighlight) {
+                        Node att_coords = node_annotation.getAttributes().getNamedItem("coords");
+                        att_coords.setTextContent(Arrays.toString(annotationArea.getQuadPoints()).replace("[", "").replace("]", "").replace(" ", ""));
+                    }
+                    
                     System.out.println("postItPopup position=" + annotationArea.getPosition().getLowerLeftX());
                     
                     Node node_popup = ((Element)node_annotation).getElementsByTagName("popup").item(0);
@@ -168,101 +187,8 @@ public class Annotation {
                     sb_popup_rect.append(",");
                     sb_popup_rect.append(y_upper);
                     att_popup_rect.setTextContent(sb_popup_rect.toString());
-                    
-                    //System.out.println("highlightArea quadPositions=" + annotationArea.getQuadPoints());
-                    
-
-                    //document.save(pdf);
-                    
                 }
                 
-                for (int i = 100000; i < nodes_annotations.getLength(); i++) {
-                    Node node_annotation = nodes_annotations.item(i);
-                    
-                    /*String reviewer = "";
-                    try {
-                        reviewer = node_annotation.getAttributes().getNamedItem("reviewer").getTextContent();
-                    } catch (Exception ex) { }*/
-                    
-                    
-                    NodeList annotations_data = ((Element)node_annotation).getElementsByTagName("data");
-                    Node annotation_data = annotations_data.item(0);
-                    String annotation_text = innerXml(annotation_data); //.getTextContent();
-                    
-                    /*if (DEBUG) {
-                        System.out.println("Author=" + reviewer);
-                        System.out.println("Date=" + date);
-                        System.out.println("Annotation=" + annotation_text);
-                    }*/
-                    
-                    NodeList nodes_texts = ((Element)node_annotation).getElementsByTagName("text");
-                    
-                    for (int j = 0; j < nodes_texts.getLength(); j++) {
-                        Node node_text = nodes_texts.item(j);
-                        NamedNodeMap node_text_att = node_text.getAttributes();
-                        
-                        int page = 1;
-                        
-                        float x = 100;
-                        try {
-                            x = Float.parseFloat(node_text_att.getNamedItem("x").getTextContent());
-                        } catch (Exception ex) {}
-                        
-                        float y = 100;
-                        try {
-                            y = Float.parseFloat(node_text_att.getNamedItem("y").getTextContent());
-                        } catch (Exception ex) {}
-                        
-                        String highlight_text = node_text.getTextContent();
-                        
-                        boolean doHighlight = false;
-                        try {
-                            doHighlight = Boolean.parseBoolean(node_text_att.getNamedItem("highlight").getTextContent());
-                        } catch (Exception ex) {}
-                        
-                        boolean doPostIt = true;
-                        try {
-                            doPostIt = Boolean.parseBoolean(node_text_att.getNamedItem("postit").getTextContent());
-                        } catch (Exception ex) {}
-                        
-                        if (DEBUG) {
-                            System.out.println("page=" + page);
-                            System.out.println("x=" + x);
-                            System.out.println("y=" + y);
-                            System.out.println("text=" + highlight_text);
-                        }
-                        
-                        AnnotationArea annotationArea = new AnnotationArea();
-                        
-                        AnnotationArea postItPopup  = new AnnotationArea();
-                        
-                        PDFTextStripper stripper = new PDFTextAnnotationStripper(highlight_text, 
-                                doPostIt, doHighlight, 
-                                x, y,
-                                annotationArea);
-                        stripper.setSortByPosition(true);
-                        
-                        
-                        //stripper.setStartPage( 0 );
-                        stripper.setStartPage(page);
-                        //stripper.setEndPage( document.getNumberOfPages() );
-                        stripper.setEndPage(page);
-                        
-                        Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
-                        stripper.writeText(document, dummy);
-                        
-                        System.out.println("postItPopup position=" + annotationArea.getPosition().getLowerLeftX());
-                        System.out.println("highlightArea quadPositions=" + annotationArea.getQuadPoints());
-                        System.out.println("highlightArea position=" + annotationArea.getPosition().getLowerLeftX());
-                        
-                        document.save(pdf);
-                        
-                        
-                    }
-                    
-                }
-                
-                //XPathExpression query = xPath.compile("//annotation");
                 
                 // updated XML Review
                 TransformerFactory tf = TransformerFactory.newInstance();
@@ -314,13 +240,10 @@ public class Annotation {
                 
                 
                 
-            } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException ex) {
+            } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException | XPathException ex) {
                 logger.severe("Can't read annotation data from xml.");
                 ex.printStackTrace();
             } 
-            
-            
-            
             
 
             //document.save(pdf);
