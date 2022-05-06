@@ -1,5 +1,6 @@
-package org.metanorma.fop;
+package org.metanorma.fop.annotations;
 
+import org.metanorma.fop.annotations.PDFTextAnnotationStripper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationPopup;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationTextMarkup;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
-import static org.metanorma.fop.Util.logger;
+import org.metanorma.fop.Util;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -46,6 +47,8 @@ import org.xml.sax.SAXException;
  * @author Alexander Dyuzhev
  */
 public class Annotation {
+    
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     private boolean DEBUG = false;
     
@@ -128,8 +131,19 @@ public class Annotation {
                             System.out.println("text=" + highlight_text);
                         }
                         
-                        PDFTextStripper stripper = new PDFTextAnnotationStripper(reviewer, cal, annotation_text, highlight_text, doPostIt, doHighlight, x, y);
+                        HighlightArea highlightArea = new HighlightArea();
+                        
+                        HighlightArea postItPopup  = new HighlightArea();
+                        
+                        PDFTextStripper stripper = new PDFTextAnnotationStripper(reviewer, cal, annotation_text, highlight_text, 
+                                doPostIt, doHighlight, 
+                                x, y,
+                                highlightArea,
+                                postItPopup);
                         stripper.setSortByPosition(true);
+                        
+                        
+                        
                         
                         //stripper.setStartPage( 0 );
                         stripper.setStartPage(page);
@@ -138,6 +152,10 @@ public class Annotation {
                         
                         Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
                         stripper.writeText(document, dummy);
+                        
+                        System.out.println("postItPopup position=" + postItPopup.getPosition().getLowerLeftX());
+                        System.out.println("highlightArea quadPositions=" + highlightArea.getQuadPoints());
+                        System.out.println("highlightArea position=" + highlightArea.getPosition().getLowerLeftX());
                         
                         document.save(pdf);
                         
