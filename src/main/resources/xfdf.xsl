@@ -178,7 +178,6 @@
 			<xsl:element name="annots">
 			
 			
-			
 				<xsl:for-each select="//*[local-name() = 'review']">
 					<xsl:variable name="id_from">
 						<xsl:choose>
@@ -187,7 +186,9 @@
 						</xsl:choose>
 					</xsl:variable>
 					<xsl:variable name="id_to" select="@to"/>
-				
+			
+					<xsl:variable name="reviewer" select="@reviewer"/>
+					<xsl:variable name="date" select="@date"/>
 				
 					<!-- add Post-It popup -->
 					<!-- Example:
@@ -211,10 +212,10 @@
 						<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
 						<xsl:attribute name="opacity"><xsl:value-of select="$opacity_popup"/></xsl:attribute>
 						<xsl:attribute name="flags">nozoom,norotate</xsl:attribute>
-						<xsl:attribute name="date"><xsl:value-of select="@date"/></xsl:attribute>
+						<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
 						<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
 						<xsl:attribute name="rect"><xsl:value-of select="concat($element_from/@x,',',$element_from/@y)"/></xsl:attribute>
-						<xsl:attribute name="title"><xsl:value-of select="@reviewer"/></xsl:attribute>
+						<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
 					
 						<xsl:element name="contents-richtext">
 							<body xmlns="http://www.w3.org/1999/xhtml">
@@ -249,12 +250,12 @@
 							<highlight>
 								<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
 								<xsl:attribute name="opacity"><xsl:value-of select="$opacity_highlight"/></xsl:attribute>
-								<xsl:attribute name="date"><xsl:value-of select="@date"/></xsl:attribute>
+								<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
 								<xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
 								<xsl:attribute name="coords"></xsl:attribute>
 								<xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
 								<xsl:attribute name="subject">Highlight</xsl:attribute>
-								<xsl:attribute name="title"><xsl:value-of select="@reviewer"/></xsl:attribute>
+								<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
 								
 								<popup>
 								 <xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
@@ -318,6 +319,13 @@
 		<xsl:element name="{local-name()}" namespace="{$namespace_xhtml}">
 			<xsl:apply-templates mode="pdf_richtext"/>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="text()" mode="pdf_richtext">
+		<!-- remove new line and tab characters -->
+		<xsl:variable name="text" select="translate(.,'&#x09;&#x0a;&#x0d;','')"/>
+		<!-- replace two and more space to one space -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),' {2,}',' ')"/>
 	</xsl:template>
 	
 	<!-- ==================== -->
