@@ -125,6 +125,8 @@ public class Annotation {
                         try {
                             Node node_hightlighttext = ((Element)node_annotation).getElementsByTagName("hightlighttext").item(0);  
                             highlight_text = node_hightlighttext.getTextContent();
+                            // delete node
+                            node_hightlighttext.getParentNode().removeChild(node_hightlighttext);
                         } catch (Exception ex) {}
                     }
                     
@@ -154,6 +156,7 @@ public class Annotation {
                         // =====================================
                         // union next highlights with current
                         // =====================================
+                        List<Node> nodes_delete = new ArrayList<>();
                         NodeList nodes_next_highlight = ((Element)node_annotation).getElementsByTagName("next_highlight");
                         for (int j = 0; j < nodes_next_highlight.getLength(); j++) {
                             Node node_next_highlight = nodes_next_highlight.item(j);
@@ -200,6 +203,13 @@ public class Annotation {
                                 sb_quadPoints.append(",");
                                 sb_quadPoints.append(quadPoints);
                             }
+                            
+                            //node_next_highlight.getParentNode().removeChild(node_next_highlight);
+                            nodes_delete.add(node_next_highlight);
+                        }
+                        for (int j=0; j<nodes_delete.size();j++) {
+                            Node node = nodes_delete.get(j);
+                            node.getParentNode().removeChild(node);
                         }
                         // =====================================
                         // End: union next highlights with current
