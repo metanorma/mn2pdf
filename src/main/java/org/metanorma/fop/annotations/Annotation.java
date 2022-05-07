@@ -31,7 +31,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 import org.xml.sax.InputSource;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.fdf.FDFAnnotation;
 import org.apache.pdfbox.pdmodel.fdf.FDFDocument;
@@ -44,8 +43,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 /**
@@ -143,16 +140,14 @@ public class Annotation {
                     Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
                     stripper.writeText(document, dummy);
 
-                    String str_rect = Arrays.toString(annotationArea.getPosition()).replace("[","").replace("]","").replace(" ","");
-                    
                     float y_lower = annotationArea.getPosition()[1];
                     float y_upper = annotationArea.getPosition()[3];
                     
-                    att_rect.setTextContent(str_rect);
+                    att_rect.setTextContent(Util.floatArrayToString(annotationArea.getPosition()));
                     
                     if (doHighlight) {
                         Node att_coords = node_annotation.getAttributes().getNamedItem("coords");
-                        att_coords.setTextContent(Arrays.toString(annotationArea.getQuadPoints()).replace("[", "").replace("]", "").replace(" ", ""));
+                        att_coords.setTextContent(Util.floatArrayToString(annotationArea.getQuadPoints()));
                     }
                     
                     if (DEBUG) {
@@ -164,9 +159,8 @@ public class Annotation {
                     Node att_popup_rect = node_popup.getAttributes().getNamedItem("rect");
                     
                     float[] popup_rect = {595,y_lower - 100,790,y_upper};
-                    String str_popup_rect = Arrays.toString(popup_rect).replace("[","").replace("]","").replace(" ","");
                     
-                    att_popup_rect.setTextContent(str_popup_rect);
+                    att_popup_rect.setTextContent(Util.floatArrayToString(popup_rect));
                 }
                 
                 
@@ -226,18 +220,6 @@ public class Annotation {
             }
         }
         
-    }
-    
-    private String innerXml(Node node) {
-        DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
-        LSSerializer lsSerializer = lsImpl.createLSSerializer();
-        lsSerializer.getDomConfig().setParameter("xml-declaration", false);
-        NodeList childNodes = node.getChildNodes();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-           sb.append(lsSerializer.writeToString(childNodes.item(i)));
-        }
-        return sb.toString(); 
     }
     
 }

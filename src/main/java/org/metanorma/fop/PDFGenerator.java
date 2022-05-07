@@ -1,5 +1,6 @@
 package org.metanorma.fop;
 
+import org.metanorma.fop.annotations.Annotation;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
