@@ -1,5 +1,6 @@
 package org.metanorma.fop;
 
+import org.metanorma.fop.annotations.Annotation;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -560,11 +561,12 @@ public class PDFGenerator {
         }
         
         if (isAddAnnotations) {
+            logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
-                String xml_review = applyXSLTExtended("review.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
+                String xml_review = applyXSLTExtended("xfdf.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
                 if (DEBUG) {   //DEBUG: write review xml file
                     try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.review.xml"))) {
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xfdf.xml"))) {
                             writer.write(xml_review);                    
                     }
                 }
@@ -573,7 +575,6 @@ public class PDFGenerator {
             } catch (Exception ex) {
                 logger.severe("Can't add annotation.");
                 ex.printStackTrace();
-                //System.exit(ERROR_EXIT_CODE);
             }
         }
         

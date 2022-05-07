@@ -38,6 +38,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Calendar;
@@ -75,6 +76,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 /**
  *
@@ -640,8 +643,36 @@ public class Util {
         return cal;
     }
     
+    // D:20220422000000
+    public static String getXFDFDate(String dateStr) {
+        Calendar cal = getCalendarDate(dateStr);
+        
+        StringBuilder sb_dateXFDF = new StringBuilder();
+        sb_dateXFDF.append("D:");
+        SimpleDateFormat format_xfdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        sb_dateXFDF.append(format_xfdf.format(cal.getTime()));
+        
+        return sb_dateXFDF.toString();
+    }
+    
     public static String readFile (String path) throws IOException {
         String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         return content;
+    }
+    
+    public static String floatArrayToString(float[] a) {
+        return Arrays.toString(a).replace("[","").replace("]","").replace(" ","");
+    }
+    
+    public static String innerXml(Node node) {
+        DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        LSSerializer lsSerializer = lsImpl.createLSSerializer();
+        lsSerializer.getDomConfig().setParameter("xml-declaration", false);
+        NodeList childNodes = node.getChildNodes();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+           sb.append(lsSerializer.writeToString(childNodes.item(i)));
+        }
+        return sb.toString(); 
     }
 }
