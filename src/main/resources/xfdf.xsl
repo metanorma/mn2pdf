@@ -288,7 +288,7 @@
 							</xsl:for-each>
 						</xsl:variable>
 						
-						<xsl:copy-of select="$pages"/>
+						<!-- <xsl:copy-of select="$pages"/> -->
 						
 						<!-- group of highlight sequence -->
 						<xsl:for-each select="xalan:nodeset($pages)//*[local-name() = 'page']">

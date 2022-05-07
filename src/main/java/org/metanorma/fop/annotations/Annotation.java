@@ -195,8 +195,11 @@ public class Annotation {
                             Writer dummy_next = new OutputStreamWriter(new ByteArrayOutputStream());
                             stripper_next.writeText(document, dummy_next);
                             
-                            sb_quadPoints.append(",");
-                            sb_quadPoints.append(Util.floatArrayToString(annotationNextArea.getQuadPoints()));
+                            String quadPoints = Util.floatArrayToString(annotationNextArea.getQuadPoints());
+                            if (!quadPoints.isEmpty()) {
+                                sb_quadPoints.append(",");
+                                sb_quadPoints.append(quadPoints);
+                            }
                         }
                         // =====================================
                         // End: union next highlights with current
