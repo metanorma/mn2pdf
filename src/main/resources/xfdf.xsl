@@ -244,31 +244,75 @@
 					-->
 					
 					<xsl:if test="$id_to != ''">
-						<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
-							<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
+					
+					
+						<xsl:variable name="highlight_sequence_">
+					
+							<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
+								<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
+								
+								
+								<highlight>
+									<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
+									<xsl:attribute name="opacity"><xsl:value-of select="$opacity_highlight"/></xsl:attribute>
+									<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
+									<xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
+									<xsl:attribute name="coords"></xsl:attribute>
+									<xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
+									<xsl:attribute name="subject">Highlight</xsl:attribute>
+									<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
+									
+									<popup>
+									 <xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
+									 <xsl:attribute name="open">no</xsl:attribute>
+									 <xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
+									 <xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
+									</popup>
+									
+									<hightlighttext><xsl:copy-of select="node()"/></hightlighttext>
+									
+								</highlight>
+								
+							</xsl:for-each>
+						</xsl:variable>
+						
+						<xsl:variable name="highlight_sequence" select="xalan:nodeset($highlight_sequence_)"/>
+								
+						<!-- <xsl:copy-of select="$highlight_sequence"/> -->
+						
+						<xsl:variable name="pages">
+							<xsl:for-each select="$highlight_sequence/*[local-name() = 'highlight']">
+								<xsl:if test="not(preceding-sibling::*[local-name() = 'highlight'][@page = current()/@page])">
+									<page><xsl:value-of select="@page"/></page>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						
+						<xsl:copy-of select="$pages"/>
+						
+						<!-- group of highlight sequence -->
+						<xsl:for-each select="xalan:nodeset($pages)//*[local-name() = 'page']">
+							<xsl:variable name="page" select="."/>
 							
-							<highlight>
-								<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
-								<xsl:attribute name="opacity"><xsl:value-of select="$opacity_highlight"/></xsl:attribute>
-								<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
-								<xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
-								<xsl:attribute name="coords"></xsl:attribute>
-								<xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
-								<xsl:attribute name="subject">Highlight</xsl:attribute>
-								<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
+							<xsl:for-each select="$highlight_sequence/*[local-name() = 'highlight'][@page = $page][1]">
+							
+								<highlight>
+									<xsl:copy-of select="@*"/>
+									<xsl:copy-of select="node()"/>
+									
+									<xsl:for-each select="following-sibling::*[local-name() = 'highlight'][@page = $page]">
+										<next_highlight>
+											<xsl:copy-of select="@*"/>
+											<xsl:copy-of select="node()"/>
+										</next_highlight>
+									</xsl:for-each>
 								
-								<popup>
-								 <xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
-								 <xsl:attribute name="open">no</xsl:attribute>
-								 <xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
-								 <xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
-								</popup>
-								
-								<hightlighttext><xsl:copy-of select="node()"/></hightlighttext>
-								
-							</highlight>
+								</highlight>
+							
+							</xsl:for-each>
 							
 						</xsl:for-each>
+						
 					</xsl:if>
 					
 				</xsl:for-each>

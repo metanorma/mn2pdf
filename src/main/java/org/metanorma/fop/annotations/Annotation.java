@@ -147,7 +147,62 @@ public class Annotation {
                     
                     if (doHighlight) {
                         Node att_coords = node_annotation.getAttributes().getNamedItem("coords");
-                        att_coords.setTextContent(Util.floatArrayToString(annotationArea.getQuadPoints()));
+                        
+                        StringBuilder sb_quadPoints = new StringBuilder();
+                        sb_quadPoints.append(Util.floatArrayToString(annotationArea.getQuadPoints()));
+                        
+                        // =====================================
+                        // union next highlights with current
+                        // =====================================
+                        NodeList nodes_next_highlight = ((Element)node_annotation).getElementsByTagName("next_highlight");
+                        for (int j = 0; j < nodes_next_highlight.getLength(); j++) {
+                            Node node_next_highlight = nodes_next_highlight.item(j);
+                            
+                            Node att_next_rect = node_next_highlight.getAttributes().getNamedItem("rect");
+                    
+                            String next_rect = att_next_rect.getTextContent();
+                            String[] next_rect_components = next_rect.split(",");
+                            
+                            // evaluate start position for find
+                            float x_next = 100;
+                            try {
+                                x_next = Float.parseFloat(next_rect_components[0]);
+                            } catch (Exception ex) {}
+
+                            float y_next = 100;
+                            try {
+                                y_next = Float.parseFloat(next_rect_components[1]);
+                            } catch (Exception ex) {}
+                                    
+                            AnnotationArea annotationNextArea = new AnnotationArea();
+                    
+                            String highlight_next_text = "";
+
+                            try {
+                                Node node_hightlighnextttext = ((Element)node_next_highlight).getElementsByTagName("hightlighttext").item(0);  
+                                highlight_next_text = node_hightlighnextttext.getTextContent();
+                            } catch (Exception ex) {}
+                            
+                            PDFTextStripper stripper_next = new PDFTextAnnotationStripper(highlight_next_text, 
+                                    doPostIt, doHighlight, 
+                                    x_next, y_next,
+                                    annotationNextArea);
+                            stripper_next.setSortByPosition(true);
+
+                            stripper_next.setStartPage(page + 1);
+                            stripper_next.setEndPage(page + 1);
+
+                            Writer dummy_next = new OutputStreamWriter(new ByteArrayOutputStream());
+                            stripper_next.writeText(document, dummy_next);
+                            
+                            sb_quadPoints.append(",");
+                            sb_quadPoints.append(Util.floatArrayToString(annotationNextArea.getQuadPoints()));
+                        }
+                        // =====================================
+                        // End: union next highlights with current
+                        // =====================================
+                        
+                        att_coords.setTextContent(sb_quadPoints.toString());
                     }
                     
                     if (DEBUG) {
