@@ -561,6 +561,7 @@ public class PDFGenerator {
         }
         
         if (isAddAnnotations) {
+            logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
                 String xml_review = applyXSLTExtended("xfdf.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
                 if (DEBUG) {   //DEBUG: write review xml file
@@ -574,7 +575,6 @@ public class PDFGenerator {
             } catch (Exception ex) {
                 logger.severe("Can't add annotation.");
                 ex.printStackTrace();
-                //System.exit(ERROR_EXIT_CODE);
             }
         }
         
