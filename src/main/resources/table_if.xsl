@@ -21,7 +21,7 @@
 	
 	
 	<!-- Example Apache IF xml:
-	<id name="table_if_start__8b344565-be03-26db-afc3-602d2bd0d888"/>
+		<id name="table_if_start__8b344565-be03-26db-afc3-602d2bd0d888"/>
 		<text x="0" y="12877" foi:struct-ref="57"> </text>
 		<g transform="translate(3334,12700)">
 			<border-rect x="-3834" y="0" width="465527" height="16617" ... "/>
@@ -36,7 +36,19 @@
 	
 	<xsl:template match="if:id">
 		<xsl:variable name="id" select="substring-after(@name, $table_if_start_prefix)"/>
-		<table id="{$id}" page-width="{ancestor::if:viewport[1]/@width}">
+		
+		<xsl:variable name="width_viewport" select="ancestor::if:viewport[1]/@width"/>
+		<xsl:variable name="width_border-rect" select="following-sibling::if:g[1]/if:border-rect/@width"/>
+		
+		<xsl:variable name="page-width">
+			<xsl:choose>
+				<xsl:when test="$width_border-rect &lt; $width_viewport"><xsl:value-of select="$width_border-rect"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$width_viewport"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<table id="{$id}" page-width="{$page-width}">
+		
 			<tbody>
 				
 				<xsl:variable name="table_id" select="concat($table_if_prefix, $id, '_')"/>
