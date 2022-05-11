@@ -36,7 +36,7 @@
 	
 	<xsl:template match="if:id">
 		<xsl:variable name="id" select="substring-after(@name, $table_if_start_prefix)"/>
-		<table id="{$id}">
+		<table id="{$id}" page-width="{ancestor::if:viewport[1]/@width}">
 			<tbody>
 				
 				<xsl:variable name="table_id" select="concat($table_if_prefix, $id, '_')"/>
