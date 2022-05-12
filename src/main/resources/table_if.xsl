@@ -58,7 +58,7 @@
 					
 						<xsl:variable name="id_cell" select="@name"/>
 					
-						<xsl:variable name="position_start" select="following-sibling::if:text[1]/@x"/>
+						<xsl:variable name="position_start" select="0"/> <!-- 0, because text/image can have left padding/margin --> <!-- following-sibling::if:*[1]/@x following-sibling::if:text[1]/@x --> <!-- text or image --> 
 						<xsl:variable name="position_end" select="following-sibling::if:id[@name = concat($id_cell, '_end')]/following-sibling::if:text[1]/@x"/>
 						
 						<xsl:variable name="id_suffix" select="substring-after(@name, $table_id)"/>
