@@ -92,6 +92,10 @@ public class PDFGenerator {
     
     private boolean isAddAnnotations = false;
     
+    private boolean isTableExists = false;
+    
+    private String xmlTableIF = "";
+    
     private Properties xsltParams = new Properties();
     
     private String encryptionParametersFile = "";
@@ -259,6 +263,10 @@ public class PDFGenerator {
             String element_review =  Util.readValueFromXML(fXML, "//*[local-name() = 'review'][1]");
             isAddAnnotations = element_review.length() != 0;
             
+            // find tag 'table' or 'dl'
+            String element_table = Util.readValueFromXML(fXML, "//*[local-name() = 'table' or local-name() = 'dl'][1]");
+            isTableExists = element_table.length() != 0;
+            
             String element_math = Util.readValueFromXML(fXML, "//*[local-name() = 'math'][1]");
             
             // read XSL to XML Document and find param values
@@ -365,6 +373,62 @@ public class PDFGenerator {
                 basepath = xsltParams.getProperty("baseassetpath") + File.separator;
             }
             additionalXSLTparams.setProperty("basepath", basepath);
+            
+            
+            getTablesWidths(Properties additionalXSLTparams, fontConfig fontcfg, XSLTconverter xsltConverter, File pdf);
+            if (isTableExists && xmlTableIF.isEmpty()) { 
+                // generate IF with table width data
+                additionalXSLTparams.setProperty("table_if", "true");
+                xsltConverter.setParams(additionalXSLTparams);
+                logger.info("[INFO] Generation of XSL-FO with information about the table's widths ...");
+                // transform XML to XSL-FO (XML .fo file)
+                long startTime = System.currentTimeMillis();
+                xsltConverter.transform(sourceXMLDocument);
+                long endTime = System.currentTimeMillis();
+                if (DEBUG) {
+                    logger.log(Level.INFO, "processing time: {0} milliseconds", endTime - startTime);
+                }
+                String xmlFO = sourceXMLDocument.getXMLFO();
+                if (DEBUG) {   
+                    //DEBUG: write intermediate FO to file                
+                    String xmlFO_UTF8 = xmlFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.tables.xml"))) {
+                            writer.write(xmlFO_UTF8);                    
+                    }
+                }
+                fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
+                
+                Source sourceFO = new StreamSource(new StringReader(xmlFO));
+                logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
+                String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
+
+                
+                xmlTableIF = createTableIF(xmlIF);
+                if (DEBUG) {   
+                    //DEBUG: write table width information to file                
+                    String xmlTableIF_UTF8 = xmlTableIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    try ( 
+                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".tables.xml"))) {
+                            writer.write(xmlTableIF_UTF8);                    
+                    }
+                }
+                
+                additionalXSLTparams.remove("table_if");
+
+                // pass Table widths XML via parameter 'if_xml'
+                InputSource xmlTableIS = new InputSource(new StringReader(xmlTableIF));
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document xmlTableDocument = dBuilder.parse(xmlTableIS);
+                NodeList xmlTableDocumentNodeList = xmlTableDocument.getDocumentElement().getChildNodes();
+                xsltConverter.setParam("table_widths", xmlTableDocumentNodeList);
+                // ====================================================================
+            }
+            
+            
+            
+            
             xsltConverter.setParams(additionalXSLTparams);
             
             //System.out.println("[INFO] XSL-FO file preparation...");
@@ -441,7 +505,7 @@ public class PDFGenerator {
                     logger.info("Adding Math as text...");
                 }
                 logger.info("Transforming to Intermediate Format...");
-                xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false);
+                xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false, "");
                 
                 if (isAddMathAsText) {
                     logger.info("Updating Intermediate Format (adding hidden math)...");
@@ -589,7 +653,7 @@ public class PDFGenerator {
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
-            String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true);
+            String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, "");
 
             
             //Util.createIndexFile(indexxml, xmlIF);
@@ -622,7 +686,7 @@ public class PDFGenerator {
     }
     
     
-    private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
+    private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
         String xmlIF = "";
         
         // run 1st pass to produce FOP Intermediate Format
@@ -674,7 +738,7 @@ public class PDFGenerator {
                 String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 //DEBUG: write intermediate IF to file                
                 try ( 
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xml"))) {
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if" + sfx + ".xml"))) {
                         writer.write(xmlIFtmp);                    
                 }
             }
@@ -703,6 +767,19 @@ public class PDFGenerator {
             ex.printStackTrace();
         }    
     }
+    
+    
+    private String createTableIF(String intermediateXML) {
+        String xmlTableIF = "";
+        try {
+            xmlTableIF = applyXSLT("table_if.xsl", intermediateXML, false);
+        } catch (Exception ex) {
+            logger.severe("Can't generate information about tables from Intermediate Format.");
+            ex.printStackTrace();
+        }
+        return xmlTableIF;
+    }
+    
     
     // Apply XSL tranformation (file xsltfile) for xml string
     private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {

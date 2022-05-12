@@ -60,6 +60,10 @@ public class XSLTconverter {
         
     }
     
+    public void setParam(String name, Object value) {
+        transformerFO.setParameter(name, value);
+    }
+    
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
         
         //Setup input for XSLT transformation
