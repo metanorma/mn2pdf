@@ -61,10 +61,18 @@
 						<xsl:variable name="position_start" select="0"/> <!-- 0, because text/image can have left padding/margin --> <!-- following-sibling::if:*[1]/@x following-sibling::if:text[1]/@x --> <!-- text or image --> 
 						<xsl:variable name="position_end" select="following-sibling::if:id[@name = concat($id_cell, '_end')]/following-sibling::if:text[1]/@x"/>
 						
+						<xsl:variable name="padding-left_" select="normalize-space(substring-before(substring-after(ancestor::if:g[1]/@transform, '('), ','))"/>
+						<xsl:variable name="padding-left">
+							<xsl:choose>
+								<xsl:when test="$padding-left_ = ''">0</xsl:when>
+								<xsl:otherwise><xsl:value-of select="$padding-left_"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						
 						<xsl:variable name="id_suffix" select="substring-after(@name, $table_id)"/>
 						<xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/>
 						
-						<cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start}"/>
+						<cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start + $padding-left}" padding-left="{$padding-left}"/>
 
 					</xsl:for-each>
 				</xsl:variable>
