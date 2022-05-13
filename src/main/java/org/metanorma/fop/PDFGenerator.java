@@ -110,6 +110,8 @@ public class PDFGenerator {
     
     private String debugXSLFO = "";
     
+    private long startTime;
+    
     public void setFontsPath(String fontsPath) {
         this.fontsPath = fontsPath;
     }
@@ -380,39 +382,21 @@ public class PDFGenerator {
             
             xsltConverter.setParams(additionalXSLTparams);
             
-            
             setTablesWidths(fontcfg, xsltConverter, pdf);
             
-            
-            
-            //System.out.println("[INFO] XSL-FO file preparation...");
             logger.info("[INFO] XSL-FO file preparation...");
             
             // transform XML to XSL-FO (XML .fo file)
-            long startTime = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
+            
             xsltConverter.transform(sourceXMLDocument);
-            long endTime = System.currentTimeMillis();
-            if (DEBUG) {
-                //System.out.println("processing time: " + (endTime - startTime) + " milliseconds");
-                logger.log(Level.INFO, "processing time: {0} milliseconds", endTime - startTime);
-            }
+            
+            printProcessingTime();
 
             String xmlFO = sourceXMLDocument.getXMLFO();
             debugXSLFO = xmlFO;
-            if (DEBUG) {   
-                //DEBUG: write intermediate FO to file                
-                String xmlFO_UTF8 = xmlFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                try ( 
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.xml"))) {
-                        writer.write(xmlFO_UTF8);                    
-                }
-                //Setup output
-                //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
-                //Resulting SAX events (the generated FO) must be piped through to FOP
-                //Result res = new StreamResult(outstream);
-                //Start XSLT transformation and FO generating
-                //transformer.transform(src, res);
-            }
+            
+            debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
             
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
             
@@ -467,13 +451,8 @@ public class PDFGenerator {
                     xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
                 }
                 debugXSLFO = xmlIF;
-                if (DEBUG) {   //DEBUG: write intermediate IF to file
-                    String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                    try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.mathtext.xml"))) {
-                            writer.write(xmlIFtmp);                    
-                    }
-                }
+                
+                debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
                 
                 src = new StreamSource(new StringReader(xmlIF));
             }
@@ -584,12 +563,9 @@ public class PDFGenerator {
             logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
                 String xml_review = applyXSLTExtended("xfdf.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
-                if (DEBUG) {   //DEBUG: write review xml file
-                    try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if.xfdf.xml"))) {
-                            writer.write(xml_review);                    
-                    }
-                }
+                
+                debugSaveXML(xml_review, pdf.getAbsolutePath() + ".if.xfdf.xml");
+                
                 Annotation annotations = new Annotation();
                 annotations.process(pdf, xml_review);
             } catch (Exception ex) {
@@ -628,13 +604,9 @@ public class PDFGenerator {
 
             String xmlFO = sourceXMLDocument.getXMLFO();
             debugXSLFO = xmlFO;
-            if (DEBUG) {   
-                //DEBUG: write intermediate FO to file                
-                try ( 
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.2nd.xml"))) {
-                        writer.write(xmlFO);                    
-                }
-            }
+            
+            debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.2nd.xml");
+            
             src = new StreamSource(new StringReader(xmlFO));
             
         }
@@ -690,14 +662,8 @@ public class PDFGenerator {
 
             xmlIF = out.toString("UTF-16");
             debugXSLFO = xmlIF;
-            if (DEBUG) {   
-                String xmlIFtmp = xmlIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                //DEBUG: write intermediate IF to file                
-                try ( 
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".if" + sfx + ".xml"))) {
-                        writer.write(xmlIFtmp);                    
-                }
-            }
+            
+            debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if" + sfx + ".xml");
 
         } finally {
             out.close();
@@ -989,22 +955,16 @@ public class PDFGenerator {
                 xsltConverter.setParam("table_if", "true");
                 logger.info("[INFO] Generation of XSL-FO with information about the table's widths ...");
                 // transform XML to XSL-FO (XML .fo file)
-                long startTime = System.currentTimeMillis();
+                startTime = System.currentTimeMillis();
                 xsltConverter.transform(sourceXMLDocument);
                 
-                if (DEBUG) {
-                    long endTime = System.currentTimeMillis();
-                    logger.log(Level.INFO, "processing time: {0} milliseconds", endTime - startTime);
-                }
+                printProcessingTime();
+                
                 String xmlFO = sourceXMLDocument.getXMLFO();
-                if (DEBUG) {   
-                    //DEBUG: write intermediate FO to file                
-                    String xmlFO_UTF8 = xmlFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                    try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".fo.tables.xml"))) {
-                            writer.write(xmlFO_UTF8);                    
-                    }
-                }
+                
+                
+                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
+                
                 fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
 
                 Source sourceFO = new StreamSource(new StringReader(xmlFO));
@@ -1012,14 +972,9 @@ public class PDFGenerator {
                 String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
 
                 xmlTableIF = createTableIF(xmlIF);
-                if (DEBUG) {   
-                    //DEBUG: write table width information to file                
-                    String xmlTableIF_UTF8 = xmlTableIF.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                    try ( 
-                        BufferedWriter writer = Files.newBufferedWriter(Paths.get(pdf.getAbsolutePath() + ".tables.xml"))) {
-                            writer.write(xmlTableIF_UTF8);                    
-                    }
-                }
+                
+                debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
+                
                 xsltConverter.setParam("table_if", "false");
                 logger.info("[INFO] Generated successfully!");
             }
@@ -1037,6 +992,34 @@ public class PDFGenerator {
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
+        }
+    }
+    
+    private void debugSaveXML(String xmlString, String pathTo) {
+        try {
+            if (DEBUG) {
+                //DEBUG: write table width information to file                
+                String xmlString_UTF8 = xmlString.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                try ( 
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(pathTo))) {
+                        writer.write(xmlString_UTF8);                    
+                }
+                //Setup output
+                //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
+                //Resulting SAX events (the generated FO) must be piped through to FOP
+                //Result res = new StreamResult(outstream);
+                //Start XSLT transformation and FO generating
+                //transformer.transform(src, res);
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Can't save debug xml file '{0}': {1}", new Object[]{pathTo, ex.toString()});
+        }
+    }
+    
+    private void printProcessingTime() {
+        if (DEBUG) {
+            long endTime = System.currentTimeMillis();
+            logger.log(Level.INFO, "processing time: {0} milliseconds", endTime - startTime);
         }
     }
 }
