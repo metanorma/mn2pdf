@@ -58,6 +58,8 @@
 					
 						<xsl:variable name="id_cell" select="@name"/>
 					
+						<!-- <id_cell><xsl:value-of select="$id_cell"/></id_cell> -->
+					
 						<xsl:variable name="position_start" select="0"/> <!-- 0, because text/image can have left padding/margin --> <!-- following-sibling::if:*[1]/@x following-sibling::if:text[1]/@x --> <!-- text or image --> 
 						<xsl:variable name="position_end" select="following-sibling::if:id[@name = concat($id_cell, '_end')]/following-sibling::if:text[1]/@x"/>
 						
@@ -72,12 +74,16 @@
 						<xsl:variable name="id_suffix" select="substring-after(@name, $table_id)"/>
 						<xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/>
 						
-						<cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start + $padding-left}" padding-left="{$padding-left}"/>
+						<cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start + $padding-left}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/>
 
 					</xsl:for-each>
 				</xsl:variable>
 				
 				<xsl:variable name="cells" select="xalan:nodeset($cells_)"/>
+				
+				<!-- <debug>
+					<xsl:copy-of select="$cells"/>
+				</debug> -->
 				
 				<xsl:for-each select="$cells/cell">
 					<xsl:variable name="row" select="@row"/>
@@ -106,10 +112,6 @@
 						</tr>
 					</xsl:if>
 				</xsl:for-each>
-				
-				<!-- <debug>
-					<xsl:copy-of select="$cells"/>
-				</debug> -->
 				
 			</tbody>
 		</table>
