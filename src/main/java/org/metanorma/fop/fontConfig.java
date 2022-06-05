@@ -431,10 +431,11 @@ class fontConfig {
                     messages.stream()
                     .filter(f -> f.contains("Replaced by"))
                     .filter(f -> f.contains(DefaultFonts.DEFAULTFONT_PREFIX) ||
+                            f.contains(DefaultFonts.DEFAULTFONT_NOTO_PREFIX) ||
                             f.contains("STIX"))
                     .count() > 0;
             
-            //download Source family fonts and STIX2Math into fontPath
+            //download Source/Noto family fonts and STIX2Math into fontPath
             // if there isn't manifest file
             // and in case of font replacement
             if (fFontManifest == null || isDefaultFontNeedToDownload) {

@@ -113,7 +113,7 @@ public class Util {
     }
     
     // https://www.baeldung.com/java-compress-and-uncompress
-    public static void unzipFile(Path zipPath, String destPath, List<String> defaultFontList) {
+    public static void unzipFile(Path zipPath, String destPath, List<String> defaultFontList, List<String> extractedFonts) {
         try {
             File destDir = new File(destPath);
             byte[] buffer = new byte[1024];
@@ -132,6 +132,7 @@ public class Util {
                             fos.write(buffer, 0, len);
                         }
                         fos.close();
+                        extractedFonts.add(zipEntryName);
                     }
                 }
                 zipEntry = zis.getNextEntry();

@@ -203,7 +203,8 @@ public class mn2pdfTests {
         /*try 
             embed_url = new File(embed_url).toURI().toURL().toString();
         } catch (MalformedURLException ex) {}*/
-        String newPath = Paths.get(fontpath, "SourceSansPro-Regular.ttf").toString();
+//        String newPath = Paths.get(fontpath, "SourceSansPro-Regular.ttf").toString();
+        String newPath = Paths.get(fontpath, "NotoSans-Regular.ttf").toString();
         
         String capturedLog = getTestCapturedLog();
         //assertTrue(systemOutRule.getLog().contains(
