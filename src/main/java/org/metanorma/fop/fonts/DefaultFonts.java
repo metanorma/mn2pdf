@@ -11,7 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.metanorma.utils.LoggerHelper;
@@ -62,9 +64,25 @@ public class DefaultFonts {
                            suffix -> add(DEFAULTFONT_NOTO_PREFIX + prefix + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".ttf"))
            );
            
+           // Examples: NotoSansHK-Regular.otf, NotoSerifJP-Bold.otf 
+           Stream.of("Sans", "Serif").forEach(prefix
+                   -> Stream.of("Regular", "Bold").forEach(suffix 
+                   -> Stream.of("HK", "JP", "KR", "SC", "TC").forEach(lang
+                   -> add(DEFAULTFONT_NOTO_PREFIX + prefix + lang + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".otf")))
+           );
+           
+           // Example: NotoSansMonoCJKjp-Bold.otf 
+           Stream.of("Sans").forEach(prefix
+                   -> Stream.of("Regular", "Bold").forEach(suffix 
+                   -> Stream.of("hk", "jp", "kr", "sc", "tc").forEach(lang
+                   -> add(DEFAULTFONT_NOTO_PREFIX + prefix + "MonoCJK" + lang + DEFAULTFONT_NOTO_SUFFIX + "-" + suffix + ".otf")))
+           );
+           
+           
+           
            // add("SourceHanSans-Normal.ttc");
-           Stream.of("Normal", "Bold").forEach(
-               suffix -> add(DEFAULTFONT_PREFIX + "HanSans" + "-" + suffix + ".ttc"));
+           //Stream.of("Normal", "Bold").forEach(
+           //    suffix -> add(DEFAULTFONT_PREFIX + "HanSans" + "-" + suffix + ".ttc"));
 
            add("STIX2Math.otf");
        } 
@@ -96,7 +114,7 @@ public class DefaultFonts {
             //Files.copy(fontfilestream, destPath, StandardCopyOption.REPLACE_EXISTING);
         }
         // download Source family fonts
-        if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(DefaultFonts.DEFAULTFONT_PREFIX))) {
+        /*if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(DefaultFonts.DEFAULTFONT_PREFIX))) {
             String url = getFontsURL("URL.sourcefonts");
             int remotefilesize = Util.getFileSize(new URL(url));
             final Path destZipPath = Paths.get(fontDestinationPath, "source-fonts.zip");
@@ -105,7 +123,7 @@ public class DefaultFonts {
                 Util.downloadFile(url, destZipPath);
             }
             // unzip file to fontPath
-            Util.unzipFile(destZipPath, fontDestinationPath, defaultFontList);
+            Util.unzipFile(destZipPath, fontDestinationPath, defaultFontList, new ArrayList<>());
             // check existing files
             for (String fontfilename: defaultFontList) {
                 final Path destPath = Paths.get(fontDestinationPath, fontfilename);
@@ -113,10 +131,33 @@ public class DefaultFonts {
                     logger.info("Can't find a font file: " + destPath.toString());
                 }
             }
+        }*/
+        
+        List<String> fontsdownloaded = new ArrayList<>();
+        
+        // download fonts
+        if (!fontstocopy.isEmpty()) {
+            List<String> urls = getFontsURLs();
+            logger.info("Fonts downloading...");
+            for(String url: urls) {
+                int remotefilesize = Util.getFileSize(new URL(url));
+                final Path destZipPath = Paths.get(fontDestinationPath, getFilenameFromURL(url));
+                if (!destZipPath.toFile().exists() || Files.size(destZipPath) != remotefilesize) {
+                    // download a file
+                    Util.downloadFile(url, destZipPath);
+                }
+                // unzip file to fontPath
+                Util.unzipFile(destZipPath, fontDestinationPath, fontstocopy, fontsdownloaded);
+                // check existing files
+                
+            }
+            
         }
         
+        
+        
         // download Noto family fonts
-        if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(DefaultFonts.DEFAULTFONT_NOTO_PREFIX))) {
+        /*if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith(DefaultFonts.DEFAULTFONT_NOTO_PREFIX))) {
             String url = getFontsURL("URL.notofonts");
             int remotefilesize = Util.getFileSize(new URL(url));
             final Path destZipPath = Paths.get(fontDestinationPath, "noto-fonts.zip");
@@ -125,7 +166,7 @@ public class DefaultFonts {
                 Util.downloadFile(url, destZipPath);
             }
             // unzip file to fontPath
-            Util.unzipFile(destZipPath, fontDestinationPath, defaultFontList);
+            Util.unzipFile(destZipPath, fontDestinationPath, defaultFontList, new ArrayList<String>());
             // check existing files
             for (String fontfilename: defaultFontList) {
                 final Path destPath = Paths.get(fontDestinationPath, fontfilename);
@@ -133,15 +174,29 @@ public class DefaultFonts {
                     logger.info("Can't find a font file: " + destPath.toString());
                 }
             }
-        }
+        }*/
         
         if (!fontstocopy.isEmpty() && fontstocopy.stream().anyMatch(s -> s.startsWith("STIX"))) {
             String url = getFontsURL("URL.STIX2Mathfont");
             int remotefilesize = Util.getFileSize(new URL(url));
-            final Path destPath = Paths.get(fontDestinationPath, "STIX2Math.otf");
+            String filename = getFilenameFromURL(url);
+            final Path destPath = Paths.get(fontDestinationPath,filename ); //"STIX2Math.otf"
             if (!destPath.toFile().exists() || Files.size(destPath) != remotefilesize) {
                 // download a file
                 Util.downloadFile(url, destPath);
+                fontsdownloaded.add(filename);
+            }
+        }
+        
+        // remove downloaded fonts from defaultFontList
+        fontsdownloaded.forEach(font -> {
+            fontstocopy.remove(font);
+        });
+        
+        for (String fontfilename: fontstocopy) {
+            final Path destPath = Paths.get(fontDestinationPath, fontfilename);
+            if (!destPath.toFile().exists()) {
+                logger.log(Level.INFO, "Can''t find a font file: {0}", destPath.toString());
             }
         }
     }
@@ -150,6 +205,25 @@ public class DefaultFonts {
         Properties appProps = new Properties();
         appProps.load(Util.getStreamFromResources(getClass().getClassLoader(), "app.properties"));
         return appProps.getProperty(property);
+    }
+    
+    private List<String> getFontsURLs() throws Exception {
+        Properties appProps = new Properties();
+        appProps.load(Util.getStreamFromResources(getClass().getClassLoader(), "app.properties"));
+        
+        List<String> urls = new ArrayList<>();
+        for (Map.Entry<Object, Object> entry : appProps.entrySet()) {
+            String k = entry.getKey().toString();
+            if (k.startsWith("URL.") && k.contains("fonts")) {
+                urls.add(entry.getValue().toString());
+            }
+        }
+        return urls;
+    }
+
+    private String getFilenameFromURL(String url) {
+        int slashIndex = url.lastIndexOf('/');
+        return url.substring(slashIndex + 1);
     }
     
 

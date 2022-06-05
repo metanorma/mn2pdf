@@ -292,153 +292,213 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- for Chinese/Japan/Korean glyphs -->
 				<!-- Noto Sans CJK -->
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK JP" mn_default="true">
-					<font-triplet name="Noto Sans CJK JP" style="normal" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSansHK-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans HK" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK JP" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK JP" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSansHK-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans HK" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK JP" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK JP" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansHK-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans HK" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK JP" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK JP" style="normal" weight="bold"/>
-				</font>
-				
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK KR" mn_default="true">
-					<font-triplet name="Noto Sans CJK KR" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK KR" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK KR" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK KR" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK KR" style="italic" weight="bold"/>
-				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK KR" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK KR" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansHK-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans HK" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK SC" mn_default="true">
-					<font-triplet name="Noto Sans CJK SC" style="normal" weight="normal"/>
+				
+				<font kerning="yes" embed-url="NotoSansJP-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans JP" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK SC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK SC" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSansJP-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans JP" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK SC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK SC" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansJP-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans JP" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK SC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK SC" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansJP-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans JP" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK TC" mn_default="true">
-					<font-triplet name="Noto Sans CJK TC" style="normal" weight="normal"/>
+				
+				<font kerning="yes" embed-url="NotoSansKR-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans KR" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK TC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK TC" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSansKR-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans KR" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK TC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK TC" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansKR-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans KR" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK TC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK TC" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansKR-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans KR" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK HK" mn_default="true">
-					<font-triplet name="Noto Sans CJK HK" style="normal" weight="normal"/>
+				
+				<font kerning="yes" embed-url="NotoSansSC-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans SC" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK HK" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK HK" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSansSC-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans SC" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK HK" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK HK" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansSC-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans SC" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansCJK-VF.ttf.ttc" sub-font="Noto Sans CJK HK" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Sans CJK HK" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansSC-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans SC" style="italic" weight="bold"/>
+				</font>
+				
+				
+				<font kerning="yes" embed-url="NotoSansTC-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans TC" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansTC-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans TC" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansTC-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans TC" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansTC-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans TC" style="italic" weight="bold"/>
 				</font>
 				<!-- END: Noto Sans CJK -->
 				
 				<!-- Noto Serif CJK -->
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK JP" mn_default="true">
-					<font-triplet name="Noto Serif CJK JP" style="normal" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSerifHK-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Serif HK" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK JP" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK JP" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSerifHK-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif HK" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK JP" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK JP" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifHK-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Serif HK" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK JP" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK JP" style="normal" weight="bold"/>
-				</font>
-				
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK KR" mn_default="true">
-					<font-triplet name="Noto Serif CJK KR" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK KR" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK KR" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK KR" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK KR" style="italic" weight="bold"/>
-				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK KR" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK KR" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifHK-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif HK" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK SC" mn_default="true">
-					<font-triplet name="Noto Serif CJK SC" style="normal" weight="normal"/>
+				
+				<font kerning="yes" embed-url="NotoSerifJP-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Serif JP" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK SC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK SC" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSerifJP-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif JP" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK SC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK SC" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifJP-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Serif JP" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK SC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK SC" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifJP-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif JP" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK TC" mn_default="true">
-					<font-triplet name="Noto Serif CJK TC" style="normal" weight="normal"/>
+				
+				<font kerning="yes" embed-url="NotoSerifKR-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Serif KR" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK TC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK TC" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSerifKR-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif KR" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK TC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK TC" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifKR-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Serif KR" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK TC" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK TC" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifKR-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif KR" style="italic" weight="bold"/>
 				</font>
 				
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK HK" mn_default="true">
-					<font-triplet name="Noto Serif CJK HK" style="normal" weight="normal"/>
+				
+				<font kerning="yes" embed-url="NotoSerifSC-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Serif SC" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK HK" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK HK" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSerifSC-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif SC" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK HK" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK HK" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifSC-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Serif SC" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSerifCJK-VF.ttf.ttc" sub-font="Noto Serif CJK HK" simulate-style="true" mn_default="true">
-					<font-triplet name="Noto Serif CJK HK" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSerifSC-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif SC" style="italic" weight="bold"/>
+				</font>
+				
+				
+				<font kerning="yes" embed-url="NotoSerifTC-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Serif TC" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSerifTC-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif TC" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSerifTC-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Serif TC" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSerifTC-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Serif TC" style="italic" weight="bold"/>
 				</font>
 				<!-- End: Noto Serif CJK -->
 				
-				<!-- Noto Sans Mono -->
-				<font kerning="yes" embed-url="NotoSansMonoCJKjp-VF.ttf" mn_default="true">
-					<font-triplet name="Noto Sans Mono CJK JP" style="normal" weight="normal"/>
+				<!-- Noto Sans Mono CJK -->
+				<font kerning="yes" embed-url="NotoSansMonoCJKhk-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK HK" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansMonoCJKjp-VF.ttf"  mn_default="true">
-					<font-triplet name="Noto Sans Mono CJK JP" style="italic" weight="normal"/>
+				<font kerning="yes" embed-url="NotoSansMonoCJKhk-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK HK" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansMonoCJKjp-VF.ttf"  mn_default="true">
-					<font-triplet name="Noto Sans Mono CJK JP" style="italic" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansMonoCJKhk-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK HK" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="NotoSansMonoCJKjp-VF.ttf" mn_default="true">
-					<font-triplet name="Noto Sans Mono CJK JP" style="normal" weight="bold"/>
+				<font kerning="yes" embed-url="NotoSansMonoCJKhk-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK HK" style="italic" weight="bold"/>
 				</font>
 				
+				<font kerning="yes" embed-url="NotoSansMonoCJKjp-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK JP" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKjp-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK JP" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKjp-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK JP" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKjp-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK JP" style="italic" weight="bold"/>
+				</font>
+				
+				<font kerning="yes" embed-url="NotoSansMonoCJKkr-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK KR" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKkr-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK KR" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKkr-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK KR" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKkr-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK KR" style="italic" weight="bold"/>
+				</font>
+				
+				<font kerning="yes" embed-url="NotoSansMonoCJKsc-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK SC" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKsc-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK SC" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKsc-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK SC" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKsc-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK SC" style="italic" weight="bold"/>
+				</font>
+				
+				<font kerning="yes" embed-url="NotoSansMonoCJKtc-Regular.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK TC" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKtc-Regular.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK TC" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKtc-Bold.otf" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK TC" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="NotoSansMonoCJKtc-Bold.otf" simulate-style="true" mn_default="true">
+					<font-triplet name="Noto Sans Mono CJK TC" style="italic" weight="bold"/>
+				</font>
+				<!-- End: Noto Sans Mono CJK -->
 				
 				<!-- ================================================ -->
 				<!-- End Noto fonts -->
