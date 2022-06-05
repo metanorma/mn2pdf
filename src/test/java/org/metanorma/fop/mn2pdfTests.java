@@ -172,7 +172,7 @@ public class mn2pdfTests {
         assertTrue(Files.exists(pdf));
     }
     
-    /*@Test
+    @Test
     public void additionalXMLnotfound() throws ParseException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
@@ -185,7 +185,7 @@ public class mn2pdfTests {
         mn2pdf.main(args);
         
         assertTrue(systemErrRule.getLog().contains(additionalXMLs + " (")); //"Can not load requested doc"
-    }*/
+    }
     
     @Test
     public void successFontReplacement() throws ParseException, IOException {
@@ -367,12 +367,6 @@ public class mn2pdfTests {
         Calendar cdate1 = Util.getCalendarDate(date1);
         Calendar cdate1_etalon = Calendar.getInstance();
         cdate1_etalon.clear();
-        /*cdate1_etalon.set(Calendar.YEAR, 2018);
-        cdate1_etalon.set(Calendar.MONTH, 0);
-        cdate1_etalon.set(Calendar.DAY_OF_MONTH, 25);
-        cdate1_etalon.set(Calendar.HOUR, 1);
-        cdate1_etalon.set(Calendar.MINUTE, 21);
-        cdate1_etalon.set(Calendar.SECOND, 0);*/
         cdate1_etalon.set(2018,0,25,1,21,0);
         
         assertTrue(cdate1_etalon.compareTo(cdate1) == 0);

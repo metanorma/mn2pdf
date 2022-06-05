@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +51,8 @@ public class SourceXMLDocument {
     
     Document sourceXML;
 
+    String sourceXMLstr = "";
+    
     static final String TMPDIR = System.getProperty("java.io.tmpdir");
     static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
     
@@ -77,7 +80,16 @@ public class SourceXMLDocument {
     }
     
     public StreamSource getStreamSource() {
-        return new StreamSource(this.fXML);
+        if (sourceXMLstr.isEmpty()) {
+            try {
+                sourceXMLstr = Util.readFile(fXML.getAbsolutePath());
+            } catch (IOException ex) {
+                logger.severe("Can't read source XML.");
+                ex.printStackTrace();
+            }
+        }
+        //return new StreamSource(this.fXML); // issue with colon in path /Users/username/share/src/test:/main.presentation.xml
+        return new StreamSource(new StringReader(sourceXMLstr));
     }
     
     public String getXMLFO() {

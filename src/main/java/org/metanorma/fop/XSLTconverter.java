@@ -24,9 +24,9 @@ public class XSLTconverter {
     
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
-    Properties xslparams = new Properties();
+    //private Properties xslparams = new Properties();
     
-    Transformer transformerFO;
+    private Transformer transformerFO;
     
     public XSLTconverter(File fXSL) {
         
@@ -49,7 +49,7 @@ public class XSLTconverter {
     
     
     public void setParams(Properties xslparams) {
-        this.xslparams = xslparams;
+        //this.xslparams = xslparams;
         Iterator xslparamsIterator = xslparams.keySet().iterator();
         while(xslparamsIterator.hasNext()){
             String name   = (String) xslparamsIterator.next();
@@ -58,6 +58,14 @@ public class XSLTconverter {
             transformerFO.setParameter(name, value);
         }
         
+    }
+    
+    public void setParam(String name, Object value) {
+        transformerFO.setParameter(name, value);
+    }
+    
+    public Object getParam(String name) {
+        return transformerFO.getParameter(name);
     }
     
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
