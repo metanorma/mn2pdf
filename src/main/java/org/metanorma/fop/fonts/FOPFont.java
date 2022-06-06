@@ -82,7 +82,7 @@ public class FOPFont {
         if (!embed_url.startsWith("file:")) {
             path = embed_url;
         }
-        if (embed_url.toLowerCase().endsWith(".otf")) {
+        if (embed_url.toLowerCase().endsWith(".otf") && !(embed_url.contains("Noto"))) {
             embedding_mode = "full";
         } else {
             embedding_mode = null;
