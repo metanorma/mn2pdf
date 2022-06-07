@@ -48,7 +48,7 @@ public class fontConfigTests {
         List<FOPFont> fonts = fontcfg.getUsedFonts();
         
         assertTrue(!fonts.isEmpty());
-        assertTrue(fonts.size() == 13);
+        assertTrue(fonts.size() == 59);
     }
 
     @Test
