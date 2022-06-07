@@ -70,7 +70,7 @@ public class SourceXMLDocumentTests {
         xsltConverter.transform(sourceXMLDocument);
         List<String> fonts = sourceXMLDocument.getDocumentFonts();
         
-        assertTrue(fonts.size() == 4);
+        assertTrue(fonts.size() == 16);
         assertTrue(fonts.get(1).equals("STIX Two Math"));
     }
 }
