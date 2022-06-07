@@ -433,7 +433,8 @@ class fontConfig {
                     .filter(f -> f.contains(DefaultFonts.DEFAULTFONT_PREFIX) ||
                             f.contains(DefaultFonts.DEFAULTFONT_NOTO_PREFIX) ||
                             f.contains("STIX"))
-                    .count() > 0;
+                    .count() > 0 || 
+                    sourceDocumentFontList.stream().filter(f -> f.contains("Noto")).count() > 0;
             
             //download Source/Noto family fonts and STIX2Math into fontPath
             // if there isn't manifest file
