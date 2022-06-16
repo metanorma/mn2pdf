@@ -805,6 +805,12 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="OpenSans-ExtraBoldItalic.ttf">
 					<font-triplet name="OpenSans" style="italic" weight="800"/>
 				</font>
+				
+				<!-- Montserrat -->
+				<font kerning="yes" embed-url="Montserrat-ExtraBold.otf">
+					<font-triplet name="Montserrat" style="normal" weight="800"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
