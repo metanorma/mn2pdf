@@ -5,10 +5,10 @@
 	xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 	xmlns:foi="http://xmlgraphics.apache.org/fop/internal"   
 	xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
-	xmlns:math="http://www.w3.org/1998/Math/MathML"
 	xmlns:xalan="http://xml.apache.org/xalan"  
 	xmlns:jeuclid="http://jeuclid.sf.net/ns/ext"
 	xmlns:java="http://xml.apache.org/xalan/java"
+	xmlns:math="http://exslt.org/math"
 	exclude-result-prefixes="im xalan fo fox math java"
 	version="1.0">
 
@@ -31,26 +31,55 @@
 		
 		
 			<xsl:variable name="texts_">
-				<xsl:for-each select=".//im:text[@x = '0'][not(preceding-sibling::im:font[1][number(@size) &lt;= 8000][preceding-sibling::*[1][self::im:line] or ancestor::im:viewport[1]/preceding-sibling::im:line])]">
-					<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
-						<xsl:attribute name="x"><xsl:value-of select="$x_shift"/></xsl:attribute>
-						<xsl:attribute name="y"><xsl:value-of select="@y"/></xsl:attribute>
-						
-						<xsl:attribute name="count"><xsl:value-of select="count(ancestor::im:viewport)"/></xsl:attribute>
-						
-						<xsl:if test="count(ancestor::im:viewport) &gt; 1">
-							<xsl:variable name="viewport_">
-								<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y"/>
-							</xsl:variable>
-							<xsl:variable name="viewport" select="xalan:nodeset($viewport_)"/>
+				<xsl:for-each select=".//im:text">
+				
+					<xsl:variable name="y_current" select="number(current()/@y)"/>
+				
+					<xsl:variable name="process">
+						<xsl:choose>
+							<xsl:when test="preceding-sibling::im:font[1][number(@size) &lt;= 8000][preceding-sibling::*[1][self::im:line] or ancestor::im:viewport[1]/preceding-sibling::im:line]"><!-- skip --></xsl:when>
+							<xsl:when test="@x = '0'">true</xsl:when>
+							<xsl:when test="@x != '0' and preceding-sibling::im:text[math:abs(number(@y) - $y_current) &lt; 10000]"><!-- skip --></xsl:when>
+							<!-- <xsl:when test="@x != '0' and not(preceding-sibling::im:text[@y = $y_current]) and preceding-sibling::im:text[(number(@y) - number($y_current)) &gt; 10000 or (number($y_current) - number(@y)) &gt; 10000]">true2</xsl:when> -->
+							<xsl:otherwise>true</xsl:otherwise>
+							<!-- not(preceding-sibling::im:text[@y = current()/@y and @x = '0']) -->
+						</xsl:choose>
+					</xsl:variable>
+					
+					<xsl:if test="contains(normalize-space($process), 'true')">
+						<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
+							<xsl:attribute name="x"><xsl:value-of select="$x_shift"/></xsl:attribute>
+							<xsl:attribute name="y"><xsl:value-of select="@y"/></xsl:attribute>
 							
-							<xsl:attribute name="y"><xsl:value-of select="($viewport/*[local-name() = 'viewport']/*[local-name() = 'y'] + @y)"/></xsl:attribute>
+							<!-- <xsl:attribute name="process"><xsl:value-of select="$process"/></xsl:attribute> -->
 							
-							<!-- <xsl:copy-of select="$viewport"/> -->
+							<xsl:variable name="curr_y" select="@y"/>
 							
-						</xsl:if>
-						
-					</xsl:element>
+							<!-- <xsl:for-each select="preceding-sibling::im:text[1]">
+								<xsl:attribute name="diff"><xsl:value-of select="math:abs(number(@y) - number($curr_y))"/></xsl:attribute>
+							</xsl:for-each> -->
+							
+							
+							 
+							
+							<xsl:attribute name="count"><xsl:value-of select="count(ancestor::im:viewport)"/></xsl:attribute>
+							
+							<xsl:if test="count(ancestor::im:viewport) &gt; 1">
+								<xsl:variable name="viewport_">
+									<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y"/>
+								</xsl:variable>
+								<xsl:variable name="viewport" select="xalan:nodeset($viewport_)"/>
+								
+								<xsl:attribute name="y"><xsl:value-of select="($viewport/*[local-name() = 'viewport']/*[local-name() = 'y'] + @y)"/></xsl:attribute>
+								
+							</xsl:if>
+							
+						</xsl:element>
+					</xsl:if>
+					
+					
+				
+					
 				</xsl:for-each>
 			</xsl:variable>
 		
@@ -60,19 +89,14 @@
 				<xsl:element name="font" namespace="http://xmlgraphics.apache.org/fop/intermediate">
 					<xsl:attribute name="family">Times New Roman</xsl:attribute>
 					<xsl:attribute name="weight">400</xsl:attribute>
+					<xsl:attribute name="style">normal</xsl:attribute>
 					<xsl:attribute name="size">11000</xsl:attribute>
-					
 					<xsl:for-each select="$texts/*">
-					
 						<xsl:copy>
 							<xsl:copy-of select="@*"/>
-							<xsl:number /> <!-- count="im:text[@x = '0']" -->
-						
+							<xsl:number />
 						</xsl:copy>
 					</xsl:for-each>
-					
-					
-					
 				</xsl:element>
 			</xsl:if>
 		</xsl:copy>
