@@ -36,7 +36,8 @@
 				
 					<xsl:variable name="process">
 						<xsl:choose>
-							<xsl:when test="preceding-sibling::im:font[1][number(@size) &lt;= 8000][preceding-sibling::*[1][self::im:line] or ancestor::im:viewport[1]/preceding-sibling::im:line]"><!-- skip --></xsl:when>
+							<!-- <xsl:when test="preceding-sibling::im:font[1][number(@size) &lt;= 8000][preceding-sibling::*[1][self::im:line] or ancestor::im:viewport[1]/preceding-sibling::im:line]"></xsl:when> --> <!-- skip -->
+							<xsl:when test="preceding-sibling::im:id[starts-with(@name,'footnote_')] or ancestor::im:viewport/im:id[starts-with(@name,'footnote_')]"><!-- skip --></xsl:when>
 							<xsl:when test="@x = '0'">true</xsl:when>
 							<xsl:when test="@x != '0' and preceding-sibling::im:text[math:abs(number(@y) - $y_current) &lt; 10000]"><!-- skip --></xsl:when>
 							<!-- <xsl:when test="@x != '0' and not(preceding-sibling::im:text[@y = $y_current]) and preceding-sibling::im:text[(number(@y) - number($y_current)) &gt; 10000 or (number($y_current) - number(@y)) &gt; 10000]">true2</xsl:when> -->
