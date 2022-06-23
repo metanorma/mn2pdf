@@ -29,11 +29,10 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 		
-		
 			<xsl:variable name="texts_">
 				<xsl:for-each select=".//im:text">
 				
-					<xsl:variable name="y_current" select="number(current()/@y)"/>
+					<xsl:variable name="y_current" select="number(@y)"/>
 				
 					<xsl:variable name="process">
 						<xsl:choose>
@@ -59,9 +58,6 @@
 								<xsl:attribute name="diff"><xsl:value-of select="math:abs(number(@y) - number($curr_y))"/></xsl:attribute>
 							</xsl:for-each> -->
 							
-							
-							 
-							
 							<xsl:attribute name="count"><xsl:value-of select="count(ancestor::im:viewport)"/></xsl:attribute>
 							
 							<xsl:if test="count(ancestor::im:viewport) &gt; 1">
@@ -72,13 +68,12 @@
 								
 								<xsl:attribute name="y"><xsl:value-of select="($viewport/*[local-name() = 'viewport']/*[local-name() = 'y'] + @y)"/></xsl:attribute>
 								
+								<!-- <xsl:copy-of select="$viewport"/> -->
+								
 							</xsl:if>
 							
 						</xsl:element>
 					</xsl:if>
-					
-					
-				
 					
 				</xsl:for-each>
 			</xsl:variable>
@@ -95,6 +90,7 @@
 						<xsl:copy>
 							<xsl:copy-of select="@*"/>
 							<xsl:number />
+							<!-- <xsl:copy-of select="."/> -->
 						</xsl:copy>
 					</xsl:for-each>
 				</xsl:element>
@@ -121,9 +117,15 @@
 				
 				<xsl:variable name="new_y" select="$y + number($value_y)"/>
 				
+				<ancestor_count1><xsl:value-of select="count(ancestor::im:viewport)"/></ancestor_count1>
+				<transform><xsl:value-of select="@transform"/></transform>
+				
+				
+				<new_y1><xsl:value-of select="$new_y"/></new_y1>
+				
 				<xsl:choose>
-					<xsl:when test="count(ancestor::*[local-name = 'viewport']) &gt; 1">
-						<xsl:apply-templates select="ancestor::*[local-name = 'viewport'][1]" mode="shift_y">
+					<xsl:when test="count(ancestor::*[local-name() = 'viewport']) &gt; 1">
+						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y">
 							<xsl:with-param name="y" select="$new_y"/>
 						</xsl:apply-templates>
 					</xsl:when>
@@ -136,9 +138,14 @@
 			</xsl:when>
 			
 			<xsl:otherwise>
+			
+				<ancestor_count2><xsl:value-of select="count(ancestor::im:viewport)"/></ancestor_count2>
+				<new_y2><xsl:value-of select="$y"/></new_y2>
+			
 				<xsl:choose>
-					<xsl:when test="count(ancestor::*[local-name = 'viewport']) &gt; 1">
-						<xsl:apply-templates select="ancestor::*[local-name = 'viewport'][1]" mode="shift_y">
+				
+					<xsl:when test="count(ancestor::*[local-name() = 'viewport']) &gt; 1">
+						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y">
 							<xsl:with-param name="y" select="$y"/>
 						</xsl:apply-templates>
 					</xsl:when>
