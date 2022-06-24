@@ -50,7 +50,7 @@
 				</xsl:choose>
 			</xsl:variable>
 		
-			<xsl:variable name="texts_">
+			<xsl:variable name="texts">
 				<xsl:for-each select=".//im:text">
 				
 					<xsl:variable name="y_current" select="number(@y)"/>
@@ -87,15 +87,22 @@
 				</xsl:for-each>
 			</xsl:variable>
 		
-			<xsl:variable name="texts" select="xalan:nodeset($texts_)"/>
-		
 			<!-- <xsl:copy-of select="$texts"/> -->
 		
+      <xsl:variable name="texts_sorted">
+        <xsl:for-each select="xalan:nodeset($texts)/*">
+          <xsl:sort select="@y" data-type="number"/>
+          ><xsl:copy-of select="."/>
+        </xsl:for-each>
+      </xsl:variable>
+    
 			<xsl:variable name="texts_unique_">
-				<xsl:for-each select="$texts/*">
-					<xsl:if test="not(preceding-sibling::*[@y = current()/@y])"> <!-- condition for table cells in one row -->
-						<xsl:copy-of select="."/>
-					</xsl:if>
+				<xsl:for-each select="xalan:nodeset($texts_sorted)/*">
+          <xsl:choose>
+            <xsl:when test="preceding-sibling::*[@y = current()/@y]"><!-- skip --></xsl:when> <!-- condition for table cells in one row -->
+            <xsl:when test="math:abs(number(preceding-sibling::*[1]/@y) - current()/@y) &lt; 5000"><!-- skip --></xsl:when>
+            <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+          </xsl:choose>
 				</xsl:for-each>
 			</xsl:variable>
 			<xsl:variable name="texts_unique" select="xalan:nodeset($texts_unique_)"/>
