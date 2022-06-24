@@ -462,6 +462,29 @@ public class Util {
         
         return value;
     }
+    
+    public static String readValueFromXMLString(String xml, String xpath) {
+        String value = "";
+        try {
+            InputSource is = new InputSource(new StringReader(xml));
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document sourceXML = dBuilder.parse(is);
+            
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            XPathExpression query = xPath.compile(xpath);
+            Node textElement = (Node)query.evaluate(sourceXML, XPathConstants.NODE);
+            if(textElement != null) {
+                value = textElement.getTextContent();
+            }        
+            
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        
+        return value;
+    }
         
     public static String unescape(String str) {
         return org.apache.commons.lang3.StringEscapeUtils.unescapeXml(str);

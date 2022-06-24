@@ -104,6 +104,12 @@ Relative config URLs are resolved relative to location of this file.
 					<alternate embed-url="Calibri Bold Italic.ttf"/>
 					<font-triplet name="Calibri" style="italic" weight="bold"/>
 				</font>
+				<font kerning="yes" embed-url="calibril.ttf">
+					<font-triplet name="Calibri Light" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="calibrili.ttf">
+					<font-triplet name="Calibri Light" style="italic" weight="normal"/>
+				</font>
 				<font kerning="yes" embed-url="arial.ttf">
 					<font-triplet name="Arial" style="normal" weight="normal"/>
 				</font>
@@ -808,7 +814,7 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- Montserrat -->
 				<font kerning="yes" embed-url="Montserrat-ExtraBold.otf">
-					<font-triplet name="Montserrat" style="normal" weight="800"/>
+					<font-triplet name="Montserrat ExtraBold" style="normal" weight="normal"/>
 				</font>
 				
       </fonts>
