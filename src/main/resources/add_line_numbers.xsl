@@ -23,7 +23,7 @@
 	<xsl:variable name="x_shift">-30000</xsl:variable>
 	
 	
-	<xsl:template match="im:page/im:content/im:viewport[not(@region-type = 'Header' or @region-type = 'Footer')][.//im:text[@x = '0']]" priority="2">
+	<xsl:template match="im:page/im:content/im:viewport[not(@region-type = 'Header' or @region-type = 'Footer')][.//im:text[@x = '0'] or (.//im:text)[1][@x != '0']]" priority="2"> <!-- (.//im:text)[1][@x != '0'] for shifted text in 1st line on the page -->
 		<xsl:copy-of select="."/>
 	
 		<xsl:copy>
