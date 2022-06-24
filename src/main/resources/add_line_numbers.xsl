@@ -29,51 +29,58 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 		
+			<!-- determine start of footnotes y-position -->
+			<xsl:variable name="footnotes_y_">
+				<xsl:for-each select="(.//im:id[starts-with(@name, 'footnote_')])[1]/following-sibling::im:text[1]">
+					<xsl:variable name="viewport_y">
+						<xsl:choose>
+							<xsl:when test="count(ancestor::im:viewport) + count(ancestor::im:g) &gt; 1">
+								<xsl:apply-templates select="ancestor::*[local-name() = 'viewport' or local-name() = 'g'][1]" mode="shift_y"/>
+							</xsl:when>
+							<xsl:otherwise>0</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:value-of select="$viewport_y + @y"/>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="footnotes_y">
+				<xsl:choose>
+					<xsl:when test="normalize-space($footnotes_y_) = ''">9999999</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$footnotes_y_"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		
 			<xsl:variable name="texts_">
 				<xsl:for-each select=".//im:text">
 				
 					<xsl:variable name="y_current" select="number(@y)"/>
 				
+					<xsl:variable name="count_viewport_and_g"><xsl:value-of select="count(ancestor::im:viewport) + count(ancestor::im:g)"/></xsl:variable>
+				
+					<xsl:variable name="viewport_y">
+						<xsl:choose>
+							<xsl:when test="$count_viewport_and_g &gt; 1">
+								<xsl:apply-templates select="ancestor::*[local-name() = 'viewport' or local-name() = 'g'][1]" mode="shift_y"/>
+							</xsl:when>
+							<xsl:otherwise>0</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="y" select="$viewport_y + @y"/>
+				
 					<xsl:variable name="process">
 						<xsl:choose>
-							<!-- <xsl:when test="preceding-sibling::im:font[1][number(@size) &lt;= 8000][preceding-sibling::*[1][self::im:line] or ancestor::im:viewport[1]/preceding-sibling::im:line]"></xsl:when> --> <!-- skip -->
-							<xsl:when test="preceding-sibling::im:id[starts-with(@name,'footnote_')] or ancestor::im:viewport/im:id[starts-with(@name,'footnote_')]"><!-- skip --></xsl:when>
+							<xsl:when test="$y &gt;= $footnotes_y"><!-- skip footnotes --></xsl:when>
 							<xsl:when test="@x = '0'">true</xsl:when>
 							<xsl:when test="@x != '0' and preceding-sibling::im:text[math:abs(number(@y) - $y_current) &lt; 10000]"><!-- skip --></xsl:when>
 							<!-- <xsl:when test="@x != '0' and not(preceding-sibling::im:text[@y = $y_current]) and preceding-sibling::im:text[(number(@y) - number($y_current)) &gt; 10000 or (number($y_current) - number(@y)) &gt; 10000]">true2</xsl:when> -->
 							<xsl:otherwise>true</xsl:otherwise>
-							<!-- not(preceding-sibling::im:text[@y = current()/@y and @x = '0']) -->
 						</xsl:choose>
 					</xsl:variable>
 					
 					<xsl:if test="contains(normalize-space($process), 'true')">
 						<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
 							<xsl:attribute name="x"><xsl:value-of select="$x_shift"/></xsl:attribute>
-							<xsl:attribute name="y"><xsl:value-of select="@y"/></xsl:attribute>
-							
-							<!-- <xsl:attribute name="process"><xsl:value-of select="$process"/></xsl:attribute> -->
-							
-							<xsl:variable name="curr_y" select="@y"/>
-							
-							<!-- <xsl:for-each select="preceding-sibling::im:text[1]">
-								<xsl:attribute name="diff"><xsl:value-of select="math:abs(number(@y) - number($curr_y))"/></xsl:attribute>
-							</xsl:for-each> -->
-							
-							<xsl:attribute name="count"><xsl:value-of select="count(ancestor::im:viewport)"/></xsl:attribute>
-							
-							<xsl:if test="count(ancestor::im:viewport) + count(ancestor::im:g) &gt; 1">
-								<xsl:variable name="viewport_">
-									<xsl:apply-templates select="ancestor::*[local-name() = 'viewport' or local-name() = 'g'][1]" mode="shift_y"/>
-								</xsl:variable>
-								<!-- <xsl:variable name="viewport" select="xalan:nodeset($viewport_)"/> -->
-								
-								<!-- <xsl:attribute name="y"><xsl:value-of select="($viewport/*[local-name() = 'viewport']/*[local-name() = 'y'] + @y)"/></xsl:attribute> -->
-								<xsl:attribute name="y"><xsl:value-of select="$viewport_ + @y"/></xsl:attribute>
-								
-								<!-- <xsl:copy-of select="$viewport"/> -->
-								
-							</xsl:if>
-							
+							<xsl:attribute name="y"><xsl:value-of select="$y"/></xsl:attribute>
 						</xsl:element>
 					</xsl:if>
 					
@@ -93,7 +100,7 @@
 			</xsl:variable>
 			<xsl:variable name="texts_unique" select="xalan:nodeset($texts_unique_)"/>
 		
-			<xsl:copy-of select="$texts_unique"/>
+			<!-- <xsl:copy-of select="$texts_unique"/> -->
 		
 			<xsl:if test="count($texts_unique/*) &gt; 0">
 				<xsl:element name="font" namespace="http://xmlgraphics.apache.org/fop/intermediate">
@@ -102,6 +109,13 @@
 					<xsl:attribute name="style">normal</xsl:attribute>
 					<xsl:attribute name="size">11000</xsl:attribute>
 					<xsl:attribute name="color">black</xsl:attribute>
+					<!-- <xsl:for-each select="$texts_unique/*[1]">
+						<xsl:copy>
+							<xsl:copy-of select="@*"/>
+							<xsl:attribute name="y"><xsl:value-of select="$footnotes_y"/></xsl:attribute>
+							<xsl:text>Footnote</xsl:text>
+						</xsl:copy>
+					</xsl:for-each> -->
 					<xsl:for-each select="$texts_unique/*">
 						<xsl:sort select="@y" data-type="number"/>
 						<xsl:copy>
