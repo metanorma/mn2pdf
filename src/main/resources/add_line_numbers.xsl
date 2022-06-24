@@ -61,13 +61,14 @@
 							
 							<xsl:attribute name="count"><xsl:value-of select="count(ancestor::im:viewport)"/></xsl:attribute>
 							
-							<xsl:if test="count(ancestor::im:viewport) &gt; 1">
+							<xsl:if test="count(ancestor::im:viewport) + count(ancestor::im:g) &gt; 1">
 								<xsl:variable name="viewport_">
-									<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y"/>
+									<xsl:apply-templates select="ancestor::*[local-name() = 'viewport' or local-name() = 'g'][1]" mode="shift_y"/>
 								</xsl:variable>
-								<xsl:variable name="viewport" select="xalan:nodeset($viewport_)"/>
+								<!-- <xsl:variable name="viewport" select="xalan:nodeset($viewport_)"/> -->
 								
-								<xsl:attribute name="y"><xsl:value-of select="($viewport/*[local-name() = 'viewport']/*[local-name() = 'y'] + @y)"/></xsl:attribute>
+								<!-- <xsl:attribute name="y"><xsl:value-of select="($viewport/*[local-name() = 'viewport']/*[local-name() = 'y'] + @y)"/></xsl:attribute> -->
+								<xsl:attribute name="y"><xsl:value-of select="$viewport_ + @y"/></xsl:attribute>
 								
 								<!-- <xsl:copy-of select="$viewport"/> -->
 								
@@ -81,16 +82,32 @@
 		
 			<xsl:variable name="texts" select="xalan:nodeset($texts_)"/>
 		
-			<xsl:if test="count($texts/*) &gt; 0">
+			<!-- <xsl:copy-of select="$texts"/> -->
+		
+			<xsl:variable name="texts_unique_">
+				<xsl:for-each select="$texts/*">
+					<xsl:if test="not(preceding-sibling::*[@y = current()/@y])"> <!-- condition for table cells in one row -->
+						<xsl:copy-of select="."/>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="texts_unique" select="xalan:nodeset($texts_unique_)"/>
+		
+			<xsl:copy-of select="$texts_unique"/>
+		
+			<xsl:if test="count($texts_unique/*) &gt; 0">
 				<xsl:element name="font" namespace="http://xmlgraphics.apache.org/fop/intermediate">
 					<xsl:attribute name="family">Times New Roman</xsl:attribute>
 					<xsl:attribute name="weight">400</xsl:attribute>
 					<xsl:attribute name="style">normal</xsl:attribute>
 					<xsl:attribute name="size">11000</xsl:attribute>
-					<xsl:for-each select="$texts/*">
+					<xsl:attribute name="color">black</xsl:attribute>
+					<xsl:for-each select="$texts_unique/*">
+						<xsl:sort select="@y" data-type="number"/>
 						<xsl:copy>
 							<xsl:copy-of select="@*"/>
-							<xsl:number />
+							
+							<xsl:value-of select="position()"/>
 							<!-- <xsl:copy-of select="."/> -->
 						</xsl:copy>
 					</xsl:for-each>
@@ -101,7 +118,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'viewport']" mode="shift_y">
+	<xsl:template match="*[local-name() = 'viewport' or local-name() = 'g']" mode="shift_y">
 		<xsl:param name="y" select="0"/>
 		
 		<xsl:choose>
@@ -118,42 +135,42 @@
 				
 				<xsl:variable name="new_y" select="$y + number($value_y)"/>
 				
-				<ancestor_count1><xsl:value-of select="count(ancestor::im:viewport)"/></ancestor_count1>
+				<!-- <ancestor_count1><xsl:value-of select="count(ancestor::im:viewport)"/></ancestor_count1>
 				<transform><xsl:value-of select="@transform"/></transform>
-				
-				
-				<new_y1><xsl:value-of select="$new_y"/></new_y1>
+				<new_y1><xsl:value-of select="$new_y"/></new_y1> -->
 				
 				<xsl:choose>
-					<xsl:when test="count(ancestor::*[local-name() = 'viewport']) &gt; 1">
-						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y">
+					<xsl:when test="count(ancestor::*[local-name() = 'viewport' or local-name() = 'g']) &gt; 1">
+						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport' or local-name() = 'g'][1]" mode="shift_y">
 							<xsl:with-param name="y" select="$new_y"/>
 						</xsl:apply-templates>
 					</xsl:when>
 					<xsl:otherwise>
-						<viewport>
+						<!-- <viewport>
 							<y><xsl:value-of select="$new_y"/></y>
-						</viewport>
+						</viewport> -->
+						<xsl:value-of select="$new_y"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
 			
 			<xsl:otherwise>
 			
-				<ancestor_count2><xsl:value-of select="count(ancestor::im:viewport)"/></ancestor_count2>
-				<new_y2><xsl:value-of select="$y"/></new_y2>
+				<!-- <ancestor_count2><xsl:value-of select="count(ancestor::im:viewport)"/></ancestor_count2>
+				<new_y2><xsl:value-of select="$y"/></new_y2> -->
 			
 				<xsl:choose>
 				
-					<xsl:when test="count(ancestor::*[local-name() = 'viewport']) &gt; 1">
-						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]" mode="shift_y">
+					<xsl:when test="count(ancestor::*[local-name() = 'viewport' or local-name() = 'g']) &gt; 1">
+						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport' or local-name() = 'g'][1]" mode="shift_y">
 							<xsl:with-param name="y" select="$y"/>
 						</xsl:apply-templates>
 					</xsl:when>
 					<xsl:otherwise>
-						<viewport>
+						<!-- <viewport>
 							<y><xsl:value-of select="$y"/></y>
-						</viewport>
+						</viewport> -->
+						<xsl:value-of select="$y"/>
 					</xsl:otherwise>
 				</xsl:choose>
 					
@@ -162,13 +179,4 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="im:viewport2[not(@region-type = 'Header' or @region-type = 'Footer')]/im:text[@x = '0'][not(preceding-sibling::im:font[@size = '7000'][preceding-sibling::*[1][self::im:line]])]">
-		<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
-			<xsl:attribute name="x"><xsl:value-of select="$x_shift"/></xsl:attribute>
-			<xsl:attribute name="y"><xsl:value-of select="@y"/></xsl:attribute>
-			<xsl:number count="im:text[@x = '0']"/>
-		</xsl:element>
-		<xsl:copy-of select="."/>
-	</xsl:template>
-
 </xsl:stylesheet>
