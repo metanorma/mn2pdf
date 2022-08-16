@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -13,7 +14,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import static org.metanorma.Constants.DEBUG;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
+import static org.metanorma.fop.PDFGenerator.logger;
 import org.metanorma.utils.LoggerHelper;
 
 /**
@@ -27,6 +30,8 @@ public class XSLTconverter {
     //private Properties xslparams = new Properties();
     
     private Transformer transformerFO;
+    
+    private long startTime;
     
     public XSLTconverter(File fXSL) {
         
@@ -70,6 +75,10 @@ public class XSLTconverter {
     
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
         
+        startTime = System.currentTimeMillis();
+        
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        
         //Setup input for XSLT transformation
         Source src = sourceXMLDocument.getStreamSource();
         
@@ -86,6 +95,15 @@ public class XSLTconverter {
         
         sourceXMLDocument.setXMLFO(xmlFO);
         
+        printProcessingTime(methodName);
+        
     }
     
+    
+    private void printProcessingTime(String methodName) {
+        if (DEBUG) {
+            long endTime = System.currentTimeMillis();
+            logger.log(Level.INFO, methodName + " processing time: {0} milliseconds", endTime - startTime);
+        }
+    }
 }

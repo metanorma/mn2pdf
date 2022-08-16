@@ -440,6 +440,7 @@ public class PDFGenerator {
     private void runFOP (fontConfig fontcfg, Source src, File pdf) throws IOException, FOPException, SAXException, TransformerException {
         OutputStream out = null;
         String xmlIF = null;
+        long startMethodTime = System.currentTimeMillis();
         try {
             
             String mime = MimeConstants.MIME_PDF;
@@ -575,6 +576,8 @@ public class PDFGenerator {
             }
         }
         
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
+        
         if (isAddAnnotations) {
             logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
@@ -596,6 +599,8 @@ public class PDFGenerator {
         Source src = sourceFO;
         
         File fileXmlIF = new File(indexxml);
+        
+        long startMethodTime = System.currentTimeMillis();
         
         if (!indexxml.isEmpty() && !fileXmlIF.exists()) { //there is index
              // if file exist - it means that now document by language is processing
@@ -626,12 +631,15 @@ public class PDFGenerator {
             src = new StreamSource(new StringReader(xmlFO));
             
         }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
         return src;
     }
     
     
     private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
         String xmlIF = "";
+        
+        long startMethodTime = System.currentTimeMillis();
         
         // run 1st pass to produce FOP Intermediate Format
         FopFactory fopFactory = FopFactory.newInstance(fontConfig);
@@ -685,10 +693,15 @@ public class PDFGenerator {
             out.close();
         }
         
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
+        
         return xmlIF;
     }
     
     private void createIndexFile(String indexxmlFilePath, String intermediateXML) {
+        
+        long startMethodTime = System.currentTimeMillis();
+        
         try {
             String xmlIndex = applyXSLT("index.xsl", intermediateXML, false);
             
@@ -703,24 +716,29 @@ public class PDFGenerator {
             //System.err.println("Can't save index.xml into temporary folder");
             logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
-        }    
+        }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
     }
     
     
     private String createTableIF(String intermediateXML) {
         String xmlTableIF = "";
+        long startMethodTime = System.currentTimeMillis();
         try {
             xmlTableIF = applyXSLT("table_if.xsl", intermediateXML, false);
         } catch (Exception ex) {
             logger.severe("Can't generate information about tables from Intermediate Format.");
             ex.printStackTrace();
         }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
         return xmlTableIF;
     }
     
     
     // Apply XSL tranformation (file xsltfile) for xml string
     private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {
+        
+        long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -734,11 +752,15 @@ public class PDFGenerator {
         transformer.transform(src, sr);
         String xmlResult = resultWriter.toString();
         
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
+        
         return xmlResult;
     }
     
     // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
     private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
+        
+        long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -760,6 +782,8 @@ public class PDFGenerator {
         StreamResult sr = new StreamResult(resultWriter);
         transformer.transform(sourceXML, sr);
         String xmlResult = resultWriter.toString();
+        
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
         
         return xmlResult;
     }
@@ -964,7 +988,7 @@ public class PDFGenerator {
     }
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
-    
+        long startMethodTime = System.currentTimeMillis();
         try {
             if (isTableExists && xmlTableIF.isEmpty()) { 
                 // generate IF with table width data
@@ -1009,6 +1033,7 @@ public class PDFGenerator {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
         }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
     }
     
     private void debugSaveXML(String xmlString, String pathTo) {
@@ -1036,6 +1061,13 @@ public class PDFGenerator {
         if (DEBUG) {
             long endTime = System.currentTimeMillis();
             logger.log(Level.INFO, "processing time: {0} milliseconds", endTime - startTime);
+        }
+    }
+    
+    private void printProcessingTime(String methodName, long startTime) {
+        if (DEBUG) {
+            long endTime = System.currentTimeMillis();
+            logger.log(Level.INFO, methodName + "(...) processing time: {0} milliseconds", endTime - startTime);
         }
     }
 }
