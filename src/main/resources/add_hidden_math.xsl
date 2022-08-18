@@ -35,7 +35,19 @@
 	
 	<xsl:variable name="instream-foreign-objects" select="xalan:nodeset($instream-foreign-objects_)" />
 	
-	<xsl:template match="im:font[following-sibling::*[1][self::im:image[math:math]]] | im:font[following-sibling::*[1][self::im:id]][following-sibling::*[2][self::im:image[math:math]]]">
+	<xsl:template match="im:content">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			
+			<!-- move hidden math before another content, i.e. behind another elements (text, images, svg) -->
+			<xsl:apply-templates select=".//im:font[following-sibling::*[1][self::im:image[math:math]]] | .//im:font[following-sibling::*[1][self::im:id]][following-sibling::*[2][self::im:image[math:math]]]" mode="hidden_math"/>
+			
+			<xsl:apply-templates />
+		</xsl:copy>
+	</xsl:template>
+	
+	
+	<xsl:template match="im:font" mode="hidden_math">
 		<xsl:variable name="image_" select="following-sibling::im:image[math:math]"/>
 		<xsl:variable name="image" select="xalan:nodeset($image_)"/>
 		
@@ -51,31 +63,67 @@
 		
 		<xsl:variable name="font_family" select="@family"/>
 		
+		<xsl:variable name="elements">
+			<xsl:copy>
+				<xsl:copy-of select="@*"/>
+				<xsl:attribute name="style">normal</xsl:attribute>
+				<xsl:attribute name="weight">400</xsl:attribute>
+				<xsl:attribute name="variant">normal</xsl:attribute>
+				<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
+					<xsl:variable name="fontsize" select="java:org.metanorma.fop.Util.getFontSize($instream-foreign-object_alt-text, $font_family, $width, $height)"/>
+					<xsl:attribute name="size">
+						<xsl:value-of select="$fontsize"/>
+					</xsl:attribute>
+				</xsl:if>
+			</xsl:copy>
+			
+			<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
+				<xsl:variable name="text_x" select="$image/@x"/>
+				<xsl:variable name="text_y" select="$image/@y + $image/@height"/>
+
+				<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
+					<xsl:attribute name="x"><xsl:value-of select="$text_x"/></xsl:attribute>
+					<xsl:attribute name="y"><xsl:value-of select="$text_y"/></xsl:attribute>
+					<xsl:attribute name="foi:struct-ref">
+						<xsl:value-of select="$instream-foreign-object/@preceding_inline_text_struct_id"/>
+					</xsl:attribute> <!-- <xsl:value-of select="$ref"/> -->
+					<xsl:value-of select="$instream-foreign-object_alt-text"/>
+				</xsl:element>
+				
+			</xsl:if>
+		</xsl:variable>
+		
+		<xsl:variable name="viewports">
+			<xsl:for-each select="ancestor::*[ancestor::im:content]"> <!-- viewport or g -->
+				<xsl:copy>
+					<xsl:copy-of select="@*"/>
+				</xsl:copy>
+			</xsl:for-each>
+		</xsl:variable>
+		
+		<!-- enclose elements into viewports tree -->
+		<xsl:apply-templates select="xalan:nodeset($viewports)/*[1]" mode="viewport">
+			<xsl:with-param name="elements" select="$elements"/>
+		</xsl:apply-templates>
+		<!-- <xsl:copy-of select="$viewports"/> -->
+		
+	</xsl:template>
+
+	<xsl:template match="*" mode="viewport">
+		<xsl:param name="elements"/>
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-				<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
-				<xsl:variable name="fontsize" select="java:org.metanorma.fop.Util.getFontSize($instream-foreign-object_alt-text, $font_family, $width, $height)"/>
-				<xsl:attribute name="size">
-					<xsl:value-of select="$fontsize"/>
-				</xsl:attribute>
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="following-sibling::*">
+					<xsl:apply-templates select="following-sibling::*[1]" mode="viewport">
+						<xsl:with-param name="elements" select="$elements"/>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="$elements"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
-		
-		<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
-			<xsl:variable name="text_x" select="$image/@x"/>
-			<xsl:variable name="text_y" select="$image/@y + $image/@height"/>
-
-			<xsl:element name="text" namespace="http://xmlgraphics.apache.org/fop/intermediate">
-				<xsl:attribute name="x"><xsl:value-of select="$text_x"/></xsl:attribute>
-				<xsl:attribute name="y"><xsl:value-of select="$text_y"/></xsl:attribute>
-				<xsl:attribute name="foi:struct-ref">
-					<xsl:value-of select="$instream-foreign-object/@preceding_inline_text_struct_id"/>
-				</xsl:attribute> <!-- <xsl:value-of select="$ref"/> -->
-				<xsl:value-of select="$instream-foreign-object_alt-text"/>
-			</xsl:element>
-			
-		</xsl:if>
-		
 	</xsl:template>
 
 </xsl:stylesheet>
