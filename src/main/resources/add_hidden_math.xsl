@@ -66,6 +66,13 @@
 		<xsl:variable name="elements">
 			<xsl:copy>
 				<xsl:copy-of select="@*"/>
+        <xsl:attribute name="color">
+         <!-- add alpha-channel (transparency) for hidden math text -->
+          <xsl:choose>
+            <xsl:when test="@color"><xsl:value-of select="@color"/>00</xsl:when>
+            <xsl:otherwise>#FFFFFF00</xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
 				<xsl:attribute name="style">normal</xsl:attribute>
 				<xsl:attribute name="weight">400</xsl:attribute>
 				<xsl:attribute name="variant">normal</xsl:attribute>
