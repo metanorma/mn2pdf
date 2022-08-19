@@ -467,7 +467,12 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
 
         double shear = 0;
         boolean simulateStyle = tf instanceof CustomFont && ((CustomFont) tf).getSimulateStyle();
-        if (simulateStyle) {
+        
+        boolean isTransparent = state.getTextColor().getAlpha() == 0;
+        
+        if (isTransparent) {
+            textutil.setTextRenderingMode(PDFTextUtil.TR_INVISIBLE); // set transparent mode '3 Tr'
+        } else if (simulateStyle) {
             if (triplet.getWeight() == 700) {
                 generator.add("q\n");
                 generator.add("2 Tr 0.31543 w\n");
@@ -528,7 +533,9 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
 
         }
         textutil.writeTJ();
-        if (simulateStyle && triplet.getWeight() == 700) {
+        if (isTransparent) {
+            textutil.setTextRenderingMode(PDFTextUtil.TR_FILL); //restore default mode
+        } else if (simulateStyle && triplet.getWeight() == 700) {
             generator.add("Q\n");
         }
     }
