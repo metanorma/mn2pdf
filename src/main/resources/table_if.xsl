@@ -95,15 +95,27 @@
 								<xsl:if test="not(preceding-sibling::cell[@row = $row and @col = $col])">
 									<td>
 										
-										<xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> <!-- select all 'cell' relate to one source table cell -->
-											<xsl:choose>
-												<xsl:when test="@type = 'p'">
-													<p_len><xsl:value-of select="@length"/></p_len>
-												</xsl:when>
-												<xsl:otherwise>
-													<word_len><xsl:value-of select="@length"/></word_len>
-												</xsl:otherwise>
-											</xsl:choose>
+										<xsl:variable name="lengths_">
+											<xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> <!-- select all 'cell' relate to one source table cell -->
+												<xsl:choose>
+													<xsl:when test="@type = 'p'">
+														<p_len><xsl:value-of select="@length"/></p_len>
+													</xsl:when>
+													<xsl:otherwise>
+														<word_len><xsl:value-of select="@length"/></word_len>
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:for-each>
+										</xsl:variable>
+										<xsl:variable name="lengths" select="xalan:nodeset($lengths_)"/>
+										
+										<xsl:for-each select="$lengths/*">
+											<xsl:copy>
+												<xsl:choose>
+													<xsl:when test="self::p_len and . = 'NaN'"><xsl:value-of select="sum($lengths/word_len)"/></xsl:when>
+													<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+												</xsl:choose>
+											</xsl:copy>
 										</xsl:for-each>
 										
 									</td>
