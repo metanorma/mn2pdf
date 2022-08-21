@@ -451,21 +451,21 @@ public class PDFGenerator {
                 if (isAddMathAsText) {
                     logger.info("Updating Intermediate Format (adding hidden math)...");
                     xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
+                    
+                    debugXSLFO = xmlIF;
+                
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
                 }
                 
-                debugXSLFO = xmlIF;
-                
-                debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
                 
                 if (isAddLineNumbers) {
                     logger.info("Updating Intermediate Format (adding line numbers)...");
                     xmlIF = applyXSLT("add_line_numbers.xsl", xmlIF, true);
+                    
+                    debugXSLFO = xmlIF;
+                
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.linenumbers.xml");
                 }
-                
-                debugXSLFO = xmlIF;
-                
-                debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.linenumbers.xml");
-                
                 
                 src = new StreamSource(new StringReader(xmlIF));
             }
@@ -604,9 +604,7 @@ public class PDFGenerator {
 
             String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, "");
 
-            
-            //Util.createIndexFile(indexxml, xmlIF);
-            createIndexFile(indexxml, xmlIF);
+            createIndexFile(indexxml, xmlIF, pdf);
 
             if (fileXmlIF.exists()) {
                 // pass index.xml path to xslt (for second pass)
@@ -694,7 +692,7 @@ public class PDFGenerator {
         return xmlIF;
     }
     
-    private void createIndexFile(String indexxmlFilePath, String intermediateXML) {
+    private void createIndexFile(String indexxmlFilePath, String intermediateXML, File pdf) {
         
         long startMethodTime = System.currentTimeMillis();
         
@@ -707,6 +705,7 @@ public class PDFGenerator {
                         writer.write(xmlIndex.toString());                    
                 }
             }
+            debugSaveXML(xmlIndex, pdf.getAbsolutePath() + ".index.xml");
         }    
         catch (Exception ex) {
             //System.err.println("Can't save index.xml into temporary folder");
