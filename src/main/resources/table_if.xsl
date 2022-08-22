@@ -72,9 +72,14 @@
 						</xsl:variable>
 						
 						<xsl:variable name="id_suffix" select="substring-after(@name, $table_id)"/>
-						<xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/>
+						<!-- <xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/> -->
+						<xsl:variable name="regex_id_suffix_components">^([^_]*)_([^_]*)_([^_]*).*$</xsl:variable>
+						<xsl:variable name="id_suffix_components_row" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$1')"/>
+						<xsl:variable name="id_suffix_components_col" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$2')"/>
+						<xsl:variable name="id_suffix_components_type" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$3')"/>
 						
-						<cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start + $padding-left}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/>
+						<!-- <cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start + $padding-left}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/> -->
+						<cell id="{$id_suffix}" row="{$id_suffix_components_row}" col="{$id_suffix_components_col}" type="{$id_suffix_components_type}" length="{$position_end - $position_start + $padding-left}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/>
 
 					</xsl:for-each>
 				</xsl:variable>
