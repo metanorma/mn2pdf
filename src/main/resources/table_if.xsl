@@ -14,9 +14,51 @@
 	<xsl:variable name="table_if_start_prefix">table_if_start_</xsl:variable>
 	
 	<xsl:template match="/">
+		
+		<xsl:variable name="ids_">
+			<if:ids>
+				<xsl:for-each select="//if:id[starts-with(@name, $table_if_prefix)]">
+					
+					<xsl:if test="not(preceding-sibling::if:id[starts-with(@name, $table_if_prefix)]) or starts-with(@name,$table_if_start_prefix)"> <!-- select only first in 'g', no need select 'id' ends with '_end' -->
+
+						<if:id>
+							<xsl:copy-of select="@*"/>
+							<xsl:variable name="id_cell" select="@name"/>
+							
+							<xsl:variable name="position_end" select="following-sibling::if:id[@name = concat($id_cell, '_end')]/following-sibling::if:text[1]/@x"/>
+							<xsl:variable name="padding-left_" select="normalize-space(substring-before(substring-after(ancestor::if:g[1]/@transform, '('), ','))"/>
+							<xsl:variable name="padding-left">
+								<xsl:choose>
+									<xsl:when test="$padding-left_ = ''">0</xsl:when>
+									<xsl:otherwise><xsl:value-of select="$padding-left_"/></xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
+							
+							<xsl:attribute name="position_end"><xsl:value-of select="$position_end"/></xsl:attribute>
+							<xsl:attribute name="padding-left"><xsl:value-of select="$padding-left"/></xsl:attribute>
+							
+							<!-- for starts-with(@name,$table_if_start_prefix) -->
+							<xsl:variable name="width_viewport" select="ancestor::if:viewport[1]/@width"/>
+							<xsl:variable name="width_border-rect" select="following-sibling::if:g[1]/if:border-rect/@width"/>
+							<xsl:attribute name="width_viewport"><xsl:value-of select="$width_viewport"/></xsl:attribute>
+							<xsl:attribute name="width_border-rect"><xsl:value-of select="$width_border-rect"/></xsl:attribute>
+							
+						</if:id>
+					</xsl:if>
+				</xsl:for-each>
+			</if:ids>
+		</xsl:variable>
+		
+		<xsl:variable name="ids" select="xalan:nodeset($ids_)"/>
+		
 		<tables>
-			<xsl:apply-templates select="//if:id[starts-with(@name,$table_if_start_prefix)]"/>
+			<!-- <xsl:apply-templates select="//if:id[starts-with(@name,$table_if_start_prefix)]"> -->
+			<xsl:apply-templates select="$ids//if:id[starts-with(@name,$table_if_start_prefix)]">
+				<xsl:with-param name="ids" select="$ids"/>
+			</xsl:apply-templates>
+			
 		</tables>
+		
 	</xsl:template>
 	
 	
@@ -35,10 +77,14 @@
 	-->
 	
 	<xsl:template match="if:id">
+		<xsl:param name="ids"/>
+		
 		<xsl:variable name="id" select="substring-after(@name, $table_if_start_prefix)"/>
 		
-		<xsl:variable name="width_viewport" select="ancestor::if:viewport[1]/@width"/>
-		<xsl:variable name="width_border-rect" select="following-sibling::if:g[1]/if:border-rect/@width"/>
+		<!-- <xsl:variable name="width_viewport" select="ancestor::if:viewport[1]/@width"/> -->
+		<xsl:variable name="width_viewport" select="@width_viewport"/>
+		<!-- <xsl:variable name="width_border-rect" select="following-sibling::if:g[1]/if:border-rect/@width"/> -->
+		<xsl:variable name="width_border-rect" select="@width_border-rect"/>
 		
 		<xsl:variable name="page-width">
 			<xsl:choose>
@@ -54,25 +100,27 @@
 				<xsl:variable name="table_id" select="concat($table_if_prefix, $id, '_')"/>
 				
 				<xsl:variable name="cells_">
-					<xsl:for-each select="//if:id[starts-with(@name, $table_id)][1]"> <!-- select only first in 'g', no need select 'id' ends with '_end' -->
+					<!-- <xsl:for-each select="//if:id[starts-with(@name, $table_id)][1]"> --> <!-- select only first in 'g', no need select 'id' ends with '_end' -->
+					<xsl:for-each select="$ids//if:id[starts-with(@name, $table_id)]"> 
 					
 						<xsl:variable name="id_cell" select="@name"/>
-					
-						<!-- <id_cell><xsl:value-of select="$id_cell"/></id_cell> -->
-					
-						<xsl:variable name="position_start" select="0"/> <!-- 0, because text/image can have left padding/margin --> <!-- following-sibling::if:*[1]/@x following-sibling::if:text[1]/@x --> <!-- text or image --> 
-						<xsl:variable name="position_end" select="following-sibling::if:id[@name = concat($id_cell, '_end')]/following-sibling::if:text[1]/@x"/>
 						
-						<xsl:variable name="padding-left_" select="normalize-space(substring-before(substring-after(ancestor::if:g[1]/@transform, '('), ','))"/>
+						<xsl:variable name="position_start" select="0"/> <!-- 0, because text/image can have left padding/margin --> <!-- following-sibling::if:*[1]/@x following-sibling::if:text[1]/@x --> <!-- text or image --> 
+						<!-- <xsl:variable name="position_end" select="following-sibling::if:id[@name = concat($id_cell, '_end')]/following-sibling::if:text[1]/@x"/> -->
+						<xsl:variable name="position_end" select="@position_end"/>
+						
+						<!-- <xsl:variable name="padding-left_" select="normalize-space(substring-before(substring-after(ancestor::if:g[1]/@transform, '('), ','))"/>
 						<xsl:variable name="padding-left">
 							<xsl:choose>
 								<xsl:when test="$padding-left_ = ''">0</xsl:when>
 								<xsl:otherwise><xsl:value-of select="$padding-left_"/></xsl:otherwise>
 							</xsl:choose>
-						</xsl:variable>
+						</xsl:variable> -->
+						
+						<xsl:variable name="padding-left" select="@padding-left"/>
 						
 						<xsl:variable name="id_suffix" select="substring-after(@name, $table_id)"/>
-						<!-- <xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/> -->
+						<!-- <xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/> --> <!-- slow -->
 						<xsl:variable name="regex_id_suffix_components">^([^_]*)_([^_]*)_([^_]*).*$</xsl:variable>
 						<xsl:variable name="id_suffix_components_row" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$1')"/>
 						<xsl:variable name="id_suffix_components_col" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$2')"/>
@@ -86,10 +134,6 @@
 				
 				<xsl:variable name="cells" select="xalan:nodeset($cells_)"/>
 				
-				<!-- <debug>
-					<xsl:copy-of select="$cells"/>
-				</debug> -->
-				
 				<xsl:for-each select="$cells/cell">
 					<xsl:variable name="row" select="@row"/>
 					<xsl:if test="not(preceding-sibling::cell[@row = $row])"> 
@@ -99,7 +143,6 @@
 							
 								<xsl:if test="not(preceding-sibling::cell[@row = $row and @col = $col])">
 									<td>
-										
 										<xsl:variable name="lengths_">
 											<xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> <!-- select all 'cell' relate to one source table cell -->
 												<xsl:choose>
