@@ -32,7 +32,8 @@
 						local-name() = 'terms' or
 						local-name() = 'term' or
 						local-name() = 'quote' or 
-						local-name() = 'formula'
+						local-name() = 'formula' or 
+						local-name() = 'figure'
 						][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
 
 	<xsl:template match="*[local-name() = 'bookmark']"/>
