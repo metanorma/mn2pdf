@@ -233,7 +233,7 @@
 				<xsl:choose>
 					<xsl:when test="$width_max - $width_min = 0"><xsl:value-of select="$width_min - 1"/></xsl:when> <!-- to prevent division by zero in 'w' calculation -->
 					<xsl:otherwise>
-						<xsl:value-of select="width_min"/>
+						<xsl:value-of select="$width_min"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
