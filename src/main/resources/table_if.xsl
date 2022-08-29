@@ -118,13 +118,14 @@
 				
 				<xsl:variable name="id_suffix" select="substring-after(@name, $table_id)"/>
 				<!-- <xsl:variable name="id_suffix_components" select="str:split($id_suffix, '_')"/> --> <!-- slow -->
-				<xsl:variable name="regex_id_suffix_components">^([^_]*)_([^_]*)_([^_]*).*$</xsl:variable>
+				<xsl:variable name="regex_id_suffix_components">^([^_]*)_([^_]*)_([^_]*)_([^_]*)_([^_]*).*$</xsl:variable> <!-- example: table_if_table10_1_3_word_1_6 , 6 means length divider for column spanned-->
 				<xsl:variable name="id_suffix_components_row" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$1')"/>
 				<xsl:variable name="id_suffix_components_col" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$2')"/>
 				<xsl:variable name="id_suffix_components_type" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$3')"/>
+				<xsl:variable name="id_suffix_components_divide" select="java:replaceAll(java:java.lang.String.new($id_suffix), $regex_id_suffix_components, '$5')"/>
 				
 				<!-- <cell id="{$id_suffix}" row="{$id_suffix_components[1]}" col="{$id_suffix_components[2]}" type="{$id_suffix_components[3]}" length="{$position_end - $position_start + $padding-left}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/> -->
-				<cell id="{$id_suffix}" row="{$id_suffix_components_row}" col="{$id_suffix_components_col}" type="{$id_suffix_components_type}" length="{$position_end - $position_start + $padding-left}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/>
+				<cell id="{$id_suffix}" row="{$id_suffix_components_row}" col="{$id_suffix_components_col}" type="{$id_suffix_components_type}" length="{$position_end - $position_start + $padding-left}" divide="{$id_suffix_components_divide}" position_start="{$position_start}" position_end="{$position_end}" padding-left="{$padding-left}"/>
 
 			</xsl:for-each>
 		</xsl:variable>
@@ -144,12 +145,13 @@
 									<td>
 										<xsl:variable name="lengths_">
 											<xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> <!-- select all 'cell' relate to one source table cell -->
+												<!-- <divide><xsl:value-of select="@divide"/></divide> -->
 												<xsl:choose>
 													<xsl:when test="@type = 'p'">
-														<p_len><xsl:value-of select="@length"/></p_len>
+														<p_len><xsl:value-of select="round(@length div @divide)"/></p_len>
 													</xsl:when>
 													<xsl:otherwise>
-														<word_len><xsl:value-of select="@length"/></word_len>
+														<word_len><xsl:value-of select="round(@length div @divide)"/></word_len>
 													</xsl:otherwise>
 												</xsl:choose>
 											</xsl:for-each>
