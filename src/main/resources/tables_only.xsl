@@ -37,5 +37,7 @@
 						][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
 
 	<xsl:template match="*[local-name() = 'bookmark']"/>
-
+	
+	<xsl:template match="*[local-name() = 'fn']"/>
+	
 </xsl:stylesheet>
