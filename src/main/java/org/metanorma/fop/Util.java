@@ -531,8 +531,7 @@ public class Util {
         int renderedHeight = 20000000;
         
         if (DEBUG) {
-            System.out.println("Math object width=" + width);
-            System.out.println("Math object height=" + height);
+            System.out.println("Math object width=" + width + ", height=" + height);
         }
         
         while ((renderedWidth > width || renderedHeight > height) && fontSize >= 1.0f) {
@@ -540,19 +539,17 @@ public class Util {
             font = font.deriveFont(fontSize);
             FontRenderContext frc = new FontRenderContext(null, false, false);
             TextLayout tl = new TextLayout(text, font, frc);
-            Rectangle rect = tl.getPixelBounds(frc, 0f, 0f);
+            //Rectangle rect = tl.getPixelBounds(frc, 0f, 0f);
             Rectangle2D rect2d = tl.getBounds();
             
             renderedWidth = (int) (rect2d.getWidth() * 1000);
             renderedHeight = (int) (rect2d.getHeight()* 1000);
             
             if (DEBUG) {
-                System.out.println("font-size=" + fontSize);
-                System.out.println("width=" + renderedWidth);
-                System.out.println("height=" + renderedHeight);
+                System.out.println("font-size=" + fontSize + ", width=" + renderedWidth + ", height=" + renderedHeight);
             }
         }
-        
+        fontSize = (fontSize == 0f ? 0.5f : fontSize);
         return String.valueOf((int)(fontSize * 1000));
         
     }

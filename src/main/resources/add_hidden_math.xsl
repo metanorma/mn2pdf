@@ -53,7 +53,14 @@
 		
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-				<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
+			<xsl:attribute name="color">
+			 <!-- add alpha-channel (transparency) for hidden math text -->
+				<xsl:choose>
+					<xsl:when test="@color"><xsl:value-of select="@color"/>00</xsl:when>
+					<xsl:otherwise>#FFFFFF00</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:if test="normalize-space($instream-foreign-object_alt-text) != '' and $instream-foreign-object_alt-text != 'Math'">
 				<xsl:variable name="fontsize" select="java:org.metanorma.fop.Util.getFontSize($instream-foreign-object_alt-text, $font_family, $width, $height)"/>
 				<xsl:attribute name="size">
 					<xsl:value-of select="$fontsize"/>
