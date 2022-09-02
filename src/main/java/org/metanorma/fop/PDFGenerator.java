@@ -731,7 +731,7 @@ public class PDFGenerator {
     
     
     // Apply XSL tranformation (file xsltfile) for xml string
-    /*private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {
+    private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {
         String xmlTableIF = "";
         long startMethodTime = System.currentTimeMillis();
         
@@ -750,10 +750,10 @@ public class PDFGenerator {
         printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
         
         return xmlResult;
-    }*/
+    }
     
     // Apply XSL tranformation (file xsltfile) for XML String or StreamSource
-    private String applyXSLT(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
+    private String applyXSLT2(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
         long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
@@ -1012,6 +1012,7 @@ public class PDFGenerator {
                 xsltConverter.setParam("table_if", "true");
                 logger.info("[INFO] Generation of XSL-FO with information about the table's widths ...");
                 
+                /*
                 String xmlTablesOnly = "";
                 try {
                     xmlTablesOnly = applyXSLT("tables_only.xsl", sourceXMLDocument.getStreamSource(), true);
@@ -1023,14 +1024,16 @@ public class PDFGenerator {
                 debugSaveXML(xmlTablesOnly, pdf.getAbsolutePath() + ".tablesonly.xml");
                 
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
-                // transform XML to XSL-FO (XML .fo file)
-                xsltConverter.transform(sourceXMLDocumentTablesOnly);
+                */
                 
-                String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
+                // transform XML to XSL-FO (XML .fo file)
+                xsltConverter.transform(sourceXMLDocument);
+                
+                String xmlFO = sourceXMLDocument.getXMLFO();
                 
                 debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
                 
-                fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
 
                 Source sourceFO = new StreamSource(new StringReader(xmlFO));
                 logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");

@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 1.8, 1.11 ]
+        java: [ 1.8 ]
         os: [ ubuntu-latest ]
         experimental: [ false ]
     env:
