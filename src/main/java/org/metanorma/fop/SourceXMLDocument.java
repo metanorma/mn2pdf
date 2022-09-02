@@ -79,6 +79,19 @@ public class SourceXMLDocument {
         }
     }
     
+    public SourceXMLDocument(String strXML) {
+        try {
+            this.sourceXMLstr = strXML;
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputSource xmlIFIS = new InputSource(new StringReader(strXML));
+            sourceXML = dBuilder.parse(xmlIFIS);
+        } catch (Exception ex) {
+            logger.severe("Can't parse source XML.");
+            ex.printStackTrace();
+        }
+    }
+    
     public StreamSource getStreamSource() {
         if (sourceXMLstr.isEmpty()) {
             try {
