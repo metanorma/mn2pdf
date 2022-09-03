@@ -1030,6 +1030,9 @@ public class PDFGenerator {
                 
                 debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
                 
+                //debug
+                fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
+                
                 fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
                 Source sourceFO = new StreamSource(new StringReader(xmlFO));

@@ -102,7 +102,9 @@ class fontConfig {
         
 	FOPconfigXML = getSourceFOPConfigFile();
         
-        fopFonts = getFOPfonts();
+        if (fopFonts.isEmpty()) {
+            fopFonts = getFOPfonts();
+        }
         
         //for DEBUG only 
         /*for(FOPFont font: fonts) {
@@ -404,6 +406,8 @@ class fontConfig {
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
         this.sourceDocumentFontList = sourceDocumentFontList;
         
+        isReady = false;
+        
         for(String sourceDocumentFont: sourceDocumentFontList) {
             fopFonts.stream()
                     .filter(fopFont -> !fopFont.getFont_triplet().isEmpty())
@@ -532,12 +536,17 @@ class fontConfig {
                     } catch (MalformedURLException ex) {
                         System.out.println("Can't obtain a font path: " + ex.toString());
                     }*/
-                    fopFont.setEmbed_url(embed_url);
-
+                    
+                    if (fopFont.isMn_default()) {
+                        fopFont.setEmbed_url(embed_url);
+                    }
+                    
                     //if font is using only (skip unused font processing)
                     // skip default fonts
                     if (fopFont.isUsing() && !fopFont.isMn_default()) {
-
+                        
+                        fopFont.setEmbed_url(embed_url);
+                        
                         File file_embed_url = new File (embed_url);
                         if (!file_embed_url.exists()) { // if font file doesn't exist
                             //msg = "WARNING: Font file '" + embed_url + "'";
@@ -598,6 +607,7 @@ class fontConfig {
                                 fopFont.setSource(font_source);
                             }
                         }
+                        fopFont.setReadyToUse(true);
                     }
                 }
             });
@@ -647,17 +657,21 @@ class fontConfig {
             for(FOPFont fopFont: fopFonts) {
                 
                 String embed_url = fopFont.getEmbed_url();
+                String embed_url_updated = embed_url;
                 try {
                     if (!embed_url.startsWith("file:")) {
                         // add file: prefix and update xml attribute embed-url
-                        embed_url = new File(embed_url).toURI().toURL().toString();
+                        embed_url_updated = new File(embed_url).toURI().toURL().toString();
                     }
                 }
                 catch (MalformedURLException ex) { }
-                fopFont.setEmbed_url(embed_url);
+                
+                fopFont.setEmbed_url(embed_url_updated);
                 
                 try {
                     String fopFontString = new XmlMapper().writeValueAsString(fopFont);
+                    //restore path
+                    fopFont.setEmbed_url(embed_url);
                     if (DEBUG) {
                         //System.out.println("DEBUG: FOP config font entry:");
                         //System.out.println(fopFontString);

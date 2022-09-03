@@ -11,6 +11,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "font-triplet")
 public class FOPFontTriplet {
     
+    String substprefix = "Sans";
+    String substsuffix = "Regular";
+    
     @JacksonXmlProperty(isAttribute=true)
     String name;
     
@@ -65,15 +68,15 @@ public class FOPFontTriplet {
             name.startsWith("SourceCodePro")) {
             return "";
         }*/
-        String substprefix = getSubstFontPrefix(name);
-        String substsuffix = getSubstFontSuffix(name, weight, style);
+        determineSubstFontPrefix(name);
+        determineSubstFontSuffix(name, weight, style);
         //String fontFamilySubst = DefaultFonts.DEFAULTFONT_PREFIX + substprefix + DefaultFonts.DEFAULTFONT_SUFFIX + "-" + substsuffix;
         String fontFamilySubst = DefaultFonts.DEFAULTFONT_NOTO_PREFIX + substprefix + DefaultFonts.DEFAULTFONT_NOTO_SUFFIX + "-" + substsuffix;
         return fontFamilySubst;
     }
  
-    private String getSubstFontPrefix (String fontname) {
-        String substprefix = "Sans";
+    private void determineSubstFontPrefix (String fontname) {
+        substprefix = "Sans";
         if (fontname.toLowerCase().contains("arial")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("times")) {
@@ -90,11 +93,10 @@ public class FOPFontTriplet {
         } else if (fontname.toLowerCase().contains("serif")) {
             substprefix = "Sans";//"Serif";
         }
-        return substprefix;
     }
     
-    private String getSubstFontSuffix(String fontname, String fontweight, String fontstyle) {
-        String substsuffix = "Regular";
+    private void determineSubstFontSuffix(String fontname, String fontweight, String fontstyle) {
+        substsuffix = "Regular";
         String pfx = "";
         if (fontname.contains("Light") || fontname.contains("Lt")) {
             pfx = "Light";
@@ -104,20 +106,28 @@ public class FOPFontTriplet {
             if (fontweight.equals("bold")) {
                 //substsuffix = "BoldIt";
                 substsuffix = "BoldItalic";
+                if (substprefix.equals("SansMono")) {
+                    substsuffix = "Bold";
+                }
             } else {
                 //substsuffix = pfx + "It";
                 substsuffix = pfx + "Italic";
+                if (substprefix.equals("SansMono")) {
+                    substsuffix = "Regular";
+                }
             }
         }
         if (fontweight.equals("bold")) {
             if (fontstyle.equals("italic")) {
                 //substsuffix = "BoldIt";
                 substsuffix = "BoldItalic";
+                if (substprefix.equals("SansMono")) {
+                    substsuffix = "Bold";
+                }
             } else {
                 substsuffix = "Bold";
             }
         }
-        return substsuffix;
     }
     
 }
