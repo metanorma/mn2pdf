@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -111,8 +113,6 @@ public class PDFGenerator {
     boolean PDFUA_error = false;
     
     private String debugXSLFO = "";
-    
-    private long startTime;
     
     public void setFontsPath(String fontsPath) {
         this.fontsPath = fontsPath;
@@ -389,11 +389,7 @@ public class PDFGenerator {
             logger.info("[INFO] XSL-FO file preparation...");
             
             // transform XML to XSL-FO (XML .fo file)
-            startTime = System.currentTimeMillis();
-            
             xsltConverter.transform(sourceXMLDocument);
-            
-            printProcessingTime();
 
             String xmlFO = sourceXMLDocument.getXMLFO();
             debugXSLFO = xmlFO;
@@ -440,6 +436,7 @@ public class PDFGenerator {
     private void runFOP (fontConfig fontcfg, Source src, File pdf) throws IOException, FOPException, SAXException, TransformerException {
         OutputStream out = null;
         String xmlIF = null;
+        long startMethodTime = System.currentTimeMillis();
         try {
             
             String mime = MimeConstants.MIME_PDF;
@@ -454,21 +451,21 @@ public class PDFGenerator {
                 if (isAddMathAsText) {
                     logger.info("Updating Intermediate Format (adding hidden math)...");
                     xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
+                    
+                    debugXSLFO = xmlIF;
+                
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
                 }
                 
-                debugXSLFO = xmlIF;
-                
-                debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
                 
                 if (isAddLineNumbers) {
                     logger.info("Updating Intermediate Format (adding line numbers)...");
                     xmlIF = applyXSLT("add_line_numbers.xsl", xmlIF, true);
+                    
+                    debugXSLFO = xmlIF;
+                
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.linenumbers.xml");
                 }
-                
-                debugXSLFO = xmlIF;
-                
-                debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.linenumbers.xml");
-                
                 
                 src = new StreamSource(new StringReader(xmlIF));
             }
@@ -575,6 +572,8 @@ public class PDFGenerator {
             }
         }
         
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        
         if (isAddAnnotations) {
             logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
@@ -597,15 +596,15 @@ public class PDFGenerator {
         
         File fileXmlIF = new File(indexxml);
         
+        long startMethodTime = System.currentTimeMillis();
+        
         if (!indexxml.isEmpty() && !fileXmlIF.exists()) { //there is index
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
             String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, "");
 
-            
-            //Util.createIndexFile(indexxml, xmlIF);
-            createIndexFile(indexxml, xmlIF);
+            createIndexFile(indexxml, xmlIF, pdf);
 
             if (fileXmlIF.exists()) {
                 // pass index.xml path to xslt (for second pass)
@@ -626,12 +625,15 @@ public class PDFGenerator {
             src = new StreamSource(new StringReader(xmlFO));
             
         }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
         return src;
     }
     
     
     private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
         String xmlIF = "";
+        
+        long startMethodTime = System.currentTimeMillis();
         
         // run 1st pass to produce FOP Intermediate Format
         FopFactory fopFactory = FopFactory.newInstance(fontConfig);
@@ -685,10 +687,15 @@ public class PDFGenerator {
             out.close();
         }
         
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        
         return xmlIF;
     }
     
-    private void createIndexFile(String indexxmlFilePath, String intermediateXML) {
+    private void createIndexFile(String indexxmlFilePath, String intermediateXML, File pdf) {
+        
+        long startMethodTime = System.currentTimeMillis();
+        
         try {
             String xmlIndex = applyXSLT("index.xsl", intermediateXML, false);
             
@@ -698,29 +705,35 @@ public class PDFGenerator {
                         writer.write(xmlIndex.toString());                    
                 }
             }
+            debugSaveXML(xmlIndex, pdf.getAbsolutePath() + ".index.xml");
         }    
         catch (Exception ex) {
             //System.err.println("Can't save index.xml into temporary folder");
             logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
-        }    
+        }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
     }
     
     
     private String createTableIF(String intermediateXML) {
         String xmlTableIF = "";
+        long startMethodTime = System.currentTimeMillis();
         try {
             xmlTableIF = applyXSLT("table_if.xsl", intermediateXML, false);
         } catch (Exception ex) {
             logger.severe("Can't generate information about tables from Intermediate Format.");
             ex.printStackTrace();
         }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
         return xmlTableIF;
     }
     
     
     // Apply XSL tranformation (file xsltfile) for xml string
-    private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {
+    /*private String applyXSLT(String xsltfile, String xmlStr, boolean fixSurrogatePairs) throws Exception {
+        String xmlTableIF = "";
+        long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -734,11 +747,37 @@ public class PDFGenerator {
         transformer.transform(src, sr);
         String xmlResult = resultWriter.toString();
         
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        
+        return xmlResult;
+    }*/
+    
+    // Apply XSL tranformation (file xsltfile) for XML String or StreamSource
+    private String applyXSLT(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
+        long startMethodTime = System.currentTimeMillis();
+        
+        Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(srcXSL);
+        if (fixSurrogatePairs) {
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+        }
+        
+        Source src = (sourceXML instanceof StreamSource) ? (StreamSource)sourceXML : new StreamSource(new StringReader((String)sourceXML));
+        
+        StringWriter resultWriter = new StringWriter();
+        StreamResult sr = new StreamResult(resultWriter);
+        transformer.transform(src, sr);
+        String xmlResult = resultWriter.toString();
+        
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
+        
         return xmlResult;
     }
     
     // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
     private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
+        long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -760,6 +799,8 @@ public class PDFGenerator {
         StreamResult sr = new StreamResult(resultWriter);
         transformer.transform(sourceXML, sr);
         String xmlResult = resultWriter.toString();
+        
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
         
         return xmlResult;
     }
@@ -964,24 +1005,35 @@ public class PDFGenerator {
     }
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
-    
+        long startMethodTime = System.currentTimeMillis();
         try {
             if (isTableExists && xmlTableIF.isEmpty()) { 
                 // generate IF with table width data
                 xsltConverter.setParam("table_if", "true");
                 logger.info("[INFO] Generation of XSL-FO with information about the table's widths ...");
+                
+                String xmlTablesOnly = "";
+                try {
+                    xmlTablesOnly = applyXSLT("tables_only.xsl", sourceXMLDocument.getStreamSource(), true);
+                } catch (Exception ex) {
+                    logger.severe("Can't generate information about tables from Intermediate Format.");
+                    ex.printStackTrace();
+                }
+                
+                debugSaveXML(xmlTablesOnly, pdf.getAbsolutePath() + ".tablesonly.xml");
+                
+                SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
                 // transform XML to XSL-FO (XML .fo file)
-                startTime = System.currentTimeMillis();
-                xsltConverter.transform(sourceXMLDocument);
+                xsltConverter.transform(sourceXMLDocumentTablesOnly);
                 
-                printProcessingTime();
-                
-                String xmlFO = sourceXMLDocument.getXMLFO();
-                
+                String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
                 
                 debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
                 
-                fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
+                //debug
+                fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
+                
+                fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
                 Source sourceFO = new StreamSource(new StringReader(xmlFO));
                 logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
@@ -1009,6 +1061,7 @@ public class PDFGenerator {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
         }
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
     }
     
     private void debugSaveXML(String xmlString, String pathTo) {
@@ -1032,10 +1085,11 @@ public class PDFGenerator {
         }
     }
     
-    private void printProcessingTime() {
+    private void printProcessingTime(Method method, long startTime, String ... params) {
         if (DEBUG) {
             long endTime = System.currentTimeMillis();
-            logger.log(Level.INFO, "processing time: {0} milliseconds", endTime - startTime);
+            String addon = Arrays.toString(params);
+            logger.log(Level.INFO, "Method '" + method.getName() + "(" + addon + ")' processing time: {0} milliseconds", endTime - startTime);
         }
     }
 }
