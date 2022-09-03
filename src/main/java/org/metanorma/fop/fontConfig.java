@@ -539,6 +539,7 @@ class fontConfig {
                     
                     if (fopFont.isMn_default()) {
                         fopFont.setEmbed_url(embed_url);
+                        fopFont.setReadyToUse(true);
                     }
                     
                     //if font is using only (skip unused font processing)
