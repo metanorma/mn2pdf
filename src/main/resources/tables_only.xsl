@@ -41,4 +41,62 @@
 	
 	<xsl:template match="*[local-name() = 'fn']"/>
 	
+	<xsl:template match="*[local-name() = 'table' or local-name() = 'dl']">
+		<xsl:param name="child">false</xsl:param>
+		<xsl:choose>
+			<xsl:when test="ancestor::*[local-name() = 'table' or local-name() = 'dl']"> <!-- if there is parent table / definition list -->
+				
+				
+				<xsl:choose>
+					<xsl:when test="local-name() = 'table'">
+					
+						<!-- <xsl:copy>
+							<xsl:apply-templates select="@*|node()"/>
+						</xsl:copy> -->
+						
+						<!-- create simple table and then paragraphs from it  -->
+					
+					</xsl:when>
+					<xsl:when test="local-name() = 'dl'">
+						<!-- convert definition list to paragraphs -->
+						<xsl:for-each select=".//*[local-name() = 'dt']">
+							<xsl:variable name="ns" select="namespace-uri()"/>
+							<xsl:element name="p" namespace="{$ns}">
+								<xsl:copy-of select="node()"/>
+								<xsl:text> </xsl:text>
+								<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'p']/node()" />
+							</xsl:element>
+						</xsl:for-each>
+					</xsl:when>
+				</xsl:choose>
+				
+				
+			</xsl:when>
+			<xsl:otherwise> <!-- table/dl doesn't have parent tables / definition lists, i.e. most upper element -->
+				
+				<!-- <xsl:if test="$child = 'true'"> -->
+					<xsl:copy>
+						<xsl:apply-templates select="@*|node()"/>
+					</xsl:copy>
+				<!-- </xsl:if> -->
+				<!-- put child tables / definition lists after table -->
+				
+				<!-- isolate child table and dl from parent table context -->
+				<xsl:variable name="table_dl_id" select="@id"/>
+				<xsl:variable name="child_tables_dl">
+					<xsl:for-each select=".//*[local-name() = 'table' or local-name() = 'dl'][ancestor::*[local-name() = 'table' or local-name() = 'dl'][1][@id = $table_dl_id]]">
+						<xsl:copy-of select="."/>
+					</xsl:for-each>
+				</xsl:variable>
+				<!-- <iter> -->
+				<xsl:apply-templates select="xalan:nodeset($child_tables_dl)/*">
+					<xsl:with-param name="child">true</xsl:with-param>
+				</xsl:apply-templates>
+				<!-- </iter> -->
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
+	
 </xsl:stylesheet>
