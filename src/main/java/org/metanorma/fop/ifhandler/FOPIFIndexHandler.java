@@ -1,4 +1,4 @@
-package org.metanorma.fopifhandler;
+package org.metanorma.fop.ifhandler;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
