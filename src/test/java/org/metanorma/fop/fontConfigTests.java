@@ -46,7 +46,9 @@ public class fontConfigTests {
         fontConfig fontcfg = new fontConfig();
         fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
         List<FOPFont> fonts = fontcfg.getUsedFonts();
-        
+
+        System.out.println("fonts.size=" + fonts.size());
+
         assertTrue(!fonts.isEmpty());
         assertTrue(fonts.size() == 59);
     }
