@@ -16,7 +16,6 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
-import org.metanorma.fop.fonts.FOPFontTriplet;
 
 public class fontConfigTests {
 
@@ -36,10 +35,6 @@ public class fontConfigTests {
     @Test
     public void testUsedFontList() throws ParseException, ParserConfigurationException, IOException, Exception {
 
-        fontConfig fontcfg = new fontConfig();
-        List<FOPFont> fonts = fontcfg.getUsedFonts();
-        System.out.println("BEFORE fonts.size=" + fonts.size());
-
         ClassLoader classLoader = getClass().getClassLoader();
         String xml = classLoader.getResource("G.191.xml").getFile();
         SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
@@ -48,22 +43,12 @@ public class fontConfigTests {
         XSLTconverter xsltConverter = new XSLTconverter(new File(xsl));
         xsltConverter.transform(sourceXMLDocument);
         
-
+        fontConfig fontcfg = new fontConfig();
         fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
-        fonts = fontcfg.getUsedFonts();
-
-        System.out.println("fonts.size=" + fonts.size());
-        for(FOPFont ff: fonts) {
-            System.out.println("font path: " + ff.getEmbed_url());
-            for( FOPFontTriplet fft: ff.getFont_triplet()) {
-                System.out.println("   name: " + fft.getName());
-                System.out.println("   weight: " + fft.getWeight());
-                System.out.println("   style: " + fft.getStyle());
-            }
-        }
-
+        List<FOPFont> fonts = fontcfg.getUsedFonts();
+        
         assertTrue(!fonts.isEmpty());
-        assertTrue(fonts.size() == 59);
+        assertTrue(fonts.size() >= 59);
     }
 
     @Test
