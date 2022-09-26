@@ -16,6 +16,7 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.metanorma.fop.fonts.FOPFontTriplet;
 
 public class fontConfigTests {
 
@@ -50,6 +51,11 @@ public class fontConfigTests {
         System.out.println("fonts.size=" + fonts.size());
         for(FOPFont ff: fonts) {
             System.out.println("font path: " + ff.getEmbed_url());
+            for( FOPFontTriplet fft: ff.getFont_triplet()) {
+                System.out.println("   name: " + fft.getName());
+                System.out.println("   weight: " + fft.getWeight());
+                System.out.println("   style: " + fft.getStyle());
+            }
         }
 
         assertTrue(!fonts.isEmpty());
