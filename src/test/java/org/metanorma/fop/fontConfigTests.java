@@ -35,7 +35,11 @@ public class fontConfigTests {
     
     @Test
     public void testUsedFontList() throws ParseException, ParserConfigurationException, IOException, Exception {
-        
+
+        fontConfig fontcfg = new fontConfig();
+        List<FOPFont> fonts = fontcfg.getUsedFonts();
+        System.out.println("BEFORE fonts.size=" + fonts.size());
+
         ClassLoader classLoader = getClass().getClassLoader();
         String xml = classLoader.getResource("G.191.xml").getFile();
         SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
@@ -44,9 +48,9 @@ public class fontConfigTests {
         XSLTconverter xsltConverter = new XSLTconverter(new File(xsl));
         xsltConverter.transform(sourceXMLDocument);
         
-        fontConfig fontcfg = new fontConfig();
+
         fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
-        List<FOPFont> fonts = fontcfg.getUsedFonts();
+        fonts = fontcfg.getUsedFonts();
 
         System.out.println("fonts.size=" + fonts.size());
         for(FOPFont ff: fonts) {
