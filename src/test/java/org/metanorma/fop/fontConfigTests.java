@@ -34,7 +34,7 @@ public class fontConfigTests {
     
     @Test
     public void testUsedFontList() throws ParseException, ParserConfigurationException, IOException, Exception {
-        
+
         ClassLoader classLoader = getClass().getClassLoader();
         String xml = classLoader.getResource("G.191.xml").getFile();
         SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
@@ -48,7 +48,7 @@ public class fontConfigTests {
         List<FOPFont> fonts = fontcfg.getUsedFonts();
         
         assertTrue(!fonts.isEmpty());
-        assertTrue(fonts.size() == 59);
+        assertTrue(fonts.size() >= 59);
     }
 
     @Test

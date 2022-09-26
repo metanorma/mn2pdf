@@ -23,9 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -36,6 +34,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPathFactory;
 import net.sourceforge.jeuclid.fop.plugin.JEuclidFopFactoryConfigurator;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -54,6 +53,8 @@ import org.apache.fop.render.intermediate.IFUtil;
 import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
+
+import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -697,8 +698,16 @@ public class PDFGenerator {
         long startMethodTime = System.currentTimeMillis();
         
         try {
-            String xmlIndex = applyXSLT("index.xsl", intermediateXML, false);
-            
+            //String xmlIndex = applyXSLTC("index.xsl", intermediateXML, false);
+
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            FOPIFIndexHandler fopIFIndexHandler = new FOPIFIndexHandler();
+            InputSource srcIntermediateXML = new InputSource(new StringReader(intermediateXML));
+            saxParser.parse(srcIntermediateXML, fopIFIndexHandler);
+
+            String xmlIndex = fopIFIndexHandler.getIndexItems();
+
             if (xmlIndex.length() != 0) {
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(indexxmlFilePath))) {
@@ -774,7 +783,44 @@ public class PDFGenerator {
         
         return xmlResult;
     }
-    
+
+    // Apply XSL tranformation (file xsltfile) for XML String or StreamSource, by using Compiling processor
+    // XSLT should be simple, without extension function
+    /*private String applyXSLTC(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
+        long startMethodTime = System.currentTimeMillis();
+
+        String key = "javax.xml.transform.TransformerFactory";
+        String value_old = System.getProperty(key);
+        String value_new = "org.apache.xalan.xsltc.trax.TransformerFactoryImpl";
+
+        System.setProperty(key, value_new);
+
+        Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(srcXSL);
+        if (fixSurrogatePairs) {
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+        }
+
+        Source src = (sourceXML instanceof StreamSource) ? (StreamSource)sourceXML : new StreamSource(new StringReader((String)sourceXML));
+
+        StringWriter resultWriter = new StringWriter();
+        StreamResult sr = new StreamResult(resultWriter);
+        transformer.transform(src, sr);
+        String xmlResult = resultWriter.toString();
+
+        if (value_old != null && !value_old.isEmpty()) {
+            // restore previous value
+            System.setProperty(key, value_old);
+        } else {
+            System.clearProperty(key);
+        }
+
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
+
+        return xmlResult;
+    }*/
+
     // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
     private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
         long startMethodTime = System.currentTimeMillis();
