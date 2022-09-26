@@ -48,6 +48,9 @@ public class fontConfigTests {
         List<FOPFont> fonts = fontcfg.getUsedFonts();
 
         System.out.println("fonts.size=" + fonts.size());
+        for(FOPFont ff: fonts) {
+            System.out.println("font path: " + ff.getEmbed_url());
+        }
 
         assertTrue(!fonts.isEmpty());
         assertTrue(fonts.size() == 59);
