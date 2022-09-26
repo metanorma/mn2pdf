@@ -54,7 +54,7 @@ import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 
-import org.metanorma.fopifhandler.FOPIFIndexHandler;
+//import org.metanorma.fopifhandler.FOPIFIndexHandler;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -786,7 +786,7 @@ public class PDFGenerator {
 
     // Apply XSL tranformation (file xsltfile) for XML String or StreamSource, by using Compiling processor
     // XSLT should be simple, without extension function
-    /*private String applyXSLTC(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
+    private String applyXSLTC(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
         long startMethodTime = System.currentTimeMillis();
 
         String key = "javax.xml.transform.TransformerFactory";
@@ -819,7 +819,7 @@ public class PDFGenerator {
         printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
 
         return xmlResult;
-    }*/
+    }
 
     // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
     private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
