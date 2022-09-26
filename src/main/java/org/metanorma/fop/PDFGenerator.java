@@ -698,15 +698,15 @@ public class PDFGenerator {
         long startMethodTime = System.currentTimeMillis();
         
         try {
-            //String xmlIndex = applyXSLTC("index.xsl", intermediateXML, false);
+            String xmlIndex = applyXSLTC("index.xsl", intermediateXML, false);
 
-            SAXParserFactory factory = SAXParserFactory.newInstance();
+            /*SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             FOPIFIndexHandler fopIFIndexHandler = new FOPIFIndexHandler();
             InputSource srcIntermediateXML = new InputSource(new StringReader(intermediateXML));
             saxParser.parse(srcIntermediateXML, fopIFIndexHandler);
 
-            String xmlIndex = fopIFIndexHandler.getIndexItems();
+            String xmlIndex = fopIFIndexHandler.getIndexItems();*/
 
             if (xmlIndex.length() != 0) {
                 try ( 
