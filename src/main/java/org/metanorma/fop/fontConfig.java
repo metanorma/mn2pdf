@@ -794,6 +794,16 @@ class fontConfig {
             ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         }
         try {
+            // try to obtain font to check an exception:
+            // java.lang.NullPointerException: Cannot load from short array because "sun.awt.FontConfiguration.head" is null
+            String[] names = ge.getAvailableFontFamilyNames();
+            int count = names.length;
+        } catch (Exception e) {
+            logger.severe("[ERROR] " + e.toString());
+            logger.severe("[ERROR] fontconfig not found or no one system font not installed.");
+            System.exit(ERROR_EXIT_CODE);
+        }
+        try {
             Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));            
             //register the font
             ge.registerFont(ttfFont);
