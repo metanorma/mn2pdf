@@ -17,7 +17,7 @@
 -->
 <!-- $Id$ -->
 <catalogue xml:lang="en">
-  <message key="locator">[ (See position {loc} in .fo file)| (See {#gatherContextInfo})| (No context info available)]</message>
+  <message key="locator">[ (See position {loc} )| (See {#gatherContextInfo})| (No context info available)]</message>
   <message key="rowTooTall">The contents of table-row {row} are taller than they should be (there is a block-progression-dimension or height constraint on the indicated row). Due to its contents the row grows to {effCellBPD} millipoints, but the row shouldn't get any taller than {maxCellBPD} millipoints.{{locator}}</message>
   <message key="tableFixedAutoWidthNotSupported">table-layout="fixed" and width="auto", but auto-layout not supported =&gt; assuming width="100%".{{locator}}</message>
   <message key="objectTooWide">The extent in inline-progression-direction (width) of a {elementName} is bigger than the available space ({effIPD}mpt &gt; {maxIPD}mpt).{{locator}}</message>
