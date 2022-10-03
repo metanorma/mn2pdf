@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.apache.fop.fo.FObj;
+import org.apache.fop.layoutmgr.LayoutManager;
 import org.apache.fop.util.XMLResourceBundle;
 import org.apache.fop.util.text.AdvancedMessageFormat;
 import org.apache.fop.util.text.AdvancedMessageFormat.Part;
@@ -86,6 +88,10 @@ public final class EventFormatter {
         String key = event.getEventKey();
         String template;
         if (bundle != null) {
+            String elementName = (String)event.getParams().get("elementName");
+            if (key.equals("overconstrainedAdjustEndIndent") && elementName != null && elementName.equals("fo:table")) {
+                key = "overconstrainedAdjustEndIndentTable";
+            }
             template = bundle.getString(key);
         } else {
             template = "Missing bundle. Can't lookup event key: '" + key + "'.";
@@ -132,6 +138,35 @@ public final class EventFormatter {
     public static String format(Event event, String pattern) {
         AdvancedMessageFormat format = new AdvancedMessageFormat(pattern);
         Map params = new java.util.HashMap(event.getParams());
+
+        String elementId = (String) params.get("elementId");
+        if (elementId == null && params.get("elementName") != null) {
+            elementId = "";
+            String elementPage = "unknown";
+            Object source = event.getSource();
+            LayoutManager lm = (source instanceof LayoutManager) ? (LayoutManager)source : null;
+
+            String id = "";
+            String page = "";
+
+            if (lm != null) {
+                try {
+                    id = lm.getFObj().getId();
+                    page = lm.getPSLM().getCurrentPage().getPageViewport().getPageNumberString();
+                } catch (Exception ex) { }
+            }
+
+            if (id != null && !id.isEmpty()) {
+                elementId = "(id='" + id + "')";
+            }
+            if (page != null && !page.isEmpty()) {
+                elementPage = page;
+            }
+
+            params.put("elementId",  elementId);
+            params.put("page",  elementPage);
+        }
+
         params.put("source", event.getSource());
         params.put("severity", event.getSeverity());
         params.put("groupID", event.getEventGroupID());
