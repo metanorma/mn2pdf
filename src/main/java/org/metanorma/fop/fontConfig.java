@@ -825,12 +825,20 @@ class fontConfig {
     private void printMessage(String msg) {
         if (!msg.isEmpty()) {
             logger.info(msg);
-            messages.add(msg);
+            if (!messages.contains(msg)) {
+                messages.add(msg);
+            }
         }
     }
 
     public List<String> getMessages() {
         return messages;
+    }
+
+    public void printMessages() {
+        for(String msg: getMessages()) {
+            logger.warning(msg);
+        }
     }
 
     private String innerXml(Node node) {

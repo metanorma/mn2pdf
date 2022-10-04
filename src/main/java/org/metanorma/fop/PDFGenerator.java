@@ -421,10 +421,9 @@ public class PDFGenerator {
                 runFOP(fontcfg, src, pdf);
                 logger.info(WARNING_NONPDFUA);
             }
-            
-            for(String msg: fontcfg.getMessages()) {
-            	logger.info(msg);
-            }
+
+            fontcfg.printMessages();
+
         } catch (Exception e) {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
