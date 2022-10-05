@@ -54,6 +54,7 @@ import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 
+import org.metanorma.fop.eventlistener.LoggingEventListener;
 import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.utils.LoggerHelper;
@@ -495,6 +496,8 @@ public class PDFGenerator {
             // Add your own event listener
             //foUserAgent.getEventBroadcaster().addEventListener(new MyEventListener());
 
+            foUserAgent.getEventBroadcaster().addEventListener(new LoggingEventListener());
+
             // Setup output stream.  Note: Using BufferedOutputStream
             // for performance reasons (helpful with FileOutputStreams).
             out = new FileOutputStream(pdf);
@@ -652,6 +655,8 @@ public class PDFGenerator {
         userAgent.setDocumentHandlerOverride(ifSerializer);
         if (isSecondPass) {
             userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
+        } else {
+            userAgent.getEventBroadcaster().addEventListener(new LoggingEventListener());
         }
         JEuclidFopFactoryConfigurator.configure(fopFactory);
         
