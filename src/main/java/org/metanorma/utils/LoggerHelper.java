@@ -61,7 +61,7 @@ public final class LoggerHelper {
         }
         File logfile = new File(logFilename);
         if (Util.getFileSize(logfile) > 0) {
-            System.out.println("There are warnings:");
+            System.out.println("There are warnings and errors:");
             try (BufferedReader br = new BufferedReader(new FileReader(logFilename))) {
                 String line;
                 while ((line = br.readLine()) != null) {
