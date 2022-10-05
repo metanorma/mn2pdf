@@ -100,7 +100,12 @@ public class Util {
             }
         }
     }
-    
+
+    public static long getFileSize(File file) {
+        long length = file.length();
+        return length;
+    }
+
     public static void downloadFile(String url, Path destPath) {
         logger.info("Downloading " + url + "...");
         try {

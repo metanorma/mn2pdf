@@ -345,6 +345,8 @@ public class mn2pdf {
                 System.exit(ERROR_EXIT_CODE);
             }
         }
+
+        LoggerHelper.closeFileHandler();
     }
 
     private static String getUsage() {
