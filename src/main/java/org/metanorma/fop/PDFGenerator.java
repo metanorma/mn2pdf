@@ -54,6 +54,8 @@ import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 
+import org.metanorma.fop.eventlistener.LoggingEventListener;
+import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.InputSource;
@@ -349,9 +351,8 @@ public class PDFGenerator {
     /**
      * Converts an XML file to a PDF file using FOP
      *
-     * @param config the FOP config file
-     * @param xml the XML source file
-     * @param xsl the XSL file
+     * @param fontcfg the FOP config file
+     * @param xsltConverter the XSL converter
      * @param pdf the target PDF file
      * @throws IOException In case of an I/O problem
      * @throws FOPException, SAXException In case of a FOP problem
@@ -421,10 +422,9 @@ public class PDFGenerator {
                 runFOP(fontcfg, src, pdf);
                 logger.info(WARNING_NONPDFUA);
             }
-            
-            for(String msg: fontcfg.getMessages()) {
-            	logger.info(msg);
-            }
+
+            fontcfg.printMessages();
+
         } catch (Exception e) {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
@@ -495,6 +495,8 @@ public class PDFGenerator {
             //foUserAgent.getEventBroadcaster().addEventListener(new SysOutEventListener());
             // Add your own event listener
             //foUserAgent.getEventBroadcaster().addEventListener(new MyEventListener());
+
+            foUserAgent.getEventBroadcaster().addEventListener(new LoggingEventListener());
 
             // Setup output stream.  Note: Using BufferedOutputStream
             // for performance reasons (helpful with FileOutputStreams).
@@ -653,6 +655,8 @@ public class PDFGenerator {
         userAgent.setDocumentHandlerOverride(ifSerializer);
         if (isSecondPass) {
             userAgent.getEventBroadcaster().addEventListener(new SecondPassSysOutEventListener());
+        } else {
+            userAgent.getEventBroadcaster().addEventListener(new LoggingEventListener());
         }
         JEuclidFopFactoryConfigurator.configure(fopFactory);
         
@@ -912,54 +916,7 @@ public class PDFGenerator {
 
     }*/
 
-    /** A simple event listener that writes the events to stdout and sterr. */
-    //private static class SysOutEventListener implements org.apache.fop.events.EventListener {
 
-        /** {@inheritDoc} */
-   /*     public void processEvent(Event event) {
-            String msg = EventFormatter.format(event);
-            EventSeverity severity = event.getSeverity();
-            if (severity == EventSeverity.INFO) {
-                System.out.println("[INFO ] " + msg);
-            } else if (severity == EventSeverity.WARN) {
-                System.out.println("[WARN ] " + msg);
-            } else if (severity == EventSeverity.ERROR) {
-                System.err.println("[ERROR] " + msg);
-            } else if (severity == EventSeverity.FATAL) {
-                System.err.println("[FATAL] " + msg);
-            } else {
-                assert false;
-            }
-        }
-    }*/
-    
-    /** A simple event listener that writes the events to stdout and sterr. */
-    private static class SecondPassSysOutEventListener implements org.apache.fop.events.EventListener {
-
-        /** {@inheritDoc} */
-        public void processEvent(Event event) {
-            String msg = EventFormatter.format(event);
-            EventSeverity severity = event.getSeverity();
-            if (severity == EventSeverity.INFO) {
-                if(msg.startsWith("Rendered page #")) {
-                    //System.out.println("[INFO] Intermediate format. " + msg);
-                    logger.log(Level.INFO, "[INFO] Intermediate format. {0}", msg);
-                }
-            } else if (severity == EventSeverity.WARN) {
-                //System.out.println("[WARN] " + msg);
-            } else if (severity == EventSeverity.ERROR) {
-                //System.err.println("[ERROR] " + msg);
-                logger.log(Level.SEVERE, "[ERROR] {0}", msg);
-            } else if (severity == EventSeverity.FATAL) {
-                //System.err.println("[FATAL] " + msg);
-                logger.log(Level.SEVERE, "[FATAL] {0}", msg);
-            } else {
-                assert false;
-            }
-        }
-    }
-    
-    
     private int getPageCount() {
         return pageCount;
     }

@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.apache.fop.events.model.EventSeverity;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.layoutmgr.LayoutManager;
 import org.apache.fop.util.XMLResourceBundle;
@@ -91,6 +92,7 @@ public final class EventFormatter {
             String elementName = (String)event.getParams().get("elementName");
             if (key.equals("overconstrainedAdjustEndIndent") && elementName != null && elementName.equals("fo:table")) {
                 key = "overconstrainedAdjustEndIndentTable";
+                event.setSeverity(EventSeverity.WARN);
             }
             template = bundle.getString(key);
         } else {

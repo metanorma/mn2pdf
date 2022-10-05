@@ -251,11 +251,12 @@ public class mn2pdf {
                 }
                 System.out.println("\n");
                 
-                
                 final String argXML = cmd.getOptionValue("xml-file");
                 final String argXSL = cmd.getOptionValue("xsl-file");
                 final String argPDF = cmd.getOptionValue("pdf-file");
-                
+
+                LoggerHelper.setupLogger(argPDF);
+
                 PDFGenerator pdfGenerator = new PDFGenerator(argXML, argXSL, argPDF);
                 
                 if (cmd.hasOption("font-path")) {
@@ -344,6 +345,8 @@ public class mn2pdf {
                 System.exit(ERROR_EXIT_CODE);
             }
         }
+
+        LoggerHelper.closeFileHandler();
     }
 
     private static String getUsage() {
