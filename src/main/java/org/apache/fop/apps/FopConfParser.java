@@ -234,7 +234,7 @@ public class FopConfParser {
                     FopFactoryConfig.DEFAULT_PAGE_HEIGHT);
             fopFactoryBuilder.setPageHeight(pageHeight);
             if (log.isInfoEnabled()) {
-                log.info("Default page-height set to: " + pageHeight);
+                // log.info("Default page-height set to: " + pageHeight);
             }
         }
         if (pageConfig.getAttribute("width", null) != null) {
@@ -242,7 +242,7 @@ public class FopConfParser {
                     FopFactoryConfig.DEFAULT_PAGE_WIDTH);
             fopFactoryBuilder.setPageWidth(pageWidth);
             if (log.isInfoEnabled()) {
-                log.info("Default page-width set to: " + pageWidth);
+                // log.info("Default page-width set to: " + pageWidth);
             }
         }
 
