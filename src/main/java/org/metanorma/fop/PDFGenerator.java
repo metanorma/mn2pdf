@@ -56,6 +56,7 @@ import static org.metanorma.fop.Util.getStreamFromResources;
 
 import org.metanorma.fop.eventlistener.LoggingEventListener;
 import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
+import org.metanorma.fop.ifhandler.FOPIFHiddenMathHandler;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.InputSource;
@@ -451,8 +452,9 @@ public class PDFGenerator {
                 
                 if (isAddMathAsText) {
                     logger.info("Updating Intermediate Format (adding hidden math)...");
-                    xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
-                    
+                    //xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
+                    xmlIF = addHiddenMath(xmlIF);
+
                     debugXSLFO = xmlIF;
                 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
@@ -728,7 +730,25 @@ public class PDFGenerator {
         printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
     }
     
-    
+    private String addHiddenMath(String sourceXML) {
+        long startMethodTime = System.currentTimeMillis();
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            FOPIFHiddenMathHandler fopIFHiddenMathHandler = new FOPIFHiddenMathHandler();
+            InputSource inputSource = new InputSource( new StringReader(sourceXML));
+            saxParser.parse(inputSource, fopIFHiddenMathHandler);
+            String result = fopIFHiddenMathHandler.getResultedXML();
+            printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+            return result;
+        }
+        catch (Exception ex) {
+            logger.severe("Can't save index.xml into temporary folder");
+            ex.printStackTrace();
+        }
+        return sourceXML;
+    }
+
     private String createTableIF(String intermediateXML) {
         String xmlTableIF = "";
         long startMethodTime = System.currentTimeMillis();

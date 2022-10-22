@@ -1,6 +1,7 @@
 package org.metanorma.fop.ifhandler;
 
 import org.metanorma.fop.Util;
+import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -19,12 +20,15 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.logging.Logger;
 
 /*
  * This class is replacement of add_hidden_math.xsl for fast Apache IF XML processing (adding hidden Math text)
  */
 
 public class FOPIFHiddenMathHandler extends DefaultHandler {
+
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
     private final String XMLHEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
@@ -137,7 +141,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
 
                 String strViewport =  sbViewport.toString();
                 if (strViewport.contains("<math")) {
-                    System.out.println("Contains Math");
+                    //System.out.println("Contains Math");
 
                     try {
                         Source srcXSL = new StreamSource(Util.getStreamFromResources(getClass().getClassLoader(), "add_hidden_math_partial.xsl"));
@@ -173,6 +177,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
 
                         sbResult.append(xmlResult);
                     } catch (Exception ex) {
+                        logger.severe(ex.toString());
                         sbResult.append(strViewport);
                     }
 
