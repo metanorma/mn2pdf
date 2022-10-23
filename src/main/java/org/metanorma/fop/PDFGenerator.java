@@ -743,7 +743,7 @@ public class PDFGenerator {
             return result;
         }
         catch (Exception ex) {
-            logger.severe("Can't save index.xml into temporary folder");
+            logger.severe("Can't update IF for hidden math.");
             ex.printStackTrace();
         }
         return sourceXML;

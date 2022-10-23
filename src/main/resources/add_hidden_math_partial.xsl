@@ -26,6 +26,13 @@
 	
 	
 	<xsl:template match="im:font[following-sibling::*[1][self::im:image[math:math]]] | im:font[following-sibling::*[1][self::im:id]][following-sibling::*[2][self::im:image[math:math]]]">
+		
+		<!-- <debug>
+			<instream-foreign-objects>
+				<xsl:copy-of select="$instream-foreign-objects"/>
+			</instream-foreign-objects>
+		</debug> -->
+	
 		<xsl:variable name="image_" select="following-sibling::im:image[math:math]"/>
 		<xsl:variable name="image" select="xalan:nodeset($image_)"/>
 		
@@ -35,6 +42,7 @@
 		<xsl:variable name="instream-foreign-object" select="xalan:nodeset($instream-foreign-object_)"/>
 		
 		<xsl:variable name="instream-foreign-object_alt-text" select="$instream-foreign-object/@alt-text"/>
+		<xsl:variable name="instream-foreign-object_preceding_inline_text_struct_id" select="$instream-foreign-object/@preceding_inline_text_struct_id"/>
 		
 		<xsl:variable name="width" select="$image/@width"/>
 		<xsl:variable name="height" select="$image/@height"/>
@@ -66,8 +74,8 @@
 				<xsl:attribute name="x"><xsl:value-of select="$text_x"/></xsl:attribute>
 				<xsl:attribute name="y"><xsl:value-of select="$text_y"/></xsl:attribute>
 				<xsl:attribute name="foi:struct-ref">
-					<xsl:value-of select="$instream-foreign-object/@preceding_inline_text_struct_id"/>
-				</xsl:attribute> <!-- <xsl:value-of select="$ref"/> -->
+					<xsl:value-of select="$instream-foreign-object_preceding_inline_text_struct_id"/>
+				</xsl:attribute>
 				<xsl:value-of select="$instream-foreign-object_alt-text"/>
 			</xsl:element>
 			
