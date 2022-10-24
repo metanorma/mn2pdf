@@ -95,8 +95,8 @@
 				<xsl:variable name="new_y" select="$y + number($value_y)"/>
 				
 				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name = 'viewport']">
-						<xsl:apply-templates select="ancestor::*[local-name = 'viewport'][1]">
+					<xsl:when test="ancestor::*[local-name() = 'viewport']">
+						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]">
 							<xsl:with-param name="x" select="$new_x"/>
 							<xsl:with-param name="y" select="$new_y"/>
 						</xsl:apply-templates>
@@ -113,8 +113,8 @@
 			<xsl:otherwise>
 			
 				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name = 'viewport']">
-						<xsl:apply-templates select="ancestor::*[local-name = 'viewport'][1]">
+					<xsl:when test="ancestor::*[local-name() = 'viewport']">
+						<xsl:apply-templates select="ancestor::*[local-name() = 'viewport'][1]">
 							<xsl:with-param name="x" select="$x"/>
 							<xsl:with-param name="y" select="$y"/>
 						</xsl:apply-templates>
