@@ -158,7 +158,6 @@ public class FOPIFFlatHandler extends DefaultHandler {
                 default:
                     break;
             }
-
         }
         skipElements.pop();
     }

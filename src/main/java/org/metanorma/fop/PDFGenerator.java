@@ -56,6 +56,7 @@ import static org.metanorma.fop.Util.getStreamFromResources;
 
 import org.metanorma.fop.eventlistener.LoggingEventListener;
 import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
+import org.metanorma.fop.ifhandler.FOPIFFlatHandler;
 import org.metanorma.fop.ifhandler.FOPIFHiddenMathHandler;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.utils.LoggerHelper;
@@ -577,13 +578,18 @@ public class PDFGenerator {
             }
         }
         
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+
         
         if (isAddAnnotations) {
             logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
-                String xml_review = applyXSLTExtended("xfdf.xsl", sourceXMLDocument.getStreamSource(), xmlIF, false);
-                
+
+                String xmlIFflat = flatIFforXFDF(xmlIF);
+
+                debugSaveXML(xmlIFflat, pdf.getAbsolutePath() + ".if.flat.xfdf.xml");
+
+                String xml_review = applyXSLTExtended("xfdf_simple.xsl", sourceXMLDocument.getStreamSource(), xmlIFflat, false);
+
                 debugSaveXML(xml_review, pdf.getAbsolutePath() + ".if.xfdf.xml");
                 
                 Annotation annotations = new Annotation();
@@ -593,7 +599,8 @@ public class PDFGenerator {
                 ex.printStackTrace();
             }
         }
-        
+
+        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
     }
     
     private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
@@ -744,6 +751,25 @@ public class PDFGenerator {
         }
         catch (Exception ex) {
             logger.severe("Can't update IF for hidden math.");
+            ex.printStackTrace();
+        }
+        return sourceXML;
+    }
+
+    private String flatIFforXFDF(String sourceXML) {
+        long startMethodTime = System.currentTimeMillis();
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            FOPIFFlatHandler fopIFFlatHandler = new FOPIFFlatHandler();
+            InputSource inputSource = new InputSource( new StringReader(sourceXML));
+            saxParser.parse(inputSource, fopIFFlatHandler);
+            String result = fopIFFlatHandler.getResultedXML();
+            printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+            return result;
+        }
+        catch (Exception ex) {
+            logger.severe("Can't flat IF.");
             ex.printStackTrace();
         }
         return sourceXML;
