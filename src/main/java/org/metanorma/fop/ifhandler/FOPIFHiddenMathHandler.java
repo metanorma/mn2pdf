@@ -80,7 +80,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
                 copyStartElement(qName, attr);
                 break;
             case "fo:instream-foreign-object":
-                String alt_text = escapeXMLEntities(attr.getValue("fox:alt-text"));
+                String alt_text = Util.escapeXMLEntities(attr.getValue("fox:alt-text"));
                 String struct_id = attr.getValue("foi:struct-id");
                 if (alt_text != null && !alt_text.isEmpty()) { // && previousElement.equals("fo:inline")
                     mapInstreamForeignObjects.put(struct_id, new InstreamForeignObject(struct_id, strPrecedingInlineTextStructId, alt_text));
@@ -122,7 +122,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
             sbTmp.append(" ");
             sbTmp.append(attr.getLocalName(i));
             sbTmp.append("=\"");
-            String value = escapeXMLEntities(attr.getValue(i));
+            String value = Util.escapeXMLEntities(attr.getValue(i));
             sbTmp.append(value);
             sbTmp.append("\"");
         }
@@ -210,7 +210,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
     public void characters(char character[], int start, int length) throws SAXException {
 
         String str = new String(character, start, length);
-        str = escapeXMLEntities(str);
+        str = Util.escapeXMLEntities(str);
         if (!str.isEmpty()) {
             if (isViewportProcessing) {
                 updateStackChar(sbViewport);
@@ -227,10 +227,6 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
             sb.append(stackChar.pop());
             stackChar.push(Character.MIN_VALUE);
         }
-    }
-
-    private String escapeXMLEntities(String str) {
-        return str.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"", "&quot;");
     }
 
     public String getResultedXML() {
