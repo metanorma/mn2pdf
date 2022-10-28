@@ -702,11 +702,4 @@ public class Util {
         return sb.toString(); 
     }
 
-    public static String escapeXMLEntities(String str) {
-        return str.replaceAll("<","&lt;")
-                .replaceAll(">","&gt;")
-                .replaceAll("\"", "&quot;")
-                .replaceAll("&", "&amp;")
-                .replaceAll("'", "&apos;");
-    }
 }

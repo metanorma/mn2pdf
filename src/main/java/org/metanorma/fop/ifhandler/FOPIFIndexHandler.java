@@ -1,6 +1,6 @@
 package org.metanorma.fop.ifhandler;
 
-import org.metanorma.fop.Util;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -63,7 +63,7 @@ public class FOPIFIndexHandler extends DefaultHandler {
             elementValue = new StringBuilder();
         }
         String str = new String(ch, start, length);
-        str = Util.escapeXMLEntities(str);
+        str = StringEscapeUtils.escapeXml(str);
         elementValue.append(str);
     }
 

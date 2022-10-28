@@ -1,5 +1,6 @@
 package org.metanorma.fop.ifhandler;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.metanorma.fop.Util;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
@@ -80,7 +81,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
                 copyStartElement(qName, attr);
                 break;
             case "fo:instream-foreign-object":
-                String alt_text = Util.escapeXMLEntities(attr.getValue("fox:alt-text"));
+                String alt_text = StringEscapeUtils.escapeXml(attr.getValue("fox:alt-text"));
                 String struct_id = attr.getValue("foi:struct-id");
                 if (alt_text != null && !alt_text.isEmpty()) { // && previousElement.equals("fo:inline")
                     mapInstreamForeignObjects.put(struct_id, new InstreamForeignObject(struct_id, strPrecedingInlineTextStructId, alt_text));
@@ -122,7 +123,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
             sbTmp.append(" ");
             sbTmp.append(attr.getLocalName(i));
             sbTmp.append("=\"");
-            String value = Util.escapeXMLEntities(attr.getValue(i));
+            String value = StringEscapeUtils.escapeXml(attr.getValue(i));
             sbTmp.append(value);
             sbTmp.append("\"");
         }
@@ -210,7 +211,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
     public void characters(char character[], int start, int length) throws SAXException {
 
         String str = new String(character, start, length);
-        str = Util.escapeXMLEntities(str);
+        str = StringEscapeUtils.escapeXml(str);
         if (!str.isEmpty()) {
             if (isViewportProcessing) {
                 updateStackChar(sbViewport);

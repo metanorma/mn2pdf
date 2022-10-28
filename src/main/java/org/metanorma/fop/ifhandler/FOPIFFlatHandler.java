@@ -1,6 +1,6 @@
 package org.metanorma.fop.ifhandler;
 
-import org.metanorma.fop.Util;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -134,7 +134,7 @@ public class FOPIFFlatHandler extends DefaultHandler {
                     sbTmp.append(" ");
                     sbTmp.append(attr.getLocalName(i));
                     sbTmp.append("=\"");
-                    String value = Util.escapeXMLEntities(attr.getValue(i));
+                    String value = StringEscapeUtils.escapeXml(attr.getValue(i));
                     sbTmp.append(value);
                     sbTmp.append("\"");
                 }
@@ -181,7 +181,7 @@ public class FOPIFFlatHandler extends DefaultHandler {
         } else {
             if (currElement.equals("text")) {
                 String str = new String(character, start, length);
-                str = Util.escapeXMLEntities(str);
+                str = StringEscapeUtils.escapeXml(str);
                 if (!str.isEmpty()) {
                     updateStackChar(sbResult);
                     sbResult.append(str);
