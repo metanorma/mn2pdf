@@ -37,6 +37,8 @@ public class LoggingEventListener implements EventListener {
                     loggedMessages.add(msg);
                     logger.warning(msg);
                 }
+            } else if (msg.contains("\"empty_bookmark\"")) {
+                // skip message, no need output 'Bookmarks: Unresolved ID reference "empty_bookmark" found.'
             } else {
                 logger.warning(msg);
             }
