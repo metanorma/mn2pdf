@@ -91,7 +91,6 @@ public final class EventFormatter {
             String elementName = (String)event.getParams().get("elementName");
             if (elementName != null) {
                 String className = event.getSource().getClass().toString();
-                System.out.println(className);
                 try {
                     String elementId = ((LayoutManager) (event.getSource())).getFObj().getId();
                     if (elementId != null && elementId.startsWith("__internal_layout__")) { //
