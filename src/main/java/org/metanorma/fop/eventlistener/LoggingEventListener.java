@@ -22,6 +22,9 @@ public class LoggingEventListener implements EventListener {
     /** {@inheritDoc} */
     public void processEvent(Event event) {
         String msg = EventFormatter.format(event);
+        if (msg.isEmpty()) {
+            return;
+        }
         EventSeverity severity = event.getSeverity();
         if (severity == EventSeverity.INFO) {
             logger.info(msg);

@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.apache.fop.events.model.EventSeverity;
-import org.apache.fop.fo.FObj;
 import org.apache.fop.layoutmgr.LayoutManager;
 import org.apache.fop.util.XMLResourceBundle;
 import org.apache.fop.util.text.AdvancedMessageFormat;
@@ -90,6 +89,16 @@ public final class EventFormatter {
         String template;
         if (bundle != null) {
             String elementName = (String)event.getParams().get("elementName");
+            if (elementName != null) {
+                String className = event.getSource().getClass().toString();
+                try {
+                    String elementId = ((LayoutManager) (event.getSource())).getFObj().getId();
+                    if (elementId != null && elementId.startsWith("__internal_layout__")) { //
+                        // special case when element (for instance, table) is using for block position on the page, no need warning
+                        return "";
+                    }
+                } catch (Exception ex) { }
+            }
             if (key.equals("overconstrainedAdjustEndIndent") && elementName != null && elementName.equals("fo:table")) {
                 key = "overconstrainedAdjustEndIndentTable";
                 event.setSeverity(EventSeverity.WARN);
