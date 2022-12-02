@@ -516,7 +516,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
 
         private boolean isWordSpace(int mappingIndex) {
             return userAgent.isAccessibilityEnabled()
-                    && mappingIndex < mappings.size() - 1 && getGlyphMapping(mappingIndex).isSpace;
+                    && mappingIndex < mappings.size() - 1 && getGlyphMapping(mappingIndex).isSpace && !getGlyphMapping(mappingIndex).isZeroWidthSpace;
         }
 
         private int[] getNonEmptyLevels() {
@@ -858,7 +858,10 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
                 // create the GlyphMapping object
                 Font font = FontSelector.selectFontForCharacterInText(ch, foText, this);
                 MinOptMax ipd = MinOptMax.getInstance(font.getCharWidth(ch));
-                mapping = new GlyphMapping(nextStart, nextStart + 1, 0, 0, ipd, false, true,
+
+                boolean isZeroWidthSpace = (ch == CharUtilities.ZERO_WIDTH_SPACE);
+
+                mapping = new GlyphMapping(nextStart, nextStart + 1, 0, 0, ipd, false, true, isZeroWidthSpace,
                                         breakOpportunity, font, level, null);
                 thisStart = nextStart + 1;
             } else if (CharUtilities.isExplicitBreak(ch)) {
