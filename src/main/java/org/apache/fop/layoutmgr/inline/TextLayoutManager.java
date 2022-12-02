@@ -515,6 +515,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
         }
 
         private boolean isWordSpace(int mappingIndex) {
+            // !getGlyphMapping(mappingIndex).isZeroWidthSpace - no need add space for zero-width space, otherwise we get redundant spaces in copy-paste text from PDF
             return userAgent.isAccessibilityEnabled()
                     && mappingIndex < mappings.size() - 1 && getGlyphMapping(mappingIndex).isSpace && !getGlyphMapping(mappingIndex).isZeroWidthSpace;
         }
@@ -859,6 +860,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
                 Font font = FontSelector.selectFontForCharacterInText(ch, foText, this);
                 MinOptMax ipd = MinOptMax.getInstance(font.getCharWidth(ch));
 
+                // to check for zero-width space (otherwise we get redundant spaces in copy-paste text from PDF)
                 boolean isZeroWidthSpace = (ch == CharUtilities.ZERO_WIDTH_SPACE);
 
                 mapping = new GlyphMapping(nextStart, nextStart + 1, 0, 0, ipd, false, true, isZeroWidthSpace,

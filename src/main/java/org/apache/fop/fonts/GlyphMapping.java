@@ -49,7 +49,7 @@ public class GlyphMapping {
     public MinOptMax areaIPD;
     public final boolean isHyphenated;
     public final boolean isSpace;
-    public final boolean isZeroWidthSpace;
+    public final boolean isZeroWidthSpace; // to check for zero-width space (otherwise we get redundant spaces in copy-paste text from PDF)
     public boolean breakOppAfter;
     public final Font font;
     public final int level;
