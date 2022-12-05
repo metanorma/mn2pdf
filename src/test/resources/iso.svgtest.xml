@@ -64,68 +64,7 @@
 <stagename>International standard</stagename>
 </ext>
 </bibdata>
-<boilerplate>
-  <copyright-statement>
-    <clause>
-    <p id="boilerplate-year">
-    © ISO 2016
-  </p>
-
-  <p id="boilerplate-message">
-    All rights
-reserved. Unless otherwise specified, no part of this publication may be
-reproduced or utilized otherwise in any form or by any means, electronic or
-mechanical, including photocopying, or posting on the internet or an intranet,
-without prior written permission. Permission can be requested from either ISO
-at the address below or ISO’s member body in the country of the requester.
-  </p>
-
-  <p id="boilerplate-address" align="left">
-    ISO copyright office<br/>
-    Ch. de Blandonnet 8 • CP 401<br/>
-    CH-1214 Vernier, Geneva, Switzerland<br/>
-    Tel.  + 41 22 749 01 11<br/>
-    Fax  + 41 22 749 09 47<br/>
-    Email: copyright@iso.org<br/>
-    Website: www.iso.org
-  </p>
-    <p id="boilerplate-place">
-    Published in Switzerland
-  </p>
-</clause>
-  </copyright-statement>
-
-  
-</boilerplate>
-<preface><foreword id="_e57da903-caf5-4c4c-bb61-1e634b663aa6" obligation="informative"><title>Foreword</title><p id="_6acd0fbd-0fd3-453c-b866-5f291640e32a">ISO (the International Organization for Standardization)
-is a worldwide federation of national standards bodies (ISO member bodies). The work of preparing International Standards is normally carried out through ISO technical committees. Each member body interested in a subject for which a technical committee has been established has the right to be represented on that committee. International organizations, governmental and non-governmental, in liaison with ISO, also take part in the work. ISO collaborates closely with the International Electrotechnical Commission (IEC) on all matters of electrotechnical standardization.</p>
-<p id="_b5fcb159-0930-46c9-8794-bcf9287fa455">The procedures used to develop this document and those intended for its further maintenance are described in the ISO/IEC Directives, Part 1. In particular the different approval criteria needed for the different types of ISO documents should be noted. This document was drafted in accordance with the editorial rules of the ISO/IEC Directives, Part 2 (see www.iso.org/directives).</p>
-<p id="_b17d6193-bc2e-4f16-a044-0eeea35cf528">Attention is drawn to the possibility that some of the elements of this document may be the subject of patent rights. ISO shall not be held responsible for identifying any or all such patent rights. Details of any patent rights identified during the development of the document will be in the Introduction and/or on the ISO list of patent declarations received (see www.iso.org/patents).</p>
-<p id="_98c8ff09-18a9-465f-9cf4-2707f4c789dd">Any trade name used in this document is information given for the convenience of users and does not constitute an endorsement.</p>
-<p id="_be07bd04-44e8-49f0-b21e-a2ad759627d5">For an explanation on the voluntary nature of standards, the meaning of ISO specific terms and expressions related to conformity assessment, as well as information about ISO’s adherence to the World Trade Organization (WTO) principles in the Technical Barriers to Trade (TBT) see the following URL: www.iso.org/iso/foreword.html.</p>
-<p id="_1e77947b-12e6-4229-9976-5843363f3726">This document was prepared by Technical Committee ISO/TC 34, <em>Food products</em>, Subcommittee SC 4, <em>Cereals and pulses</em>.</p>
-<p id="_f5ec8586-b70e-4731-a12a-f0f07c93f090">This second edition cancels and replaces the first edition (ISO 17301-1:2009), which has been technically revised.</p>
-<p id="_c37d2c2a-aa97-479f-89e5-6ababc008f23">The main changes compared to the previous edition are:</p>
-<ul id="_130af2af-789f-4faa-ac02-5e22b6ec2c6b">
-<li>
-<p id="_aa56c0bd-0023-46e3-a06b-a213a22461c0">updated normative references;</p>
-</li>
-<li>
-<p id="_4edfe1f2-9c75-4c56-8b5b-4562d1197a74">deletion of 4.3.</p>
-</li>
-</ul>
-<p id="_37cddcf3-a90a-49f5-aeac-87290116e8d8">A list of all parts in the ISO 17301 series can be found on the ISO website.</p>
-</foreword><introduction id="_introduction" obligation="informative"><title>Introduction</title><p id="_fa904e53-16d5-4c03-b64c-c04d60ffe061">This document was developed in response to worldwide demand for minimum specifications for rice traded internationally, since most commercial bulks of grain, which have not been screened or aspirated, contain a proportion of other grains, weed seeds, chaff, straw, stones, sand, etc. The vegetable materials can have physical and biological properties which differ from those of the main constituent and can therefore affect the storage behaviour.</p>
-<p id="_8b6e3079-8e46-4eaf-81a2-e339ee765755">Rice is a permanent host to a considerable microflora; most of these microorganisms are cosmopolitan, the majority are innocuous, but some produce harmful by-products. Microflora communities present on freshly harvested rice include many types of bacteria, moulds and yeasts. While the rice is ripening and its moisture content is falling, the number of field microorganisms, mainly bacteria, diminishes. When the rice is harvested, it is invaded by storage microorganisms and the field microflora gradually dies out. If the mass fraction of moisture (formerly expressed as moisture content) is less than 18 %, the microflora does not multiply, whereas above 18 % it does so rapidly. Thus, at harvest, the qualitative and the quantitative composition of the microflora depends more upon ecological factors than upon the variety of the rice. During transport and storage, additions to the microfloral population occur. Microorganisms on the rice at harvest tend to die out during storage and are replaced by microorganisms adapted to storage conditions.</p>
-<p id="_5b0e861e-d37d-4c78-9f30-1a72f775567b">Storage losses have been estimated as being an average of 5 %, and as much as 30 %, especially in countries with climates favourable to the rapid development of agents of deterioration and where storage techniques are poorly developed, such as developing countries in the damp tropics. The magnitude of these figures highlights the need to promote throughout the world a rapid improvement in techniques of conservation.</p>
-<p id="_4a4682c5-f381-4b8a-b84f-be97cc51f501">The International Organization for Standardization (ISO) draws attention to the fact that it is claimed that compliance with this document may involve the use of a patent concerning sample dividers given in <xref target="AnnexA"/> and shown in <xref target="figureA-1"/>.</p>
-<p id="_0d377fd3-1e1d-4476-8de3-bdb44b1a317e">ISO takes no position concerning the evidence, validity and scope of this patent right.</p>
-<p id="_f7f554f6-e79f-4837-a185-e70adac4a3d6">The holder of this patent right has assured ISO that he/she is willing to negotiate licences under reasonable and non-discriminatory terms and conditions with applicants throughout the world. In this respect, the statement of the holder of this patent right is registered with ISO. Information may be obtained from:</p>
-<p align="left" id="_2004d822-86c0-4d65-aea6-69322a490d09">Vache Equipment<br/>
-Fictitious<br/>
-World<br/>
-<link target="mailto:gehf@vacheequipment.fic"/></p>
-<p id="_fe71ac7c-ec05-482a-b94a-750fe62e7d6d">Attention is drawn to the possibility that some of the elements of this document may be the subject of patent rights other than those identified above. ISO shall not be held responsible for identifying any or all such patent rights.</p></introduction></preface><sections>
+<sections>
 
 <clause id="_scope" obligation="normative"><title>Scope</title><p id="_f9c95d6b-bfc6-4a1c-9e75-fc5720c899f4">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
 <p id="_d8863fda-f169-44a7-b0fa-e2e4c4097a70">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>

@@ -30,6 +30,7 @@ import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
 
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -366,7 +367,7 @@ public class mn2pdfTests {
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("iso.svgtest.xml").getFile();
         String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
-        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso-rice.pdf");
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.svgtest.pdf");
 
         String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
         mn2pdf.main(args);
@@ -375,6 +376,30 @@ public class mn2pdfTests {
         assertTrue(!capturedLog.contains("SVG graphic could not be rendered"));
         assertTrue(Files.exists(pdf));
     }
+
+    @Test
+    public void checkSpacesInPDF() throws ParseException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("iso.zerowidthspacetest.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.zerowidthspacetest.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        mn2pdf.main(args);
+
+        String pdftext = "";
+        PDDocument  doc;
+        try {
+            doc = PDDocument.load(pdf.toFile());
+            pdftext = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        assertTrue(pdftext.contains("the_integers") && pdftext.contains("elementary_space") && pdftext.contains("make_elementary_space"));
+    }
+
+
     
     @Test
     public void testDates() throws IOException {

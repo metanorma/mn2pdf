@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
+<title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
+<title language="en" format="text/plain" type="title-main">Specifications and test methods</title>
+<title language="en" format="text/plain" type="title-part">Rice (Final)</title>
+<title language="fr" format="text/plain" type="main">Céréales et légumineuses — Spécification et méthodes d’essai — Riz (Final)</title>
+<title language="fr" format="text/plain" type="title-intro">Céréales et légumineuses</title>
+<title language="fr" format="text/plain" type="title-main">Spécification et méthodes d’essai</title>
+<title language="fr" format="text/plain" type="title-part">Riz (Final)</title>
+<docidentifier type="iso">ISO 17301-1:2016</docidentifier>
+<docidentifier type="iso-with-lang">ISO 17301-1:2016(E)</docidentifier>
+<docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier>
+<docidentifier type="iso-tc">17301</docidentifier>
+<docnumber>17301</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<edition>2</edition>
+<version>
+<revision-date>2016-05-01</revision-date>
+</version>
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage abbreviation="IS">60</stage>
+<substage>60</substage>
+</status>
+<copyright>
+<from>2016</from>
+<owner>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>international-standard</doctype>
+<editorialgroup>
+<technical-committee number="34">Food products</technical-committee>
+<subcommittee number="4">Cereals and pulses</subcommittee>
+<workgroup number="4" type="WG">Amylose in rice</workgroup>
+<secretariat>SAC</secretariat>
+</editorialgroup>
+<ics>
+<code>67.060</code>
+</ics>
+<structuredidentifier>
+<project-number part="1">ISO 17301</project-number>
+</structuredidentifier>
+<stagename>International standard</stagename>
+</ext>
+</bibdata>
+<sections>
+
+<clause id="_scope" obligation="normative"><title>Scope</title><p id="_f9c95d6b-bfc6-4a1c-9e75-fc5720c899f4">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
+<p id="_d8863fda-f169-44a7-b0fa-e2e4c4097a70">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
+<p id="_3e3e9b84-724f-43e4-8920-14beb0051161">It is not applicable to cooked rice products.</p>
+
+<p id="the_elementary_spaces_constants">EXPRESS specification:</p>
+
+<sourcecode id="_cf1747a8-ea02-bbd5-06b6-5662ccab8995" lang="express" unnumbered="true">*)
+  the_integers        : elementary_space := make_elementary_space(es_integers);
+  the_reals           : elementary_space := make_elementary_space(es_reals);
+  the_complex_numbers : elementary_space := make_elementary_space(es_complex_numbers);
+  the_numbers         : elementary_space := make_elementary_space(es_numbers);
+  the_logicals        : elementary_space := make_elementary_space(es_logicals);
+  the_booleans        : elementary_space := make_elementary_space(es_booleans);
+  the_strings         : elementary_space := make_elementary_space(es_strings);
+  the_binarys         : elementary_space := make_elementary_space(es_binarys);
+  the_maths_spaces    : elementary_space := make_elementary_space(es_maths_spaces);
+  the_generics        : elementary_space := make_elementary_space(es_generics);
+(*</sourcecode>
+
+</clause>
+</sections>
+</iso-standard>
