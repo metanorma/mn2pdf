@@ -359,7 +359,22 @@ public class mn2pdfTests {
         String exprectedValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><syntax><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">root</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">b</span>&gt;</span>text<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">b</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">c</span> <span class=\"hljs-attr\">key</span>=<span class=\"hljs-string\">'value'</span>/&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">root</span>&gt;</span></syntax>";
         assertTrue(value.equals(exprectedValue));
     }
-    
+
+    @Test
+    public void successSVGRendering() throws ParseException, IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("iso.svgtest.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso-rice.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        mn2pdf.main(args);
+
+        String capturedLog = getTestCapturedLog();
+        assertTrue(!capturedLog.contains("SVG graphic could not be rendered"));
+        assertTrue(Files.exists(pdf));
+    }
     
     @Test
     public void testDates() throws IOException {
