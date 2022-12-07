@@ -522,7 +522,7 @@ public class PDFGenerator {
                 //Start area tree parsing
                 if (!isSkipPDFGeneration) {
                     transformer.transform(src, res);
-                    //this.pageCount = fop.getResults().getPageCount();
+                    this.pageCount = getIFPageCount(xmlIF);
                 }
             } 
                 
@@ -1133,7 +1133,15 @@ public class PDFGenerator {
             logger.log(Level.SEVERE, "Can't save debug xml file '{0}': {1}", new Object[]{pathTo, ex.toString()});
         }
     }
-    
+
+    private int getIFPageCount(String xmlIF) {
+        int pagecount = 0;
+        if (xmlIF != null) {
+            pagecount = xmlIF.split("<page ", -1).length - 1;
+        }
+        return pagecount;
+    }
+
     private void printProcessingTime(Method method, long startTime, String ... params) {
         if (DEBUG) {
             long endTime = System.currentTimeMillis();
