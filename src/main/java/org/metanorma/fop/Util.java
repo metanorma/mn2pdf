@@ -701,5 +701,15 @@ public class Util {
         }
         return sb.toString(); 
     }
-
+    
+    public static void printProcessingTime(String methodName, long startTime, String ... params) {
+        if (DEBUG) {
+            long endTime = System.currentTimeMillis();
+            String addon = Arrays.toString(params);
+            if (addon.isEmpty()) {
+                addon = "(" + addon + ")";
+            }
+            logger.log(Level.INFO, methodName + addon + " processing time: {0} milliseconds", endTime - startTime);
+        }
+    }
 }

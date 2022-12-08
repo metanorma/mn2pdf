@@ -95,15 +95,6 @@ public class XSLTconverter {
         
         sourceXMLDocument.setXMLFO(xmlFO);
         
-        printProcessingTime(methodName);
-        
-    }
-    
-    
-    private void printProcessingTime(String methodName) {
-        if (DEBUG) {
-            long endTime = System.currentTimeMillis();
-            logger.log(Level.INFO, methodName + " processing time: {0} milliseconds", endTime - startTime);
-        }
+        Util.printProcessingTime(methodName, startTime);
     }
 }

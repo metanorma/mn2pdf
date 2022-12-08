@@ -600,7 +600,7 @@ public class PDFGenerator {
             }
         }
 
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
     }
     
     private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
@@ -637,7 +637,7 @@ public class PDFGenerator {
             src = new StreamSource(new StringReader(xmlFO));
             
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
         return src;
     }
     
@@ -700,8 +700,8 @@ public class PDFGenerator {
         } finally {
             out.close();
         }
-        
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
         
         return xmlIF;
     }
@@ -734,7 +734,7 @@ public class PDFGenerator {
             logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
     }
     
     private String addHiddenMath(String sourceXML) {
@@ -746,7 +746,7 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
             String result = fopIFHiddenMathHandler.getResultedXML();
-            printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+            Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
             return result;
         }
         catch (Exception ex) {
@@ -765,7 +765,7 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFFlatHandler);
             String result = fopIFFlatHandler.getResultedXML();
-            printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+            Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
             return result;
         }
         catch (Exception ex) {
@@ -784,7 +784,7 @@ public class PDFGenerator {
             logger.severe("Can't generate information about tables from Intermediate Format.");
             ex.printStackTrace();
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
         return xmlTableIF;
     }
     
@@ -829,7 +829,7 @@ public class PDFGenerator {
         transformer.transform(src, sr);
         String xmlResult = resultWriter.toString();
         
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime, xsltfile);
         
         return xmlResult;
     }
@@ -896,7 +896,7 @@ public class PDFGenerator {
         transformer.transform(sourceXML, sr);
         String xmlResult = resultWriter.toString();
         
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime, xsltfile);
         
         return xmlResult;
     }
@@ -1110,7 +1110,7 @@ public class PDFGenerator {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Util.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
     }
     
     private void debugSaveXML(String xmlString, String pathTo) {
@@ -1142,11 +1142,4 @@ public class PDFGenerator {
         return pagecount;
     }
 
-    private void printProcessingTime(Method method, long startTime, String ... params) {
-        if (DEBUG) {
-            long endTime = System.currentTimeMillis();
-            String addon = Arrays.toString(params);
-            logger.log(Level.INFO, "Method '" + method.getName() + "(" + addon + ")' processing time: {0} milliseconds", endTime - startTime);
-        }
-    }
 }

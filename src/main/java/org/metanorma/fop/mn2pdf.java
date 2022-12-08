@@ -25,6 +25,8 @@ public class mn2pdf {
 
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
+    private static long startTime;
+    
     static final String CMD = "java -Xss5m -Xmx2048m -jar " + APP_NAME + ".jar";
     
     static final Options optionsInfo = new Options() {
@@ -224,6 +226,8 @@ public class mn2pdf {
         
         LoggerHelper.setupLogger();
         
+        startTime = System.currentTimeMillis();
+        
         CommandLineParser parser = new DefaultParser();
         
         String ver = Util.getAppVersion();
@@ -347,6 +351,7 @@ public class mn2pdf {
         }
 
         LoggerHelper.closeFileHandler();
+        Util.printProcessingTime("Total mn2pdf", startTime);
     }
 
     private static String getUsage() {
@@ -357,5 +362,4 @@ public class mn2pdf {
         pw.flush();
         return stringWriter.toString();
     }
-    
 }
