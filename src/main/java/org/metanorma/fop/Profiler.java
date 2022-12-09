@@ -39,7 +39,7 @@ public class Profiler {
             if (addon.isEmpty()) {
                 addon = "(" + addon + ")";
             }
-            String msg = String.format(methodName + addon + " processing time: {0} milliseconds", endTime - startTime);
+            String msg = String.format(methodName + addon + " processing time: %s milliseconds", endTime - startTime);
             logger.log(Level.INFO, msg);
             arraysMethodCalls.add(String.join("", Collections.nCopies(stackMethods.size() * 2, " ")) + msg);
         }
