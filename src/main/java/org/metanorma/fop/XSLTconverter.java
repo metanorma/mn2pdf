@@ -74,11 +74,13 @@ public class XSLTconverter {
     }
     
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
-        
-        startTime = System.currentTimeMillis();
-        
+
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-        
+
+        Profiler.addMethodCall(methodName);
+
+        startTime = System.currentTimeMillis();
+
         //Setup input for XSLT transformation
         Source src = sourceXMLDocument.getStreamSource();
         
@@ -94,7 +96,8 @@ public class XSLTconverter {
         String xmlFO = resultWriter.toString();
         
         sourceXMLDocument.setXMLFO(xmlFO);
-        
-        Util.printProcessingTime(methodName, startTime);
+
+        Profiler.printProcessingTime(methodName, startTime);
+        Profiler.removeMethodCall();
     }
 }

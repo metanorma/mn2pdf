@@ -697,19 +697,8 @@ public class Util {
         NodeList childNodes = node.getChildNodes();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < childNodes.getLength(); i++) {
-           sb.append(lsSerializer.writeToString(childNodes.item(i)));
+            sb.append(lsSerializer.writeToString(childNodes.item(i)));
         }
-        return sb.toString(); 
-    }
-    
-    public static void printProcessingTime(String methodName, long startTime, String ... params) {
-        if (DEBUG) {
-            long endTime = System.currentTimeMillis();
-            String addon = Arrays.toString(params);
-            if (addon.isEmpty()) {
-                addon = "(" + addon + ")";
-            }
-            logger.log(Level.INFO, methodName + addon + " processing time: {0} milliseconds", endTime - startTime);
-        }
+        return sb.toString();
     }
 }

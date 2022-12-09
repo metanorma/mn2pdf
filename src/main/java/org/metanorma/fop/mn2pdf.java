@@ -1,7 +1,6 @@
 package org.metanorma.fop;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
@@ -14,7 +13,6 @@ import org.apache.commons.cli.ParseException;
 import static org.metanorma.Constants.APP_NAME;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
 import static org.metanorma.Constants.DEBUG;
-import static org.metanorma.fop.PDFGenerator.logger;
 import org.metanorma.utils.LoggerHelper;
 
 
@@ -351,7 +349,11 @@ public class mn2pdf {
         }
 
         LoggerHelper.closeFileHandler();
-        Util.printProcessingTime("Total mn2pdf", startTime);
+        Profiler.printProcessingTime("Total mn2pdf", startTime);
+
+        Profiler.removeMethodCall();
+
+        Profiler.printFullProcessingTime();
     }
 
     private static String getUsage() {
