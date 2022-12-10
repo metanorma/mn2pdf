@@ -209,7 +209,7 @@ public class PDFGenerator {
     
     public boolean process() {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         try {
@@ -366,7 +366,7 @@ public class PDFGenerator {
      */
     private void convertmn2pdf(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         String imagesxml = sourceXMLDocument.getImageFilePath();
@@ -374,7 +374,7 @@ public class PDFGenerator {
         String indexxml = sourceXMLDocument.getIndexFilePath();
         
         try {
-            
+
             //Setup XSLT
             Properties additionalXSLTparams = new Properties();
             
@@ -446,7 +446,7 @@ public class PDFGenerator {
     
     private void runFOP (fontConfig fontcfg, Source src, File pdf) throws IOException, FOPException, SAXException, TransformerException {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         OutputStream out = null;
@@ -618,7 +618,7 @@ public class PDFGenerator {
     
     private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         Source src = sourceFO;
@@ -663,7 +663,7 @@ public class PDFGenerator {
     private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
 
         long startMethodTime = System.currentTimeMillis();
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         String xmlIF = "";
@@ -730,7 +730,7 @@ public class PDFGenerator {
     
     private void createIndexFile(String indexxmlFilePath, String intermediateXML, File pdf) {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         long startMethodTime = System.currentTimeMillis();
@@ -765,7 +765,7 @@ public class PDFGenerator {
     
     private String addHiddenMath(String sourceXML) {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         long startMethodTime = System.currentTimeMillis();
@@ -776,7 +776,7 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
             String result = fopIFHiddenMathHandler.getResultedXML();
-            Profiler.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
+            Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();
             return result;
         }
@@ -790,7 +790,7 @@ public class PDFGenerator {
 
     private String flatIFforXFDF(String sourceXML) {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         long startMethodTime = System.currentTimeMillis();
@@ -801,7 +801,7 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFFlatHandler);
             String result = fopIFFlatHandler.getResultedXML();
-            Profiler.printProcessingTime(new Object(){}.getClass().getEnclosingMethod().getName(), startMethodTime);
+            Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();
             return result;
         }
@@ -815,7 +815,7 @@ public class PDFGenerator {
 
     private String createTableIF(String intermediateXML) {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         String xmlTableIF = "";
@@ -857,7 +857,7 @@ public class PDFGenerator {
     // Apply XSL tranformation (file xsltfile) for XML String or StreamSource
     private String applyXSLT(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
         
@@ -921,7 +921,7 @@ public class PDFGenerator {
     // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
     private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
         long startMethodTime = System.currentTimeMillis();
@@ -1107,7 +1107,7 @@ public class PDFGenerator {
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
 
@@ -1177,19 +1177,12 @@ public class PDFGenerator {
         try {
             if (DEBUG) {
 
-                String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-                Profiler.addMethodCall(methodName);
-                long startMethodTime = System.currentTimeMillis();
-
                 //DEBUG: write table width information to file                
                 String xmlString_UTF8 = xmlString.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pathTo))) {
                         writer.write(xmlString_UTF8);                    
                 }
-
-                Profiler.printProcessingTime(methodName, startMethodTime);
-                Profiler.removeMethodCall();
 
                 //Setup output
                 //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");

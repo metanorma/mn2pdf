@@ -75,7 +75,7 @@ public class XSLTconverter {
     
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
         startTime = System.currentTimeMillis();
 
