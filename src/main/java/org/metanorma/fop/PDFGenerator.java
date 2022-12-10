@@ -662,13 +662,12 @@ public class PDFGenerator {
     
     private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
 
+        long startMethodTime = System.currentTimeMillis();
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         Profiler.addMethodCall(methodName);
 
         String xmlIF = "";
-        
-        long startMethodTime = System.currentTimeMillis();
-        
+
         // run 1st pass to produce FOP Intermediate Format
         FopFactory fopFactory = FopFactory.newInstance(fontConfig);
         //Create a user agent
@@ -860,7 +859,6 @@ public class PDFGenerator {
 
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         Profiler.addMethodCall(methodName);
-
         long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
@@ -1111,6 +1109,7 @@ public class PDFGenerator {
 
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
 
         long startMethodTime = System.currentTimeMillis();
         try {
@@ -1126,33 +1125,36 @@ public class PDFGenerator {
                     logger.severe("Can't generate information about tables from Intermediate Format.");
                     ex.printStackTrace();
                 }
-                
+
                 debugSaveXML(xmlTablesOnly, pdf.getAbsolutePath() + ".tablesonly.xml");
-                
+
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
+
                 // transform XML to XSL-FO (XML .fo file)
                 xsltConverter.transform(sourceXMLDocumentTablesOnly);
                 
                 String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
-                
-                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
-                
+
                 //debug
+                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
+
                 fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
-                
+
                 fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
                 Source sourceFO = new StreamSource(new StringReader(xmlFO));
+
                 logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
                 String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
 
                 xmlTableIF = createTableIF(xmlIF);
-                
+
                 debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
-                
+
                 xsltConverter.setParam("table_if", "false");
                 logger.info("[INFO] Generated successfully!");
             }
+
             if (!xmlTableIF.isEmpty()) {
                 // pass Table widths XML via parameter 'if_xml'
                 logger.info("[INFO] Generation XML with table's widths ...");
@@ -1175,12 +1177,21 @@ public class PDFGenerator {
     private void debugSaveXML(String xmlString, String pathTo) {
         try {
             if (DEBUG) {
+
+                String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+                Profiler.addMethodCall(methodName);
+                long startMethodTime = System.currentTimeMillis();
+
                 //DEBUG: write table width information to file                
                 String xmlString_UTF8 = xmlString.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pathTo))) {
                         writer.write(xmlString_UTF8);                    
                 }
+
+                Profiler.printProcessingTime(methodName, startMethodTime);
+                Profiler.removeMethodCall();
+
                 //Setup output
                 //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
                 //Resulting SAX events (the generated FO) must be piped through to FOP

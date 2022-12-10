@@ -86,7 +86,7 @@ import org.w3c.dom.ls.LSSerializer;
 public class Util {
     
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
-    
+
     public static int getFileSize(URL url) {
         URLConnection conn = null;
         try {

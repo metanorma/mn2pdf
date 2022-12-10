@@ -100,7 +100,7 @@ class fontConfig {
         
         setFontPath(DEFAULT_FONT_PATH);
         
-	FOPconfigXML = getSourceFOPConfigFile();
+	    FOPconfigXML = getSourceFOPConfigFile();
         
         if (fopFonts.isEmpty()) {
             fopFonts = getFOPfonts();
@@ -128,6 +128,10 @@ class fontConfig {
     }
     
     public void setFontManifest(File fFontManifest) {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         this.fFontManifest = fFontManifest;
         /* Example expected format:
         Cambria:
@@ -293,13 +297,22 @@ class fontConfig {
                 System.exit(ERROR_EXIT_CODE);
             }
         }
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public void outputFontManifestLog(Path logPath) {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         if(DEBUG) {
             Util.outputLog(logPath, fontManifestLog.toString());
             logger.log(Level.INFO, "Font manifest reading log saved to ''{0}''.", logPath);
         }
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public Map<String,String> getFontStyles(String style) {
@@ -404,6 +417,11 @@ class fontConfig {
     }
     
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
+
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         this.sourceDocumentFontList = sourceDocumentFontList;
         
         isReady = false;
@@ -421,11 +439,17 @@ class fontConfig {
                 }
             }*/         
         }
-        
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     
     private void updateConfig() throws IOException, Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         if(!isReady) {
 
             // set file paths for fonts
@@ -460,6 +484,9 @@ class fontConfig {
             }*/
             isReady = true;
         }
+        
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public void outputAvailableAWTFonts(Path logPath) {
@@ -471,11 +498,19 @@ class fontConfig {
     }
     
     private Document getSourceFOPConfigFile()  {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream config = Util.getStreamFromResources(getClass().getClassLoader(), CONFIG_NAME);
             Document sourceFOPConfig = dBuilder.parse(config);
+
+            Profiler.printProcessingTime(methodName, startMethodTime);
+            Profiler.removeMethodCall();
+
             return sourceFOPConfig;
         } catch (Exception ex) {
             logger.severe(ex.toString());
@@ -483,7 +518,11 @@ class fontConfig {
         }
     }
     
-    private List<FOPFont> getFOPfonts() {        
+    private List<FOPFont> getFOPfonts() {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         List<FOPFont> fonts = new ArrayList<>();
         
         NodeList fontNodes = FOPconfigXML.getElementsByTagName("font");
@@ -502,7 +541,11 @@ class fontConfig {
                 logger.log(Level.SEVERE, "Error in reading font information: {0}", ex.toString());
                 logger.log(Level.SEVERE, "XML fragment: {0}", innerXml(fontNode));
             }
-        }        
+        }
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
+
         return fonts;
     }
     
@@ -519,7 +562,10 @@ class fontConfig {
     
     // set file paths for fonts
     private void setFontsPaths() throws IOException, URISyntaxException {
-        
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         List<String> machineFontList = getMachineFonts();
         
         fopFonts.stream()
@@ -623,9 +669,16 @@ class fontConfig {
                     }
                 });
         printMessage(sb.toString());
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
 
     private List<String> getMachineFonts() throws IOException{
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         List<URL> systemFontListURL = new ArrayList<>();
         List<URL> userFontListURL = new ArrayList<>();
         
@@ -643,10 +696,18 @@ class fontConfig {
         for(URL url: userFontListURL){
             machineFontList.add(URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name()));
         }
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
+
         return machineFontList;
     }
     
     private void updateFontsInFOPConfig(Document xmlDocument) {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         XPath xPath = XPathFactory.newInstance().newXPath();
         String expression = "/fop/renderers/renderer/fonts";
         try {
@@ -702,7 +763,10 @@ class fontConfig {
             }
         } catch (XPathExpressionException ex) {
             logger.severe(ex.toString());
-        } 
+        }
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public void outputFOPFontsLog(Path logPath) {
@@ -770,6 +834,10 @@ class fontConfig {
     
     
     private void updateFontsForGraphicsEnvironment(){
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         
         try (Stream<Path> walk = Files.walk(Paths.get(this.fontPath))) {
@@ -787,6 +855,9 @@ class fontConfig {
         } catch (IOException e) {
                 e.printStackTrace();
         }
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public static void registerFont(GraphicsEnvironment ge, String fontFile){
@@ -860,8 +931,8 @@ class fontConfig {
             Result target = new StreamResult(out);       
             transformer.transform(source, target);
         } catch (TransformerException ex) {}
+
         return out.toString();
-        
     }
 
 }

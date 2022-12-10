@@ -63,6 +63,10 @@ public class SourceXMLDocument {
     String xmlFO = "";
     
     public SourceXMLDocument(File fXML) {
+        String methodName = "SourceXMLDocument";
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         this.fXML = fXML;
         this.documentFilePath = this.fXML.getParent();
         if (this.documentFilePath == null) {
@@ -77,9 +81,15 @@ public class SourceXMLDocument {
             logger.severe("Can't read source XML.");
             ex.printStackTrace();
         }
+        Profiler.printProcessingTime("Parse " + methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public SourceXMLDocument(String strXML) {
+        String methodName = "SourceXMLDocument";
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         try {
             this.sourceXMLstr = strXML;
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -90,6 +100,8 @@ public class SourceXMLDocument {
             logger.severe("Can't parse source XML.");
             ex.printStackTrace();
         }
+        Profiler.printProcessingTime("Parse " + methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     public StreamSource getStreamSource() {
@@ -113,7 +125,12 @@ public class SourceXMLDocument {
         this.xmlFO = xmlFO;
     }
     
-    public List<String> getDocumentFonts() {        
+    public List<String> getDocumentFonts() {
+
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         List<String> documentFontList = new ArrayList<>();
         
         if(!xmlFO.isEmpty()) {
@@ -149,7 +166,10 @@ public class SourceXMLDocument {
                 logger.info(e.toString());
             }
         }
-        
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
+
         return documentFontList;
     }
     
@@ -248,6 +268,11 @@ public class SourceXMLDocument {
     }
             
     public ArrayList<String> getLanguagesList () {
+
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        Profiler.addMethodCall(methodName);
+        long startMethodTime = System.currentTimeMillis();
+
         ArrayList<String> languagesList = new ArrayList<>();
         try {            
             // open XML and find all <language> tags
@@ -273,7 +298,10 @@ public class SourceXMLDocument {
             logger.severe("Can't read language list from source XML.");
             ex.printStackTrace();
         }
-        
+
+        Profiler.printProcessingTime("Parse " + methodName, startMethodTime);
+        Profiler.removeMethodCall();
+
         return languagesList;
     }
     

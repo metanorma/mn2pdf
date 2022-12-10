@@ -221,7 +221,8 @@ public class mn2pdf {
      * @param args command-line arguments
      */
     public static void main(String[] args) throws ParseException {
-        
+        Profiler.addMethodCall(new Object(){}.getClass().getEnclosingMethod().getName());
+
         LoggerHelper.setupLogger();
         
         startTime = System.currentTimeMillis();
