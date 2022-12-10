@@ -701,4 +701,11 @@ public class Util {
         }
         return sb.toString();
     }
+
+    public static String encodeBase64(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
+        return Base64.getEncoder().encodeToString(input.getBytes());
+    }
 }
