@@ -88,7 +88,9 @@ class fontConfig {
     static List<FOPFont> fopFonts = new ArrayList<>();
     
     private File fFontManifest;
-    
+
+    private static List<String> registeredFonts = new ArrayList<>();
+
     private boolean isReady = false;
     
     //private final List<String> defaultFontList = new DefaultFonts().getDefaultFonts();
@@ -861,35 +863,40 @@ class fontConfig {
     }
     
     public static void registerFont(GraphicsEnvironment ge, String fontFile){
-        if (ge == null) {
-            ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        }
-        try {
-            // try to obtain font to check an exception:
-            // java.lang.NullPointerException: Cannot load from short array because "sun.awt.FontConfiguration.head" is null
-            String[] names = ge.getAvailableFontFamilyNames();
-            int count = names.length;
-        } catch (Exception e) {
-            logger.severe("[ERROR] " + e.toString());
-            logger.severe("[ERROR] fontconfig not found or no one system font not installed.");
-            System.exit(ERROR_EXIT_CODE);
-        }
-        try {
-            Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));            
-            //register the font
-            ge.registerFont(ttfFont);
-        } catch(FontFormatException e) {
-            try {
-                Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontFile));            
-                //register the font
-                ge.registerFont(type1Font);
-            } catch(FontFormatException e1) {
-                e1.printStackTrace();
-            }  catch (IOException e2) {
-                e2.printStackTrace();
+        if (!registeredFonts.contains(fontFile)) {
+
+            if (ge == null) {
+                ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                // try to obtain font to check an exception:
+                // java.lang.NullPointerException: Cannot load from short array because "sun.awt.FontConfiguration.head" is null
+                String[] names = ge.getAvailableFontFamilyNames();
+                int count = names.length;
+            } catch (Exception e) {
+                logger.severe("[ERROR] " + e.toString());
+                logger.severe("[ERROR] fontconfig not found or no one system font not installed.");
+                System.exit(ERROR_EXIT_CODE);
+            }
+            try {
+                Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));
+                //register the font
+                ge.registerFont(ttfFont);
+                registeredFonts.add(fontFile);
+            } catch(FontFormatException e) {
+                try {
+                    Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontFile));
+                    //register the font
+                    ge.registerFont(type1Font);
+                    registeredFonts.add(fontFile);
+                } catch(FontFormatException e1) {
+                    e1.printStackTrace();
+                }  catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     

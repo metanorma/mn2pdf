@@ -1111,7 +1111,6 @@ public class PDFGenerator {
         Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
 
-        long startMethodTime = System.currentTimeMillis();
         try {
             if (isTableExists && xmlTableIF.isEmpty()) { 
                 // generate IF with table width data
