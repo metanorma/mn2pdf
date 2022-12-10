@@ -72,8 +72,12 @@ public class XSLTconverter {
     public Object getParam(String name) {
         return transformerFO.getParameter(name);
     }
-    
+
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
+        transform(sourceXMLDocument, true);
+    }
+
+    public void transform(SourceXMLDocument sourceXMLDocument, boolean isFinalTransform) throws TransformerException {
 
         String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
@@ -87,7 +91,8 @@ public class XSLTconverter {
         // Step 0. Convert XML to FO file with XSL
         StringWriter resultWriter = new StringWriter();
         StreamResult sr = new StreamResult(resultWriter);
-        
+
+        transformerFO.setParameter("final_transform", String.valueOf(isFinalTransform));
         //Start XSLT transformation and FO generating
         transformerFO.transform(src, sr);
 

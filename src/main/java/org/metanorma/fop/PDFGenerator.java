@@ -1130,8 +1130,8 @@ public class PDFGenerator {
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
 
                 // transform XML to XSL-FO (XML .fo file)
-                xsltConverter.transform(sourceXMLDocumentTablesOnly);
-                
+                xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
+
                 String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
 
                 //debug
