@@ -88,7 +88,9 @@ class fontConfig {
     static List<FOPFont> fopFonts = new ArrayList<>();
     
     private File fFontManifest;
-    
+
+    private static List<String> registeredFonts = new ArrayList<>();
+
     private boolean isReady = false;
     
     //private final List<String> defaultFontList = new DefaultFonts().getDefaultFonts();
@@ -100,7 +102,7 @@ class fontConfig {
         
         setFontPath(DEFAULT_FONT_PATH);
         
-	FOPconfigXML = getSourceFOPConfigFile();
+	    FOPconfigXML = getSourceFOPConfigFile();
         
         if (fopFonts.isEmpty()) {
             fopFonts = getFOPfonts();
@@ -128,6 +130,7 @@ class fontConfig {
     }
     
     public void setFontManifest(File fFontManifest) {
+
         this.fFontManifest = fFontManifest;
         /* Example expected format:
         Cambria:
@@ -404,6 +407,7 @@ class fontConfig {
     }
     
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
+
         this.sourceDocumentFontList = sourceDocumentFontList;
         
         isReady = false;
@@ -421,11 +425,11 @@ class fontConfig {
                 }
             }*/         
         }
-        
     }
     
     
     private void updateConfig() throws IOException, Exception {
+
         if(!isReady) {
 
             // set file paths for fonts
@@ -471,11 +475,13 @@ class fontConfig {
     }
     
     private Document getSourceFOPConfigFile()  {
+
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream config = Util.getStreamFromResources(getClass().getClassLoader(), CONFIG_NAME);
             Document sourceFOPConfig = dBuilder.parse(config);
+
             return sourceFOPConfig;
         } catch (Exception ex) {
             logger.severe(ex.toString());
@@ -483,7 +489,7 @@ class fontConfig {
         }
     }
     
-    private List<FOPFont> getFOPfonts() {        
+    private List<FOPFont> getFOPfonts() {
         List<FOPFont> fonts = new ArrayList<>();
         
         NodeList fontNodes = FOPconfigXML.getElementsByTagName("font");
@@ -492,17 +498,18 @@ class fontConfig {
         for (int i = 0; i < fontNodes.getLength(); i++) {
             Node fontNode = fontNodes.item(i);
             XmlMapper xmlMapper = new XmlMapper();
-            
+
             try {
                 // DEBUG String xml = xmlMapper.writeValueAsString(new FOPFont());
-                
+
                 FOPFont fopfont = xmlMapper.readValue(innerXml(fontNode), FOPFont.class);
                 fonts.add(fopfont);
             } catch (JsonProcessingException ex) {
                 logger.log(Level.SEVERE, "Error in reading font information: {0}", ex.toString());
                 logger.log(Level.SEVERE, "XML fragment: {0}", innerXml(fontNode));
             }
-        }        
+        }
+
         return fonts;
     }
     
@@ -519,7 +526,7 @@ class fontConfig {
     
     // set file paths for fonts
     private void setFontsPaths() throws IOException, URISyntaxException {
-        
+
         List<String> machineFontList = getMachineFonts();
         
         fopFonts.stream()
@@ -626,6 +633,7 @@ class fontConfig {
     }
 
     private List<String> getMachineFonts() throws IOException{
+
         List<URL> systemFontListURL = new ArrayList<>();
         List<URL> userFontListURL = new ArrayList<>();
         
@@ -643,10 +651,12 @@ class fontConfig {
         for(URL url: userFontListURL){
             machineFontList.add(URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name()));
         }
+
         return machineFontList;
     }
     
     private void updateFontsInFOPConfig(Document xmlDocument) {
+
         XPath xPath = XPathFactory.newInstance().newXPath();
         String expression = "/fop/renderers/renderer/fonts";
         try {
@@ -702,7 +712,7 @@ class fontConfig {
             }
         } catch (XPathExpressionException ex) {
             logger.severe(ex.toString());
-        } 
+        }
     }
     
     public void outputFOPFontsLog(Path logPath) {
@@ -770,6 +780,7 @@ class fontConfig {
     
     
     private void updateFontsForGraphicsEnvironment(){
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         
         try (Stream<Path> walk = Files.walk(Paths.get(this.fontPath))) {
@@ -790,35 +801,40 @@ class fontConfig {
     }
     
     public static void registerFont(GraphicsEnvironment ge, String fontFile){
-        if (ge == null) {
-            ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        }
-        try {
-            // try to obtain font to check an exception:
-            // java.lang.NullPointerException: Cannot load from short array because "sun.awt.FontConfiguration.head" is null
-            String[] names = ge.getAvailableFontFamilyNames();
-            int count = names.length;
-        } catch (Exception e) {
-            logger.severe("[ERROR] " + e.toString());
-            logger.severe("[ERROR] fontconfig not found or no one system font not installed.");
-            System.exit(ERROR_EXIT_CODE);
-        }
-        try {
-            Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));            
-            //register the font
-            ge.registerFont(ttfFont);
-        } catch(FontFormatException e) {
-            try {
-                Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontFile));            
-                //register the font
-                ge.registerFont(type1Font);
-            } catch(FontFormatException e1) {
-                e1.printStackTrace();
-            }  catch (IOException e2) {
-                e2.printStackTrace();
+        if (!registeredFonts.contains(fontFile)) {
+
+            if (ge == null) {
+                ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                // try to obtain font to check an exception:
+                // java.lang.NullPointerException: Cannot load from short array because "sun.awt.FontConfiguration.head" is null
+                String[] names = ge.getAvailableFontFamilyNames();
+                int count = names.length;
+            } catch (Exception e) {
+                logger.severe("[ERROR] " + e.toString());
+                logger.severe("[ERROR] fontconfig not found or no one system font not installed.");
+                System.exit(ERROR_EXIT_CODE);
+            }
+            try {
+                Font ttfFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));
+                //register the font
+                ge.registerFont(ttfFont);
+                registeredFonts.add(fontFile);
+            } catch(FontFormatException e) {
+                try {
+                    Font type1Font = Font.createFont(Font.TYPE1_FONT, new File(fontFile));
+                    //register the font
+                    ge.registerFont(type1Font);
+                    registeredFonts.add(fontFile);
+                } catch(FontFormatException e1) {
+                    e1.printStackTrace();
+                }  catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     
@@ -860,8 +876,8 @@ class fontConfig {
             Result target = new StreamResult(out);       
             transformer.transform(source, target);
         } catch (TransformerException ex) {}
+
         return out.toString();
-        
     }
 
 }

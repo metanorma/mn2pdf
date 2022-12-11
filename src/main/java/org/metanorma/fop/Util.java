@@ -86,7 +86,7 @@ import org.w3c.dom.ls.LSSerializer;
 public class Util {
     
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
-    
+
     public static int getFileSize(URL url) {
         URLConnection conn = null;
         try {
@@ -691,15 +691,21 @@ public class Util {
     }
     
     public static String innerXml(Node node) {
-        DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        DOMImplementationLS lsImpl = (DOMImplementationLS) node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
         LSSerializer lsSerializer = lsImpl.createLSSerializer();
         lsSerializer.getDomConfig().setParameter("xml-declaration", false);
         NodeList childNodes = node.getChildNodes();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < childNodes.getLength(); i++) {
-           sb.append(lsSerializer.writeToString(childNodes.item(i)));
+            sb.append(lsSerializer.writeToString(childNodes.item(i)));
         }
-        return sb.toString(); 
+        return sb.toString();
     }
 
+    public static String encodeBase64(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
+        return Base64.getEncoder().encodeToString(input.getBytes());
+    }
 }

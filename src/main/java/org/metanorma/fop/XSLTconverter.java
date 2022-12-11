@@ -72,13 +72,17 @@ public class XSLTconverter {
     public Object getParam(String name) {
         return transformerFO.getParameter(name);
     }
-    
+
     public void transform(SourceXMLDocument sourceXMLDocument) throws TransformerException {
-        
+        transform(sourceXMLDocument, true);
+    }
+
+    public void transform(SourceXMLDocument sourceXMLDocument, boolean isFinalTransform) throws TransformerException {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
         startTime = System.currentTimeMillis();
-        
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-        
+
         //Setup input for XSLT transformation
         Source src = sourceXMLDocument.getStreamSource();
         
@@ -87,23 +91,16 @@ public class XSLTconverter {
         // Step 0. Convert XML to FO file with XSL
         StringWriter resultWriter = new StringWriter();
         StreamResult sr = new StreamResult(resultWriter);
-        
+
+        transformerFO.setParameter("final_transform", String.valueOf(isFinalTransform));
         //Start XSLT transformation and FO generating
         transformerFO.transform(src, sr);
 
         String xmlFO = resultWriter.toString();
         
         sourceXMLDocument.setXMLFO(xmlFO);
-        
-        printProcessingTime(methodName);
-        
-    }
-    
-    
-    private void printProcessingTime(String methodName) {
-        if (DEBUG) {
-            long endTime = System.currentTimeMillis();
-            logger.log(Level.INFO, methodName + " processing time: {0} milliseconds", endTime - startTime);
-        }
+
+        Profiler.printProcessingTime(methodName, startTime);
+        Profiler.removeMethodCall();
     }
 }

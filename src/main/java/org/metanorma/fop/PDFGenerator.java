@@ -208,8 +208,12 @@ public class PDFGenerator {
     
     
     public boolean process() {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         try {
-            
+
             logger.info("Preparing...");
             
             File fXML = new File(inputXMLFilePath);
@@ -346,6 +350,7 @@ public class PDFGenerator {
             e.printStackTrace(System.err);
             return false;
         }
+        Profiler.removeMethodCall();
         return true;
     }
     
@@ -360,13 +365,16 @@ public class PDFGenerator {
      * @throws FOPException, SAXException In case of a FOP problem
      */
     private void convertmn2pdf(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) throws IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
-        
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         String imagesxml = sourceXMLDocument.getImageFilePath();
                 
         String indexxml = sourceXMLDocument.getIndexFilePath();
         
         try {
-            
+
             //Setup XSLT
             Properties additionalXSLTparams = new Properties();
             
@@ -393,7 +401,12 @@ public class PDFGenerator {
             logger.info("[INFO] XSL-FO file preparation...");
             
             // transform XML to XSL-FO (XML .fo file)
-            xsltConverter.transform(sourceXMLDocument);
+            if (shouldCreateIFFile(indexxml)) {
+                // IF file will be created later in runSecondPass, so no need to set "final_transform" = true (i.e. attach embedded files)
+                xsltConverter.transform(sourceXMLDocument, false);
+            } else {
+                xsltConverter.transform(sourceXMLDocument);
+            }
 
             String xmlFO = sourceXMLDocument.getXMLFO();
             debugXSLFO = xmlFO;
@@ -431,12 +444,16 @@ public class PDFGenerator {
             e.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
         }
-        
-            
+
+        Profiler.removeMethodCall();
     }
     
     
     private void runFOP (fontConfig fontcfg, Source src, File pdf) throws IOException, FOPException, SAXException, TransformerException {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         OutputStream out = null;
         String xmlIF = null;
         long startMethodTime = System.currentTimeMillis();
@@ -600,17 +617,22 @@ public class PDFGenerator {
             }
         }
 
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     private Source runSecondPass (String indexxml, Source sourceFO, fontConfig fontcfg, Properties xslparams, XSLTconverter xsltConverter, File pdf)  throws Exception, IOException, FOPException, SAXException, TransformerException, ParserConfigurationException {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         Source src = sourceFO;
         
         File fileXmlIF = new File(indexxml);
         
         long startMethodTime = System.currentTimeMillis();
         
-        if (!indexxml.isEmpty() && !fileXmlIF.exists()) { //there is index
+        if (shouldCreateIFFile(indexxml)) { //there is index
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
@@ -637,16 +659,23 @@ public class PDFGenerator {
             src = new StreamSource(new StringReader(xmlFO));
             
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
         return src;
     }
-    
+
+    private boolean shouldCreateIFFile(String indexxml) {
+        return !indexxml.isEmpty() && !(new File(indexxml)).exists();
+    }
     
     private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
-        String xmlIF = "";
-        
+
         long startMethodTime = System.currentTimeMillis();
-        
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
+        String xmlIF = "";
+
         // run 1st pass to produce FOP Intermediate Format
         FopFactory fopFactory = FopFactory.newInstance(fontConfig);
         //Create a user agent
@@ -700,14 +729,18 @@ public class PDFGenerator {
         } finally {
             out.close();
         }
-        
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
-        
+
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
+
         return xmlIF;
     }
     
     private void createIndexFile(String indexxmlFilePath, String intermediateXML, File pdf) {
-        
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         long startMethodTime = System.currentTimeMillis();
         
         try {
@@ -734,10 +767,15 @@ public class PDFGenerator {
             logger.severe("Can't save index.xml into temporary folder");
             ex.printStackTrace();
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     private String addHiddenMath(String sourceXML) {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         long startMethodTime = System.currentTimeMillis();
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -746,17 +784,23 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
             String result = fopIFHiddenMathHandler.getResultedXML();
-            printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+            Profiler.printProcessingTime(methodName, startMethodTime);
+            Profiler.removeMethodCall();
             return result;
         }
         catch (Exception ex) {
             logger.severe("Can't update IF for hidden math.");
             ex.printStackTrace();
         }
+        Profiler.removeMethodCall();
         return sourceXML;
     }
 
     private String flatIFforXFDF(String sourceXML) {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         long startMethodTime = System.currentTimeMillis();
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -765,17 +809,23 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFFlatHandler);
             String result = fopIFFlatHandler.getResultedXML();
-            printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+            Profiler.printProcessingTime(methodName, startMethodTime);
+            Profiler.removeMethodCall();
             return result;
         }
         catch (Exception ex) {
             logger.severe("Can't flat IF.");
             ex.printStackTrace();
         }
+        Profiler.removeMethodCall();
         return sourceXML;
     }
 
     private String createTableIF(String intermediateXML) {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         String xmlTableIF = "";
         long startMethodTime = System.currentTimeMillis();
         try {
@@ -784,7 +834,8 @@ public class PDFGenerator {
             logger.severe("Can't generate information about tables from Intermediate Format.");
             ex.printStackTrace();
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
         return xmlTableIF;
     }
     
@@ -813,6 +864,9 @@ public class PDFGenerator {
     
     // Apply XSL tranformation (file xsltfile) for XML String or StreamSource
     private String applyXSLT(String xsltfile, Object sourceXML, boolean fixSurrogatePairs) throws Exception {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
@@ -828,9 +882,10 @@ public class PDFGenerator {
         StreamResult sr = new StreamResult(resultWriter);
         transformer.transform(src, sr);
         String xmlResult = resultWriter.toString();
-        
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
-        
+
+        Profiler.printProcessingTime(methodName, startMethodTime, xsltfile);
+        Profiler.removeMethodCall();
+
         return xmlResult;
     }
 
@@ -873,6 +928,10 @@ public class PDFGenerator {
 
     // Apply XSL tranformation (file xsltfile) for the source xml and IF string (parameter 'if_xml')
     private String applyXSLTExtended(String xsltfile, StreamSource sourceXML, String xmlIFStr, boolean fixSurrogatePairs) throws Exception {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
+
         long startMethodTime = System.currentTimeMillis();
         
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), xsltfile));
@@ -895,9 +954,10 @@ public class PDFGenerator {
         StreamResult sr = new StreamResult(resultWriter);
         transformer.transform(sourceXML, sr);
         String xmlResult = resultWriter.toString();
-        
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime, xsltfile);
-        
+
+        Profiler.printProcessingTime(methodName, startMethodTime, xsltfile);
+        Profiler.removeMethodCall();
+
         return xmlResult;
     }
             
@@ -1054,7 +1114,11 @@ public class PDFGenerator {
     }
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
+
+        String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
+        Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
+
         try {
             if (isTableExists && xmlTableIF.isEmpty()) { 
                 // generate IF with table width data
@@ -1068,33 +1132,36 @@ public class PDFGenerator {
                     logger.severe("Can't generate information about tables from Intermediate Format.");
                     ex.printStackTrace();
                 }
-                
+
                 debugSaveXML(xmlTablesOnly, pdf.getAbsolutePath() + ".tablesonly.xml");
-                
+
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
+
                 // transform XML to XSL-FO (XML .fo file)
-                xsltConverter.transform(sourceXMLDocumentTablesOnly);
-                
+                xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
+
                 String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
-                
-                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
-                
+
                 //debug
+                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
+
                 fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
-                
+
                 fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
                 Source sourceFO = new StreamSource(new StringReader(xmlFO));
+
                 logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
                 String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
 
                 xmlTableIF = createTableIF(xmlIF);
-                
+
                 debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
-                
+
                 xsltConverter.setParam("table_if", "false");
                 logger.info("[INFO] Generated successfully!");
             }
+
             if (!xmlTableIF.isEmpty()) {
                 // pass Table widths XML via parameter 'if_xml'
                 logger.info("[INFO] Generation XML with table's widths ...");
@@ -1110,18 +1177,21 @@ public class PDFGenerator {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
         }
-        printProcessingTime(new Object(){}.getClass().getEnclosingMethod(), startMethodTime);
+        Profiler.printProcessingTime(methodName, startMethodTime);
+        Profiler.removeMethodCall();
     }
     
     private void debugSaveXML(String xmlString, String pathTo) {
         try {
             if (DEBUG) {
+
                 //DEBUG: write table width information to file                
                 String xmlString_UTF8 = xmlString.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 try ( 
                     BufferedWriter writer = Files.newBufferedWriter(Paths.get(pathTo))) {
                         writer.write(xmlString_UTF8);                    
                 }
+
                 //Setup output
                 //OutputStream outstream = new java.io.FileOutputStream(pdf.getAbsolutePath() + ".fo.xml");
                 //Resulting SAX events (the generated FO) must be piped through to FOP
@@ -1142,11 +1212,4 @@ public class PDFGenerator {
         return pagecount;
     }
 
-    private void printProcessingTime(Method method, long startTime, String ... params) {
-        if (DEBUG) {
-            long endTime = System.currentTimeMillis();
-            String addon = Arrays.toString(params);
-            logger.log(Level.INFO, "Method '" + method.getName() + "(" + addon + ")' processing time: {0} milliseconds", endTime - startTime);
-        }
-    }
 }

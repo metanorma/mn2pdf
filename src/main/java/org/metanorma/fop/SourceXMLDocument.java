@@ -63,6 +63,7 @@ public class SourceXMLDocument {
     String xmlFO = "";
     
     public SourceXMLDocument(File fXML) {
+
         this.fXML = fXML;
         this.documentFilePath = this.fXML.getParent();
         if (this.documentFilePath == null) {
@@ -80,6 +81,7 @@ public class SourceXMLDocument {
     }
     
     public SourceXMLDocument(String strXML) {
+
         try {
             this.sourceXMLstr = strXML;
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -113,7 +115,8 @@ public class SourceXMLDocument {
         this.xmlFO = xmlFO;
     }
     
-    public List<String> getDocumentFonts() {        
+    public List<String> getDocumentFonts() {
+
         List<String> documentFontList = new ArrayList<>();
         
         if(!xmlFO.isEmpty()) {
@@ -149,7 +152,7 @@ public class SourceXMLDocument {
                 logger.info(e.toString());
             }
         }
-        
+
         return documentFontList;
     }
     
@@ -248,6 +251,7 @@ public class SourceXMLDocument {
     }
             
     public ArrayList<String> getLanguagesList () {
+
         ArrayList<String> languagesList = new ArrayList<>();
         try {            
             // open XML and find all <language> tags
@@ -273,7 +277,7 @@ public class SourceXMLDocument {
             logger.severe("Can't read language list from source XML.");
             ex.printStackTrace();
         }
-        
+
         return languagesList;
     }
     

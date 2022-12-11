@@ -1,7 +1,6 @@
 package org.metanorma.fop;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
@@ -14,7 +13,6 @@ import org.apache.commons.cli.ParseException;
 import static org.metanorma.Constants.APP_NAME;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
 import static org.metanorma.Constants.DEBUG;
-import static org.metanorma.fop.PDFGenerator.logger;
 import org.metanorma.utils.LoggerHelper;
 
 
@@ -24,6 +22,8 @@ import org.metanorma.utils.LoggerHelper;
 public class mn2pdf {
 
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
+    
+    private static long startTime;
     
     static final String CMD = "java -Xss5m -Xmx2048m -jar " + APP_NAME + ".jar";
     
@@ -221,8 +221,11 @@ public class mn2pdf {
      * @param args command-line arguments
      */
     public static void main(String[] args) throws ParseException {
-        
+        Profiler.addMethodCall(new Object(){}.getClass().getEnclosingMethod().getName());
+
         LoggerHelper.setupLogger();
+        
+        startTime = System.currentTimeMillis();
         
         CommandLineParser parser = new DefaultParser();
         
@@ -347,6 +350,11 @@ public class mn2pdf {
         }
 
         LoggerHelper.closeFileHandler();
+        Profiler.printProcessingTime("Total mn2pdf", startTime);
+
+        Profiler.removeMethodCall();
+
+        Profiler.printFullProcessingTime();
     }
 
     private static String getUsage() {
@@ -357,5 +365,4 @@ public class mn2pdf {
         pw.flush();
         return stringWriter.toString();
     }
-    
 }
