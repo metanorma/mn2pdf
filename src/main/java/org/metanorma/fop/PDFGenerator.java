@@ -401,7 +401,12 @@ public class PDFGenerator {
             logger.info("[INFO] XSL-FO file preparation...");
             
             // transform XML to XSL-FO (XML .fo file)
-            xsltConverter.transform(sourceXMLDocument);
+            if (shouldCreateIFFile(indexxml)) {
+                // IF file will be created later in runSecondPass, so no need to set "final_transform" = true (i.e. attach embedded files)
+                xsltConverter.transform(sourceXMLDocument, false);
+            } else {
+                xsltConverter.transform(sourceXMLDocument);
+            }
 
             String xmlFO = sourceXMLDocument.getXMLFO();
             debugXSLFO = xmlFO;
@@ -627,7 +632,7 @@ public class PDFGenerator {
         
         long startMethodTime = System.currentTimeMillis();
         
-        if (!indexxml.isEmpty() && !fileXmlIF.exists()) { //there is index
+        if (shouldCreateIFFile(indexxml)) { //there is index
              // if file exist - it means that now document by language is processing
             // and don't need to create intermediate file again
 
@@ -658,7 +663,10 @@ public class PDFGenerator {
         Profiler.removeMethodCall();
         return src;
     }
-    
+
+    private boolean shouldCreateIFFile(String indexxml) {
+        return !indexxml.isEmpty() && !(new File(indexxml)).exists();
+    }
     
     private String generateFOPIntermediateFormat(Source src, File fontConfig, File pdf, boolean isSecondPass, String sfx) throws SAXException, IOException, TransformerConfigurationException, TransformerException {
 
