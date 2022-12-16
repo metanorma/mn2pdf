@@ -70,11 +70,17 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import static org.metanorma.Constants.DEBUG;
 import static org.metanorma.fop.SourceXMLDocument.tmpfilepath;
+
+import com.steadystate.css.dom.CSSStyleRuleImpl;
+import com.steadystate.css.parser.CSSOMParser;
+import com.steadystate.css.parser.SACParserCSS3;
 import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.utils.LoggerHelper;
+import org.w3c.css.sac.SelectorList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.css.*;
 import org.xml.sax.InputSource;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -707,5 +713,57 @@ public class Util {
             return "";
         }
         return Base64.getEncoder().encodeToString(input.getBytes());
+    }
+
+    public static String parseCSS(String cssString) {
+        StringBuilder sbCSSxml = new StringBuilder();
+
+        sbCSSxml.append("<css>");
+        try {
+            org.w3c.css.sac.InputSource source = new org.w3c.css.sac.InputSource(new StringReader(cssString));
+            CSSOMParser parser = new CSSOMParser(new SACParserCSS3());
+            CSSStyleSheet sheet = parser.parseStyleSheet(source, null, null);
+
+            CSSRuleList rules = sheet.getCssRules();
+            for (int i = 0; i < rules.getLength(); i++) {
+                final CSSRule rule = rules.item(i);
+
+                if (rule instanceof CSSStyleRule) {
+                    CSSStyleRule styleRule = (CSSStyleRule) rule;
+                    SelectorList selectorList = ((CSSStyleRuleImpl) rule).getSelectors();
+
+                    //System.out.println("selector: " + styleRule.getSelectorText());
+                    CSSStyleDeclaration styleDeclaration = styleRule.getStyle();
+                    StringBuilder properties = new StringBuilder();
+                    for (int j = 0; j < styleDeclaration.getLength(); j++) {
+                        String property = styleDeclaration.item(j);
+                        String value = styleDeclaration.getPropertyCSSValue(property).getCssText();
+                        //System.out.println("property: " + property);
+                        //System.out.println("value: " + value);
+                        properties.append("<property name=\"");
+                        properties.append(property);
+                        properties.append("\" value=\"");
+                        properties.append(value);
+                        properties.append("\"/>");
+                    }
+
+                    for (int s = 0; s < selectorList.getLength(); s++) {
+                        String selectorText = selectorList.item(s).toString();
+                        selectorText = selectorText.replaceAll("sourcecode .","");
+                        //System.out.println("selector: " + selectorText);
+                        sbCSSxml.append("<class name=\"");
+                        sbCSSxml.append(selectorText);
+                        sbCSSxml.append("\">");
+                        sbCSSxml.append(properties);
+                        sbCSSxml.append("</class>");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.severe("CSS parsing error: " + e.toString());
+        }
+        sbCSSxml.append("</css>");
+
+        return sbCSSxml.toString();
     }
 }

@@ -1,10 +1,6 @@
 package org.metanorma.fop;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,12 +8,18 @@ import java.util.Calendar;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import com.steadystate.css.dom.CSSStyleRuleImpl;
+import com.steadystate.css.parser.CSSOMParser;
+import com.steadystate.css.parser.SACParserCSS3;
 import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.cos.COSName;
 
@@ -33,6 +35,8 @@ import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -45,7 +49,11 @@ import org.metanorma.Constants;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
 import static org.metanorma.fop.PDFGenerator.logger;
 import org.metanorma.utils.LoggerHelper;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.Selector;
+import org.w3c.css.sac.SelectorList;
 import org.w3c.dom.Node;
+import org.w3c.dom.css.*;
 
 public class mn2pdfTests {
 
@@ -399,6 +407,14 @@ public class mn2pdfTests {
         assertTrue(pdftext.contains("the_integers") && pdftext.contains("elementary_space") && pdftext.contains("make_elementary_space"));
     }
 
+    @Test
+    public void checkCSSparsing() throws IOException {
+        String cssString = "sourcecode .c, sourcecode .ch {\n" +
+                "  color: #FF0000;\n" +
+                "}";
+        String xmlstr = Util.parseCSS(cssString);
+        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class><class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class></css>", xmlstr);
+    }
 
     
     @Test
