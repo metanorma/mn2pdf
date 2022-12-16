@@ -8,11 +8,7 @@ import java.util.Calendar;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -412,8 +408,21 @@ public class mn2pdfTests {
         String cssString = "sourcecode .c, sourcecode .ch {\n" +
                 "  color: #FF0000;\n" +
                 "}";
-        String xmlstr = Util.parseCSS(cssString);
-        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class><class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class></css>", xmlstr);
+        Node xmlNode = Util.parseCSS(cssString);
+        String xmlStr = nodeToString(xmlNode);
+        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class><class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class></css>", xmlStr);
+    }
+
+    private static String nodeToString(Node node) {
+        StringWriter sw = new StringWriter();
+        try {
+            Transformer t = TransformerFactory.newInstance().newTransformer();
+            t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            t.transform(new DOMSource(node), new StreamResult(sw));
+        } catch (TransformerException te) {
+            System.out.println("nodeToString Transformer Exception");
+        }
+        return sw.toString();
     }
 
     

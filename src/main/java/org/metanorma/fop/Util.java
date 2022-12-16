@@ -61,6 +61,7 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.xpath.XPath;
@@ -84,6 +85,7 @@ import org.w3c.dom.css.*;
 import org.xml.sax.InputSource;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -715,11 +717,11 @@ public class Util {
         return Base64.getEncoder().encodeToString(input.getBytes());
     }
 
-    public static String parseCSS(String cssString) {
+    public static Node parseCSS(String cssString) {
         StringBuilder sbCSSxml = new StringBuilder();
-
-        sbCSSxml.append("<css>");
+        Node node = null;
         try {
+            sbCSSxml.append("<css>");
             org.w3c.css.sac.InputSource source = new org.w3c.css.sac.InputSource(new StringReader(cssString));
             CSSOMParser parser = new CSSOMParser(new SACParserCSS3());
             CSSStyleSheet sheet = parser.parseStyleSheet(source, null, null);
@@ -749,7 +751,7 @@ public class Util {
 
                     for (int s = 0; s < selectorList.getLength(); s++) {
                         String selectorText = selectorList.item(s).toString();
-                        selectorText = selectorText.replaceAll("sourcecode .","");
+                        selectorText = selectorText.replaceAll("sourcecode \\.","");
                         //System.out.println("selector: " + selectorText);
                         sbCSSxml.append("<class name=\"");
                         sbCSSxml.append(selectorText);
@@ -759,11 +761,15 @@ public class Util {
                     }
                 }
             }
-        } catch (IOException e) {
+            sbCSSxml.append("</css>");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document parsed = builder.parse(new InputSource(new StringReader(sbCSSxml.toString())));
+            node = parsed.getDocumentElement();
+        } catch (IOException | ParserConfigurationException | SAXException e) {
             logger.severe("CSS parsing error: " + e.toString());
         }
-        sbCSSxml.append("</css>");
-
-        return sbCSSxml.toString();
+        return node;
     }
 }
