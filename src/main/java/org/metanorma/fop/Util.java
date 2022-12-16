@@ -719,7 +719,6 @@ public class Util {
 
     public static Node parseCSS(String cssString) {
         StringBuilder sbCSSxml = new StringBuilder();
-        Node node = null;
         try {
             sbCSSxml.append("<css>");
             org.w3c.css.sac.InputSource source = new org.w3c.css.sac.InputSource(new StringReader(cssString));
@@ -762,9 +761,16 @@ public class Util {
                 }
             }
             sbCSSxml.append("</css>");
+
+        } catch (IOException e) {
+            logger.severe("CSS parsing error: " + e.toString());
+            sbCSSxml.setLength(0);
+            sbCSSxml.append("<css></css>");
+        }
+        Node node = null;
+        try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-
             Document parsed = builder.parse(new InputSource(new StringReader(sbCSSxml.toString())));
             node = parsed.getDocumentElement();
         } catch (IOException | ParserConfigurationException | SAXException e) {
