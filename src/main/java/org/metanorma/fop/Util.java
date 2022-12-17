@@ -750,7 +750,12 @@ public class Util {
 
                     for (int s = 0; s < selectorList.getLength(); s++) {
                         String selectorText = selectorList.item(s).toString();
-                        selectorText = selectorText.replaceAll("sourcecode \\.","");
+                        if (selectorText.contains(".")) {
+                            selectorText = selectorText.substring(selectorText.indexOf(".") + 1).trim();
+                        } else if (selectorText.contains(" ")) {
+                            selectorText = selectorText.substring(selectorText.indexOf(" ") + 1).trim();
+                        }
+                        //selectorText = selectorText.replaceAll("sourcecode \\.","");
                         //System.out.println("selector: " + selectorText);
                         sbCSSxml.append("<class name=\"");
                         sbCSSxml.append(selectorText);
