@@ -98,6 +98,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'table'][@type = 'sourcecode']" priority="2"/>
 
 	<xsl:template match="@*|node()" mode="simple_td">
 		<xsl:copy>
