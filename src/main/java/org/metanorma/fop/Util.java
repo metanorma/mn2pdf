@@ -751,9 +751,9 @@ public class Util {
                     for (int s = 0; s < selectorList.getLength(); s++) {
                         String selectorText = selectorList.item(s).toString();
                         if (selectorText.contains(".")) {
-                            selectorText = selectorText.substring(selectorText.indexOf(".") + 1).trim();
+                            selectorText = selectorText.substring(selectorText.lastIndexOf(".") + 1).trim();
                         } else if (selectorText.contains(" ")) {
-                            selectorText = selectorText.substring(selectorText.indexOf(" ") + 1).trim();
+                            selectorText = selectorText.substring(selectorText.lastIndexOf(" ") + 1).trim();
                         }
                         //selectorText = selectorText.replaceAll("sourcecode \\.","");
                         //System.out.println("selector: " + selectorText);
