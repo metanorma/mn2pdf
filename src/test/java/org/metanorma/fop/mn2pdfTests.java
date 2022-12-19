@@ -379,8 +379,8 @@ public class mn2pdfTests {
             String manifestFile = classLoader.getResource("manifest.yml").getFile();
             manifestParam = "--font-manifest " + manifestFile;
         }
-        
-        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), manifestParam};
         mn2pdf.main(args);
 
         String capturedLog = getTestCapturedLog();
