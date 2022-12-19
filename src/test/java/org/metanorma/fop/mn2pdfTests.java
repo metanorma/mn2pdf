@@ -375,12 +375,13 @@ public class mn2pdfTests {
 
         String os = System.getProperty("os.name").toLowerCase();
         String manifestParam = "";
-        if (os.contains("mac") || os.contains("darwin") ||os.contains("nux")) {
-            String manifestFile = classLoader.getResource("manifest.yml").getFile();
-            manifestParam = "--font-manifest " + manifestFile;
+        String manifestFile = "";
+        if (os.contains("mac") || os.contains("darwin") || os.contains("nux") || os.contains("win")) {
+            manifestParam = "--font-manifest";
+            manifestFile = classLoader.getResource("manifest.yml").getFile();
         }
 
-        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), manifestParam};
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), manifestParam, manifestFile};
         mn2pdf.main(args);
 
         String capturedLog = getTestCapturedLog();
