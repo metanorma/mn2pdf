@@ -8,4 +8,8 @@ Cambria Math:
     full_name: Cambria Math
     paths:
     - ~/.fontist/fonts/CAMBRIA.TTC
-
+Calibri:
+  Regular:
+    full_name: Calibri
+    paths:
+    - ~/.fontist/fonts/CALIBRI.ttf

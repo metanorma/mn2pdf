@@ -373,7 +373,16 @@ public class mn2pdfTests {
         String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.svgtest.pdf");
 
-        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        String os = System.getProperty("os.name").toLowerCase();
+        System.out.println("OS: " + os);
+        String manifestParam = "";
+        String manifestFile = "";
+        if (os.contains("mac") || os.contains("darwin") || os.contains("nux") || os.contains("win")) {
+            manifestParam = "--font-manifest";
+            manifestFile = classLoader.getResource("manifest.yml").getFile();
+        }
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), manifestParam, manifestFile};
         mn2pdf.main(args);
 
         String capturedLog = getTestCapturedLog();
