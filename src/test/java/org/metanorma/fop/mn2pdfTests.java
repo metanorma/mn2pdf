@@ -374,6 +374,7 @@ public class mn2pdfTests {
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.svgtest.pdf");
 
         String os = System.getProperty("os.name").toLowerCase();
+        System.out.println("OS: " + os);
         String manifestParam = "";
         String manifestFile = "";
         if (os.contains("mac") || os.contains("darwin") || os.contains("nux") || os.contains("win")) {
