@@ -75,8 +75,7 @@ public class GlyphMapping {
                         MinOptMax areaIPD, boolean isHyphenated, boolean isSpace, boolean breakOppAfter,
                         Font font, int level, int[][] gposAdjustments, String mapping, List associations) {
         this(startIndex, endIndex, wordSpaceCount, letterSpaceCount, areaIPD, isHyphenated,
-                isSpace, false, breakOppAfter, font, level, gposAdjustments, null, null);
-//                isSpace, false, breakOppAfter, font, level, gposAdjustments, mapping, associations);
+                isSpace, false, breakOppAfter, font, level, gposAdjustments, mapping, associations);
     }
 
     public GlyphMapping(int startIndex, int endIndex, int wordSpaceCount, int letterSpaceCount,
