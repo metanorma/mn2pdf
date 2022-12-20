@@ -170,6 +170,12 @@ public final class EventFormatter {
             if (id != null && !id.isEmpty()) {
                 elementId = "(id='" + id + "')";
             }
+
+            if (page == null || page.isEmpty()) {
+                // try to get the parameter 'page'
+                page = (String) params.get("page");
+            }
+
             if (page != null && !page.isEmpty()) {
                 elementPage = page;
             }
