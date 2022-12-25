@@ -36,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.rules.TestName;
 
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
@@ -70,6 +71,7 @@ public class mn2pdfTests {
     @Rule
     public final EnvironmentVariables envVarRule = new EnvironmentVariables();
 
+    @Rule public TestName name = new TestName();
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -93,6 +95,7 @@ public class mn2pdfTests {
     
     @Test
     public void notEnoughArguments() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
         exitRule.expectSystemExitWithStatus(-1);
         String[] args = new String[]{"1", "2", "3"};
         mn2pdf.main(args);
@@ -118,6 +121,7 @@ public class mn2pdfTests {
     
     @Test
     public void xmlNotExists() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
         exitRule.expectSystemExitWithStatus(-1);
 
         String fontpath = System.getProperty("buildDirectory") + File.separator + ".." + File.separator + "fonts";
@@ -133,6 +137,7 @@ public class mn2pdfTests {
 
     @Test
     public void xslNotExists() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
         exitRule.expectSystemExitWithStatus(-1);
 
         ClassLoader classLoader = getClass().getClassLoader();
@@ -165,6 +170,7 @@ public class mn2pdfTests {
     }*/
     @Test
     public void success() throws ParseException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("G.191.xml").getFile();
@@ -194,6 +200,7 @@ public class mn2pdfTests {
     
     @Test
     public void successFontReplacement() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         
@@ -220,6 +227,7 @@ public class mn2pdfTests {
     
     @Test
     public void successNonPDFUAmode() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("rice-en.svgtest.xml").getFile();
@@ -237,6 +245,7 @@ public class mn2pdfTests {
     
     @Test
     public void checkResultedPDF() throws ParseException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("rice-en.final.metadata.xml").getFile();
@@ -296,6 +305,7 @@ public class mn2pdfTests {
 
     @Test
     public void checkResultedEncryptedPDF() throws ParseException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("rice-en.final.metadata.xml").getFile();
@@ -355,6 +365,7 @@ public class mn2pdfTests {
 
     @Test
     public void testSyntaxHighlight() throws TransformerException, TransformerConfigurationException  {
+        System.out.println(name.getMethodName());
         String code = "<root><a></a><b>text</b><c key='value'/></root>";
         Node node = Util.syntaxHighlight(code, "xml");
         StringWriter writer = new StringWriter();
@@ -367,6 +378,7 @@ public class mn2pdfTests {
 
     @Test
     public void successSVGRendering() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("iso.svgtest.xml").getFile();
@@ -392,6 +404,7 @@ public class mn2pdfTests {
 
     @Test
     public void checkSpacesInPDF() throws ParseException {
+        System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("iso.zerowidthspacetest.xml").getFile();
@@ -414,6 +427,7 @@ public class mn2pdfTests {
 
     @Test
     public void checkCSSparsing() throws IOException {
+        System.out.println(name.getMethodName());
         String cssString = "sourcecode .c, sourcecode .ch {\n" +
                 "  color: #FF0000;\n" +
                 "}";
@@ -437,6 +451,7 @@ public class mn2pdfTests {
     
     @Test
     public void testDates() throws IOException {
+        System.out.println(name.getMethodName());
         String date1 = "20180125T0121";
         Calendar cdate1 = Util.getCalendarDate(date1);
         Calendar cdate1_etalon = Calendar.getInstance();
