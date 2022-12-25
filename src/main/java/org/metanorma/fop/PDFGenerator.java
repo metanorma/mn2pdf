@@ -476,7 +476,6 @@ public class PDFGenerator {
                     debugXSLFO = xmlIF;
                 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
-                    System.out.println(xmlIF);
                 }
                 
                 

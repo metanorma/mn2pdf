@@ -313,7 +313,7 @@ public class mn2pdfTests {
         String encryption_params = classLoader.getResource("pdf-encryption.yaml").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso-rice.encrypted.pdf");
 
-        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--encryption-parameters", encryption_params, "--debug"};
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--encryption-parameters", encryption_params};
         mn2pdf.main(args);
         
         // check pdf permissions
