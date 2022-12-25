@@ -125,6 +125,7 @@
 					<systemPropertyVariables>
 						<buildDirectory>${project.build.directory}</buildDirectory>
 					</systemPropertyVariables>
+					<enableAssertions>false</enableAssertions>
 				</configuration>
 			</plugin>
 		</plugins>
