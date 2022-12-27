@@ -22,6 +22,7 @@
 		<xsl:copy>
 			<xsl:if test="local-name() = 'template'">
 				<xsl:attribute name="priority">5</xsl:attribute>
+				<xsl:attribute name="mode">update_xml_step1</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates select="@*|node()"/>
 		</xsl:copy>
