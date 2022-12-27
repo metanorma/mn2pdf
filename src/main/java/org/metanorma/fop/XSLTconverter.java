@@ -64,7 +64,7 @@ public class XSLTconverter {
 
             if (!preprocessXSLT.isEmpty()) {
                 // content of fXSL file
-                String xsltString = new String(Files.readAllBytes(fXSL.toPath()), StandardCharsets.UTF_8);
+                String xsltString = new String(Files.readAllBytes(fXSL.toPath()));
                 String xsltEnd = "</xsl:stylesheet>";
                 // add preprocess XSLT at the end of main XSLT
                 xsltString = xsltString.replace(xsltEnd, preprocessXSLT + xsltEnd);
