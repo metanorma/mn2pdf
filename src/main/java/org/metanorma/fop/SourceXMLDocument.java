@@ -1,11 +1,6 @@
 package org.metanorma.fop;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,9 +13,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -32,6 +27,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import static org.metanorma.fop.PDFGenerator.logger;
+import static org.metanorma.fop.Util.getStreamFromResources;
+
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -280,7 +277,55 @@ public class SourceXMLDocument {
 
         return languagesList;
     }
-    
+
+    public String getPreprocessXSLT() {
+
+        StringBuilder inlineXSLT = new StringBuilder();
+        try {
+
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query = xPath.compile("//*[contains(local-name(),'-standard')]/*[local-name()='render']/*[local-name()='preprocess-xslt']/*[local-name()='stylesheet']");
+            NodeList nList = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
+
+            for (int i = 0; i < nList.getLength(); i++) {
+                Node nodeXSLT = nList.item(i);
+
+                // convert Node to Document
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setNamespaceAware(true);
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document documentXSLT = builder.newDocument();
+                Node importedNode = documentXSLT.importNode(nodeXSLT, true);
+                documentXSLT.appendChild(importedNode);
+
+                TransformerFactory tf = TransformerFactory.newInstance();
+                Transformer transformer = tf.newTransformer();
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                StringWriter writer = new StringWriter();
+                transformer.transform(new DOMSource(documentXSLT), new StreamResult(writer));
+                String xslt = writer.getBuffer().toString();
+
+                documentXSLT = factory.newDocumentBuilder().parse(new InputSource(new StringReader(xslt)));
+                String xsltUpdated = updatePreprocessXSLT(documentXSLT);
+                documentXSLT = factory.newDocumentBuilder().parse(new InputSource(new StringReader(xsltUpdated)));
+
+                XPath xPath2 = XPathFactory.newInstance().newXPath();
+                XPathExpression query2 = xPath2.compile("/*"); // select all nodes inside xsl:stylesheet
+                NodeList nList2 = (NodeList)query2.evaluate(documentXSLT, XPathConstants.NODESET);
+
+                for (int j = 0; j < nList2.getLength(); j++) {
+                    Node nodeXSLT2 = nList2.item(j);
+                    inlineXSLT.append(Util.innerXml(nodeXSLT2));
+                }
+            }
+
+        } catch (Exception ex) {
+            logger.severe("Can't read pre-process XSLT from source XML.");
+            ex.printStackTrace();
+        }
+        return inlineXSLT.toString().replaceAll("xmlns=\"\"", "");
+    }
+
     public void flushTempPath() {
         if (Files.exists(tmpfilepath)) {
 
@@ -303,4 +348,20 @@ public class SourceXMLDocument {
     public String getDocumentFilePath() {
         return documentFilePath;
     }
+
+
+    private String updatePreprocessXSLT(Document sourceXML) throws Exception {
+
+        Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), "update_preprocess_xslt.xsl"));
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(srcXSL);
+
+        StringWriter resultWriter = new StringWriter();
+        StreamResult sr = new StreamResult(resultWriter);
+        transformer.transform(new DOMSource(sourceXML), sr);
+        String xmlResult = resultWriter.toString();
+
+        return xmlResult;
+    }
+
 }
