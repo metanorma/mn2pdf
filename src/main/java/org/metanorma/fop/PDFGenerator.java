@@ -278,7 +278,7 @@ public class PDFGenerator {
             isTableExists = sourceXMLDocument.hasTables();
             boolean isMathExists = sourceXMLDocument.hasMath();
 
-            XSLTconverter xsltConverter = new XSLTconverter(fXSL, sourceXMLDocument.getPreprocessXSLT());
+            XSLTconverter xsltConverter = new XSLTconverter(fXSL, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
 
             isAddMathAsText = xsltConverter.hasParamAddMathAsText()  && isMathExists;
             isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
@@ -332,6 +332,7 @@ public class PDFGenerator {
             // flush temporary folder
             if (!DEBUG) {
                 sourceXMLDocument.flushTempPath();
+                xsltConverter.deleteTmpXSL();
             }
             
             logger.info("Success!");
