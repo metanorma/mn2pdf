@@ -20,6 +20,9 @@
 	<xsl:template match="xsl:stylesheet/xsl:template | xsl:stylesheet/xsl:variable">
 		<xsl:text>&#xa;</xsl:text>
 		<xsl:copy>
+			<xsl:if test="local-name() = 'template'">
+				<xsl:attribute name="priority">5</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates select="@*|node()"/>
 		</xsl:copy>
 		<xsl:text>&#xa;&#xa;</xsl:text>

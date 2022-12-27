@@ -83,7 +83,7 @@ public class SourceXMLDocumentTests {
         String strProcessXSLT = sourceXMLDocument.getPreprocessXSLT();
 
         String strProcessXSLTEtalon = "<!-- note/name -->\n" +
-                "<xsl:template xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" match=\"*[local-name() = 'note']/*[local-name() = 'name']\"> \n" +
+                "<xsl:template xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" match=\"*[local-name() = 'note']/*[local-name() = 'name']\" priority=\"5\"> \n" +
                 "  <xsl:copy>\n" +
                 "    <xsl:apply-templates select=\"@*|node()\"/><xsl:if test=\"normalize-space() != ''\">:<tab /></xsl:if>\n" +
                 "  </xsl:copy>\n" +
