@@ -1,23 +1,30 @@
 package org.metanorma.fop;
 
-import java.io.File;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import static org.metanorma.Constants.DEBUG;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
 import static org.metanorma.fop.PDFGenerator.logger;
 import org.metanorma.utils.LoggerHelper;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -28,7 +35,9 @@ public class XSLTconverter {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     //private Properties xslparams = new Properties();
-    
+
+    Document sourceXSLT;
+
     private Transformer transformerFO;
     
     private long startTime;
@@ -37,6 +46,7 @@ public class XSLTconverter {
         
         TransformerFactory factoryFO = TransformerFactory.newInstance();
         try {
+            sourceXSLT = getDocument(fXSL);
             transformerFO = factoryFO.newTransformer(new StreamSource(fXSL));
         } catch (TransformerConfigurationException ex) {
             ex.printStackTrace(System.err);
@@ -51,7 +61,21 @@ public class XSLTconverter {
     {
         return transformerFO;
     }
-    
+
+    private Document getDocument (File file) {
+        Document doc;
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            InputStream xsltstream = new FileInputStream(file);
+            doc = dBuilder.parse(xsltstream);
+            return doc;
+        }  catch (Exception ex) {
+            ex.printStackTrace(System.err);
+            System.exit(ERROR_EXIT_CODE);
+        }
+        return null;
+    }
     
     public void setParams(Properties xslparams) {
         //this.xslparams = xslparams;
@@ -62,7 +86,6 @@ public class XSLTconverter {
             
             transformerFO.setParameter(name, value);
         }
-        
     }
     
     public void setParam(String name, Object value) {
@@ -102,5 +125,30 @@ public class XSLTconverter {
 
         Profiler.printProcessingTime(methodName, startTime);
         Profiler.removeMethodCall();
+    }
+
+    private String readValue(String xpath) {
+        String value = "";
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query = xPath.compile(xpath);
+            Node textElement = (Node)query.evaluate(sourceXSLT, XPathConstants.NODE);
+            if(textElement != null) {
+                value = textElement.getTextContent();
+            }
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        return value;
+    }
+
+    public boolean hasParamAddMathAsText() {
+        String param_add_math_as_text = readValue("/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_text']");
+        return param_add_math_as_text.equalsIgnoreCase("true");
+    }
+
+    public boolean hasParamAddMathAsAttachment() {
+        String param_add_math_as_attachment = readValue("/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_attachment']");
+        return param_add_math_as_attachment.equalsIgnoreCase("true");
     }
 }

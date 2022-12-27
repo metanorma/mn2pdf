@@ -271,27 +271,17 @@ public class PDFGenerator {
             
             logger.info(String.format(OUTPUT_LOG, PDF_OUTPUT, fPDF));
             logger.info("");
-            
-            // read input XML to XML document and find tag '<review'
-            String element_review =  Util.readValueFromXML(fXML, "//*[local-name() = 'review'][1]");
-            isAddAnnotations = element_review.length() != 0;
-            
-            // find tag 'table' or 'dl'
-            String element_table = Util.readValueFromXML(fXML, "//*[local-name() = 'table' or local-name() = 'dl'][1]");
-            isTableExists = element_table.length() != 0;
-            
-            String element_math = Util.readValueFromXML(fXML, "//*[local-name() = 'math'][1]");
-            
-            // read XSL to XML Document and find param values
-            String add_math_as_text = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_text']");
-            isAddMathAsText = add_math_as_text.equalsIgnoreCase("true") && element_math.length() != 0;
-            
-            String add_math_as_attachment = Util.readValueFromXML(fXSL, "/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_attachment']");
-            isAddMathAsAttachment = add_math_as_attachment.equalsIgnoreCase("true");
-            
+
             sourceXMLDocument = new SourceXMLDocument(fXML);
-            
-            XSLTconverter xsltConverter = new XSLTconverter(fXSL);
+
+            isAddAnnotations = sourceXMLDocument.hasAnnotations();
+            isTableExists = sourceXMLDocument.hasTables();
+            boolean isMathExists = sourceXMLDocument.hasMath();
+
+            XSLTconverter xsltConverter = new XSLTconverter(fXSL, sourceXMLDocument.getPreprocessXSLT());
+
+            isAddMathAsText = xsltConverter.hasParamAddMathAsText()  && isMathExists;
+            isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
 
             if (isSyntaxHighlight) {
                 xsltParams.put("syntax-highlight", "true");

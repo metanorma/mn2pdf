@@ -350,7 +350,7 @@ public class SourceXMLDocument {
     }
 
 
-    private String updatePreprocessXSLT(Document sourceXML) throws Exception {
+    private String updatePreprocessXSLT(Document docXML) throws Exception {
 
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), "update_preprocess_xslt.xsl"));
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -358,10 +358,40 @@ public class SourceXMLDocument {
 
         StringWriter resultWriter = new StringWriter();
         StreamResult sr = new StreamResult(resultWriter);
-        transformer.transform(new DOMSource(sourceXML), sr);
+        transformer.transform(new DOMSource(docXML), sr);
         String xmlResult = resultWriter.toString();
 
         return xmlResult;
     }
 
+    private String readValue(String xpath) {
+        String value = "";
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query = xPath.compile(xpath);
+            Node textElement = (Node)query.evaluate(sourceXML, XPathConstants.NODE);
+            if(textElement != null) {
+                value = textElement.getTextContent();
+            }
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        return value;
+    }
+
+    public boolean hasAnnotations() {
+        String element_review =  readValue("//*[local-name() = 'review'][1]");
+        return element_review.length() != 0;
+    }
+
+    // find tag 'table' or 'dl'
+    public boolean hasTables() {
+        String element_table = readValue("//*[local-name() = 'table' or local-name() = 'dl'][1]");
+        return element_table.length() != 0;
+    }
+
+    public boolean hasMath() {
+        String element_math = readValue("//*[local-name() = 'math'][1]");
+        return element_math.length() != 0;
+    }
 }
