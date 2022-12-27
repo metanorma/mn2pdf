@@ -38,6 +38,8 @@ public class XSLTconverter {
 
     Document sourceXSLT;
 
+    File tmpfileXSL;
+
     private Transformer transformerFO;
     
     private long startTime;
@@ -52,11 +54,44 @@ public class XSLTconverter {
             ex.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
         }
-            
         transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
-        
     }
-    
+
+    public XSLTconverter(File fXSL, String preprocessXSLT, String outPath) {
+        TransformerFactory factoryFO = TransformerFactory.newInstance();
+        try {
+            sourceXSLT = getDocument(fXSL);
+
+            if (!preprocessXSLT.isEmpty()) {
+                // content of fXSL file
+                String xsltString = new String(Files.readAllBytes(fXSL.toPath()), StandardCharsets.UTF_8);
+                String xsltEnd = "</xsl:stylesheet>";
+                // add preprocess XSLT at the end of main XSLT
+                xsltString = xsltString.replace(xsltEnd, preprocessXSLT + xsltEnd);
+
+                // SystemId Unknown; Line #0; Column #0; Unknown error in XPath.
+                // SystemId Unknown; Line #10648; Column #30; java.lang.NullPointerException
+                //transformerFO = factoryFO.newTransformer(new StreamSource(new StringReader(xsltString)));
+
+                // save XSLT to the file
+                String tmpXSL = outPath + ".xsl";
+                BufferedWriter writer = new BufferedWriter(new FileWriter(tmpXSL));
+                writer.write(xsltString);
+                writer.close();
+
+                tmpfileXSL = new File(tmpXSL);
+                transformerFO = factoryFO.newTransformer(new StreamSource(tmpfileXSL));
+            } else {
+                transformerFO = factoryFO.newTransformer(new StreamSource(fXSL));
+            }
+        } catch (TransformerConfigurationException | IOException ex) {
+            ex.printStackTrace(System.err);
+            System.exit(ERROR_EXIT_CODE);
+        }
+
+        transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+    }
+
     public Transformer getTransformer ()
     {
         return transformerFO;
@@ -151,4 +186,15 @@ public class XSLTconverter {
         String param_add_math_as_attachment = readValue("/*[local-name() = 'stylesheet']/*[local-name() = 'param'][@name = 'add_math_as_attachment']");
         return param_add_math_as_attachment.equalsIgnoreCase("true");
     }
+
+    public void deleteTmpXSL() {
+        if (tmpfileXSL != null) {
+            try {
+                Files.deleteIfExists(tmpfileXSL.toPath());
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+        }
+    }
+
 }
