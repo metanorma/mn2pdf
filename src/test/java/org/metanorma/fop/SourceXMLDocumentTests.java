@@ -73,4 +73,23 @@ public class SourceXMLDocumentTests {
         assertTrue(fonts.size() == 16);
         assertTrue(fonts.get(1).equals("STIX Two Math"));
     }
+
+    @Test
+    public void testGetDocumentPreprocessXSLT() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String xml = classLoader.getResource("a.presentation.xml").getFile();
+        SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
+
+        String strProcessXSLT = sourceXMLDocument.getPreprocessXSLT();
+
+        String strProcessXSLTEtalon = "<!-- note/name -->\n" +
+                "<xsl:template xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" match=\"*[local-name() = 'note']/*[local-name() = 'name']\" mode=\"update_xml_step1\" priority=\"5\"> \n" +
+                "  <xsl:copy>\n" +
+                "    <xsl:apply-templates select=\"@*|node()\"/><xsl:if test=\"normalize-space() != ''\">:<tab /></xsl:if>\n" +
+                "  </xsl:copy>\n" +
+                "</xsl:template>\n" +
+                "\n";
+
+        assertTrue(strProcessXSLT.equals(strProcessXSLTEtalon));
+    }
 }
