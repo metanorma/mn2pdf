@@ -48,6 +48,8 @@ public abstract class Typeface implements FontMetrics {
      */
     private long charMapOps;
 
+    private CharSequence cs;
+
     /** An optional event listener that receives events such as missing glyphs etc. */
     protected FontEventListener eventListener;
 
@@ -136,7 +138,11 @@ public abstract class Typeface implements FontMetrics {
         if (warnedChars.size() < 8 && !warnedChars.contains(ch)) {
             warnedChars.add(ch);
             if (this.eventListener != null) {
-                this.eventListener.glyphNotAvailable(this, c, getFontName());
+                String suffix = getFontName();
+                if (cs != null && cs.length() > 1) {
+                    suffix += ". Found in the character sequence \"" + cs;
+                }
+                this.eventListener.glyphNotAvailable(this, c, suffix);
             } else {
                 if (warnedChars.size() == 8) {
                     log.warn("Many requested glyphs are not available in font "
@@ -150,6 +156,12 @@ public abstract class Typeface implements FontMetrics {
             }
         }
     }
+
+    protected void warnMissingGlyph(char c, CharSequence cs) {
+        this.cs = cs;
+        warnMissingGlyph(c);
+    }
+
 
     /** {@inheritDoc} */
     public String toString() {
