@@ -140,7 +140,7 @@ public abstract class Typeface implements FontMetrics {
             if (this.eventListener != null) {
                 String suffix = getFontName();
                 if (cs != null && cs.length() > 1) {
-                    suffix += ". Found in the character sequence \"" + cs;
+                    suffix += "\". Found in the character sequence \"" + cs;
                 }
                 this.eventListener.glyphNotAvailable(this, c, suffix);
             } else {
