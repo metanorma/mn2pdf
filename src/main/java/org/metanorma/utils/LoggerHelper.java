@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -47,6 +48,7 @@ public final class LoggerHelper {
             fileHandler = new FileHandler(logFilename);
             fileHandler.setFormatter(new java.util.logging.SimpleFormatter());
             fileHandler.setLevel(Level.WARNING);
+            fileHandler.setEncoding(StandardCharsets.UTF_8.name());
             //fileHandler.setLevel(Level.INFO);
             logger.addHandler(fileHandler);
         } catch (IOException e) {
