@@ -251,7 +251,7 @@ public class PDFStructElem extends StructureHierarchyMember
         if (getDocument() != null && getDocument().getProfile().getPDFUAMode().isEnabled()) {
             if (entries.containsKey("Alt") && "".equals(get("Alt"))) {
                 put("Alt", "No alternate text specified");
-            } else if (kids != null) {
+            } else if (kids != null && structureType != null) {
                 for (PDFObject kid : kids) {
                     if (kid instanceof PDFStructElem
                             && !(kid instanceof Placeholder)
