@@ -1166,6 +1166,7 @@ public class PDFGenerator {
                 // ====================================================================
             }
         } catch (Exception e) {
+            xsltConverter.setParam("table_if", "false");
             logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
         }
         Profiler.printProcessingTime(methodName, startMethodTime);
