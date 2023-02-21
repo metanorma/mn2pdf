@@ -817,6 +817,20 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Montserrat ExtraBold" style="normal" weight="normal"/>
 				</font>
 				
+				<!-- Tahoma -->
+				<font kerning="yes" embed-url="tahoma.ttf">
+					<font-triplet name="Tahoma" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="tahoma.ttf" simulate-style="true">
+					<font-triplet name="Tahoma" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="tahomabd.ttf">
+					<font-triplet name="Tahoma" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="tahomabd.ttf" simulate-style="true">
+					<font-triplet name="Tahoma" style="italic" weight="bold"/>
+				</font>
+				
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
