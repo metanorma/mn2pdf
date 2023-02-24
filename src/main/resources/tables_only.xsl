@@ -35,7 +35,7 @@
 						local-name() = 'formula' or 
 						local-name() = 'figure' or 
 						local-name() = 'toc'
-						][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
+						][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc' or local-name() = 'pagebreak'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
 
 	<xsl:template match="*[local-name() = 'bookmark']"/>
 	
