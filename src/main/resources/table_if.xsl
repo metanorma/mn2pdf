@@ -10,6 +10,9 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
+	<xsl:key name="kRow" match="//cell" use="@row"/>
+	<xsl:key name="kRowCell" match="//cell" use="concat(@row, ' ', @col)"/>
+	
 	<xsl:variable name="table_if_prefix">table_if_</xsl:variable>
 	<xsl:variable name="table_if_start_prefix">table_if_start_</xsl:variable>
 	
@@ -134,14 +137,16 @@
 		
 		<xsl:variable name="table_body_">
 			<tbody>
-				<xsl:for-each select="$cells/cell">
+				<xsl:for-each select="$cells/cell[generate-id(.) = generate-id(key('kRow', @row)[1])]">
+				<!-- <xsl:for-each select="$cells/cell"> -->
 					<xsl:variable name="row" select="@row"/>
-					<xsl:if test="not(preceding-sibling::cell[@row = $row])"> 
+					<!-- <xsl:if test="not(preceding-sibling::cell[@row = $row])">  -->
 						<tr>
-							<xsl:for-each select="$cells/cell[@row = $row]"> <!-- iteration by rows -->
+							<!-- <xsl:for-each select="$cells/cell[@row = $row]"> --> <!-- iteration by rows -->
+							<xsl:for-each select="$cells/cell[generate-id(.) = generate-id(key('kRowCell', concat(@row, ' ', @col))[1])][@row = $row]"> <!-- iteration by rows -->
 								<xsl:variable name="col" select="@col"/>
 							
-								<xsl:if test="not(preceding-sibling::cell[@row = $row and @col = $col])">
+								<!-- <xsl:if test="not(preceding-sibling::cell[@row = $row and @col = $col])"> -->
 									<td>
 										<xsl:variable name="lengths_">
 											<xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> <!-- select all 'cell' relate to one source table cell -->
@@ -172,10 +177,10 @@
 										</xsl:if>
 										
 									</td>
-								</xsl:if>
+								<!-- </xsl:if> -->
 							</xsl:for-each> <!-- iteration by rows -->
 						</tr>
-					</xsl:if>
+					<!-- </xsl:if> -->
 				</xsl:for-each>
 			</tbody>
 		</xsl:variable>
