@@ -11,6 +11,7 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:key name="kRow" match="//cell" use="@row"/>
+	<xsl:key name="kCell" match="//cell" use="@col"/>
 	<xsl:key name="kRowCell" match="//cell" use="concat(@row, ' ', @col)"/>
 	
 	<xsl:variable name="table_if_prefix">table_if_</xsl:variable>
@@ -142,23 +143,36 @@
 					<xsl:variable name="row" select="@row"/>
 					<!-- <xsl:if test="not(preceding-sibling::cell[@row = $row])">  -->
 						<tr>
+						
+							<xsl:variable name="cells_by_row_">
+								<xsl:for-each select="key('kRow', $row)">
+									<xsl:copy-of select="."/>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:variable name="cells_by_row" select="xalan:nodeset($cells_by_row_)"/>
+						
 							<!-- <xsl:for-each select="$cells/cell[@row = $row]"> --> <!-- iteration by rows -->
-							<xsl:for-each select="$cells/cell[generate-id(.) = generate-id(key('kRowCell', concat(@row, ' ', @col))[1])][@row = $row]"> <!-- iteration by rows -->
+							<!-- <xsl:for-each select="$cells/cell[generate-id(.) = generate-id(key('kRowCell', concat(@row, ' ', @col))[1])][@row = $row]"> --> <!-- iteration by rows -->
+							<xsl:for-each select="$cells_by_row/cell"> <!-- iteration by rows -->
 								<xsl:variable name="col" select="@col"/>
 							
 								<!-- <xsl:if test="not(preceding-sibling::cell[@row = $row and @col = $col])"> -->
+								<xsl:if test="not(preceding-sibling::cell[@col = $col])"> <!-- unique col only -->
 									<td>
 										<xsl:variable name="lengths_">
-											<xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> <!-- select all 'cell' relate to one source table cell -->
-												<!-- <divide><xsl:value-of select="@divide"/></divide> -->
-												<xsl:choose>
-													<xsl:when test="@type = 'p'">
-														<p_len><xsl:value-of select="round(@length div @divide)"/></p_len>
-													</xsl:when>
-													<xsl:otherwise>
-														<word_len><xsl:value-of select="round(@length div @divide)"/></word_len>
-													</xsl:otherwise>
-												</xsl:choose>
+											<!-- <xsl:for-each select="$cells/cell[@row = $row and @col = $col]"> --> <!-- select all 'cell' relate to one source table cell -->
+											<xsl:for-each select="$cells">
+												<xsl:for-each select="key('kRowCell', concat($row, ' ', $col))"> <!-- select all 'cell' relate to one source table cell -->
+													<!-- <divide><xsl:value-of select="@divide"/></divide> -->
+													<xsl:choose>
+														<xsl:when test="@type = 'p'">
+															<p_len><xsl:value-of select="round(@length div @divide)"/></p_len>
+														</xsl:when>
+														<xsl:otherwise>
+															<word_len><xsl:value-of select="round(@length div @divide)"/></word_len>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:for-each>
 											</xsl:for-each>
 										</xsl:variable>
 										<xsl:variable name="lengths" select="xalan:nodeset($lengths_)"/>
@@ -177,7 +191,7 @@
 										</xsl:if>
 										
 									</td>
-								<!-- </xsl:if> -->
+								</xsl:if>
 							</xsl:for-each> <!-- iteration by rows -->
 						</tr>
 					<!-- </xsl:if> -->
@@ -185,7 +199,7 @@
 			</tbody>
 		</xsl:variable>
 		<xsl:variable name="table_body" select="xalan:nodeset($table_body_)"/>
-		
+		<!-- <table_body><xsl:copy-of select="$table_body"/></table_body> -->
 		
 		<xsl:variable name="table_with_cell_widths_">
 			<xsl:apply-templates select="$table_body" mode="determine_cell_widths-if"/>
