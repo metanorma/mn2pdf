@@ -19,6 +19,9 @@ public class FOPFontAlternate {
     @JacksonXmlProperty(isAttribute=true, localName = "simulate-style")
     String simulate_style;
 
+    @JacksonXmlProperty(isAttribute=true, localName = "another-font-family")
+    String another_font_family;
+
     public String getEmbed_url() {
         return embed_url;
     }
@@ -42,5 +45,12 @@ public class FOPFontAlternate {
     public void setSimulate_style(String simulate_style) {
         this.simulate_style = simulate_style;
     }
-    
+
+    public String getAnother_font_family() {
+        return another_font_family;
+    }
+
+    public void setAnother_font_family(String another_font_family) {
+        this.another_font_family = another_font_family;
+    }
 }

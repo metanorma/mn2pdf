@@ -135,7 +135,7 @@ public abstract class Typeface implements FontMetrics {
         if (warnedChars == null) {
             warnedChars = new HashSet<Character>();
         }
-        if (warnedChars.size() < 8 && !warnedChars.contains(ch)) {
+        if (!warnedChars.contains(ch)) { // warnedChars.size() < 8 &&
             warnedChars.add(ch);
             if (this.eventListener != null) {
                 String suffix = getFontName();
@@ -144,15 +144,15 @@ public abstract class Typeface implements FontMetrics {
                 }
                 this.eventListener.glyphNotAvailable(this, c, suffix);
             } else {
-                if (warnedChars.size() == 8) {
-                    log.warn("Many requested glyphs are not available in font "
-                            + getFontName());
-                } else {
+                //if (warnedChars.size() == 8) {
+                //    log.warn("Many requested glyphs are not available in font "
+                //            + getFontName());
+                //} else {
                     log.warn("Glyph " + (int) c + " (0x"
                             + Integer.toHexString(c) + ", "
                             + Glyphs.charToGlyphName(c)
                             + ") not available in font " + getFontName());
-                }
+                //}
             }
         }
     }

@@ -567,7 +567,8 @@ public class PDFGenerator {
                 logger.severe(e.toString());
                 PDFUA_error = true;
             } else {
-                e.printStackTrace(System.err);
+                //e.printStackTrace(System.err);
+                logger.log(Level.SEVERE,e.getMessage(), e);
                 if (!debugXSLFO.isEmpty()) {
                     debugXSLFO = debugXSLFO.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     String debugXSLFOfile = pdf.getAbsolutePath() + ".fo.debug.xml";

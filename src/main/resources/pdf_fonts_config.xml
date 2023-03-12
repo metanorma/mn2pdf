@@ -70,11 +70,13 @@ Relative config URLs are resolved relative to location of this file.
 					<font-triplet name="Cambria" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria Math">
+					<alternate embed-url="Cambria Math.ttf"/>
 					<alternate embed-url="cambria.ttf"/>
 					<font-triplet name="Cambria Math" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="cambria.ttc" sub-font="Cambria Math" simulate-style="true">
-					<alternate embed-url="cambria.ttf"/>
+					<alternate embed-url="Cambria Math.ttf"  simulate-style="true"/>
+					<alternate embed-url="cambria.ttf" simulate-style="true"/>
 					<font-triplet name="Cambria Math" style="normal" weight="bold"/>
 				</font>				 
 				<font kerning="yes" embed-url="cambriab.ttf">
@@ -534,36 +536,36 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- SimSun -->
 				<font kerning="yes" embed-url="simsun.ttc" sub-font="SimSun">
-					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"/>
+					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" another-font-family="true"/>
 					<font-triplet name="SimSun" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="simsun.ttc" sub-font="SimSun" simulate-style="true">
-					<alternate embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold"/>
+					<alternate embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold" another-font-family="true"/>
 					<font-triplet name="SimSun" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="simsun.ttc"  sub-font="SimSun" simulate-style="true">
-					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true"/>
+					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" another-font-family="true"/>
 					<font-triplet name="SimSun" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="simsun.ttc" sub-font="SimSun" simulate-style="true">
-					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true"/>
+					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" another-font-family="true"/>
 					<font-triplet name="SimSun" style="italic" weight="bold"/>
 				</font>
 				<!-- SimHei -->
 				<font kerning="yes" embed-url="Simhei.ttf">
-					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"/>
+					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" another-font-family="true"/>
 					<font-triplet name="SimHei" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="Simhei.ttf" simulate-style="true">
-					<alternate embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold"/>
+					<alternate embed-url="SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold" another-font-family="true"/>
 					<font-triplet name="SimHei" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="Simhei.ttf" simulate-style="true">
-					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true"/>
+					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" another-font-family="true"/>
 					<font-triplet name="SimHei" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="Simhei.ttf" simulate-style="true">
-					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true"/>
+					<alternate embed-url="SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal" simulate-style="true" another-font-family="true"/>
 					<font-triplet name="SimHei" style="italic" weight="bold"/>
 				</font>
 				
@@ -734,49 +736,49 @@ Relative config URLs are resolved relative to location of this file.
 				
 				<!-- BSI Gesta OTF -->
 				<font kerning="yes" embed-url="BSIGesta.otf">
-					<alternate embed-url="OpenSans-Regular.ttf"/>
+					<alternate embed-url="OpenSans-Regular.ttf" another-font-family="true"/>
 					<font-triplet name="BSI Gesta" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Bold.otf">
-					<alternate embed-url="OpenSans-Bold.ttf"/>
+					<alternate embed-url="OpenSans-Bold.ttf" another-font-family="true"/>
 					<font-triplet name="BSI Gesta" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Italic.otf">
-					<alternate embed-url="OpenSans-Italic.ttf"/>
+					<alternate embed-url="OpenSans-Italic.ttf" another-font-family="true"/>
 					<font-triplet name="BSI Gesta" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-BoldItalic.otf">
-					<alternate embed-url="OpenSans-BoldItalic.ttf"/>
+					<alternate embed-url="OpenSans-BoldItalic.ttf" another-font-family="true"/>
 					<font-triplet name="BSI Gesta" style="italic" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Light.otf">
-					<alternate embed-url="OpenSans-Light.ttf"/>
+					<alternate embed-url="OpenSans-Light.ttf" another-font-family="true"/>
 					<font-triplet name="BSI Gesta" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="BSIGesta-Medium.otf">
-					<alternate embed-url="OpenSans-SemiBold.ttf"/>
+					<alternate embed-url="OpenSans-SemiBold.ttf" another-font-family="true"/>
 					<font-triplet name="BSI Gesta" style="normal" weight="500"/>
 				</font>
 				
 				<!-- Frutiger -->
 				<font kerning="yes" embed-url="FrutigerLTStd-Roman.ttf">
-					<alternate embed-url="OpenSans-Regular.ttf"/>
+					<alternate embed-url="OpenSans-Regular.ttf" another-font-family="true"/>
 					<font-triplet name="Frutiger" style="normal" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-Light.ttf">
-					<alternate embed-url="OpenSans-Light.ttf"/>
+					<alternate embed-url="OpenSans-Light.ttf" another-font-family="true"/>
 					<font-triplet name="Frutiger" style="normal" weight="300"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-Bold.ttf">
-					<alternate embed-url="OpenSans-Bold.ttf"/>
+					<alternate embed-url="OpenSans-Bold.ttf" another-font-family="true"/>
 					<font-triplet name="Frutiger" style="normal" weight="bold"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-Italic.ttf">
-					<alternate embed-url="OpenSans-Italic.ttf"/>
+					<alternate embed-url="OpenSans-Italic.ttf" another-font-family="true"/>
 					<font-triplet name="Frutiger" style="italic" weight="normal"/>
 				</font>
 				<font kerning="yes" embed-url="FrutigerLTStd-BoldItalic.ttf">
-					<alternate embed-url="OpenSans-BoldItalic.ttf"/>
+					<alternate embed-url="OpenSans-BoldItalic.ttf" another-font-family="true"/>
 					<font-triplet name="Frutiger" style="italic" weight="bold"/>
 				</font>
 				

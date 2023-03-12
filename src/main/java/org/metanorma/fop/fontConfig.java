@@ -267,11 +267,19 @@ class fontConfig {
                                     }
                                 }
                             } else {
-                                logger.log(Level.INFO, "WARNING: font path ''{0}'' from the manifest file doesn''t exist!", fontPath);
+                                logger.log(Level.WARNING, "WARNING: font path ''{0}'' from the 'fontist' manifest file doesn''t exist!", fontPath);
                             }
                         }
                     }
                 }
+
+                // remove sub-font property, if font doesn't end with .ttc
+                fopFonts.stream()
+                        .filter(f -> f.isReadyToUse())
+                        .filter(f -> f.getSub_font() != null)
+                        .filter(f -> !f.getPath().toLowerCase().endsWith(".ttc"))
+                        .forEach(f-> f.setSub_font(null));
+
             } catch (FileNotFoundException ex) {
                 // make no sense, checking in main method
             } catch (Exception ex) {
@@ -583,7 +591,10 @@ class fontConfig {
                                             font_replacementpath = url;
                                             font_source = "system";
                                             fopFont.setSub_font(fopFontAlternate.getSub_font());                                        
-                                            fopFont.setSimulate_style(fopFontAlternate.getSimulate_style());                                        
+                                            fopFont.setSimulate_style(fopFontAlternate.getSimulate_style());
+                                            if (fopFontAlternate.getAnother_font_family() != null && fopFontAlternate.getAnother_font_family().equals("true")) {
+                                                fopFont.setMessage(String.format("WARNING: the font file '%s' is using for the font '%s' (font style '%s', font weight '%s').", fopFontAlternate.getEmbed_url() , fopFont.getName(), fopFont.getFont_triplet().get(0).getStyle(), fopFont.getFont_triplet().get(0).getWeight()));
+                                            }
                                             break;
                                         }
                                     }
@@ -840,8 +851,8 @@ class fontConfig {
     
     private void printMessage(String msg) {
         if (!msg.isEmpty()) {
-            logger.info(msg);
             if (!messages.contains(msg)) {
+                logger.warning(msg);
                 messages.add(msg);
             }
         }
