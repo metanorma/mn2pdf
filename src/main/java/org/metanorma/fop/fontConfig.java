@@ -272,6 +272,14 @@ class fontConfig {
                         }
                     }
                 }
+
+                // remove sub-font property, if font doesn't end with .ttc
+                fopFonts.stream()
+                        .filter(f -> f.isReadyToUse())
+                        .filter(f -> f.getSub_font() != null)
+                        .filter(f -> !f.getPath().toLowerCase().endsWith(".ttc"))
+                        .forEach(f-> f.setSub_font(null));
+
             } catch (FileNotFoundException ex) {
                 // make no sense, checking in main method
             } catch (Exception ex) {
