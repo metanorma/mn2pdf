@@ -143,7 +143,11 @@ public abstract class XMLObj extends FONode implements ObjectBuiltListener {
                 if (pref.equals(XMLConstants.XMLNS_PREFIX)) {
                     ns.put(tail, rf);
                 } else {
-                    element.setAttributeNS((String)ns.get(pref), tail, rf);
+                    String namespace = (String)ns.get(pref);
+                    if (namespace == null) {
+                        namespace = attr.getURI(count);
+                    }
+                    element.setAttributeNS(namespace, tail, rf);
                 }
             }
         }
