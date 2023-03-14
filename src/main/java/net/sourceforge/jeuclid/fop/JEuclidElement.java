@@ -93,6 +93,12 @@ public class JEuclidElement extends JEuclidObj {
             final String attrName = "jeuclid:" + localName;
             final String isSet = e.getAttributeNS(Constants.NS_JEUCLID_EXT,
                     localName);
+
+            // re-create attributes with the prefix 'jeuclid:' to process jEuclid extenstions in the Apache FOP
+            if (isSet != null && isSet.length() != 0) {
+                e.setAttributeNS(Constants.NS_JEUCLID_EXT, attrName, isSet);
+            }
+
             if ((isSet == null) || (isSet.length() == 0)) {
                 e.setAttributeNS(Constants.NS_JEUCLID_EXT, attrName, p
                         .toString(this.layoutContext.getParameter(p)));
