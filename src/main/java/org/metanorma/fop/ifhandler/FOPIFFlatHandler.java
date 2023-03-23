@@ -37,6 +37,9 @@ public class FOPIFFlatHandler extends DefaultHandler {
         if (qName.equals("viewport") && attr.getValue("region-type") != null && (attr.getValue("region-type").equals("Footer") || attr.getValue("region-type").equals("Header"))) {
             // skip
             skipElements.push(true);
+        } else if (qName.equals("svg")) {
+            // skip svg element due text/@x @y attributes similar to IF attributes
+            skipElements.push(true);
         } else {
 
             skipElements.push(false);
