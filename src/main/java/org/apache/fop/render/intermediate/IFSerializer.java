@@ -913,10 +913,12 @@ implements IFConstants, IFPainter, IFDocumentNavigationHandler {
         AttributesImpl atts = new AttributesImpl();
         atts.addAttribute("", "rect", "rect",
                 XMLConstants.CDATA, IFUtil.toString(link.getTargetRect()));
-        if (getUserAgent().isAccessibilityEnabled()) {
-            addStructRefAttribute(atts,
-                    ((IFStructureTreeElement) link.getAction().getStructureTreeElement()).getId());
-        }
+        try {
+            if (getUserAgent().isAccessibilityEnabled()) {
+                addStructRefAttribute(atts,
+                        ((IFStructureTreeElement) link.getAction().getStructureTreeElement()).getId());
+            }
+        } catch (Exception ex) {//prevent page-trailer with reference to the element with non exists id}
         try {
             handler.startElement(DocumentNavigationExtensionConstants.LINK, atts);
             serializeXMLizable(link.getAction());
