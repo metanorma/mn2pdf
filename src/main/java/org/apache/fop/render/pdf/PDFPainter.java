@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: PDFPainter.java 1873290 2020-01-29 09:33:34Z ssteiner $ */
+/* $Id: PDFPainter.java 1900111 2022-04-21 13:48:07Z ssteiner $ */
 
 package org.apache.fop.render.pdf;
 
@@ -43,6 +43,7 @@ import org.apache.fop.fonts.CustomFont;
 import org.apache.fop.fonts.Font;
 import org.apache.fop.fonts.FontTriplet;
 import org.apache.fop.fonts.LazyFont;
+import org.apache.fop.fonts.MultiByteFont;
 import org.apache.fop.fonts.SingleByteFont;
 import org.apache.fop.fonts.Typeface;
 import org.apache.fop.pdf.PDFArray;
@@ -431,7 +432,14 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
 
         FontTriplet triplet = new FontTriplet(
                 state.getFontFamily(), state.getFontStyle(), state.getFontWeight());
-
+        String fontKey = getFontInfo().getInternalFontKey(triplet);
+        Typeface typeface = getTypeface(fontKey);
+        if (typeface instanceof MultiByteFont && ((MultiByteFont) typeface).hasSVG()) {
+            boolean success = drawSVGText((MultiByteFont) typeface, triplet, x, y, text, state);
+            if (success) {
+                return;
+            }
+        }
         if ((dp == null) || IFUtil.isDPOnlyDX(dp)) {
             drawTextWithDX(x, y, text, triplet, letterSpacing,
                              wordSpacing, IFUtil.convertDPToDX(dp));
@@ -465,22 +473,7 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
         PDFTextUtil textutil = generator.getTextUtil();
         textutil.updateTf(fontKey, fontSize, tf.isMultiByte(), tf.isCID());
 
-        double shear = 0;
-        boolean simulateStyle = tf instanceof CustomFont && ((CustomFont) tf).getSimulateStyle();
-        
-        boolean isTransparent = state.getTextColor().getAlpha() == 0;
-        
-        if (isTransparent) {
-            textutil.setTextRenderingMode(PDFTextUtil.TR_INVISIBLE); // set transparent mode '3 Tr'
-        } else if (simulateStyle) {
-            if (triplet.getWeight() == 700) {
-                generator.add("q\n");
-                generator.add("2 Tr 0.31543 w\n");
-            }
-            if (triplet.getStyle().equals("italic")) {
-                shear = 0.3333;
-            }
-        }
+        double shear = startSimulateStyle(tf, triplet);
 
         generator.updateCharacterSpacing(letterSpacing / 1000f);
 
@@ -533,10 +526,36 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
 
         }
         textutil.writeTJ();
+        endSimulateStyle(tf, triplet);
+    }
+
+    private double startSimulateStyle(Typeface tf, FontTriplet triplet) {
+        double shear = 0;
+        boolean simulateStyle = tf instanceof CustomFont && ((CustomFont) tf).getSimulateStyle();
+        boolean isTransparent = state.getTextColor().getAlpha() == 0;
         if (isTransparent) {
+            PDFTextUtil textutil = generator.getTextUtil();
+            textutil.setTextRenderingMode(PDFTextUtil.TR_INVISIBLE); // set transparent mode '3 Tr'
+        } else if (simulateStyle) {
+            if (triplet.getWeight() == 700) {
+                generator.updateColor(state.getTextColor(), false, null);
+                generator.add("2 Tr 0.31543 w\n");
+            }
+            if (triplet.getStyle().equals("italic")) {
+                shear = 0.3333;
+            }
+        }
+        return shear;
+    }
+
+    private void endSimulateStyle(Typeface tf, FontTriplet triplet) {
+        boolean simulateStyle = tf instanceof CustomFont && ((CustomFont) tf).getSimulateStyle();
+        boolean isTransparent = state.getTextColor().getAlpha() == 0;
+        if (isTransparent) {
+            PDFTextUtil textutil = generator.getTextUtil();
             textutil.setTextRenderingMode(PDFTextUtil.TR_FILL); //restore default mode
         } else if (simulateStyle && triplet.getWeight() == 700) {
-            generator.add("Q\n");
+                generator.add("0 Tr\n");
         }
     }
 
@@ -560,25 +579,20 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
             double      yoLast          = 0f;
             double      wox             = wordSpacing;
 
-            // FOP-2810
-            boolean simulateStyle = tf instanceof CustomFont && ((CustomFont) tf).getSimulateStyle();
-            double shear = 0;
-
-            if (simulateStyle) {
-                if (triplet.getWeight() == 700) {
-                    generator.add("q\n");
-                    generator.add("2 Tr 0.31543 w\n");
-                }
-                if (triplet.getStyle().equals("italic")) {
-                    shear = 0.3333;
-                }
-            }
+            double shear = startSimulateStyle(tf, triplet);
 
             tu.writeTextMatrix(new AffineTransform(1, 0, shear, -1, x / 1000f, y / 1000f));
             tu.updateTf(fk, fsPoints, tf.isMultiByte(), true);
             generator.updateCharacterSpacing(letterSpacing / 1000f);
             for (int i = 0, n = text.length(); i < n; i++) {
-                char    ch              = text.charAt(i);
+                int ch = text.charAt(i);
+                int mp;
+                if (CharUtilities.containsSurrogatePairAt(text, i)) {
+                    ch = Character.toCodePoint((char) ch, text.charAt(++i));
+                    mp = f.mapCodePoint(ch);
+                } else {
+                    mp = f.mapChar((char)ch);
+                }
                 int[]   pa              = ((i >= dp.length) || (dp[i] == null)) ? paZero : dp[i];
                 double  xo              = xc + pa[0];
                 double  yo              = yc + pa[1];
@@ -587,16 +601,17 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
                 double  xd              = (xo - xoLast) / 1000f;
                 double  yd              = (yo - yoLast) / 1000f;
                 tu.writeTd(xd, yd);
-                tu.writeTj(f.mapChar(ch), tf.isMultiByte(), true);
+                tu.writeTj(mp, tf.isMultiByte(), true);
                 xc += xa + pa[2];
                 yc += ya + pa[3];
                 xoLast = xo;
                 yoLast = yo;
             }
+            endSimulateStyle(tf, triplet);
         }
     }
 
-    private double maybeWordOffsetX(double wox, char ch, Direction dir) {
+    private double maybeWordOffsetX(double wox, int ch, Direction dir) {
         if ((wox != 0)
              && CharUtilities.isAdjustableSpace(ch)
              && ((dir == null) || dir.isHorizontal())) {
