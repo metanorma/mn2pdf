@@ -918,7 +918,9 @@ implements IFConstants, IFPainter, IFDocumentNavigationHandler {
                 addStructRefAttribute(atts,
                         ((IFStructureTreeElement) link.getAction().getStructureTreeElement()).getId());
             }
-        } catch (Exception ex) {//prevent page-trailer with reference to the element with non exists id}
+        } catch (Exception ex) {
+            //prevent page-trailer with reference to the element with non exists id}
+        }
         try {
             handler.startElement(DocumentNavigationExtensionConstants.LINK, atts);
             serializeXMLizable(link.getAction());
