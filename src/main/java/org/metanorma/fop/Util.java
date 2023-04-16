@@ -544,7 +544,7 @@ public class Util {
         int renderedHeight = 20000000;
         
         if (DEBUG) {
-            System.out.println("Math object width=" + width + ", height=" + height);
+            //System.out.println("Math object width=" + width + ", height=" + height);
         }
         
         while ((renderedWidth > width || renderedHeight > height) && fontSize >= 1.0f) {
@@ -559,7 +559,7 @@ public class Util {
             renderedHeight = (int) (rect2d.getHeight()* 1000);
             
             if (DEBUG) {
-                System.out.println("font-size=" + fontSize + ", width=" + renderedWidth + ", height=" + renderedHeight);
+                //System.out.println("font-size=" + fontSize + ", width=" + renderedWidth + ", height=" + renderedHeight);
             }
         }
         fontSize = (fontSize == 0f ? 0.5f : fontSize);
