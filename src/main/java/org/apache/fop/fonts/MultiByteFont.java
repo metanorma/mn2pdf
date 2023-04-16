@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: MultiByteFont.java 1846994 2018-11-20 12:35:21Z ssteiner $ */
+/* $Id: MultiByteFont.java 1886124 2021-02-02 14:48:54Z ssteiner $ */
 
 package org.apache.fop.fonts;
 
@@ -42,6 +42,7 @@ import org.apache.fop.complexscripts.fonts.Substitutable;
 import org.apache.fop.complexscripts.util.CharAssociation;
 import org.apache.fop.complexscripts.util.CharNormalize;
 import org.apache.fop.complexscripts.util.GlyphSequence;
+import org.apache.fop.fonts.truetype.SVGGlyphData;
 import org.apache.fop.util.CharUtilities;
 
 /**
@@ -865,5 +866,9 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
         return null;
     }
 
+    public SVGGlyphData getSVG(int c) {
+        int gid = findGlyphIndex(c);
+        return svgs.get(gid);
+    }
 }
 

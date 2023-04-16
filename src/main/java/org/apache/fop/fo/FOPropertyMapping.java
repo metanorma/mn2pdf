@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: FOPropertyMapping.java 1856528 2019-03-29 10:24:14Z cbowditch $ */
+/* $Id: FOPropertyMapping.java 1891499 2021-07-13 06:47:09Z ssteiner $ */
 
 package org.apache.fop.fo;
 
@@ -99,7 +99,7 @@ public final class FOPropertyMapping implements Constants {
     private PropertyMaker genericCondPadding;
     private PropertyMaker genericPadding;
     private PropertyMaker genericCondBorderWidth;
-    private PropertyMaker genericBorderWidth;
+    PropertyMaker genericBorderWidth;
     private PropertyMaker genericBorderStyle;
     private PropertyMaker genericCondCornerRadius;
     private PropertyMaker genericBreak;
@@ -2855,7 +2855,7 @@ public final class FOPropertyMapping implements Constants {
         m  = new ListProperty.Maker(PR_BORDER_BOTTOM);
         m.setInherited(false);
         m.setDefault("");
-        m.setDatatypeParser(new GenericShorthandParser());
+        m.setDatatypeParser(new BorderShorthandParser(this));
         addPropertyMaker("border-bottom", m);
 
         // border-color
@@ -2869,14 +2869,14 @@ public final class FOPropertyMapping implements Constants {
         m  = new ListProperty.Maker(PR_BORDER_LEFT);
         m.setInherited(false);
         m.setDefault("");
-        m.setDatatypeParser(new GenericShorthandParser());
+        m.setDatatypeParser(new BorderShorthandParser(this));
         addPropertyMaker("border-left", m);
 
         // border-right
         m  = new ListProperty.Maker(PR_BORDER_RIGHT);
         m.setInherited(false);
         m.setDefault("");
-        m.setDatatypeParser(new GenericShorthandParser());
+        m.setDatatypeParser(new BorderShorthandParser(this));
         addPropertyMaker("border-right", m);
 
         // border-style
@@ -2897,7 +2897,7 @@ public final class FOPropertyMapping implements Constants {
         m  = new ListProperty.Maker(PR_BORDER_TOP);
         m.setInherited(false);
         m.setDefault("");
-        m.setDatatypeParser(new GenericShorthandParser());
+        m.setDatatypeParser(new BorderShorthandParser(this));
         addPropertyMaker("border-top", m);
 
         // border-width

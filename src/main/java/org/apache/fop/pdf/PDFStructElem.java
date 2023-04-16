@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: PDFStructElem.java 1862557 2019-07-04 13:48:41Z ssteiner $ */
+/* $Id: PDFStructElem.java 1903941 2022-09-09 14:52:08Z ssteiner $ */
 
 package org.apache.fop.pdf;
 
@@ -37,6 +37,8 @@ import org.apache.fop.util.LanguageTags;
  */
 public class PDFStructElem extends StructureHierarchyMember
         implements StructureTreeElement, CompressedObject, Serializable {
+    private static final List<StructureType> BLSE = Arrays.asList(StandardStructureTypes.Table.TABLE,
+            StandardStructureTypes.List.L, StandardStructureTypes.Paragraphlike.P);
 
     private static final long serialVersionUID = -3055241807589202532L;
     private StructureType structureType;
@@ -253,12 +255,9 @@ public class PDFStructElem extends StructureHierarchyMember
                 put("Alt", "No alternate text specified");
             } else if (kids != null && structureType != null) {
                 for (PDFObject kid : kids) {
-                    if (kid instanceof PDFStructElem
-                            && !(kid instanceof Placeholder)
-                            && structureType.toString().equals("P")
-                            && isBSLE(((PDFStructElem) kid).getStructureType().toString())) {
+                    if (kid instanceof PDFStructElem && isBSLE(((PDFStructElem) kid))) {
                         structureType = StandardStructureTypes.Grouping.DIV;
-                        put("S", StandardStructureTypes.Grouping.DIV.getName());
+                        put("S", structureType.getName());
                         break;
                     }
                 }
@@ -267,9 +266,9 @@ public class PDFStructElem extends StructureHierarchyMember
         return super.output(stream);
     }
 
-    private boolean isBSLE(String type) {
-        String[] blseValues = {"Table", "L", "P"};
-        return Arrays.asList(blseValues).contains(type);
+    private boolean isBSLE(PDFStructElem kid) {
+        boolean pType = !(kid instanceof Placeholder) && structureType == StandardStructureTypes.Paragraphlike.P;
+        return pType && BLSE.contains(kid.getStructureType());
     }
 
     /**

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: GlyphMapping.java 1827406 2018-03-21 12:19:52Z ssteiner $ */
+/* $Id: GlyphMapping.java 1900111 2022-04-21 13:48:07Z ssteiner $ */
 
 package org.apache.fop.fonts;
 
@@ -173,7 +173,9 @@ public class GlyphMapping {
 
         // 6. compute word ipd based on final position adjustments.
         MinOptMax ipd = MinOptMax.ZERO;
-        for (int i = 0, n = mcs.length(); i < n; i++) {
+
+        // The gpa array is sized by code point count
+        for (int i = 0, cpi = 0, n = mcs.length(); i < n; i++, cpi++) {
             int c = mcs.charAt(i);
 
             if (CharUtilities.containsSurrogatePairAt(mcs, i)) {
@@ -185,7 +187,7 @@ public class GlyphMapping {
                 w = 0;
             }
             if (gpa != null) {
-                w += gpa[i][GlyphPositioningTable.Value.IDX_X_ADVANCE];
+                w += gpa[cpi][GlyphPositioningTable.Value.IDX_X_ADVANCE];
             }
             ipd = ipd.plus(w);
         }
