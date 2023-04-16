@@ -162,6 +162,20 @@
 			<groupId>de.rototor.jeuclid</groupId>
 			<artifactId>jeuclid-core</artifactId>
 			<version>3.1.14</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>batik-svg-dom</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>batik-anim</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>batik-ext</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
@@ -188,7 +202,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-all</artifactId>
-			<version>1.9.1</version>
+			<version>1.16</version><!-- 1.9.1 -->
 			<exclusions>
 				<exclusion>
 					<groupId>org.python</groupId>
