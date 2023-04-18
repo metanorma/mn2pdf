@@ -97,7 +97,9 @@ class fontConfig {
     
     StringBuilder fontManifestLog = new StringBuilder();
     StringBuilder fopFontsLog = new StringBuilder();
-    
+
+    private String fontConfigPath = "";
+
     public fontConfig() {
         
         setFontPath(DEFAULT_FONT_PATH);
@@ -128,7 +130,11 @@ class fontConfig {
             logger.severe(ex.toString());
         }
     }
-    
+
+    public void setFontConfigPath(String fontConfigPath) {
+        this.fontConfigPath = fontConfigPath;
+    }
+
     public void setFontManifest(File fFontManifest) {
 
         this.fFontManifest = fFontManifest;
@@ -755,7 +761,7 @@ class fontConfig {
             String xmlString = writer.getBuffer().toString();   
             
             //System.out.println(xmlString);
-            Path updateConfigPath = Paths.get(this.fontPath, CONFIG_NAME_UPDATED);
+            Path updateConfigPath = (this.fontConfigPath.isEmpty()) ? Paths.get(this.fontPath, CONFIG_NAME_UPDATED) : Paths.get(this.fontConfigPath + "." + CONFIG_NAME_UPDATED);
             updatedConfig = updateConfigPath.toFile();
             try (BufferedWriter bw = Files.newBufferedWriter(updateConfigPath)) 
             {
@@ -774,6 +780,18 @@ class fontConfig {
         updateConfig();
         
         return updatedConfig;
+    }
+
+    public void deleteConfigFile() {
+        if (!this.fontConfigPath.isEmpty()) {
+            if (updatedConfig != null) {
+                try {
+                    Files.deleteIfExists(updatedConfig.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace(System.err);
+                }
+            }
+        }
     }
 
     public void setPDFUAmode(String mode) throws SAXException, IOException, ParserConfigurationException{

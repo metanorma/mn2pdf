@@ -291,6 +291,7 @@ public class PDFGenerator {
             
             fontConfig fontcfg = new fontConfig();
             fontcfg.setFontPath(fontsPath);
+            fontcfg.setFontConfigPath(fPDF.getAbsolutePath());
 
             fontcfg.setFontManifest(fFontsManifest);
             
@@ -333,6 +334,7 @@ public class PDFGenerator {
             if (!DEBUG) {
                 sourceXMLDocument.flushTempPath();
                 xsltConverter.deleteTmpXSL();
+                fontcfg.deleteConfigFile();
             }
             
             logger.info("Success!");
