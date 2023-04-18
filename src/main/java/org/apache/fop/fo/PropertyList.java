@@ -46,6 +46,7 @@ import org.apache.fop.fo.properties.CommonRelativePosition;
 import org.apache.fop.fo.properties.CommonTextDecoration;
 import org.apache.fop.fo.properties.Property;
 import org.apache.fop.fo.properties.PropertyMaker;
+import org.apache.fop.fo.properties.StringProperty;
 
 /**
  * Class containing the collection of properties for a given FObj.
@@ -496,7 +497,11 @@ public abstract class PropertyList {
                     if (getExplicit(propId) != null) {
                         return;
                     }
-                    prop = propertyMaker.make(this, attributeValue, parentFO);
+                    if (attributeName.equals("fox:alt-text")) { //to prevent warning "String-valued property starts with quot..." for mathml fox:alt-text
+                        prop = StringProperty.getInstance(attributeValue);
+                    } else {
+                        prop = propertyMaker.make(this, attributeValue, parentFO);
+                    }
                 } else { // e.g. "leader-length.maximum"
                     Property baseProperty
                         = findBaseProperty(attributes, parentFO, propId,
