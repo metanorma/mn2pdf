@@ -857,11 +857,14 @@ class fontConfig {
                     ge.registerFont(type1Font);
                     registeredFonts.add(fontFile);
                 } catch(FontFormatException e1) {
+                    isError = true;
                     e1.printStackTrace();
                 }  catch (IOException e2) {
+                    isError = true;
                     e2.printStackTrace();
                 }
             } catch (IOException e) {
+                isError = true;
                 e.printStackTrace();
             }
             if (isError) {
