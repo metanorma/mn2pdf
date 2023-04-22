@@ -831,7 +831,7 @@ class fontConfig {
     
     public static void registerFont(GraphicsEnvironment ge, String fontFile){
         if (!registeredFonts.contains(fontFile)) {
-
+            boolean isError = false;
             if (ge == null) {
                 ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             }
@@ -857,12 +857,18 @@ class fontConfig {
                     ge.registerFont(type1Font);
                     registeredFonts.add(fontFile);
                 } catch(FontFormatException e1) {
+                    isError = true;
                     e1.printStackTrace();
                 }  catch (IOException e2) {
+                    isError = true;
                     e2.printStackTrace();
                 }
             } catch (IOException e) {
+                isError = true;
                 e.printStackTrace();
+            }
+            if (isError) {
+                logger.log(Level.WARNING, "WARNING: error in the font '{{0}}` registering.", fontFile);
             }
         }
     }
