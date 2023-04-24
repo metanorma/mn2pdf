@@ -33,10 +33,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -100,6 +99,9 @@ class fontConfig {
 
     private String fontConfigPath = "";
 
+    static final String TMPDIR = System.getProperty("java.io.tmpdir");
+    static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
+
     public fontConfig() {
         
         setFontPath(DEFAULT_FONT_PATH);
@@ -146,6 +148,8 @@ class fontConfig {
             Regular:
             - "/Users/user/.fontist/fonts/CAMBRIA.TTC"
         */
+
+        String os = System.getProperty("os.name").toLowerCase();
 
         if (fFontManifest != null) {
             Yaml yaml = new Yaml();
@@ -194,8 +198,26 @@ class fontConfig {
                         //for(String fontPath : (List<String>)fontEntry.getValue()) {
                         for(String fontPath : (List<String>)fontNamePathsEntries.get("paths")) {
 
-                            String fontPath_ = Util.fixFontPath(fontPath);
-                            if (new File(fontPath_).exists()) {
+                            String fontPath__ = Util.fixFontPath(fontPath);
+                            File fontFile = new File(fontPath__);
+                            if (fontFile.exists()) {
+
+                                // MacOS: special processing for
+                                // https://github.com/metanorma/metanorma-iso/issues/910
+                                if (os.contains("mac") || os.contains("darwin")) {
+                                    if (!(fontPath__.contains(".fontist")) && !(fontPath__.contains(".metanorma"))) {
+                                        try {
+                                            Files.createDirectories(tmpfilepath);
+                                            Path fontPathNew = Paths.get(tmpfilepath.toString(), fontFile.getName());
+                                            Files.copy(fontFile.toPath(), fontPathNew, StandardCopyOption.REPLACE_EXISTING);
+                                            fontPath__ = fontPathNew.toAbsolutePath().toString();
+                                        } catch (IOException ex) {
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+
+                                String fontPath_ = fontPath__;
 
                                 for (FOPFontTriplet fontVariant: fontVariants) {
                                     final String fontName = fontVariant.getName();
@@ -914,5 +936,19 @@ class fontConfig {
 
         return out.toString();
     }
+
+    public void flushTempPath() {
+        if (Files.exists(tmpfilepath)) {
+            try {
+                Files.walk(tmpfilepath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 
 }

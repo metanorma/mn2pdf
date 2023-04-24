@@ -335,6 +335,7 @@ public class PDFGenerator {
                 sourceXMLDocument.flushTempPath();
                 xsltConverter.deleteTmpXSL();
                 fontcfg.deleteConfigFile();
+                fontcfg.flushTempPath();
             }
             
             logger.info("Success!");
