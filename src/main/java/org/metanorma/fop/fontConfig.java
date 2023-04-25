@@ -211,6 +211,7 @@ class fontConfig {
                                             Path fontPathNew = Paths.get(tmpfilepath.toString(), fontFile.getName());
                                             Files.copy(fontFile.toPath(), fontPathNew, StandardCopyOption.REPLACE_EXISTING);
                                             fontPath__ = fontPathNew.toAbsolutePath().toString();
+                                            registerFont(ge, fontPath__);
                                         } catch (IOException ex) {
                                             ex.printStackTrace();
                                         }
@@ -286,7 +287,8 @@ class fontConfig {
                                         fopFonts.stream()
                                             .filter(f -> !f.isReadyToUse())
                                             .filter(f -> f.getSimulate_style() != null && f.getSimulate_style().equals("true"))
-                                            .filter(f -> fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()))
+                                            .filter(f -> fontPath_.toLowerCase().contains(f.getEmbed_url().toLowerCase()) ||
+                                                    (f.getAlternate().size() != 0 && fontPath_.toLowerCase().contains(f.getAlternate().get(0).getEmbed_url().toLowerCase())))
                                             .filter(f -> f.contains(fontName))
                                             .forEach(f -> {
                                                 f.setEmbed_url(fontPath_);
