@@ -868,7 +868,7 @@ class fontConfig {
                 e.printStackTrace();
             }
             if (isError) {
-                logger.log(Level.WARNING, "WARNING: error in the font '{{0}}` registering.", fontFile);
+                logger.log(Level.WARNING, "WARNING: error in the font ''{0}'' registering.", fontFile);
             }
         }
     }
