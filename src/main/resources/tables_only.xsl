@@ -19,6 +19,10 @@
 				<xsl:apply-templates select="@*|node()"/>
 		</xsl:copy>
 	</xsl:template>
+
+	<xsl:template match="*[starts-with(local-name(), 'semantic__')]" />
+	
+	<xsl:template match="*[local-name() = 'presentation-metadata'][*[local-name() = 'name']/text() = 'coverpage-image']"/>
 	
 	<xsl:template match="*[local-name() = 'preface' or 
 				local-name() = 'sections' or 
@@ -36,6 +40,11 @@
 						local-name() = 'figure' or 
 						local-name() = 'toc'
 						][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc' or local-name() = 'pagebreak'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
+
+	<xsl:template match="*[local-name() = 'bibliography' or local-name() = 'references'][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc' or local-name() = 'pagebreak'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
+
+	<!-- no need calculate table width, if there are column widths -->
+	<xsl:template match="*[local-name() = 'table'][*[local-name() = 'colgroup']/*[local-name() = 'col']]" priority="2"/>
 
 	<xsl:template match="*[local-name() = 'bookmark']"/>
 	
