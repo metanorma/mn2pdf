@@ -28,6 +28,7 @@ Relative config URLs are resolved relative to location of this file.
     <renderer mime="application/pdf">
       <pdf-ua-mode>PDF/UA-1</pdf-ua-mode>
       <linearization>true</linearization>
+      <version>1.7</version>
       <filterList>
         <!-- provides compression using zlib flate (default is on) -->
         <value>flate</value>
