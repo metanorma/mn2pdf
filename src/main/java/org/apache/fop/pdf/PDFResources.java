@@ -283,12 +283,12 @@ public class PDFResources extends PDFDictionary {
             put("Pattern", dict);
         }
 
-        PDFArray procset = new PDFArray(this);
+        /*PDFArray procset = new PDFArray(this);
         procset.add(new PDFName("PDF"));
         procset.add(new PDFName("ImageB"));
         procset.add(new PDFName("ImageC"));
         procset.add(new PDFName("Text"));
-        put("ProcSet", procset);
+        put("ProcSet", procset);*/
 
         if (!xObjects.isEmpty()) {
             PDFDictionary dict = (PDFDictionary) get("XObject");
