@@ -134,6 +134,8 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
             StructureType structureType;
             if (role == null) {
                 structureType = defaultStructureType;
+            } else if (role.equals("SKIP")) {
+                return (PDFStructElem)parent;
             } else {
                 structureType = StandardStructureTypes.get(role);
                 if (structureType == null) {
