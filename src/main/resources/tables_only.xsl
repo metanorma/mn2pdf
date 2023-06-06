@@ -76,6 +76,7 @@
 						<xsl:for-each select=".//*[local-name() = 'dt']">
 							<xsl:variable name="ns" select="namespace-uri()"/>
 							<xsl:element name="p" namespace="{$ns}">
+								<xsl:attribute name="from_dl">true</xsl:attribute>
 								<xsl:copy-of select="node()"/>
 								<xsl:text> </xsl:text>
 								<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'p']/node()" />
@@ -120,6 +121,7 @@
 		<xsl:for-each select=".//*[local-name() = 'dt']">
 			<xsl:variable name="ns" select="namespace-uri()"/>
 			<xsl:element name="p" namespace="{$ns}">
+				<xsl:attribute name="from_dl">true</xsl:attribute>
 				<xsl:copy-of select="node()"/>
 				<xsl:text> </xsl:text>
 				<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'p']/node()" mode="simple_td"/>
