@@ -27,7 +27,7 @@ Relative config URLs are resolved relative to location of this file.
   <renderers>
     <renderer mime="application/pdf">
       <pdf-ua-mode>PDF/UA-1</pdf-ua-mode>
-      <linearization>true</linearization>
+      <!-- <linearization>true</linearization> commented: see https://github.com/metanorma/mn2pdf/issues/204 -->
       <version>1.7</version>
       <filterList>
         <!-- provides compression using zlib flate (default is on) -->
