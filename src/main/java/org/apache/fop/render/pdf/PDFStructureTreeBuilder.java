@@ -20,11 +20,13 @@
 package org.apache.fop.render.pdf;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
 
+import org.apache.fop.pdf.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -34,16 +36,9 @@ import org.apache.fop.events.EventBroadcaster;
 import org.apache.fop.fo.extensions.ExtensionElementMapping;
 import org.apache.fop.fo.extensions.InternalElementMapping;
 import org.apache.fop.fo.pagination.Flow;
-import org.apache.fop.pdf.PDFFactory;
-import org.apache.fop.pdf.PDFParentTree;
-import org.apache.fop.pdf.PDFStructElem;
-import org.apache.fop.pdf.PDFStructTreeRoot;
 import org.apache.fop.pdf.StandardStructureAttributes.Table.Scope;
-import org.apache.fop.pdf.StandardStructureTypes;
 import org.apache.fop.pdf.StandardStructureTypes.Grouping;
 import org.apache.fop.pdf.StandardStructureTypes.Table;
-import org.apache.fop.pdf.StructureHierarchyMember;
-import org.apache.fop.pdf.StructureType;
 import org.apache.fop.util.LanguageTags;
 import org.apache.fop.util.XMLUtil;
 
@@ -144,12 +139,43 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
                             structureType.toString());
                 }
             }
+            if (structureType.toString().equals("P")) {
+                //findParentP(parent);
+                // if ancestor contains P already, then add current P after it
+                PDFStructElem ancestor = ((PDFStructElem) parent).getParentStructElem();
+                while (ancestor != null && !ancestor.getStructureType().toString().equals("P")) {
+                    ancestor = ancestor.getParentStructElem();
+                }
+                if (ancestor != null && ancestor.getParentStructElem() != null) { // if found P
+                    //ancestor.getKids().get(0).
+                    List<PDFObject> kids = ancestor.getParentStructElem().getKids();
+                    int pos = 0;
+                    for (int i = 0; i < kids.size(); i++) {
+                        if (ancestor == kids.get(i)) {
+                            pos = i + 1;
+                        }
+                    }
+                      //((PDFStructElem) parent).addKidInSpecificOrder(pos,parent).
+                    // move to level up
+                    ancestor  = ancestor.getParentStructElem();
+                    PDFStructElem structElem = createStructureElement(ancestor, structureType);
+                    setAttributes(structElem, attributes);
+                    //addKidToParent(structElem, ancestor, attributes);
+                    ancestor.addKidInSpecificOrder(pos,structElem);
+                    registerStructureElement(structElem, pdfFactory, attributes);
+                    return structElem;
+                }
+            }
             PDFStructElem structElem = createStructureElement(parent, structureType);
             setAttributes(structElem, attributes);
             addKidToParent(structElem, parent, attributes);
             registerStructureElement(structElem, pdfFactory, attributes);
             return structElem;
         }
+
+        /*private PDFObject findParentP(StructureHierarchyMember parent) {
+            return parent.getParent();
+        }*/
 
         protected PDFStructElem createStructureElement(StructureHierarchyMember parent,
                 StructureType structureType) {
