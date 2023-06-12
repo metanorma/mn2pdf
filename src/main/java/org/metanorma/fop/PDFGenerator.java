@@ -96,6 +96,8 @@ public class PDFGenerator {
     private boolean isAddMathAsText = false;
     
     private boolean isAddLineNumbers = false;
+
+    private boolean isAddCommentaryPageNumbers = false;
     
     private boolean isAddMathAsAttachment = false;
     
@@ -406,7 +408,10 @@ public class PDFGenerator {
             
             String add_line_numbers = Util.readValueFromXMLString(xmlFO, "/*[local-name() = 'root']/processing-instruction('add_line_numbers')");
             isAddLineNumbers = add_line_numbers.equalsIgnoreCase("true");
-            
+
+            String add_commentary_page_numbers = Util.readValueFromXMLString(xmlFO, "//*[@id = '_independent_page_number_commentary']/@id");
+            isAddCommentaryPageNumbers = !add_commentary_page_numbers.isEmpty();
+
             debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
             
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
@@ -453,8 +458,10 @@ public class PDFGenerator {
         try {
             
             String mime = MimeConstants.MIME_PDF;
-            
-            if (isAddMathAsText || isAddAnnotations || isAddLineNumbers) {
+
+            boolean isPostprocessing = isAddMathAsText || isAddAnnotations || isAddLineNumbers || isAddCommentaryPageNumbers;
+
+            if (isPostprocessing) {
                 if (isAddMathAsText) {
                     logger.info("Adding Math as text...");
                 }
@@ -480,6 +487,16 @@ public class PDFGenerator {
                 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.linenumbers.xml");
                 }
+
+                if (isAddCommentaryPageNumbers) {
+                    logger.info("Updating Intermediate Format (adding commentary pages)...");
+                    xmlIF = applyXSLT("add_commentary_page_numbers.xsl", xmlIF, true);
+
+                    debugXSLFO = xmlIF;
+
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.commentarypagenumbers.xml");
+                }
+
                 
                 src = new StreamSource(new StringReader(xmlIF));
             }
@@ -516,7 +533,7 @@ public class PDFGenerator {
             out = new FileOutputStream(pdf);
             out = new BufferedOutputStream(out);
             
-            if (isAddMathAsText || isAddAnnotations || isAddLineNumbers) { // process IF to PDF
+            if (isPostprocessing) { // process IF to PDF
                 //Setup target handler
                 IFDocumentHandler targetHandler = fopFactory.getRendererFactory().createDocumentHandler(
                         foUserAgent, mime);
