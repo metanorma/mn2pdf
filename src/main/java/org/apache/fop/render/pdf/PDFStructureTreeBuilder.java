@@ -139,7 +139,7 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
                             structureType.toString());
                 }
             }
-            if (structureType.toString().equals("P")) {
+            /*if (structureType.toString().equals("P")) {
                 //findParentP(parent);
                 // if ancestor contains P already, then add current P after it
                 PDFStructElem ancestor = ((PDFStructElem) parent).getParentStructElem();
@@ -165,7 +165,7 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
                     registerStructureElement(structElem, pdfFactory, attributes);
                     return structElem;
                 }
-            }
+            }*/
             PDFStructElem structElem = createStructureElement(parent, structureType);
             setAttributes(structElem, attributes);
             addKidToParent(structElem, parent, attributes);
@@ -441,7 +441,9 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
 
     private boolean isPDFA1Safe(String name) {
         return !((pdfFactory.getDocument().getProfile().getPDFAMode().isPart1()
-                || pdfFactory.getDocument().getProfile().getPDFUAMode().isEnabled())
+                // commented, see https://github.com/metanorma/metanorma-iso/issues/1001#issuecomment-1592786352
+                // || pdfFactory.getDocument().getProfile().getPDFUAMode().isEnabled()
+                )
                 && (name.equals("table-body")
                 || name.equals("table-header")
                 || name.equals("table-footer")));
