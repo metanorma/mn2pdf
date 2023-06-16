@@ -78,7 +78,7 @@ class fontConfig {
     
     private final Document FOPconfigXML;
 
-    static final String DEFAULT_FONT_PATH = "~/.metanorma/fonts";
+    static final String DEFAULT_FONT_PATH = "~/.fontist/fonts"; //"~/.metanorma/fonts"; https://github.com/metanorma/mn2pdf/issues/200
     
     private List<String> sourceDocumentFontList;
     private File updatedConfig;
@@ -125,7 +125,7 @@ class fontConfig {
     public void setFontPath(String fontPath) {
         this.fontPath = Util.fixFontPath(fontPath);
         try {
-            new File(this.fontPath).mkdirs();
+            //new File(this.fontPath).mkdirs(); https://github.com/metanorma/mn2pdf/issues/200
         } catch (Exception ex) {
             logger.severe(ex.toString());
         }
@@ -462,7 +462,8 @@ class fontConfig {
             // if there isn't manifest file
             // and in case of font replacement
             if (fFontManifest == null || isDefaultFontNeedToDownload) {
-                new DefaultFonts().downloadDefaultFonts(fontPath);
+                // commented: see https://github.com/metanorma/mn2pdf/issues/200
+                //new DefaultFonts().downloadDefaultFonts(fontPath);
             }
 
             //add fonts from from FOP config (except system fonts) to system available fonts            
