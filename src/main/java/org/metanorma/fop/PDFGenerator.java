@@ -296,7 +296,8 @@ public class PDFGenerator {
             fontcfg.setFontConfigPath(fPDF.getAbsolutePath());
 
             fontcfg.setFontManifest(fFontsManifest);
-            
+            fontcfg.saveFontManifest(fPDF.getParent()); // for debug purposes
+
             //debug
             fontcfg.outputFontManifestLog(Paths.get(fPDF.getAbsolutePath() + ".fontmanifest.log.txt"));
             

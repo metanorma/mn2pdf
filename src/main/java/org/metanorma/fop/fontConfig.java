@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -316,6 +317,20 @@ class fontConfig {
         if(DEBUG) {
             Util.outputLog(logPath, fontManifestLog.toString());
             logger.log(Level.INFO, "Font manifest reading log saved to ''{0}''.", logPath);
+        }
+    }
+
+    public void saveFontManifest(String manifestPath) {
+        if(DEBUG) {
+            if (fFontManifest != null) {
+                try {
+                    Path outPath = Paths.get(manifestPath, fFontManifest.getName());
+                    Files.copy(Paths.get(fFontManifest.getAbsolutePath()), outPath, StandardCopyOption.REPLACE_EXISTING);
+                    logger.log(Level.INFO, "Fontist manifest file saved to ''{0}''.", outPath.toFile().getAbsolutePath());
+                } catch (IOException ex) {
+                    logger.log(Level.WARNING, "Can''t copy fontist manifest file saved to ''{0}''.", manifestPath);
+                }
+            }
         }
     }
     
