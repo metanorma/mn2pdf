@@ -320,12 +320,13 @@ class fontConfig {
         }
     }
 
-    public void saveFontManifest(Path manifestPath) {
+    public void saveFontManifest(String manifestPath) {
         if(DEBUG) {
             if (fFontManifest != null) {
                 try {
-                    Files.copy(Paths.get(fFontManifest.getAbsolutePath()), manifestPath, StandardCopyOption.REPLACE_EXISTING);
-                    logger.log(Level.INFO, "Fontist manifest file saved to ''{0}''.", manifestPath);
+                    Path outPath = Paths.get(manifestPath, fFontManifest.getName());
+                    Files.copy(Paths.get(fFontManifest.getAbsolutePath()), outPath, StandardCopyOption.REPLACE_EXISTING);
+                    logger.log(Level.INFO, "Fontist manifest file saved to ''{0}''.", outPath.toFile().getAbsolutePath());
                 } catch (IOException ex) {
                     logger.log(Level.WARNING, "Can''t copy fontist manifest file saved to ''{0}''.", manifestPath);
                 }
