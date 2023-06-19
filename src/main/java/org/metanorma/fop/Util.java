@@ -1,8 +1,6 @@
 package org.metanorma.fop;
 
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
@@ -75,6 +73,7 @@ import static org.metanorma.fop.SourceXMLDocument.tmpfilepath;
 import com.steadystate.css.dom.CSSStyleRuleImpl;
 import com.steadystate.css.parser.CSSOMParser;
 import com.steadystate.css.parser.SACParserCSS3;
+import org.apache.fop.svg.SVGUtilities;
 import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.css.sac.SelectorList;
@@ -566,7 +565,14 @@ public class Util {
         return String.valueOf((int)(fontSize * 1000));
         
     }
-    
+
+    public static int getStringWidth(String text, String fontName) {
+        int stringWidth = 0;
+        Font font = new Font(fontName, Font.PLAIN, 10);
+        stringWidth = (int)SVGUtilities.getStringWidth(text, font) * 100;
+        return stringWidth;
+    }
+
     public static String saveFileToDisk(String filename, String content) {
         try {
             Files.createDirectories(tmpfilepath);
