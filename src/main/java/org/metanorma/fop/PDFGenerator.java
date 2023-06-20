@@ -797,10 +797,10 @@ public class PDFGenerator {
             FOPIFHiddenMathHandler fopIFHiddenMathHandler = new FOPIFHiddenMathHandler();
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
-            String result = fopIFHiddenMathHandler.getResultedXML();
+            StringBuilder result = fopIFHiddenMathHandler.getResultedXML();
             Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();
-            return result;
+            return result.toString();
         }
         catch (Exception ex) {
             logger.severe("Can't update IF for hidden math.");
