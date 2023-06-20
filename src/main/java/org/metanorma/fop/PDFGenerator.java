@@ -463,9 +463,11 @@ public class PDFGenerator {
             boolean isPostprocessing = isAddMathAsText || isAddAnnotations || isAddLineNumbers || isAddCommentaryPageNumbers;
 
             if (isPostprocessing) {
-                if (isAddMathAsText) {
-                    logger.info("Adding Math as text...");
-                }
+                logger.info("Starting post-processing...");
+
+                // release memory resources
+                sourceXMLDocument.flushResources();
+
                 logger.info("Transforming to Intermediate Format...");
                 xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false, "");
                 
@@ -795,10 +797,10 @@ public class PDFGenerator {
             FOPIFHiddenMathHandler fopIFHiddenMathHandler = new FOPIFHiddenMathHandler();
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
-            String result = fopIFHiddenMathHandler.getResultedXML();
+            StringBuilder result = fopIFHiddenMathHandler.getResultedXML();
             Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();
-            return result;
+            return result.toString();
         }
         catch (Exception ex) {
             logger.severe("Can't update IF for hidden math.");
@@ -834,6 +836,8 @@ public class PDFGenerator {
     }
 
     private String createTableIF(String intermediateXML) {
+
+        logger.info("[INFO] Processing of Intermediate Format with information about the table's widths (table_if.xsl) ...");
 
         String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);

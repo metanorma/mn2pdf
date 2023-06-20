@@ -15,18 +15,19 @@ public class Profiler {
 
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
-
     static ArrayList<String> arraysMethodCalls = new ArrayList<>();
 
     static Stack<String> stackMethods = new Stack<>();
 
     public static void addMethodCall(String methodName) {
+        debugShowMemoryInfo(false);
         stackMethods.push(methodName);
         String msg = String.join("", Collections.nCopies(stackMethods.size() * 2, " ")) + methodName;
         arraysMethodCalls.add(msg);
     }
 
     public static void removeMethodCall() {
+        debugShowMemoryInfo(true);
         try {
             stackMethods.pop();
         } catch (Exception ex) {};
@@ -56,6 +57,18 @@ public class Profiler {
             logger.log(Level.INFO, "============================");
             logger.log(Level.INFO, "============================");
             logger.log(Level.INFO, "============================");
+        }
+    }
+
+    public static void debugShowMemoryInfo(boolean after) {
+        if (DEBUG) {
+            long heapSize = Runtime.getRuntime().totalMemory();
+            long heapFreeSize = Runtime.getRuntime().freeMemory();
+            long maxSize = Runtime.getRuntime().maxMemory();
+            String strAfter = after ? " after" : " before";
+            long usedSize = heapSize - heapFreeSize;
+            logger.log(Level.INFO, "Java used memory size" + strAfter + ": " + usedSize);
+            logger.log(Level.INFO, "Java available memory size" + strAfter + ": " + (maxSize - usedSize));
         }
     }
 
