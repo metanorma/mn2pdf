@@ -394,4 +394,10 @@ public class SourceXMLDocument {
         String element_math = readValue("//*[local-name() = 'math'][1]");
         return element_math.length() != 0;
     }
+
+    public void flushResources() {
+        sourceXML = null;
+        sourceXMLstr = "";
+        xmlFO = null;
+    }
 }
