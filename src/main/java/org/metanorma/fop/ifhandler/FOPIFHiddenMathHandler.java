@@ -230,7 +230,7 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
         }
     }
 
-    public StringBuilder getResultedXML() throws IOException {
+    public StringBuilder getResultedXML() {
         //return sbResult.toString(); // https://github.com/metanorma/mn2pdf/issues/214#issuecomment-1599200350
         return sbResult;
     }
