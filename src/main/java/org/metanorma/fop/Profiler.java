@@ -64,8 +64,11 @@ public class Profiler {
         if (DEBUG) {
             long heapSize = Runtime.getRuntime().totalMemory();
             long heapFreeSize = Runtime.getRuntime().freeMemory();
+            long maxSize = Runtime.getRuntime().maxMemory();
             String strAfter = after ? " after" : " before";
-            logger.log(Level.INFO, "Java memory size" + strAfter + ": " + (heapSize - heapFreeSize));
+            long usedSize = heapSize - heapFreeSize;
+            logger.log(Level.INFO, "Java used memory size" + strAfter + ": " + usedSize);
+            logger.log(Level.INFO, "Java available memory size" + strAfter + ": " + (maxSize - usedSize));
         }
     }
 
