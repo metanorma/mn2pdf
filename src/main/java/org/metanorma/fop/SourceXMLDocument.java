@@ -49,7 +49,11 @@ public class SourceXMLDocument {
     Document sourceXML;
 
     String sourceXMLstr = "";
-    
+
+    private boolean hasAnnotations = false;
+    private boolean hasTables = false;
+    private boolean hasMath = false;
+
     static final String TMPDIR = System.getProperty("java.io.tmpdir");
     static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
     
@@ -71,6 +75,13 @@ public class SourceXMLDocument {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream xmlstream = new FileInputStream(fXML);
             sourceXML = dBuilder.parse(xmlstream);
+
+            String element_review =  readValue("//*[local-name() = 'review'][1]");
+            this.hasAnnotations = element_review.length() != 0;
+            String element_table = readValue("//*[local-name() = 'table' or local-name() = 'dl'][1]");
+            this.hasTables = element_table.length() != 0;
+            String element_math = readValue("//*[local-name() = 'math'][1]");
+            this.hasMath = element_math.length() != 0;
         } catch (Exception ex) {
             logger.severe("Can't read source XML.");
             ex.printStackTrace();
@@ -78,7 +89,6 @@ public class SourceXMLDocument {
     }
     
     public SourceXMLDocument(String strXML) {
-
         try {
             this.sourceXMLstr = strXML;
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -380,19 +390,16 @@ public class SourceXMLDocument {
     }
 
     public boolean hasAnnotations() {
-        String element_review =  readValue("//*[local-name() = 'review'][1]");
-        return element_review.length() != 0;
+        return hasAnnotations;
     }
 
     // find tag 'table' or 'dl'
     public boolean hasTables() {
-        String element_table = readValue("//*[local-name() = 'table' or local-name() = 'dl'][1]");
-        return element_table.length() != 0;
+        return hasTables;
     }
 
     public boolean hasMath() {
-        String element_math = readValue("//*[local-name() = 'math'][1]");
-        return element_math.length() != 0;
+        return hasMath;
     }
 
     public void flushResources() {

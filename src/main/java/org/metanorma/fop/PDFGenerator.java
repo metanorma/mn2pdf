@@ -274,7 +274,9 @@ public class PDFGenerator {
             logger.info(String.format(OUTPUT_LOG, PDF_OUTPUT, fPDF));
             logger.info("");
 
-            sourceXMLDocument = new SourceXMLDocument(fXML);
+            File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
+
+            sourceXMLDocument = new SourceXMLDocument(fPresentationPartXML);
 
             isAddAnnotations = sourceXMLDocument.hasAnnotations();
             isTableExists = sourceXMLDocument.hasTables();
@@ -336,6 +338,13 @@ public class PDFGenerator {
             // flush temporary folder
             if (!DEBUG) {
                 sourceXMLDocument.flushTempPath();
+                if (!fPresentationPartXML.getAbsolutePath().equals(fXML.getAbsolutePath())) {
+                    try {
+                        Files.deleteIfExists(fPresentationPartXML.toPath());
+                    } catch (IOException e) {
+                        e.printStackTrace(System.err);
+                    }
+                }
                 xsltConverter.deleteTmpXSL();
                 fontcfg.deleteConfigFile();
             }
@@ -349,7 +358,31 @@ public class PDFGenerator {
         Profiler.removeMethodCall();
         return true;
     }
-    
+
+    private File getPresentationPartXML(File fXML, String outputFolder) {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            FOPXMLPresentationHandler fopXMLPresentationHandler = new FOPXMLPresentationHandler();
+            String sourceXML = Util.readFile(fXML);
+            InputSource inputSource = new InputSource( new StringReader(sourceXML));
+            saxParser.parse(inputSource, fopXMLPresentationHandler);
+            StringBuilder resultedXML = fopXMLPresentationHandler.getResultedXML();
+            File outputFile = Paths.get(outputFolder, fXML.getName() + "_tmp").toFile();
+
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
+                writer.write(resultedXML.toString());
+            }
+
+            return outputFile;
+        }
+        catch (Exception ex) {
+            logger.severe("Can't update IF for hidden math.");
+            ex.printStackTrace();
+            return fXML;
+        }
+    }
+
     
     /**
      * Converts an XML file to a PDF file using FOP
@@ -1192,7 +1225,7 @@ public class PDFGenerator {
             }
         } catch (Exception e) {
             xsltConverter.setParam("table_if", "false");
-            logger.log(Level.SEVERE, "Can''t obtain table's widths information: {0}", e.toString());
+            logger.log(Level.SEVERE, "Can''t obtain table''s widths information: {0}", e.toString());
         }
         Profiler.printProcessingTime(methodName, startMethodTime);
         Profiler.removeMethodCall();
