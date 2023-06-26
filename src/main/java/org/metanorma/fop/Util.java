@@ -699,6 +699,11 @@ public class Util {
         String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         return content;
     }
+
+    public static String readFile (File filePath) throws IOException {
+        String content = new String(Files.readAllBytes(filePath.toPath()), StandardCharsets.UTF_8);
+        return content;
+    }
     
     public static String floatArrayToString(float[] a) {
         return Arrays.toString(a).replace("[","").replace("]","").replace(" ","");
