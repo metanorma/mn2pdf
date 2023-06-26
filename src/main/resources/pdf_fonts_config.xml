@@ -6,7 +6,7 @@ Relative config URLs are resolved relative to location of this file.
 <!-- NOTE: This is the version of the configuration -->
 <fop version="1.0">
 
-  <accessibility>true</accessibility>
+  <accessibility keep-empty-tags="false">true</accessibility>
 
   <!-- Base URL for resolving relative URLs -->
   <base>.</base>
