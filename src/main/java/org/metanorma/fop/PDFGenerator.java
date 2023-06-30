@@ -430,7 +430,7 @@ public class PDFGenerator {
             }
 
             String xmlFO = sourceXMLDocument.getXMLFO();
-            debugXSLFO = xmlFO;
+            saveDebugFO(xmlFO);
             
             String add_line_numbers = Util.readValueFromXMLString(xmlFO, "/*[local-name() = 'root']/processing-instruction('add_line_numbers')");
             isAddLineNumbers = add_line_numbers.equalsIgnoreCase("true");
@@ -492,16 +492,19 @@ public class PDFGenerator {
 
                 // release memory resources
                 sourceXMLDocument.flushResources();
+                xmlTableIF = "";
 
                 logger.info("Transforming to Intermediate Format...");
                 xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false, "");
-                
+
+                src = null;
+
                 if (isAddMathAsText) {
                     logger.info("Updating Intermediate Format (adding hidden math)...");
                     //xmlIF = applyXSLT("add_hidden_math.xsl", xmlIF, true);
                     xmlIF = addHiddenMath(xmlIF);
 
-                    debugXSLFO = xmlIF;
+                    saveDebugFO(xmlIF);
                 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.mathtext.xml");
                 }
@@ -510,8 +513,8 @@ public class PDFGenerator {
                 if (isAddLineNumbers) {
                     logger.info("Updating Intermediate Format (adding line numbers)...");
                     xmlIF = applyXSLT("add_line_numbers.xsl", xmlIF, true);
-                    
-                    debugXSLFO = xmlIF;
+
+                    saveDebugFO(xmlIF);
                 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.linenumbers.xml");
                 }
@@ -520,7 +523,7 @@ public class PDFGenerator {
                     logger.info("Updating Intermediate Format (adding commentary pages)...");
                     xmlIF = applyXSLT("add_commentary_page_numbers.xsl", xmlIF, true);
 
-                    debugXSLFO = xmlIF;
+                    saveDebugFO(xmlIF);
 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.commentarypagenumbers.xml");
                 }
@@ -691,7 +694,7 @@ public class PDFGenerator {
             xsltConverter.transform(sourceXMLDocument);
 
             String xmlFO = sourceXMLDocument.getXMLFO();
-            debugXSLFO = xmlFO;
+            saveDebugFO(xmlFO);
             
             debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.2nd.xml");
             
@@ -761,7 +764,7 @@ public class PDFGenerator {
             transformer.transform(src, res);
 
             xmlIF = out.toString("UTF-16");
-            debugXSLFO = xmlIF;
+            saveDebugFO(xmlIF);
             
             debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if" + sfx + ".xml");
 
@@ -822,7 +825,9 @@ public class PDFGenerator {
             FOPIFHiddenMathHandler fopIFHiddenMathHandler = new FOPIFHiddenMathHandler();
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
+            sourceXML = null;
             StringBuilder result = fopIFHiddenMathHandler.getResultedXML();
+            fopIFHiddenMathHandler = null;
             Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();
             return result.toString();
@@ -1252,6 +1257,17 @@ public class PDFGenerator {
             pagecount = xmlIF.split("<page ", -1).length - 1;
         }
         return pagecount;
+    }
+
+    private void saveDebugFO(String debugXSLFO) {
+        if (DEBUG) {
+            int MAX_LENGTH = 5000000;
+            if (debugXSLFO.length() > MAX_LENGTH) {
+                this.debugXSLFO = debugXSLFO.substring(0, MAX_LENGTH);
+            } else {
+                this.debugXSLFO = debugXSLFO;
+            }
+        }
     }
 
 }
