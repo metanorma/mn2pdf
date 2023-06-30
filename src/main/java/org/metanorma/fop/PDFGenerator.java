@@ -492,6 +492,7 @@ public class PDFGenerator {
 
                 // release memory resources
                 sourceXMLDocument.flushResources();
+                xmlTableIF = "";
 
                 logger.info("Transforming to Intermediate Format...");
                 xmlIF = generateFOPIntermediateFormat(src, fontcfg.getConfig(), pdf, false, "");
@@ -826,6 +827,7 @@ public class PDFGenerator {
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
             sourceXML = null;
             StringBuilder result = fopIFHiddenMathHandler.getResultedXML();
+            fopIFHiddenMathHandler = null;
             Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();
             return result.toString();
