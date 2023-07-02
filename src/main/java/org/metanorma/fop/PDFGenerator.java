@@ -826,7 +826,10 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopIFHiddenMathHandler);
             sourceXML = null;
-            StringBuilder result = fopIFHiddenMathHandler.getResultedXML();
+            //StringBuilder result = fopIFHiddenMathHandler.getResultedXML();
+            String result = fopIFHiddenMathHandler.getResultedXML();
+            //System.out.println("result string length: " + result.length());
+            //System.out.println("result string capacity: " + result.capacity());
             fopIFHiddenMathHandler = null;
             Profiler.printProcessingTime(methodName, startMethodTime);
             Profiler.removeMethodCall();

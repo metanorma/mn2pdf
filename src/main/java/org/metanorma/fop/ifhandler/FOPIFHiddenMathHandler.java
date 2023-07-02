@@ -35,7 +35,8 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
 
     private final Character SIGN_GREATER = '>';
 
-    private StringBuilder sbResult = new StringBuilder();
+    //private StringBuilder sbResult = new StringBuilder();
+    private List<String> listResult = new ArrayList<>();
 
     private String rootXMLNS = "";
 
@@ -57,7 +58,8 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
 
     @Override
     public void startDocument() {
-        sbResult.append(XMLHEADER);
+        //sbResult.append(XMLHEADER);
+        listResult.add(XMLHEADER);
     }
 
     @Override
@@ -113,7 +115,8 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
         if (isViewportProcessing) {
             sbViewport.append(sbTmp.toString());
         } else {
-            sbResult.append(sbTmp.toString());
+            //sbResult.append(sbTmp.toString());
+            listResult.add(sbTmp.toString());
         }
     }
 
@@ -176,14 +179,17 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
                         transformer.transform(sourceXML, sr);
                         String xmlResult = resultWriter.toString();
 
-                        sbResult.append(xmlResult);
+                        //sbResult.append(xmlResult);
+                        listResult.add(xmlResult);
                     } catch (Exception ex) {
                         logger.severe(ex.toString());
-                        sbResult.append(strViewport);
+                        //sbResult.append(strViewport);
+                        listResult.add(strViewport);
                     }
 
                 } else {
-                    sbResult.append(strViewport);
+                    //sbResult.append(strViewport);
+                    listResult.add(strViewport);
                 }
                 sbViewport.setLength(0);
             }
@@ -191,7 +197,8 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
             if (qName.equals("page-sequence")) {
                 mapInstreamForeignObjects.clear();
             }
-            copyEndElement(qName, sbResult);
+            //copyEndElement(qName, sbResult);
+            copyEndElement(qName, listResult);
         }
         previousElement = qName;
     }
@@ -206,6 +213,20 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
         }
         stackChar.pop();
     }
+    private void copyEndElement(String qName, List<String> list) {
+        if (!stackChar.isEmpty() && stackChar.peek().compareTo(SIGN_GREATER) == 0) {
+            //sb.append("/>");
+            list.add("/>");
+        } else {
+            //sb.append("</");
+            //sb.append(qName);
+            //sb.append(">");
+            list.add("</");
+            list.add(qName);
+            list.add(">");
+        }
+        stackChar.pop();
+    }
 
     @Override
     public void characters(char character[], int start, int length) throws SAXException {
@@ -217,8 +238,10 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
                 updateStackChar(sbViewport);
                 sbViewport.append(str);
             } else {
-                updateStackChar(sbResult);
-                sbResult.append(str);
+                //updateStackChar(sbResult);
+                updateStackChar(listResult);
+                //sbResult.append(str);
+                listResult.add(str);
             }
         }
     }
@@ -230,9 +253,32 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
         }
     }
 
-    public StringBuilder getResultedXML() {
+    private void updateStackChar(List<String> list) {
+        if (!stackChar.isEmpty() && stackChar.peek().compareTo(SIGN_GREATER) == 0) {
+            list.add(stackChar.pop().toString());
+            stackChar.push(Character.MIN_VALUE);
+        }
+    }
+
+    /*public StringBuilder getResultedXML() {
         //return sbResult.toString(); // https://github.com/metanorma/mn2pdf/issues/214#issuecomment-1599200350
         return sbResult;
+    }*/
+
+    public String getResultedXML() {
+        if (listResult.size() == 0) {
+            return "";
+        }
+        int size = 0;
+        for (String item: listResult) {
+            size +=  item.length();
+        }
+        StringBuilder sbResult = new StringBuilder(size);
+        for (String item: listResult) {
+            sbResult.append(item);
+        }
+        listResult.clear();
+        return sbResult.toString();
     }
 
 }
