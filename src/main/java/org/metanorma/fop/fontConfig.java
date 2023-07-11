@@ -438,7 +438,11 @@ class fontConfig {
     public void setSourceDocumentFontList(List<String> sourceDocumentFontList) {
 
         this.sourceDocumentFontList = sourceDocumentFontList;
-        
+
+        if (!sourceDocumentFontList.isEmpty()) {
+            this.mainFont = sourceDocumentFontList.get(0);
+        }
+
         isReady = false;
         
         for(String sourceDocumentFont: sourceDocumentFontList) {
