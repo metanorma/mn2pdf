@@ -557,7 +557,10 @@ class fontConfig {
     private void setFontsPaths() throws IOException, URISyntaxException {
 
         List<String> machineFontList = getMachineFonts();
-        
+
+        // remove unused fonts
+        fopFonts.removeIf(fopFont -> !fopFont.isUsing());
+
         fopFonts.stream()
             .filter(fopFont -> !fopFont.getEmbed_url().isEmpty())
             .filter(fopFont -> !fopFont.isReadyToUse())
