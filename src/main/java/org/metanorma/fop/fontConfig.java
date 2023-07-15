@@ -72,6 +72,7 @@ class fontConfig {
     
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
     static final String WARNING_FONT = "WARNING: Font file '%s' (font name '%s', font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
+    static final String WARNING_FONT_NO_FILE = "WARNING: Font '%s' (font name '%s', font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     
@@ -91,6 +92,8 @@ class fontConfig {
     private File fFontManifest;
 
     private static List<String> registeredFonts = new ArrayList<>();
+
+    //private String mainFont = "";
 
     private boolean isReady = false;
     
@@ -439,9 +442,9 @@ class fontConfig {
 
         this.sourceDocumentFontList = sourceDocumentFontList;
 
-        if (!sourceDocumentFontList.isEmpty()) {
+        /*if (!sourceDocumentFontList.isEmpty()) {
             this.mainFont = sourceDocumentFontList.get(0);
-        }
+        }*/
 
         isReady = false;
         
@@ -450,7 +453,37 @@ class fontConfig {
                     .filter(fopFont -> !fopFont.getFont_triplet().isEmpty())
                     .filter(fopFont -> fopFont.getName().equals(sourceDocumentFont))                    
                     .forEach(fopFont -> fopFont.setIsUsing(true));
-            
+
+            // if font isn't exist in FOP fonts config, then add it
+            if (fopFonts.stream()
+                    .filter(fopFont -> fopFont.getName().equals(sourceDocumentFont))
+                    .count() == 0) {
+
+                String fontWeight = "normal";
+                String fontStyle = "normal";
+                if (sourceDocumentFont.contains("Bold")) {
+                    fontWeight="bold";
+                }
+                if (sourceDocumentFont.contains("Italic")) {
+                    fontStyle="italic";
+                }
+                List<FOPFontTriplet> fopFontTriplets = new ArrayList<>();
+                fopFontTriplets.add(new FOPFontTriplet(sourceDocumentFont, fontWeight, fontStyle));
+                if (fontWeight.equals("normal") && fontStyle.equals("normal")) {
+                    // add 3 fonts: bold, italic and bold+italic
+                    fopFontTriplets.add(new FOPFontTriplet(sourceDocumentFont, "bold", "normal"));
+                    fopFontTriplets.add(new FOPFontTriplet(sourceDocumentFont, "normal", "italic"));
+                    fopFontTriplets.add(new FOPFontTriplet(sourceDocumentFont, "bold", "italic"));
+                }
+                for (FOPFontTriplet fopFontTriplet: fopFontTriplets) {
+                    FOPFont fopFont = new FOPFont();
+                    fopFont.setEmbed_url("filenotfound_" + sourceDocumentFont + ".ttf");
+                    fopFont.setIsUsing(true);
+                    fopFont.setFont_triplet(Arrays.asList(fopFontTriplet));
+                    fopFonts.add(fopFont);
+                }
+            }
+
            /* for (FOPFont fopFont: fopFonts) {
                 if(!fopFont.getFont_triplet().isEmpty() && 
                         fopFont.getFont_triplet().get(0).getName().equals(sourceDocumentFont)) {
@@ -640,7 +673,11 @@ class fontConfig {
 
                                     //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
                                     //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                    fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                    if (embed_url.contains("filenotfound_")) {
+                                        fopFont.setMessage(String.format(WARNING_FONT_NO_FILE, fopFontTriplet.getName(), fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                    } else {
+                                        fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                    }
 
                                     /*try{
                                         font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
