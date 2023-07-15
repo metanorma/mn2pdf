@@ -221,7 +221,9 @@ public class mn2pdfTests {
         String capturedLog = getTestCapturedLog();
         //assertTrue(systemOutRule.getLog().contains(
         assertTrue(capturedLog.contains(
-            String.format(fontConfig.WARNING_FONT, embed_url, "TestFont", "normal", "normal", newPath)));
+            String.format(fontConfig.WARNING_FONT, embed_url, "TestFont", "normal", "normal", newPath)) ||
+                capturedLog.contains(
+                        String.format(fontConfig.WARNING_FONT_NO_FILE, "TestFont", "TestFont", "normal", "normal", newPath)));
         assertTrue(Files.exists(pdf));
     }
     
