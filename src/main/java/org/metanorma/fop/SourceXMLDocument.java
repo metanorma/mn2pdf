@@ -152,6 +152,26 @@ public class SourceXMLDocument {
                         } catch (Exception ex) {}
                     }
 
+                    query = xPath.compile("//*/@style[contains(., 'font-family')]");
+                    nList = (NodeList)query.evaluate(srcXML, XPathConstants.NODESET);
+                    for (int i = 0; i < nList.getLength(); i++) {
+                        try {
+                            Attr attr = (Attr) nList.item(i);
+                            String attrText = attr.getNodeValue();
+                            attrText = attrText.substring(attrText.indexOf("font-family"))
+                                    .substring(attrText.indexOf(":") + 1);
+                            if (attrText.indexOf(";") != -1) {
+                                attrText = attrText.substring(0, attrText.indexOf(";"));
+                            }
+                            for (String fname: attrText.split(",")) {
+                                fname = fname.trim();
+                                if (!documentFontList.contains(fname)) {
+                                    documentFontList.add(fname);
+                                }
+                            }
+                        } catch (Exception ex) {}
+                    }
+
                 } catch (XPathExpressionException ex) {
                     logger.info(ex.toString());
                 }
