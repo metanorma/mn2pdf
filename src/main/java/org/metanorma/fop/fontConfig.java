@@ -2,6 +2,7 @@ package org.metanorma.fop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.fop.fonts.FontTriplet;
 import org.metanorma.fop.fonts.DefaultFonts;
 import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.fop.fonts.FOPFontAlternate;
@@ -33,11 +34,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -56,6 +55,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.apache.fop.fonts.autodetect.FontFileFinder;
 import static org.metanorma.fop.PDFGenerator.logger;
+
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
