@@ -596,7 +596,7 @@ class fontConfig {
         List<String> machineFontList = getMachineFonts();
 
         // remove unused fonts
-        fopFonts.removeIf(fopFont -> !fopFont.isUsing());
+        //fopFonts.removeIf(fopFont -> !fopFont.isUsing());
 
         fopFonts.stream()
             .filter(fopFont -> !fopFont.getEmbed_url().isEmpty())
@@ -695,7 +695,7 @@ class fontConfig {
                     }
                 }
             });
-       
+
         StringBuilder sb = new StringBuilder();
         fopFonts.stream()
                 .filter(f -> f.isUsing())
@@ -742,38 +742,40 @@ class fontConfig {
             
             // add 'font' from fopFonts array
             for(FOPFont fopFont: fopFonts) {
-                
-                String embed_url = fopFont.getEmbed_url();
-                String embed_url_updated = embed_url;
-                try {
-                    if (!embed_url.startsWith("file:")) {
-                        // add file: prefix and update xml attribute embed-url
-                        embed_url_updated = new File(embed_url).toURI().toURL().toString();
+
+                if(fopFont.isUsing()) {
+
+                    String embed_url = fopFont.getEmbed_url();
+                    String embed_url_updated = embed_url;
+                    try {
+                        if (!embed_url.startsWith("file:")) {
+                            // add file: prefix and update xml attribute embed-url
+                            embed_url_updated = new File(embed_url).toURI().toURL().toString();
+                        }
+                    } catch (MalformedURLException ex) {
                     }
-                }
-                catch (MalformedURLException ex) { }
-                
-                fopFont.setEmbed_url(embed_url_updated);
-                
-                try {
-                    String fopFontString = new XmlMapper().writeValueAsString(fopFont);
-                    //restore path
-                    fopFont.setEmbed_url(embed_url);
-                    if (DEBUG) {
-                        //System.out.println("DEBUG: FOP config font entry:");
-                        //System.out.println(fopFontString);
-                        fopFontsLog.append(fopFontString).append("\n");
-                    }
-                    Node newNodeFont =  DocumentBuilderFactory
-                        .newInstance()
-                        .newDocumentBuilder()
-                        .parse(new ByteArrayInputStream(fopFontString.getBytes()))
-                        .getDocumentElement();
-                    //newNodeFont.getAttributes().getNamedItem("embed-url").setTextContent(embed_url);
-           
-                    Document doc = nodeFonts.getOwnerDocument();
-                    newNodeFont = doc.importNode(newNodeFont, true);
-                    nodeFonts.appendChild(newNodeFont);
+
+                    fopFont.setEmbed_url(embed_url_updated);
+
+                    try {
+                        String fopFontString = new XmlMapper().writeValueAsString(fopFont);
+                        //restore path
+                        fopFont.setEmbed_url(embed_url);
+                        if (DEBUG) {
+                            //System.out.println("DEBUG: FOP config font entry:");
+                            //System.out.println(fopFontString);
+                            fopFontsLog.append(fopFontString).append("\n");
+                        }
+                        Node newNodeFont = DocumentBuilderFactory
+                                .newInstance()
+                                .newDocumentBuilder()
+                                .parse(new ByteArrayInputStream(fopFontString.getBytes()))
+                                .getDocumentElement();
+                        //newNodeFont.getAttributes().getNamedItem("embed-url").setTextContent(embed_url);
+
+                        Document doc = nodeFonts.getOwnerDocument();
+                        newNodeFont = doc.importNode(newNodeFont, true);
+                        nodeFonts.appendChild(newNodeFont);
                     
                     /*if (fopFont.isUsing()) {
                         String msg = fopFont.getMessages();
@@ -781,9 +783,10 @@ class fontConfig {
                             System.out.println();
                         }
                     }*/
-                    
-                } catch (SAXException | IOException | ParserConfigurationException ex) {
-                    logger.log(Level.SEVERE, "Error in FOP font xml processing: {0}", ex.toString());
+
+                    } catch (SAXException | IOException | ParserConfigurationException ex) {
+                        logger.log(Level.SEVERE, "Error in FOP font xml processing: {0}", ex.toString());
+                    }
                 }
             }
         } catch (XPathExpressionException ex) {
