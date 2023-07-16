@@ -158,13 +158,13 @@ public class SourceXMLDocument {
                         try {
                             Attr attr = (Attr) nList.item(i);
                             String attrText = attr.getNodeValue();
-                            attrText = attrText.substring(attrText.indexOf("font-family"))
-                                    .substring(attrText.indexOf(":") + 1);
+                            attrText = attrText.substring(attrText.indexOf("font-family"));
+                            attrText = attrText.substring(attrText.indexOf(":") + 1);
                             if (attrText.indexOf(";") != -1) {
                                 attrText = attrText.substring(0, attrText.indexOf(";"));
                             }
                             for (String fname: attrText.split(",")) {
-                                fname = fname.trim();
+                                fname = fname.trim().replace("'","");
                                 if (!documentFontList.contains(fname)) {
                                     documentFontList.add(fname);
                                 }
