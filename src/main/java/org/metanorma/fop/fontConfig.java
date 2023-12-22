@@ -359,6 +359,7 @@ class fontConfig {
         
         switch (fontStyle_style) {
             case ("italic"):
+            case ("oblique"):
                    fontStyle = "italic";
                    break;
             default: // regular
