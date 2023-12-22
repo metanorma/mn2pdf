@@ -51,7 +51,7 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String lName, String qName, Attributes attr) throws SAXException {
 
-        if (qName.startsWith("semantic__")) {
+        if (qName.startsWith("semantic__") || qName.equals("emf")) {
             // skip
             skipElements.push(true);
         } else {
