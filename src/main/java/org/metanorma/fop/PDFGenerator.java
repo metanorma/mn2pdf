@@ -369,7 +369,8 @@ public class PDFGenerator {
             return outputFile;
         }
         catch (Exception ex) {
-            logger.severe("Can't update IF for hidden math.");
+            logger.severe("Can't obtain the presentation part of the XML:");
+            logger.severe(ex.getMessage());
             ex.printStackTrace();
             return fXML;
         }
