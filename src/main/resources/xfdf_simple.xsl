@@ -10,6 +10,7 @@
 	<xsl:param name="if_xml"/>
 	
 	<xsl:variable name="if_xml_flatten" select="xalan:nodeset($if_xml)"/>
+	<!-- <xsl:variable name="if_xml_flatten" select="document($if_xml)"/> for debug from the xalan command line only -->
 	
 	<!-- Review text coordinates calculation based on values from Apache FOP Intermediate Format -->
 	
@@ -82,6 +83,12 @@
 					<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
 					
 					<xsl:variable name="page" select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
+					
+					<!-- <debug>
+						<id_from><xsl:value-of select="$id_from"/></id_from>
+						<element><xsl:copy-of select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/></element>
+						<element_from><xsl:copy-of select="$element_from"/></element_from>
+					</debug> -->
 					
 					<text>
 						<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
@@ -232,6 +239,62 @@
 			<xsl:attribute name="dir">ltr</xsl:attribute>
 			<xsl:apply-templates mode="pdf_richtext"/>
 		</xsl:element>
+		<xsl:if test="following-sibling::*"><xsl:text>&#xa;</xsl:text></xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'ul'] | *[local-name() = 'ol']" mode="pdf_richtext">
+		<xsl:apply-templates mode="pdf_richtext"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'ul' or local-name() = 'ol']/*" mode="pdf_richtext">
+		<xsl:apply-templates mode="pdf_richtext"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'ul' or local-name() = 'ol']/*/*[local-name() = 'p']" mode="pdf_richtext">
+		<xsl:element name="p" namespace="{$namespace_xhtml}">
+			<xsl:attribute name="dir">ltr</xsl:attribute>
+			<xsl:variable name="level" select="count(ancestor-or-self::*[local-name() = 'ul' or local-name() = 'ol'])"/>
+			<xsl:call-template name="repeat">
+				<xsl:with-param name="count" select="($level - 1) * 5"/>
+			</xsl:call-template>
+			<xsl:choose>
+				<xsl:when test="$level mod 2 = 0">• </xsl:when>
+				<xsl:otherwise>&#x2014; </xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:apply-templates mode="pdf_richtext"/>
+		</xsl:element>
+		<xsl:text>&#xa;</xsl:text>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'dt']" mode="pdf_richtext">
+		<xsl:apply-templates mode="pdf_richtext"/>
+		<xsl:text>&#xa0;&#xa0;&#xa0;&#xa0;</xsl:text>
+		<xsl:apply-templates select="following-sibling::*[local-name() = 'dd'][1]" mode="pdf_richtext">
+			<xsl:with-param name="process">true</xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'dd']" mode="pdf_richtext">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<xsl:apply-templates mode="pdf_richtext"/>
+			<xsl:if test="following-sibling::*">
+				<xsl:text>&#xa;</xsl:text>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="repeat">
+		<xsl:param name="char" select="'&#xa0;'"/>
+		<xsl:param name="count" />
+		<xsl:if test="$count &gt; 0">
+			<xsl:value-of select="$char"/>
+			<xsl:call-template name="repeat">
+				<xsl:with-param name="char" select="$char" />
+				<xsl:with-param name="count" select="$count - 1" />
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'sub' or local-name() = 'sup']" mode="pdf_richtext">

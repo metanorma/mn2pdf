@@ -340,6 +340,7 @@ public class mn2pdf {
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
+                    logger.severe(e.toString());
                     System.exit(ERROR_EXIT_CODE);
                 }
             
