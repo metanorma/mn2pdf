@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: PDFPainter.java 1900111 2022-04-21 13:48:07Z ssteiner $ */
+/* $Id$ */
 
 package org.apache.fop.render.pdf;
 
@@ -245,6 +245,7 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
         PDFRenderingContext pdfContext = new PDFRenderingContext(
                 getUserAgent(), generator, getDocumentHandler().getCurrentPage(), getFontInfo());
         pdfContext.setMarkedContentInfo(imageMCI);
+        pdfContext.setUsedFieldNames(getDocumentHandler().getUsedFieldNames());
         pdfContext.setPageNumbers(getDocumentHandler().getPageNumbers());
         pdfContext.setPdfLogicalStructureHandler(logicalStructureHandler);
         pdfContext.setCurrentSessionStructElem((PDFStructElem) getContext().getStructureTreeElement());
@@ -526,6 +527,7 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
 
         }
         textutil.writeTJ();
+        generator.resetCharacterSpacing();
         endSimulateStyle(tf, triplet);
     }
 
@@ -607,6 +609,7 @@ public class PDFPainter extends AbstractIFPainter<PDFDocumentHandler> {
                 xoLast = xo;
                 yoLast = yo;
             }
+            generator.resetCharacterSpacing();
             endSimulateStyle(tf, triplet);
         }
     }
