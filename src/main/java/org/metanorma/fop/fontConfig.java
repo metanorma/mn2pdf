@@ -199,7 +199,7 @@ class fontConfig {
                         for(String fontPath : (List<String>)fontNamePathsEntries.get("paths")) {
 
                             if (fontPath.toLowerCase().contains("variablefont") || fontPath.toLowerCase().contains("wght")) {
-                                logger.log(Level.WARNING, "WARNING: font path ''{0}'' from the 'fontist' manifest file is the 'variable font' and doesn''t supported by Apache FOP!", fontPath);
+                                logger.log(Level.WARNING, "WARNING: font ''{0}'' from the 'fontist' manifest file is the 'variable font' and doesn''t supported by Apache FOP!", fontPath);
                                 continue;
                             }
 
