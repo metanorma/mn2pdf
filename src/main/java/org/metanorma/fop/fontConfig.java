@@ -198,17 +198,21 @@ class fontConfig {
                         //for(String fontPath : (List<String>)fontEntry.getValue()) {
                         for(String fontPath : (List<String>)fontNamePathsEntries.get("paths")) {
 
-                            String fontPath_ = Util.fixFontPath(fontPath);
-                            if (new File(fontPath_).exists()) {
+                            String fontPath__ = Util.fixFontPath(fontPath);
+                            File fontFile = new File(fontPath__);
 
-                                for (FOPFontTriplet fontVariant: fontVariants) {
+                            if (!fontFile.exists()) {
+                                
+                                String fontPath_ = fontPath__;
+
+                                for (FOPFontTriplet fontVariant : fontVariants) {
                                     final String fontName = fontVariant.getName();
                                     final String fontWeight = fontVariant.getWeight();
                                     final String fontStyle = fontVariant.getStyle();
-                                
+
                                     List<FOPFont> fopFontsByNameWeightStyle = fopFonts.stream()
                                         .filter(fopFont -> !fopFont.isReadyToUse())
-                                        .filter(fopFont -> fopFont.contains(fontName, fontWeight, fontStyle))                            
+                                        .filter(fopFont -> fopFont.contains(fontName, fontWeight, fontStyle))
                                         .collect(Collectors.toList());
 
                                     if (fopFontsByNameWeightStyle.isEmpty()) { // create a new font entry in fopFonts array
@@ -217,7 +221,7 @@ class fontConfig {
                                             fontManifestLog.append("Create a new font entry: " + fontPath_ + " (" + fontName + ", font-weight='" + fontWeight + "', font-style='" + fontStyle + "')").append("\n");
                                         }
                                         FOPFontTriplet fopFontTriplet = new FOPFontTriplet(fontName, fontWeight, fontStyle);
-                                        
+
                                         List<FOPFontTriplet> fopFontTriplets = new ArrayList<>();
                                         fopFontTriplets.add(fopFontTriplet);
 
@@ -233,7 +237,7 @@ class fontConfig {
 
                                         fopFonts.add(newFOPFont);
 
-                                        
+
                                         // set embed-url path for fonts with simulate-style="true" and similar sub-font
                                         fopFonts.stream()
                                             .filter(f -> !f.isReadyToUse())
@@ -242,7 +246,7 @@ class fontConfig {
                                             .forEach(f -> {
                                                 f.setEmbed_url(fontPath_);
                                             });
-                                        
+
                                     } else { //if there is font in array
                                         if (DEBUG) {
                                             //System.out.println("Update font entry: " + fontName + " to " + fontPath_);
