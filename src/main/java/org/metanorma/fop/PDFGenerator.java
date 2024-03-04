@@ -417,7 +417,9 @@ public class PDFGenerator {
             additionalXSLTparams.setProperty("basepath", basepath);
 
             File fInputXML = new File(inputXMLFilePath);
-            additionalXSLTparams.setProperty("inputxml_basepath", fInputXML.getParent() + File.separator);
+            String fInputXMLParent = fInputXML.getAbsoluteFile().getParent() + File.separator;
+           
+            additionalXSLTparams.setProperty("inputxml_basepath", fInputXMLParent);
             additionalXSLTparams.setProperty("inputxml_filename", fInputXML.getName());
 
             xsltConverter.setParams(additionalXSLTparams);
