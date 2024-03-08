@@ -164,7 +164,8 @@ public class SourceXMLDocument {
                                 attrText = attrText.substring(0, attrText.indexOf(";"));
                             }
                             for (String fname: attrText.split(",")) {
-                                fname = fname.trim().replace("'","");
+                                fname = fname.trim().replace("'","")
+                                        .replace("\"","");
                                 if (!documentFontList.contains(fname)) {
                                     documentFontList.add(fname);
                                 }
