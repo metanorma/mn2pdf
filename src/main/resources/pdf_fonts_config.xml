@@ -209,7 +209,7 @@ Relative config URLs are resolved relative to location of this file.
 				<font kerning="yes" embed-url="SourceSansPro-Light.ttf"> <!--  mn_default="true" -->
 					<font-triplet name="Source Sans Pro" style="normal" weight="300"/>
 				</font>
-				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf" mn_default="true"> <!--  mn_default="true" -->
+				<font kerning="yes" embed-url="SourceSansPro-LightIt.ttf"> <!--  mn_default="true" -->
 					<font-triplet name="Source Sans Pro" style="italic" weight="300"/>
 				</font>
 				
