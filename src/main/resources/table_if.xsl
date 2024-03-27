@@ -98,7 +98,7 @@
 		</xsl:variable>
 		
 		
-		<xsl:variable name="table_id" select="concat($table_if_prefix, $id, '_')"/>
+		<xsl:variable name="table_id" select="concat($table_if_prefix, $id, '@')"/>
 		
 		<xsl:variable name="cells_">
 			<!-- <xsl:for-each select="//if:id[starts-with(@name, $table_id)][1]"> --> <!-- select only first in 'g', no need select 'id' ends with '_end' -->
