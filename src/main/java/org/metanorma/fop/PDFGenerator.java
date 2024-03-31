@@ -7,11 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.*;
@@ -1192,27 +1188,40 @@ public class PDFGenerator {
                 debugSaveXML(xmlTablesOnly, pdf.getAbsolutePath() + ".tablesonly.xml");
 
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
+                List<String> tablesIds = sourceXMLDocumentTablesOnly.readElementsIds("//*[local-name() = 'table' or local-name() = 'dl']");
 
-                // transform XML to XSL-FO (XML .fo file)
-                xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
+                // process each table separatery for memory consumption optimization
+                for (String tableId: tablesIds) {
 
-                String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
+                    logger.info("[INFO] Generation of XSL-FO with information about the table widths with id " + tableId + " ...");
 
-                //debug
-                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
+                    // process table with id=tableId only
+                    xsltConverter.setParam("table_only_with_id", tableId);
 
-                fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
+                    // transform XML to XSL-FO (XML .fo file)
+                    xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
 
-                fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                    String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
 
-                Source sourceFO = new StreamSource(new StringReader(xmlFO));
+                    //debug
+                    debugSaveXML(xmlFO, pdf.getAbsolutePath() + "." + tableId + ".fo.tables.xml");
 
-                logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
-                String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
+                    fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + "." + tableId +  ".tables.fontmanifest.log.txt"));
 
-                xmlTableIF = createTableIF(xmlIF);
+                    fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
-                debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
+                    Source sourceFO = new StreamSource(new StringReader(xmlFO));
+
+                    logger.info("[INFO] Generation of Intermediate Format with information about the table's widths with id " + tableId + " ...");
+                    String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, "." + tableId + ".tables");
+
+                    xmlTableIF = createTableIF(xmlIF);
+
+                    debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + "." + tableId + ".tables.xml");
+
+                }
+
+                xsltConverter.setParam("table_only_with_id", ""); // further process all tables
 
                 xsltConverter.setParam("table_if", "false");
                 logger.info("[INFO] Generated successfully!");
@@ -1260,6 +1269,7 @@ public class PDFGenerator {
             logger.log(Level.SEVERE, "Can't save debug xml file '{0}': {1}", new Object[]{pathTo, ex.toString()});
         }
     }
+
 
     private int getIFPageCount(String xmlIF) {
         int pagecount = 0;

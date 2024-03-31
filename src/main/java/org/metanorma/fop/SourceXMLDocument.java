@@ -410,6 +410,25 @@ public class SourceXMLDocument {
         return value;
     }
 
+    public List<String> readElementsIds(String xpath) {
+        List<String> values = new ArrayList<>();
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query = xPath.compile(xpath);
+            NodeList nodes = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node node_id = nodes.item(i).getAttributes().getNamedItem("id");
+                if (node_id != null) {
+                    String id = node_id.getTextContent();
+                    values.add(id);
+                }
+            }
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        return values;
+    }
+
     public boolean hasAnnotations() {
         return hasAnnotations;
     }
