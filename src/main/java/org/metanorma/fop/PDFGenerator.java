@@ -1190,6 +1190,7 @@ public class PDFGenerator {
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
                 List<String> tablesIds = sourceXMLDocumentTablesOnly.readElementsIds("//*[local-name() = 'table' or local-name() = 'dl']");
 
+                List<String> xmlTablesIF = new ArrayList<>();
                 // process each table separatery for memory consumption optimization
                 for (String tableId: tablesIds) {
 
@@ -1219,7 +1220,14 @@ public class PDFGenerator {
 
                     debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + "." + tableId + ".tables.xml");
 
+                    xmlTableIF = tableWidthsCleanup(xmlTableIF);
+
+                    xmlTablesIF.add(xmlTableIF);
                 }
+
+
+                xmlTableIF = tablesWidthsUnion(xmlTablesIF);
+                debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
 
                 xsltConverter.setParam("table_only_with_id", ""); // further process all tables
 
@@ -1288,6 +1296,29 @@ public class PDFGenerator {
                 this.debugXSLFO = debugXSLFO;
             }
         }
+    }
+
+    private String tableWidthsCleanup(String table) {
+        int startPos = table.indexOf("<table ");
+        int endPos = table.indexOf("</tables>");
+        table = table.substring(startPos, endPos);
+        int startPosTbody =  table.indexOf("<tbody>");
+        table = table.substring(0,startPosTbody) + "</table>";
+        return table;
+    }
+
+    private String tablesWidthsUnion(List<String> tables) {
+        StringBuilder sbTablesIF = new StringBuilder();
+        if (!tables.isEmpty()) {
+            sbTablesIF.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tables>");
+        }
+        for (String itemTableIF: tables) {
+            sbTablesIF.append(itemTableIF);
+        }
+        if (!tables.isEmpty()) {
+            sbTablesIF.append("</tables>");
+        }
+        return sbTablesIF.toString();
     }
 
 }
