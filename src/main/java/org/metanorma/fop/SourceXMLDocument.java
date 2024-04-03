@@ -75,19 +75,13 @@ public class SourceXMLDocument {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream xmlstream = new FileInputStream(fXML);
             sourceXML = dBuilder.parse(xmlstream);
-
-            String element_review =  readValue("//*[local-name() = 'review'][1]");
-            this.hasAnnotations = element_review.length() != 0;
-            String element_table = readValue("//*[local-name() = 'table' or local-name() = 'dl'][1]");
-            this.hasTables = element_table.length() != 0;
-            String element_math = readValue("//*[local-name() = 'math'][1]");
-            this.hasMath = element_math.length() != 0;
+            readMetaInformation();
         } catch (Exception ex) {
             logger.severe("Can't read source XML.");
             ex.printStackTrace();
         }
     }
-    
+
     public SourceXMLDocument(String strXML) {
         try {
             this.sourceXMLstr = strXML;
@@ -100,7 +94,17 @@ public class SourceXMLDocument {
             ex.printStackTrace();
         }
     }
-    
+
+    private void readMetaInformation() {
+        String element_review =  readValue("//*[local-name() = 'review'][1]");
+        this.hasAnnotations = element_review.length() != 0;
+        String element_table = readValue("//*[local-name() = 'table' or local-name() = 'dl'][1]");
+        this.hasTables = element_table.length() != 0;
+        String element_math = readValue("//*[local-name() = 'math'][1]");
+        this.hasMath = element_math.length() != 0;
+    }
+
+
     public StreamSource getStreamSource() {
         if (sourceXMLstr.isEmpty()) {
             try {
@@ -410,6 +414,38 @@ public class SourceXMLDocument {
         return value;
     }
 
+    private int readTableCellsCount(){
+        int count = 0;
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query = xPath.compile("//*[local-name() = 'td' or local-name() = 'th' or local-name() = 'dt' or local-name() = 'dd']");
+            NodeList nodes = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
+            count = nodes.getLength();
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        return count;
+    }
+
+    public List<String> readElementsIds(String xpath) {
+        List<String> values = new ArrayList<>();
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression query = xPath.compile(xpath);
+            NodeList nodes = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node node_id = nodes.item(i).getAttributes().getNamedItem("id");
+                if (node_id != null) {
+                    String id = node_id.getTextContent();
+                    values.add(id);
+                }
+            }
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        }
+        return values;
+    }
+
     public boolean hasAnnotations() {
         return hasAnnotations;
     }
@@ -421,6 +457,11 @@ public class SourceXMLDocument {
 
     public boolean hasMath() {
         return hasMath;
+    }
+
+    public int getCountTableCells() {
+        int countTableCells = readTableCellsCount();
+        return countTableCells;
     }
 
     public void flushResources() {

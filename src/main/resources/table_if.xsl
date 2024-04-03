@@ -5,7 +5,7 @@
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:java="http://xml.apache.org/xalan/java"
 											xmlns:str="http://exslt.org/strings"
-											exclude-result-prefixes="java str"
+											exclude-result-prefixes="fo if xalan java str"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -54,7 +54,7 @@
 		</xsl:variable>
 		
 		<xsl:variable name="ids" select="xalan:nodeset($ids_)"/>
-		
+		<!-- <xsl:copy-of select="$ids"/> -->
 		<tables>
 			<!-- <xsl:apply-templates select="//if:id[starts-with(@name,$table_if_start_prefix)]"> -->
 			<xsl:apply-templates select="$ids//if:id[starts-with(@name,$table_if_start_prefix)]">
@@ -136,6 +136,8 @@
 		
 		<xsl:variable name="cells" select="xalan:nodeset($cells_)"/>
 		
+		<!-- <xsl:copy-of select="$cells"/> -->
+		
 		<xsl:variable name="table_body_">
 			<tbody>
 				<xsl:for-each select="$cells/cell[generate-id(.) = generate-id(key('kRow', @row)[1])]">
@@ -164,6 +166,7 @@
 											<xsl:for-each select="$cells">
 												<xsl:for-each select="key('kRowCell', concat($row, ' ', $col))"> <!-- select all 'cell' relate to one source table cell -->
 													<!-- <divide><xsl:value-of select="@divide"/></divide> -->
+													<!-- <length><xsl:value-of select="@length"/></length> -->
 													<xsl:choose>
 														<xsl:when test="@type = 'p'">
 															<p_len><xsl:value-of select="round(@length div @divide)"/></p_len>
@@ -176,6 +179,8 @@
 											</xsl:for-each>
 										</xsl:variable>
 										<xsl:variable name="lengths" select="xalan:nodeset($lengths_)"/>
+										
+										<!-- <xsl:copy-of select="$lengths"/> -->
 										
 										<xsl:for-each select="$lengths/*">
 											<xsl:copy>

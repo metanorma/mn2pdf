@@ -7,11 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.*;
@@ -1193,24 +1189,70 @@ public class PDFGenerator {
 
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
 
-                // transform XML to XSL-FO (XML .fo file)
-                xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
+                int countTableCells = sourceXMLDocumentTablesOnly.getCountTableCells();
+                if (countTableCells < 30000) {
+                    // transform XML to XSL-FO (XML .fo file)
+                    xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
 
-                String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
+                    String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
 
-                //debug
-                debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
+                    //debug
+                    debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
 
-                fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
+                    fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
 
-                fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                    fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
-                Source sourceFO = new StreamSource(new StringReader(xmlFO));
+                    Source sourceFO = new StreamSource(new StringReader(xmlFO));
 
-                logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
-                String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
+                    logger.info("[INFO] Generation of Intermediate Format with information about the table's widths ...");
+                    String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".tables");
 
-                xmlTableIF = createTableIF(xmlIF);
+                    xmlTableIF = createTableIF(xmlIF);
+
+                } else { // for large tables, or large number of tables
+
+                    List<String> tablesIds = sourceXMLDocumentTablesOnly.readElementsIds("//*[local-name() = 'table' or local-name() = 'dl']");
+
+                    List<String> xmlTablesIF = new ArrayList<>();
+                    // process each table separatery for memory consumption optimization
+                    int tableCounter = 0;
+                    int tableCount = tablesIds.size();
+                    for (String tableId : tablesIds) {
+                        tableCounter++;
+                        logger.info("[INFO] Generation of XSL-FO (" + tableCounter + "/" + tableCount + ") with information about the table widths with id='" + tableId + "'...");
+
+                        // process table with id=tableId only
+                        xsltConverter.setParam("table_only_with_id", tableId);
+
+                        // transform XML to XSL-FO (XML .fo file)
+                        xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
+
+                        String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
+
+                        //debug
+                        debugSaveXML(xmlFO, pdf.getAbsolutePath() + "." + tableId + ".fo.tables.xml");
+
+                        fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + "." + tableId + ".tables.fontmanifest.log.txt"));
+
+                        fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+
+                        Source sourceFO = new StreamSource(new StringReader(xmlFO));
+
+                        logger.info("[INFO] Generation of Intermediate Format (" + tableCounter + "/" + tableCount + ") with information about the table's widths with id='" + tableId + "'...");
+                        String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, "." + tableId + ".tables");
+
+                        xmlTableIF = createTableIF(xmlIF);
+
+                        debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + "." + tableId + ".tables.xml");
+
+                        xmlTableIF = tableWidthsCleanup(xmlTableIF);
+
+                        xmlTablesIF.add(xmlTableIF);
+                    }
+                    xmlTableIF = tablesWidthsUnion(xmlTablesIF);
+                    xsltConverter.setParam("table_only_with_id", ""); // further process all tables
+                }
 
                 debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
 
@@ -1261,6 +1303,7 @@ public class PDFGenerator {
         }
     }
 
+
     private int getIFPageCount(String xmlIF) {
         int pagecount = 0;
         if (xmlIF != null) {
@@ -1278,6 +1321,29 @@ public class PDFGenerator {
                 this.debugXSLFO = debugXSLFO;
             }
         }
+    }
+
+    private String tableWidthsCleanup(String table) {
+        int startPos = table.indexOf("<table ");
+        int endPos = table.indexOf("</tables>");
+        table = table.substring(startPos, endPos);
+        int startPosTbody =  table.indexOf("<tbody>");
+        table = table.substring(0,startPosTbody) + "</table>";
+        return table;
+    }
+
+    private String tablesWidthsUnion(List<String> tables) {
+        StringBuilder sbTablesIF = new StringBuilder();
+        if (!tables.isEmpty()) {
+            sbTablesIF.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tables>");
+        }
+        for (String itemTableIF: tables) {
+            sbTablesIF.append(itemTableIF);
+        }
+        if (!tables.isEmpty()) {
+            sbTablesIF.append("</tables>");
+        }
+        return sbTablesIF.toString();
     }
 
 }
