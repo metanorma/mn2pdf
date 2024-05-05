@@ -418,6 +418,8 @@ public class PDFGenerator {
             additionalXSLTparams.setProperty("inputxml_basepath", fInputXMLParent);
             additionalXSLTparams.setProperty("inputxml_filename", fInputXML.getName());
 
+            additionalXSLTparams.setProperty("output_path", pdf.getAbsolutePath());
+
             xsltConverter.setParams(additionalXSLTparams);
             
             setTablesWidths(fontcfg, xsltConverter, pdf);
