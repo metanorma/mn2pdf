@@ -14,6 +14,13 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
+	<xsl:template match="/">
+		<xsl:variable name="xml">
+			<xsl:apply-templates />
+		</xsl:variable>
+		<xsl:apply-templates select="xalan:nodeset($xml)" mode="check_empty_elements"/>
+	</xsl:template>
+	
 	<xsl:template match="@*|node()">
 		<xsl:copy>
 				<xsl:apply-templates select="@*|node()"/>
@@ -28,7 +35,8 @@
 				local-name() = 'sections' or 
 				local-name() = 'annex' or 
 				local-name() = 'indexsect'
-				]//*[local-name() = 'p' or 
+				]//*[local-name() = 'clause' or 
+						local-name() = 'p' or 
 						local-name() = 'ul' or 
 						local-name() = 'ol' or
 						local-name() = 'note' or
@@ -129,6 +137,23 @@
 				<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'p']/node()" mode="simple_td"/>
 			</xsl:element>
 		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="@*|node()" mode="check_empty_elements">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="check_empty_elements"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'preface' or local-name = 'sections' or local-name() = 'annex' or local-name() = 'indexsect'][not(clause)]" mode="check_empty_elements">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:variable name="ns" select="namespace-uri()"/>
+			<xsl:element name="clause" namespace="{$ns}">
+				<xsl:element name="title" namespace="{$ns}">Clause</xsl:element>
+			</xsl:element>
+			<xsl:apply-templates mode="check_empty_elements"/>
+		</xsl:copy>
 	</xsl:template>
 	
 </xsl:stylesheet>
