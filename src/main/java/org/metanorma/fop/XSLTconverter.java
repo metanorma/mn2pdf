@@ -187,6 +187,11 @@ public class XSLTconverter {
         return param_add_math_as_attachment.equalsIgnoreCase("true");
     }
 
+    public boolean isApplyAutolayoutAlgorithm() {
+        String variable_isApplyAutolayoutAlgorithm = readValue("/*[local-name() = 'stylesheet']/*[local-name() = 'variable'][@name = 'isApplyAutolayoutAlgorithm_']");
+        return variable_isApplyAutolayoutAlgorithm.trim().equalsIgnoreCase("true");
+    }
+
     public void deleteTmpXSL() {
         if (tmpfileXSL != null) {
             try {
