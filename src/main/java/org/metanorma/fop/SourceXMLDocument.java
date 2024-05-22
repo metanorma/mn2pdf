@@ -98,7 +98,8 @@ public class SourceXMLDocument {
     private void readMetaInformation() {
         String element_review =  readValue("//*[local-name() = 'review'][1]");
         this.hasAnnotations = element_review.length() != 0;
-        String element_table = readValue("//*[local-name() = 'table' or local-name() = 'dl'][1]");
+        // check table without colgroup/col (width) or dl
+        String element_table = readValue("//*[(local-name() = 'table' and not(*[local-name() = 'colgroup']/*[local-name() = 'col'])) or local-name() = 'dl'][1]");
         this.hasTables = element_table.length() != 0;
         String element_math = readValue("//*[local-name() = 'math'][1]");
         this.hasMath = element_math.length() != 0;

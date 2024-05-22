@@ -88,6 +88,8 @@ public class PDFGenerator {
     private boolean isAddCommentaryPageNumbers = false;
     
     private boolean isAddMathAsAttachment = false;
+
+    private boolean isApplyAutolayoutAlgorithm = true;
     
     private boolean isAddAnnotations = false;
     
@@ -274,6 +276,8 @@ public class PDFGenerator {
 
             isAddMathAsText = xsltConverter.hasParamAddMathAsText()  && isMathExists;
             isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
+
+			isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
 
             if (isSyntaxHighlight) {
                 xsltParams.put("syntax-highlight", "true");
@@ -1174,7 +1178,7 @@ public class PDFGenerator {
         long startMethodTime = System.currentTimeMillis();
 
         try {
-            if (isTableExists && xmlTableIF.isEmpty()) { 
+            if (isTableExists && xmlTableIF.isEmpty() && isApplyAutolayoutAlgorithm) {
                 // generate IF with table width data
                 xsltConverter.setParam("table_if", "true");
                 logger.info("[INFO] Generation of XSL-FO with information about the table's widths ...");
