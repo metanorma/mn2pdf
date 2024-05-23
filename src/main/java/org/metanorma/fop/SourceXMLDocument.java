@@ -149,7 +149,8 @@ public class SourceXMLDocument {
                         try {
                             Attr attr = (Attr) nList.item(i);
                             for (String fname: attr.getNodeValue().split(",")) {
-                                fname = fname.trim();
+                                fname = fname.trim().replace("'","")
+                                        .replace("\"","");
                                 if (!documentFontList.contains(fname)) {
                                     documentFontList.add(fname);
                                 }
