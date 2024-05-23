@@ -149,7 +149,8 @@ public class SourceXMLDocument {
                         try {
                             Attr attr = (Attr) nList.item(i);
                             for (String fname: attr.getNodeValue().split(",")) {
-                                fname = fname.trim();
+                                fname = fname.trim().replace("'","")
+                                        .replace("\"","");
                                 if (!documentFontList.contains(fname)) {
                                     documentFontList.add(fname);
                                 }
@@ -178,6 +179,31 @@ public class SourceXMLDocument {
                         } catch (Exception ex) {}
                     }
 
+                    try {
+                        query = xPath.compile("//*/*[local-name() = 'style'][@type = 'text/css'][contains(., 'font-family')]/text()");
+                        String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
+                        boolean foundFontFamily = true;
+                        while (foundFontFamily) {
+                            int fontFamilyStart = textCSS.indexOf("{font-family:");
+                            foundFontFamily = fontFamilyStart != -1;
+                            if (foundFontFamily) {
+                                textCSS = textCSS.substring(fontFamilyStart);
+                                textCSS = textCSS.substring(textCSS.indexOf(":") + 1);
+                                if (textCSS.indexOf(";") != -1) {
+                                    String attrText = textCSS.substring(0, textCSS.indexOf(";"));
+                                    for (String fname : attrText.split(",")) {
+                                        fname = fname.trim().replace("'", "")
+                                                .replace("\"", "");
+                                        if (!documentFontList.contains(fname)) {
+                                            documentFontList.add(fname);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception ex) {
+                        //Experimental feature
+                    }
                 } catch (XPathExpressionException ex) {
                     logger.info(ex.toString());
                 }
