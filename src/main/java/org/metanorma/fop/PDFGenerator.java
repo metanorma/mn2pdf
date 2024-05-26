@@ -1175,6 +1175,8 @@ public class PDFGenerator {
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
 
+        int TABLE_CELLS_COUNT_MAX = 30000;
+
         String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
@@ -1198,7 +1200,7 @@ public class PDFGenerator {
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
 
                 int countTableCells = sourceXMLDocumentTablesOnly.getCountTableCells();
-                if (countTableCells < 30000) {
+                if (countTableCells < TABLE_CELLS_COUNT_MAX) {
                     // transform XML to XSL-FO (XML .fo file)
                     xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
 
@@ -1219,8 +1221,6 @@ public class PDFGenerator {
                     xmlTableIF = createTableIF(xmlIF);
 
                 } else { // for large tables, or large number of tables
-
-                    int TABLE_CELLS_COUNT_MAX = 30000;
 
                     List<String> xmlTablesIF = new ArrayList<>();
 
