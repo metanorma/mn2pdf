@@ -1,7 +1,6 @@
 package org.metanorma.fop;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,10 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.*;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -26,7 +22,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import static org.metanorma.fop.PDFGenerator.logger;
+
 import static org.metanorma.fop.Util.getStreamFromResources;
 
 import org.metanorma.utils.LoggerHelper;
@@ -52,6 +48,7 @@ public class SourceXMLDocument {
 
     private boolean hasAnnotations = false;
     private boolean hasTables = false;
+    private Map<String, Integer> tablesCellsCountMap = new HashMap<>();
     private boolean hasMath = false;
 
     static final String TMPDIR = System.getProperty("java.io.tmpdir");
@@ -89,6 +86,7 @@ public class SourceXMLDocument {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputSource xmlIFIS = new InputSource(new StringReader(strXML));
             sourceXML = dBuilder.parse(xmlIFIS);
+            readMetaInformation();
         } catch (Exception ex) {
             logger.severe("Can't parse source XML.");
             ex.printStackTrace();
@@ -97,14 +95,41 @@ public class SourceXMLDocument {
 
     private void readMetaInformation() {
         String element_review =  readValue("//*[local-name() = 'review'][1]");
-        this.hasAnnotations = element_review.length() != 0;
-        // check table without colgroup/col (width) or dl
-        String element_table = readValue("//*[(local-name() = 'table' and not(*[local-name() = 'colgroup']/*[local-name() = 'col'])) or local-name() = 'dl'][1]");
-        this.hasTables = element_table.length() != 0;
+        hasAnnotations = element_review.length() != 0;
         String element_math = readValue("//*[local-name() = 'math'][1]");
-        this.hasMath = element_math.length() != 0;
+        hasMath = element_math.length() != 0;
+        //tables without colgroup/col (width) or dl
+        //String element_table = readValue("//*[(local-name() = 'table' and not(*[local-name() = 'colgroup']/*[local-name() = 'col'])) or local-name() = 'dl'][1]");
+        //hasTables = element_table.length() != 0;
+        obtainTablesCellsCount();
+        hasTables = !tablesCellsCountMap.isEmpty();
     }
 
+    private void obtainTablesCellsCount() {
+        try {
+            XPath xPathAllTable = XPathFactory.newInstance().newXPath();
+            // select all tables (without colgroup) and definitions lists (dl)
+            XPathExpression queryAllTables = xPathAllTable.compile("//*[(local-name() = 'table' and not(*[local-name() = 'colgroup']/*[local-name() = 'col'])) or local-name() = 'dl']");
+            NodeList nodesTables = (NodeList)queryAllTables.evaluate(sourceXML, XPathConstants.NODESET);
+            for (int i = 0; i < nodesTables.getLength(); i++) {
+                Node nodeTable = nodesTables.item(i);
+                String tableId = "";
+                Node nodeId = nodeTable.getAttributes().getNamedItem("id");
+                if (nodeId != null) {
+                    tableId =nodeId.getTextContent();
+                }
+                if (!tableId.isEmpty()) {
+                    XPath xPathTableCountCells = XPathFactory.newInstance().newXPath();
+                    XPathExpression queryTableCountCells = xPathTableCountCells.compile(".//*[local-name() = 'td' or local-name() = 'th' or local-name() = 'dt' or local-name() = 'dd']");
+                    NodeList nodesCells = (NodeList) queryTableCountCells.evaluate(nodeTable, XPathConstants.NODESET);
+                    int countCells = nodesCells.getLength();
+                    tablesCellsCountMap.put(tableId, countCells);
+                }
+            }
+        } catch (XPathExpressionException ex) {
+            logger.severe(ex.toString());
+        }
+    }
 
     public StreamSource getStreamSource() {
         if (sourceXMLstr.isEmpty()) {
@@ -411,7 +436,6 @@ public class SourceXMLDocument {
         return documentFilePath;
     }
 
-
     private String updatePreprocessXSLT(Document docXML) throws Exception {
 
         Source srcXSL =  new StreamSource(getStreamFromResources(getClass().getClassLoader(), "update_preprocess_xslt.xsl"));
@@ -439,19 +463,6 @@ public class SourceXMLDocument {
             logger.severe(ex.toString());
         }
         return value;
-    }
-
-    private int readTableCellsCount(){
-        int count = 0;
-        try {
-            XPath xPath = XPathFactory.newInstance().newXPath();
-            XPathExpression query = xPath.compile("//*[local-name() = 'td' or local-name() = 'th' or local-name() = 'dt' or local-name() = 'dd']");
-            NodeList nodes = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
-            count = nodes.getLength();
-        } catch (Exception ex) {
-            logger.severe(ex.toString());
-        }
-        return count;
     }
 
     public List<String> readElementsIds(String xpath) {
@@ -487,7 +498,12 @@ public class SourceXMLDocument {
     }
 
     public int getCountTableCells() {
-        int countTableCells = readTableCellsCount();
+        int countTableCells = 0;
+        try {
+            countTableCells = tablesCellsCountMap.values().stream().mapToInt(Integer::intValue).sum();
+        } catch (Exception ex) {
+            logger.severe(ex.toString());
+        };
         return countTableCells;
     }
 
@@ -495,5 +511,9 @@ public class SourceXMLDocument {
         sourceXML = null;
         sourceXMLstr = "";
         xmlFO = null;
+    }
+
+    public Map<String, Integer> getTablesCellsCountMap() {
+        return tablesCellsCountMap;
     }
 }

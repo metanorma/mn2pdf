@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -277,7 +278,8 @@ public class PDFGenerator {
             isAddMathAsText = xsltConverter.hasParamAddMathAsText()  && isMathExists;
             isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
 
-			isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
+            isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
+
 
             if (isSyntaxHighlight) {
                 xsltParams.put("syntax-highlight", "true");
@@ -1173,6 +1175,8 @@ public class PDFGenerator {
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
 
+        int TABLE_CELLS_COUNT_MAX = 30000;
+
         String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
         long startMethodTime = System.currentTimeMillis();
@@ -1196,7 +1200,7 @@ public class PDFGenerator {
                 SourceXMLDocument sourceXMLDocumentTablesOnly = new SourceXMLDocument(xmlTablesOnly);
 
                 int countTableCells = sourceXMLDocumentTablesOnly.getCountTableCells();
-                if (countTableCells < 30000) {
+                if (countTableCells < TABLE_CELLS_COUNT_MAX) {
                     // transform XML to XSL-FO (XML .fo file)
                     xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
 
@@ -1218,18 +1222,37 @@ public class PDFGenerator {
 
                 } else { // for large tables, or large number of tables
 
-                    List<String> tablesIds = sourceXMLDocumentTablesOnly.readElementsIds("//*[local-name() = 'table' or local-name() = 'dl']");
-
                     List<String> xmlTablesIF = new ArrayList<>();
-                    // process each table separatery for memory consumption optimization
-                    int tableCounter = 0;
-                    int tableCount = tablesIds.size();
-                    for (String tableId : tablesIds) {
-                        tableCounter++;
-                        logger.info("[INFO] Generation of XSL-FO (" + tableCounter + "/" + tableCount + ") with information about the table widths with id='" + tableId + "'...");
 
-                        // process table with id=tableId only
-                        xsltConverter.setParam("table_only_with_id", tableId);
+                    Map<String,Integer> tablesCellsCountMap = sourceXMLDocumentTablesOnly.getTablesCellsCountMap();
+
+                    int portion = 1;
+                    while(!tablesCellsCountMap.isEmpty()) {
+                        int totalCells = 0;
+                        List<String> tablesProcessed = new ArrayList<>();
+
+                        Iterator<Map.Entry<String, Integer>> iterator = tablesCellsCountMap.entrySet().iterator();
+                        while (iterator.hasNext() && totalCells < TABLE_CELLS_COUNT_MAX) {
+                            Map.Entry<String, Integer> entry = iterator.next();
+                            if (totalCells == 0 || totalCells + entry.getValue() < TABLE_CELLS_COUNT_MAX) {
+                                totalCells += entry.getValue();
+                                tablesProcessed.add(entry.getKey());
+                            }
+                        }
+
+                        /*for (Map.Entry<String, Integer> entry : tablesCellsCountMap.entrySet()) {
+                             else {
+                                break;
+                            }
+                        }*/
+                        logger.info("[INFO] Generation of XSL-FO (portion " + portion + ") with information about the table widths...");
+
+                        // "table1 table2 table3 " (with space at the end)
+                        String tableIds = tablesProcessed.stream().collect(Collectors.joining(" ")) + " ";
+                        // call XSLT and pass the tables ids
+
+                        // process table with ids=tableIds only
+                        xsltConverter.setParam("table_only_with_ids", tableIds);
 
                         // transform XML to XSL-FO (XML .fo file)
                         xsltConverter.transform(sourceXMLDocumentTablesOnly, false);
@@ -1237,27 +1260,41 @@ public class PDFGenerator {
                         String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
 
                         //debug
-                        debugSaveXML(xmlFO, pdf.getAbsolutePath() + "." + tableId + ".fo.tables.xml");
+                        debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".portion_" + portion + ".fo.tables.xml");
 
-                        fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + "." + tableId + ".tables.fontmanifest.log.txt"));
+                        fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".portion_" + portion + ".tables.fontmanifest.log.txt"));
 
                         fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
 
                         Source sourceFO = new StreamSource(new StringReader(xmlFO));
 
-                        logger.info("[INFO] Generation of Intermediate Format (" + tableCounter + "/" + tableCount + ") with information about the table's widths with id='" + tableId + "'...");
-                        String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, "." + tableId + ".tables");
+                        logger.info("[INFO] Generation of Intermediate Format with information about the table's widths (portion " + portion + ") ...");
+                        String xmlIF = generateFOPIntermediateFormat(sourceFO, fontcfg.getConfig(), pdf, true, ".portion_" + portion + ".tables");
 
                         xmlTableIF = createTableIF(xmlIF);
 
-                        debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + "." + tableId + ".tables.xml");
+                        debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".portion_" + portion + ".tables.xml");
 
                         xmlTableIF = tableWidthsCleanup(xmlTableIF);
 
                         xmlTablesIF.add(xmlTableIF);
+
+                        // remove processed tables
+                        tablesCellsCountMap.keySet().removeAll(tablesProcessed);
+                        portion++;
                     }
+
+                    /*List<String> tablesIds = sourceXMLDocumentTablesOnly.readElementsIds("//*[local-name() = 'table' or local-name() = 'dl']");
+                    // process each table separatery for memory consumption optimization
+                    int tableCounter = 0;
+                    int tableCount = tablesIds.size();
+                    for (String tableId : tablesIds) {
+                        tableCounter++;
+                        logger.info("[INFO] Generation of XSL-FO (" + tableCounter + "/" + tableCount + ") with information about the table widths with id='" + tableId + "'...");
+                    }*/
                     xmlTableIF = tablesWidthsUnion(xmlTablesIF);
                     xsltConverter.setParam("table_only_with_id", ""); // further process all tables
+                    xsltConverter.setParam("table_only_with_ids", ""); // further process all tables
                 }
 
                 debugSaveXML(xmlTableIF, pdf.getAbsolutePath() + ".tables.xml");
@@ -1330,11 +1367,17 @@ public class PDFGenerator {
     }
 
     private String tableWidthsCleanup(String table) {
-        int startPos = table.indexOf("<table ");
+        try {
+            table = applyXSLT("table_if_clean.xsl", table, false);
+        } catch (Exception ex) {
+            logger.severe("Can't simplify the tables width information XML.");
+            ex.printStackTrace();
+        }
+        /*int startPos = table.indexOf("<table ");
         int endPos = table.indexOf("</tables>");
         table = table.substring(startPos, endPos);
         int startPosTbody =  table.indexOf("<tbody>");
-        table = table.substring(0,startPosTbody) + "</table>";
+        table = table.substring(0,startPosTbody) + "</table>";*/
         return table;
     }
 
@@ -1344,6 +1387,9 @@ public class PDFGenerator {
             sbTablesIF.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tables>");
         }
         for (String itemTableIF: tables) {
+            int startPos = itemTableIF.indexOf("<table ");
+            int endPos = itemTableIF.indexOf("</tables>");
+            itemTableIF = itemTableIF.substring(startPos, endPos);
             sbTablesIF.append(itemTableIF);
         }
         if (!tables.isEmpty()) {

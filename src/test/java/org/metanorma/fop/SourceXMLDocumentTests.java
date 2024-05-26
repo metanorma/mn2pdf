@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.transform.TransformerException;
 import org.apache.commons.cli.ParseException;
 
@@ -91,5 +93,16 @@ public class SourceXMLDocumentTests {
                 "\n";
 
         assertTrue(strProcessXSLT.equals(strProcessXSLTEtalon));
+    }
+
+    @Test
+    public void testTablesCellsCount() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String xml = classLoader.getResource("G.191.xml").getFile();
+        SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
+        Map<String,Integer> tablesCellsCount = sourceXMLDocument.getTablesCellsCountMap();
+        int countCells = sourceXMLDocument.getCountTableCells();
+        assertTrue(tablesCellsCount.size() == 27);
+        assertTrue(countCells == 725);
     }
 }
