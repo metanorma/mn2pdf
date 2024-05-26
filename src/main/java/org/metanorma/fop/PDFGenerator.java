@@ -1226,9 +1226,9 @@ public class PDFGenerator {
 
                     Map<String,Integer> tablesCellsCountMap = sourceXMLDocumentTablesOnly.getTablesCellsCountMap();
 
+                    int portion = 1;
                     while(!tablesCellsCountMap.isEmpty()) {
                         int totalCells = 0;
-                        int portion = 1;
                         List<String> tablesProcessed = new ArrayList<>();
 
                         Iterator<Map.Entry<String, Integer>> iterator = tablesCellsCountMap.entrySet().iterator();
@@ -1281,6 +1281,7 @@ public class PDFGenerator {
 
                         // remove processed tables
                         tablesCellsCountMap.keySet().removeAll(tablesProcessed);
+                        portion++;
                     }
 
                     /*List<String> tablesIds = sourceXMLDocumentTablesOnly.readElementsIds("//*[local-name() = 'table' or local-name() = 'dl']");
