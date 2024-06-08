@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.metanorma.fop</groupId>
 	<artifactId>mn2pdf</artifactId>
-	<version>1.90</version>
+	<version>1.91</version>
 	<name>Metanorma XML to PDF converter</name>
 	<packaging>jar</packaging>
 	<url>https://www.metanorma.org</url>
@@ -271,6 +271,11 @@
 			<groupId>net.sourceforge.cssparser</groupId>
 			<artifactId>cssparser</artifactId>
 			<version>0.9.29</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sejda.imageio</groupId>
+			<artifactId>webp-imageio</artifactId>
+			<version>0.1.6</version>
 		</dependency>
 	</dependencies>
 </project>
