@@ -330,7 +330,8 @@ public class Util {
         }
         return stream;
     }
-    
+
+    // TODO: remove in the next release (moved into the ImageUtils class)
     public static String getImageScale(String img, String width_effective, String height_effective) {
         
         try {
@@ -389,7 +390,8 @@ public class Util {
         
         return "100";
     }
-    
+
+    // TODO: remove in the next release (moved into the ImageUtils class)
     private static int getDPI(ImageInputStream imageInputStream) {
         int default_DPI = 96;
         if (imageInputStream != null) {
@@ -417,14 +419,16 @@ public class Util {
         logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
         return default_DPI; //default DPI
     }
-    
-    
+
+
+    // TODO: remove in the next release (moved into the ImageUtils class)
     private static float getPixelSizeMM(final IIOMetadataNode dimension, final String elementName) {
         NodeList pixelSizes = dimension.getElementsByTagName(elementName);
         IIOMetadataNode pixelSize = pixelSizes.getLength() > 0 ? (IIOMetadataNode) pixelSizes.item(0) : null;
         return pixelSize != null ? Float.parseFloat(pixelSize.getAttribute("value")) : -1;
     }
-    
+
+
     public static int getCoverPagesCount (File fXSL) {
         int countpages = 0;
         try {            
