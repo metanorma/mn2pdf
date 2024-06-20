@@ -66,7 +66,13 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
 
     @Override
     protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
-        
+
+        string = string.replace('\u00A0',' ');
+
+        if (DEBUG) {
+            System.out.println("Current string: '" + string + "'");
+        }
+
         if (!processedAlready) { // && !highlight_text.isEmpty()
         
             float posXInit  = 0, 
@@ -80,11 +86,6 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
             boolean start_pos_found = false;
             boolean end_pos_found = false;
 
-            if (DEBUG) {
-                System.out.println("Current string: '" + string + "'");
-            }
-
-            
             if (doPostIt && !postItAlready) {
                 // add post-it annotation (popup window)
 
@@ -112,7 +113,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
             } 
             
             if (doHighlight && !highlightedAlready && string.contains(highlight_text)) {
-                
+
                 if (DEBUG) {
                     System.out.println("Determine exactly start position:");
                 }
@@ -150,7 +151,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
                         if (DEBUG && string.contains("power ")) {
                             System.out.println(phrase.toString());
                         }
-                        if (phrase.toString().equals(highlight_text)) {
+                        if (phrase.toString().replace('\u00A0',' ').equals(highlight_text)) {
                             end_pos = j;
                             if (DEBUG) {
                                 System.out.println("End position: " + j);

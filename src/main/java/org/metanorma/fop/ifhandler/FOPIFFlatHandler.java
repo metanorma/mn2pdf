@@ -50,6 +50,7 @@ public class FOPIFFlatHandler extends DefaultHandler {
 
                 switch (qName) {
                     case "viewport":
+                    case "g":
 
                         int x = 0;
                         int y = 0;
@@ -154,6 +155,7 @@ public class FOPIFFlatHandler extends DefaultHandler {
         } else {
             switch (qName) {
                 case "viewport":
+                case "g":
                     stackViewports.pop();
                     break;
                 case "text":

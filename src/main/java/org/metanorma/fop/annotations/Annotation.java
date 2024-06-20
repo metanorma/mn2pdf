@@ -142,93 +142,98 @@ public class Annotation {
                     Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
                     stripper.writeText(document, dummy);
 
-                    float y_lower = annotationArea.getPosition()[1];
-                    float y_upper = annotationArea.getPosition()[3];
-                    
-                    att_rect.setTextContent(Util.floatArrayToString(annotationArea.getPosition()));
-                    
-                    if (doHighlight) {
-                        Node att_coords = node_annotation.getAttributes().getNamedItem("coords");
-                        
-                        StringBuilder sb_quadPoints = new StringBuilder();
-                        sb_quadPoints.append(Util.floatArrayToString(annotationArea.getQuadPoints()));
-                        
-                        // =====================================
-                        // union next highlights with current
-                        // =====================================
-                        List<Node> nodes_delete = new ArrayList<>();
-                        NodeList nodes_next_highlight = ((Element)node_annotation).getElementsByTagName("next_highlight");
-                        for (int j = 0; j < nodes_next_highlight.getLength(); j++) {
-                            Node node_next_highlight = nodes_next_highlight.item(j);
-                            
-                            Node att_next_rect = node_next_highlight.getAttributes().getNamedItem("rect");
-                    
-                            String next_rect = att_next_rect.getTextContent();
-                            String[] next_rect_components = next_rect.split(",");
-                            
-                            // evaluate start position for find
-                            float x_next = 100;
-                            try {
-                                x_next = Float.parseFloat(next_rect_components[0]);
-                            } catch (Exception ex) {}
+                    if (annotationArea.getPosition().length == 0) {
+                        logger.severe("Can't highlight the text '" + highlight_text + "'.");
+                    } else {
 
-                            float y_next = 100;
-                            try {
-                                y_next = Float.parseFloat(next_rect_components[1]);
-                            } catch (Exception ex) {}
-                                    
-                            AnnotationArea annotationNextArea = new AnnotationArea();
-                    
-                            String highlight_next_text = "";
+                        float y_lower = annotationArea.getPosition()[1];
+                        float y_upper = annotationArea.getPosition()[3];
 
-                            try {
-                                Node node_hightlighnextttext = ((Element)node_next_highlight).getElementsByTagName("hightlighttext").item(0);  
-                                highlight_next_text = node_hightlighnextttext.getTextContent();
-                            } catch (Exception ex) {}
-                            
-                            PDFTextStripper stripper_next = new PDFTextAnnotationStripper(highlight_next_text, 
-                                    doPostIt, doHighlight, 
-                                    x_next, y_next,
-                                    annotationNextArea);
-                            stripper_next.setSortByPosition(true);
+                        att_rect.setTextContent(Util.floatArrayToString(annotationArea.getPosition()));
 
-                            stripper_next.setStartPage(page + 1);
-                            stripper_next.setEndPage(page + 1);
+                        if (doHighlight) {
+                            Node att_coords = node_annotation.getAttributes().getNamedItem("coords");
 
-                            Writer dummy_next = new OutputStreamWriter(new ByteArrayOutputStream());
-                            stripper_next.writeText(document, dummy_next);
-                            
-                            String quadPoints = Util.floatArrayToString(annotationNextArea.getQuadPoints());
-                            if (!quadPoints.isEmpty()) {
-                                sb_quadPoints.append(",");
-                                sb_quadPoints.append(quadPoints);
+                            StringBuilder sb_quadPoints = new StringBuilder();
+                            sb_quadPoints.append(Util.floatArrayToString(annotationArea.getQuadPoints()));
+
+                            // =====================================
+                            // union next highlights with current
+                            // =====================================
+                            List<Node> nodes_delete = new ArrayList<>();
+                            NodeList nodes_next_highlight = ((Element)node_annotation).getElementsByTagName("next_highlight");
+                            for (int j = 0; j < nodes_next_highlight.getLength(); j++) {
+                                Node node_next_highlight = nodes_next_highlight.item(j);
+
+                                Node att_next_rect = node_next_highlight.getAttributes().getNamedItem("rect");
+
+                                String next_rect = att_next_rect.getTextContent();
+                                String[] next_rect_components = next_rect.split(",");
+
+                                // evaluate start position for find
+                                float x_next = 100;
+                                try {
+                                    x_next = Float.parseFloat(next_rect_components[0]);
+                                } catch (Exception ex) {}
+
+                                float y_next = 100;
+                                try {
+                                    y_next = Float.parseFloat(next_rect_components[1]);
+                                } catch (Exception ex) {}
+
+                                AnnotationArea annotationNextArea = new AnnotationArea();
+
+                                String highlight_next_text = "";
+
+                                try {
+                                    Node node_hightlighnextttext = ((Element)node_next_highlight).getElementsByTagName("hightlighttext").item(0);
+                                    highlight_next_text = node_hightlighnextttext.getTextContent();
+                                } catch (Exception ex) {}
+
+                                PDFTextStripper stripper_next = new PDFTextAnnotationStripper(highlight_next_text,
+                                        doPostIt, doHighlight,
+                                        x_next, y_next,
+                                        annotationNextArea);
+                                stripper_next.setSortByPosition(true);
+
+                                stripper_next.setStartPage(page + 1);
+                                stripper_next.setEndPage(page + 1);
+
+                                Writer dummy_next = new OutputStreamWriter(new ByteArrayOutputStream());
+                                stripper_next.writeText(document, dummy_next);
+
+                                String quadPoints = Util.floatArrayToString(annotationNextArea.getQuadPoints());
+                                if (!quadPoints.isEmpty()) {
+                                    sb_quadPoints.append(",");
+                                    sb_quadPoints.append(quadPoints);
+                                }
+
+                                //node_next_highlight.getParentNode().removeChild(node_next_highlight);
+                                nodes_delete.add(node_next_highlight);
                             }
-                            
-                            //node_next_highlight.getParentNode().removeChild(node_next_highlight);
-                            nodes_delete.add(node_next_highlight);
+                            for (int j=0; j<nodes_delete.size();j++) {
+                                Node node = nodes_delete.get(j);
+                                node.getParentNode().removeChild(node);
+                            }
+                            // =====================================
+                            // End: union next highlights with current
+                            // =====================================
+
+                            att_coords.setTextContent(sb_quadPoints.toString());
                         }
-                        for (int j=0; j<nodes_delete.size();j++) {
-                            Node node = nodes_delete.get(j);
-                            node.getParentNode().removeChild(node);
+
+                        if (DEBUG) {
+                            System.out.println("postItPopup position=" + Arrays.toString(annotationArea.getPosition()));
                         }
-                        // =====================================
-                        // End: union next highlights with current
-                        // =====================================
-                        
-                        att_coords.setTextContent(sb_quadPoints.toString());
+
+                        Node node_popup = ((Element)node_annotation).getElementsByTagName("popup").item(0);
+
+                        Node att_popup_rect = node_popup.getAttributes().getNamedItem("rect");
+
+                        float[] popup_rect = {595,y_lower - 100,790,y_upper};
+
+                        att_popup_rect.setTextContent(Util.floatArrayToString(popup_rect));
                     }
-                    
-                    if (DEBUG) {
-                        System.out.println("postItPopup position=" + Arrays.toString(annotationArea.getPosition()));
-                    }
-                    
-                    Node node_popup = ((Element)node_annotation).getElementsByTagName("popup").item(0);
-                    
-                    Node att_popup_rect = node_popup.getAttributes().getNamedItem("rect");
-                    
-                    float[] popup_rect = {595,y_lower - 100,790,y_upper};
-                    
-                    att_popup_rect.setTextContent(Util.floatArrayToString(popup_rect));
                 }
                 
                 
