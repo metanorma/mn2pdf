@@ -43,7 +43,7 @@ public class FOPIFIndexHandler extends DefaultHandler {
             case "id":
                 break;
             case "text":
-                if (elementValue.toString().matches("^[0-9]+$")) {
+                if (elementValue != null && elementValue.toString().matches("^[0-9]+$")) {
                     if (id_name != null ) { //&& !id_name.isEmpty()
                         indexItems.add("<item id=\"" + id_name + "\">" + elementValue + "</item>");
                     }

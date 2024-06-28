@@ -70,7 +70,7 @@ public class PDFTextAnnotationStripper extends PDFTextStripper {
         string = string.replace('\u00A0',' ');
 
         if (DEBUG) {
-            System.out.println("Current string: '" + string + "'");
+            //System.out.println("Current string: '" + string + "'");
         }
 
         if (!processedAlready) { // && !highlight_text.isEmpty()
