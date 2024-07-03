@@ -489,6 +489,8 @@ public class PDFGenerator {
         String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
 
+        PDFUA_error = false;
+
         OutputStream out = null;
         String xmlIF = null;
         long startMethodTime = System.currentTimeMillis();
@@ -650,7 +652,7 @@ public class PDFGenerator {
         
 
         
-        if (isAddAnnotations) {
+        if (isAddAnnotations && PDFUA_error == false) {
             logger.log(Level.INFO, "[INFO] Annotation processing...");
             try {
 
@@ -665,7 +667,7 @@ public class PDFGenerator {
                 Annotation annotations = new Annotation();
                 annotations.process(pdf, xml_review);
             } catch (Exception ex) {
-                logger.severe("Can't add annotation.");
+                logger.severe("Can't add annotation (" + ex.toString() + ").");
                 ex.printStackTrace();
             }
         }
