@@ -30,6 +30,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
+
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.xml.sax.InputSource;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.fdf.FDFAnnotation;
@@ -274,7 +276,12 @@ public class Annotation {
                 }
                 
                 for (Map.Entry<Integer,List<PDAnnotation>> set: map_pdfannots.entrySet()) {
-                    document.getPage(set.getKey()).setAnnotations(set.getValue());
+                    PDPage page = document.getPage(set.getKey());
+                    List<PDAnnotation> pageAnotations = page.getAnnotations();
+                    // merge existing annotations (including hyperlinks) and new annotations
+                    pageAnotations.addAll(set.getValue());
+                    //document.getPage(set.getKey()).setAnnotations(set.getValue());
+                    document.getPage(set.getKey()).setAnnotations(pageAnotations);
                 }
                 
                 fdfDoc.close();
