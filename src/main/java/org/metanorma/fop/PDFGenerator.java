@@ -265,7 +265,10 @@ public class PDFGenerator {
             logger.info(String.format(OUTPUT_LOG, PDF_OUTPUT, fPDF));
             logger.info("");
 
-            File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
+            PDFResult pdfResult = PDFResult.PDFResult(fPDF);
+
+            //File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
+            File fPresentationPartXML = getPresentationPartXML(fXML, pdfResult.getOutFolder());
 
             sourceXMLDocument = new SourceXMLDocument(fPresentationPartXML);
 
@@ -341,6 +344,7 @@ public class PDFGenerator {
                 }
                 xsltConverter.deleteTmpXSL();
                 fontcfg.deleteConfigFile();
+				pdfResult.flushOutTmpImagesFolder();
             }
             
             logger.info("Success!");
