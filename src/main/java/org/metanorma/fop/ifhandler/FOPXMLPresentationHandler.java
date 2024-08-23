@@ -102,7 +102,8 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
             boolean isExtractedImage = false;
 
             if (currentElement.equals("image") && attrName.equals("src") &&
-                    (attrValue.startsWith("data:image/") || attrValue.startsWith("data:application/"))) {
+                    (attrValue.startsWith("data:image/") || attrValue.startsWith("data:application/")) &&
+                    !(attrValue.startsWith("data:image/svg+xml;"))) {
                 String dataPrefix = "data:image/";
                 if (attrValue.startsWith("data:application/")) {
                     dataPrefix = "data:application/";
