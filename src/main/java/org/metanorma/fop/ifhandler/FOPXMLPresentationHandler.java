@@ -1,6 +1,7 @@
 package org.metanorma.fop.ifhandler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.metanorma.fop.PDFResult;
 import org.metanorma.fop.Util;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
@@ -18,15 +19,20 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.logging.Logger;
 
 /*
- * This class is intended for removing the semantic part from Metanorma XML
+ * This class is intended for:
+ * - removing the semantic part from Metanorma XML
+ * - extract embedded images in base64 to binary format into temporary folder on disk
  */
 
 public class FOPXMLPresentationHandler extends DefaultHandler {
@@ -39,6 +45,8 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
     private StringBuilder sbResult = new StringBuilder();
 
+    private String currentElement;
+
     Stack<Character> stackChar = new Stack<>();
 
     Stack<Boolean> skipElements = new Stack<>();
@@ -50,6 +58,8 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String lName, String qName, Attributes attr) throws SAXException {
+
+        currentElement = qName;
 
         if (qName.startsWith("semantic__") || qName.equals("emf")) {
             // skip
@@ -82,11 +92,53 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
         StringBuilder sbTmp = new StringBuilder();
         for (int i = 0; i < attr.getLength(); i++) {
             sbTmp.append(" ");
-            sbTmp.append(attr.getLocalName(i));
+            String attrName = attr.getLocalName(i);
+            String attrValue = attr.getValue(i);
+            sbTmp.append(attrName);
             sbTmp.append("=\"");
-            String value = StringEscapeUtils.escapeXml(attr.getValue(i));
+
+            String value = StringEscapeUtils.escapeXml(attrValue);;
+
+            boolean isExtractedImage = false;
+
+            if (currentElement.equals("image") && attrName.equals("src") &&
+                    (attrValue.startsWith("data:image/") || attrValue.startsWith("data:application/")) &&
+                    !(attrValue.startsWith("data:image/svg+xml;"))) {
+                String dataPrefix = "data:image/";
+                if (attrValue.startsWith("data:application/")) {
+                    dataPrefix = "data:application/";
+                }
+                // extract embedded images in base64 to binary format into temporary folder on disk
+                int startPos = attrValue.indexOf(";base64,") + 8;
+                String base64data = attrValue.substring(startPos);
+                byte[] decodedBytes = Base64.getDecoder().decode(base64data);
+
+                String imageFormat = attrValue.substring(attrValue.indexOf(dataPrefix) + dataPrefix.length(), attrValue.indexOf(";base64,"));
+                PDFResult pdfResult = PDFResult.PDFResult(null);
+                String imageTmpName = UUID.randomUUID().toString() + "." + imageFormat;
+                Path imagePath = Paths.get(pdfResult.getOutTmpImagesPath().toString(), imageTmpName);
+                try {
+                    Files.createDirectories(pdfResult.getOutTmpImagesPath());
+                    Files.write(imagePath, decodedBytes);
+                    // relative path to PDF out file
+                    //File imageFile = new File(imagePath.toString());
+                    //String imageFileParentFolder = imageFile.getParentFile().getName();
+                    //value = Paths.get(imageFileParentFolder, imageTmpName).toString();
+                    // absolutepath
+                    value = imagePath.toAbsolutePath().toString();
+                    isExtractedImage = true;
+                } catch (IOException ex) {
+                    logger.severe("Can't save the image on disk '" + imagePath.toString() + "':");
+                    logger.severe(ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
             sbTmp.append(value);
             sbTmp.append("\"");
+
+            if (isExtractedImage) {
+                sbTmp.append(" extracted=\"true\"");
+            }
         }
         return sbTmp.toString();
     }
