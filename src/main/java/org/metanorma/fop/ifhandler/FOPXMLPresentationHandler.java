@@ -99,6 +99,8 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
             String value = StringEscapeUtils.escapeXml(attrValue);;
 
+            boolean isExtractedImage = false;
+
             if (currentElement.equals("image") && attrName.equals("src") &&
                     (attrValue.startsWith("data:image/") || attrValue.startsWith("data:application/"))) {
                 String dataPrefix = "data:image/";
@@ -118,9 +120,12 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
                     Files.createDirectories(pdfResult.getOutTmpImagesPath());
                     Files.write(imagePath, decodedBytes);
                     // relative path to PDF out file
-                    File imageFile = new File(imagePath.toString());
-                    String imageFileParentFolder = imageFile.getParentFile().getName();
-                    value = Paths.get(imageFileParentFolder, imageTmpName).toString();
+                    //File imageFile = new File(imagePath.toString());
+                    //String imageFileParentFolder = imageFile.getParentFile().getName();
+                    //value = Paths.get(imageFileParentFolder, imageTmpName).toString();
+                    // absolutepath
+                    value = imagePath.toAbsolutePath().toString();
+                    isExtractedImage = true;
                 } catch (IOException ex) {
                     logger.severe("Can't save the image on disk '" + imagePath.toString() + "':");
                     logger.severe(ex.getMessage());
@@ -129,6 +134,10 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
             }
             sbTmp.append(value);
             sbTmp.append("\"");
+
+            if (isExtractedImage) {
+                sbTmp.append(" extracted=\"true\"");
+            }
         }
         return sbTmp.toString();
     }

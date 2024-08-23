@@ -22,6 +22,8 @@ public class PDFResult {
         String parentFolder = pdfFile.getParent();
         if (parentFolder == null) {
             parentFolder = pdfFile.getAbsoluteFile().getParent();
+        } else {
+            parentFolder = new File(parentFolder).getAbsolutePath();
         }
         outTmpImagesPath = Paths.get(parentFolder, "_tmp_images_" + UUID.randomUUID().toString());
         outFolder = parentFolder;
