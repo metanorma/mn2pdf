@@ -91,7 +91,9 @@ public class PDFGenerator {
     private boolean isAddMathAsAttachment = false;
 
     private boolean isApplyAutolayoutAlgorithm = true;
-    
+
+    private boolean isComplexScriptsFeatures = true;
+
     private boolean isAddAnnotations = false;
     
     private boolean isTableExists = false;
@@ -283,6 +285,7 @@ public class PDFGenerator {
 
             isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
 
+            isComplexScriptsFeatures = !xsltConverter.isIgnoreComplexScripts();
 
             if (isSyntaxHighlight) {
                 xsltParams.put("syntax-highlight", "true");
@@ -456,7 +459,9 @@ public class PDFGenerator {
             debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
             
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
-            
+
+            fontcfg.setComplexScriptFeatures(isComplexScriptsFeatures);
+
             Source src = new StreamSource(new StringReader(xmlFO));
             
             
