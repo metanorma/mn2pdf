@@ -71,7 +71,9 @@ public class PDFGenerator {
     final private String inputXMLFilePath;
     
     SourceXMLDocument sourceXMLDocument;
-    
+
+    String sourceDocumentFilePath = "";
+
     final private String inputXSLFilePath;
     
     final private String outputPDFFilePath;
@@ -269,6 +271,11 @@ public class PDFGenerator {
 
             PDFResult pdfResult = PDFResult.PDFResult(fPDF);
 
+            sourceDocumentFilePath = fXML.getParent();
+            if (sourceDocumentFilePath == null) {
+                sourceDocumentFilePath = System.getProperty("user.dir");
+            }
+
             //File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
             File fPresentationPartXML = getPresentationPartXML(fXML, pdfResult.getOutFolder());
 
@@ -418,8 +425,9 @@ public class PDFGenerator {
                 additionalXSLTparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
             }
             
-            String basepath = sourceXMLDocument.getDocumentFilePath() + File.separator;
-            // redefine basepath 
+            //String basepath = sourceXMLDocument.getDocumentFilePath() + File.separator;
+            String basepath = sourceDocumentFilePath + File.separator;
+            // redefine basepath
             if (xsltParams.containsKey("baseassetpath")) {
                 basepath = xsltParams.getProperty("baseassetpath") + File.separator;
             }
