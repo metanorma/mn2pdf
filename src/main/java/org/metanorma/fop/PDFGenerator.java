@@ -71,7 +71,9 @@ public class PDFGenerator {
     final private String inputXMLFilePath;
     
     SourceXMLDocument sourceXMLDocument;
-    
+
+    String sourceDocumentFilePath = "";
+
     final private String inputXSLFilePath;
     
     final private String outputPDFFilePath;
@@ -91,7 +93,9 @@ public class PDFGenerator {
     private boolean isAddMathAsAttachment = false;
 
     private boolean isApplyAutolayoutAlgorithm = true;
-    
+
+    private boolean isComplexScriptsFeatures = true;
+
     private boolean isAddAnnotations = false;
     
     private boolean isTableExists = false;
@@ -267,6 +271,11 @@ public class PDFGenerator {
 
             PDFResult pdfResult = PDFResult.PDFResult(fPDF);
 
+            sourceDocumentFilePath = fXML.getParent();
+            if (sourceDocumentFilePath == null) {
+                sourceDocumentFilePath = System.getProperty("user.dir");
+            }
+
             //File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
             File fPresentationPartXML = getPresentationPartXML(fXML, pdfResult.getOutFolder());
 
@@ -283,6 +292,7 @@ public class PDFGenerator {
 
             isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
 
+            isComplexScriptsFeatures = !xsltConverter.isIgnoreComplexScripts();
 
             if (isSyntaxHighlight) {
                 xsltParams.put("syntax-highlight", "true");
@@ -415,8 +425,9 @@ public class PDFGenerator {
                 additionalXSLTparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
             }
             
-            String basepath = sourceXMLDocument.getDocumentFilePath() + File.separator;
-            // redefine basepath 
+            //String basepath = sourceXMLDocument.getDocumentFilePath() + File.separator;
+            String basepath = sourceDocumentFilePath + File.separator;
+            // redefine basepath
             if (xsltParams.containsKey("baseassetpath")) {
                 basepath = xsltParams.getProperty("baseassetpath") + File.separator;
             }
@@ -456,7 +467,9 @@ public class PDFGenerator {
             debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
             
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
-            
+
+            fontcfg.setComplexScriptFeatures(isComplexScriptsFeatures);
+
             Source src = new StreamSource(new StringReader(xmlFO));
             
             

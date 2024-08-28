@@ -104,6 +104,7 @@ class fontConfig {
 
     private String fontConfigPath = "";
 
+    private boolean isComplexScriptsFeatures = true;
     public fontConfig() {
         
         setFontPath(DEFAULT_FONT_PATH);
@@ -531,7 +532,9 @@ class fontConfig {
             updateFontsForGraphicsEnvironment();
             
             updateFontsInFOPConfig(FOPconfigXML);
-            
+
+            updateComplexScriptsInFOPConfig(FOPconfigXML);
+
             //write updated FOP config file
             writeFOPConfigFile(FOPconfigXML);
 
@@ -803,7 +806,18 @@ class fontConfig {
             logger.severe(ex.toString());
         }
     }
-    
+
+    private void updateComplexScriptsInFOPConfig(Document xmlDocument) {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        String expression = "/fop/complex-scripts/@disabled";
+        try {
+            Node nodeComplexScripts = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+            nodeComplexScripts.setTextContent(String.valueOf(!isComplexScriptsFeatures));
+        } catch (XPathExpressionException ex) {
+            logger.severe(ex.toString());
+        }
+    }
+
     public void outputFOPFontsLog(Path logPath) {
         if(DEBUG) {
             Util.outputLog(logPath, fopFontsLog.toString());
@@ -877,7 +891,10 @@ class fontConfig {
         }
         writeFOPConfigFile(configXML);
     }
-    
+
+    public void setComplexScriptFeatures(boolean value) {
+        this.isComplexScriptsFeatures = value;
+    }
     
     
     private void updateFontsForGraphicsEnvironment(){

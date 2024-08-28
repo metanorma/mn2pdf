@@ -192,6 +192,11 @@ public class XSLTconverter {
         return variable_isApplyAutolayoutAlgorithm.trim().equalsIgnoreCase("true");
     }
 
+    public boolean isIgnoreComplexScripts() {
+        String variable_isIgnoreComplexScripts = readValue("/*[local-name() = 'stylesheet']/*[local-name() = 'variable'][@name = 'isIgnoreComplexScripts']");
+        return variable_isIgnoreComplexScripts.trim().equalsIgnoreCase("true");
+    }
+
     public void deleteTmpXSL() {
         if (tmpfileXSL != null) {
             try {
