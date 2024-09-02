@@ -490,6 +490,11 @@ public class PDFGenerator {
                 logger.info(WARNING_NONPDFUA);
             }
 
+            // validate PDF by veraPDF
+            VeraPDFValidator veraPDFValidator = new VeraPDFValidator();
+            veraPDFValidator.validate(pdf);
+
+
             fontcfg.printMessages();
 
         } catch (Exception e) {
