@@ -580,6 +580,7 @@ public class PDFGenerator {
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent
             foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
+            foUserAgent.getRendererOptions().put("pdf-a-mode", PDF_A_MODE);
             setEncryptionParams(foUserAgent);
             
             //Adding a simple logging listener that writes to stdout and stderr            
