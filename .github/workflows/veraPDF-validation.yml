@@ -22,8 +22,12 @@ jobs:
         run: |
           docker run -d -p 8080:8080 -p 8081:8081 verapdf/rest:latest
 
+      - name: Sleep for veraPDF Container startup
+        run: sleep 10
+
       - name: Run veraPDF
         env:
           PDF_URL: ${{ vars.PDF_URL ||  'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
         run: |
+          docker ps -a
           curl -v -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml" --max-time 300 > pdf.xml
