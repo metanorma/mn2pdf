@@ -1,0 +1,30 @@
+#  Download Docker Image from DockerHub
+
+name: >-
+  Verify PDF with veraPDF - Profile PDF/A-3a ("accessibility")
+
+on:
+  push:
+    branches:
+      - main
+      - pdf_a
+  pull_request:
+  
+
+jobs:
+  validate-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download veraPDF from DockerHub
+        run: |
+          docker pull verapdf/rest:v1.26.1
+
+      - name: Run veraPDF
+        run: |
+          docker run -d -p 8080:8080 -p 8081:8081 verapdf/rest:latest
+
+      - name: Run veraPDF
+        env:
+          PDF_URL: ${{ vars.PDF_URL ||  'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
+        run: |
+          curl -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml"
