@@ -8,6 +8,7 @@ on:
     branches:
       - main
   pull_request:
+    
   
 
 jobs:
@@ -30,4 +31,11 @@ jobs:
           PDF_URL: ${{ vars.PDF_URL ||  'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
         run: |
           docker ps -a
-          curl -v -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml" --max-time 300 > pdf.xml
+          curl -v -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml" --max-time 300 > ./pdf.xml
+          
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veraPDF-validation.xml
+          path: ./pdf.xml
+          retention-days: 4 #accounting for weekends and vacays
+          overwrite: true
