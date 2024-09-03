@@ -27,4 +27,4 @@ jobs:
         env:
           PDF_URL: ${{ vars.PDF_URL ||  'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
         run: |
-          curl -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml"
+          curl -F "url=${{ env.PDF_URL }}" docker.host.internal:8080/api/validate/url/A-3a -H "Accept:application/xml" > pdf.xml
