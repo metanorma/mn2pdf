@@ -8,34 +8,44 @@ on:
     branches:
       - main
   pull_request:
-    
-  
 
 jobs:
   validate-pdf:
     runs-on: ubuntu-latest
     steps:
       - name: Download veraPDF from DockerHub
+      # not using latest to prevent future errors when veraPDF gets upgraded and may break Github Action
         run: |
-          docker pull verapdf/rest:v1.26.1
+          docker pull verapdf/rest:v1.26.1 
 
       - name: Run veraPDF
         run: |
           docker run -d -p 8080:8080 -p 8081:8081 verapdf/rest:latest
 
-      - name: Sleep for veraPDF Container startup
-        run: sleep 10
+        # sleep workflow while docker container loads successfully
+      - name: Sleep for veraPDF Container startup - Prevents errors downstream
+        run: sleep 3
 
       - name: Run veraPDF
+        # check if PDF_URL has been set in the REPO "variables" section in "Settings/Secrets and Variables/Actions"
+        # if no config(repo) variable has been set, it defaults to a random PDF file url provided by @Intelligent2013 
         env:
           PDF_URL: ${{ vars.PDF_URL ||  'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
+          # using url instead of file because I did not detect dummy/test pdf files in this repo("mn2pdf"), 
+          # to upload(volume/mount) a pdf from a random source/repo/file to be mounted into a docker container 
+          # could be a security issue(if docker container is root) since pdf's have been used as an attack vector
+          # with "url" any phishing scams should'nt be executed since only validation occurs via veraPDF/rest which is an api endpoint(i could be wrong tho)
+          # using A-3a as requested to test Accessibilty of PDF files
         run: |
           docker ps -a
-          curl -v -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml" --max-time 300 > ./pdf.xml
+          curl -v -F "url=${{ env.PDF_URL }}" localhost:8080/api/validate/url/A-3a -H "Accept:application/xml" --max-time 60 > ./pdf.xml
           
+        # Github Actions logs are not the best readable presentation, decided to export the XML log to GitHub Artifacts
+        # which should be available in Github Repo > Actions > Verify PDF with veraPDF - Profile PDF/A-3a ("accessibility") > click recent workflow > scroll down
       - uses: actions/upload-artifact@v4
         with:
           name: veraPDF-validation.xml
           path: ./pdf.xml
-          retention-days: 4 #accounting for weekends and vacays
-          overwrite: true
+          retention-days: 4 #accounting for weekends
+          overwrite: true # will overwrite any artifacts that are within the 4 day period with the same name
+          # use false if overwrite behavior is undesired
