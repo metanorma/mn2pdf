@@ -4,3 +4,4 @@ target/
 src/test/resources/pdf_fonts_config.xml
 tmp/*.ttc
 tmp/*.7z
+.vscode/*

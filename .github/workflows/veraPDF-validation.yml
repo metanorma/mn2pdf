@@ -30,7 +30,7 @@ jobs:
         # check if PDF_URL has been set in the REPO "variables" section in "Settings/Secrets and Variables/Actions"
         # if no config(repo) variable has been set, it defaults to a random PDF file url provided by @Intelligent2013 
         env:
-          PDF_URL: ${{ vars.PDF_URL ||  'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
+          PDF_URL: ${{ vars.PDF_URL || 'https://github.com/user-attachments/files/16830207/test_attachments.tc1.pdf' }}
           # using url instead of file because I did not detect dummy/test pdf files in this repo("mn2pdf"), 
           # to upload(volume/mount) a pdf from a random source/repo/file to be mounted into a docker container 
           # could be a security issue(if docker container is root) since pdf's have been used as an attack vector
