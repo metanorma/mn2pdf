@@ -10,6 +10,8 @@ import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.report.HTMLReport;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,7 +38,12 @@ public class VeraPDFValidator {
             } else {
                 // it isn't
                 logger.severe("PDF isn't valid " + PDF_A_MODE + ":");
-                logger.severe(result.toString());
+                String veraPDFresult = result.toString();
+                veraPDFresult = veraPDFresult.replaceAll("(TestAssertion )","\n$1")
+                        .replaceAll("\\s(message=)","\n$1")
+                        .replaceAll("\\s(location=)","\n$1");
+                logger.severe(veraPDFresult);
+                //HTMLReport.writeHTMLReport()
             }
         } catch (IOException | ValidationException | ModelParsingException | EncryptedPdfException exception) {
             // Exception during validation
