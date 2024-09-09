@@ -310,14 +310,16 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
      * @return unicode scalar value
      */
     // [TBD] - needs optimization, i.e., change from linear search to binary search
-    private int findCharacterFromGlyphIndex(int gi, boolean augment) {
+    private int findCharacterFromGlyphIndex(int gi, boolean augment, int origChar) {
         int cc = 0;
         for (CMapSegment segment : cmap) {
             int s = segment.getGlyphStartIndex();
             int e = s + (segment.getUnicodeEnd() - segment.getUnicodeStart());
             if ((gi >= s) && (gi <= e)) {
                 cc = segment.getUnicodeStart() + (gi - s);
-                break;
+                if (origChar == -1 || cc == origChar) {
+                    break;
+                }
             }
         }
         if ((cc == 0) && augment) {
@@ -327,7 +329,7 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
     }
 
     private int findCharacterFromGlyphIndex(int gi) {
-        return findCharacterFromGlyphIndex(gi, true);
+        return findCharacterFromGlyphIndex(gi, true, -1);
     }
 
     protected BitSet getGlyphIndices() {
@@ -711,11 +713,13 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
     private CharSequence mapGlyphsToChars(GlyphSequence gs) {
         int ng = gs.getGlyphCount();
         int ccMissing = Typeface.NOT_FOUND;
+        int[] charArr = gs.getCharacterArray(false);
         List<Character> chars = new ArrayList<Character>(gs.getUTF16CharacterCount());
 
         for (int i = 0, n = ng; i < n; i++) {
             int gi = gs.getGlyph(i);
-            int cc = findCharacterFromGlyphIndex(gi);
+            //int cc = findCharacterFromGlyphIndex(gi);
+            int cc = findCharacterFromGlyphIndex(gi, true, charArr[i]);
             if ((cc == 0) || (cc > 0x10FFFF)) {
                 cc = ccMissing;
                 log.warn("Unable to map glyph index " + gi
