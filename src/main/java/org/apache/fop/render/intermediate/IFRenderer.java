@@ -35,6 +35,7 @@ import java.util.Stack;
 
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.fop.util.CharUtilities;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -68,6 +69,7 @@ import org.apache.fop.area.PageViewport;
 import org.apache.fop.area.RegionViewport;
 import org.apache.fop.area.Trait;
 import org.apache.fop.area.inline.AbstractTextArea;
+import org.apache.fop.area.inline.BasicLinkArea;
 import org.apache.fop.area.inline.ForeignObject;
 import org.apache.fop.area.inline.Image;
 import org.apache.fop.area.inline.InlineArea;
@@ -981,6 +983,14 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
             action.setStructureTreeElement(structElem);
             Link link = new Link(action, ipRect);
             this.deferredLinks.add(link);
+        } else if (ip instanceof BasicLinkArea) {
+            BasicLinkArea linkArea = (BasicLinkArea) ip;
+            if (linkArea.getResolver() != null) {
+                String id = linkArea.getResolver().getIDRefs()[0];
+                action = getGoToActionForID(id, -1);
+                Link link = new Link(action, ipRect);
+                this.deferredLinks.add(link);
+            }
         }
     }
 
@@ -1056,12 +1066,14 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         int rx = currentIPPosition + text.getBorderAndPaddingWidthStart();
         int bl = currentBPPosition + text.getBlockProgressionOffset() + text.getBaselineOffset();
         textUtil.flush();
+        textUtil.resetLetterSpaces();
         textUtil.setStartPosition(rx, bl);
         textUtil.setSpacing(text.getTextLetterSpaceAdjust(), text.getTextWordSpaceAdjust());
         documentHandler.getContext().setHyphenated(text.isHyphenated());
         super.renderText(text);
 
         textUtil.flush();
+        textUtil.resetLetterSpaces();
         renderTextDecoration(tf, size, text, bl, rx);
         documentHandler.getContext().setHyphenated(false);
         resetStructurePointer();
@@ -1071,6 +1083,21 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     protected void renderWord(WordArea word) {
         Font font = getFontFromArea(word.getParentArea());
         String s = word.getWord();
+
+        if (word.isUpright()) {
+            textUtil.flush();
+            int rx = currentIPPosition + word.getParentArea().getBorderAndPaddingWidthStart() + textUtil.getNextStart(s.charAt(0));
+            textUtil.setStartPosition(rx, textUtil.starty);
+            saveGraphicsState();
+            AffineTransform positionTransform = new AffineTransform();
+            positionTransform.rotate(Math.toRadians(-90), (textUtil.startx + word.getAllocIPD() / 2.0) / 1000.0, (textUtil.starty - (font.getAscender() + font.getDescender()) / 2.0) / 1000.0);
+            concatenateTransformationMatrix(positionTransform);
+        } else if (textUtil.text.length() == 0) {
+            // if havn't add other thing, add space
+            int rx = currentIPPosition + word.getParentArea().getBorderAndPaddingWidthStart() +
+                    textUtil.getNextStart(s.isEmpty() ? ' ' : s.charAt(0));
+            textUtil.setStartPosition(rx, textUtil.starty);
+        }
 
         int[][] dp = word.getGlyphPositionAdjustments();
         Area parentArea = word.getParentArea();
@@ -1087,6 +1114,13 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         }
 
         textUtil.nextIsSpace = word.isNextIsSpace();
+        if (word.isUpright()) {
+            textUtil.flush();
+            // don't known if next is a space, set start point.
+            int rx = currentIPPosition + word.getAllocIPD() + word.getParentArea().getBorderAndPaddingWidthStart() + textUtil.letterSpacesIPD;
+            textUtil.setStartPosition(rx, textUtil.starty);
+            restoreGraphicsState();
+        }
         super.renderWord(word);
     }
 
@@ -1175,8 +1209,30 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         private int tls;
         private int tws;
         private boolean nextIsSpace;
+        private int letterSpacesIPD = 0;
+        private int lastChar = -1;
+
+        int getNextStart(char ch) {
+            if (ch != CharUtilities.SPACE && ch != CharUtilities.NBSPACE) {
+                if (lastChar != -1 && lastChar != CharUtilities.SPACE && lastChar != CharUtilities.NBSPACE) {
+                    return letterSpacesIPD + tls;
+                }
+            }
+            return letterSpacesIPD;
+        }
+
+        void resetLetterSpaces() {
+            letterSpacesIPD = 0;
+            lastChar =  -1;
+        }
 
         void addChar(char ch) {
+            if (ch != CharUtilities.SPACE && ch != CharUtilities.NBSPACE) {
+                if (lastChar != -1 && lastChar != CharUtilities.SPACE && lastChar != CharUtilities.NBSPACE) {
+                    letterSpacesIPD += tls;
+                }
+            }
+            lastChar = ch;
             text.append(ch);
         }
 

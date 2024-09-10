@@ -92,14 +92,15 @@ public class GlyphSubstitutionTable extends GlyphTable {
      * @param gs an input glyph sequence
      * @param script a script identifier
      * @param language a language identifier
+     * @param isVertical
      * @return the substituted (output) glyph sequence
      */
-    public GlyphSequence substitute(GlyphSequence gs, String script, String language) {
+    public GlyphSequence substitute(GlyphSequence gs, String script, String language, boolean isVertical) {
         GlyphSequence ogs;
         Map<LookupSpec, List<LookupTable>> lookups = matchLookups(script, language, "*");
         if ((lookups != null) && (lookups.size() > 0) && 
                 (language.equals("ar") || language.equals("dflt"))) {
-            ScriptProcessor sp = ScriptProcessor.getInstance(script, processors);
+            ScriptProcessor sp = ScriptProcessor.getInstance(script, processors, isVertical);
             ogs = sp.substitute(this, gs, script, language, lookups);
         } else {
             ogs = gs;
@@ -107,8 +108,8 @@ public class GlyphSubstitutionTable extends GlyphTable {
         return ogs;
     }
 
-    public CharSequence preProcess(CharSequence charSequence, String script, MultiByteFont font, List associations) {
-        ScriptProcessor scriptProcessor = ScriptProcessor.getInstance(script, processors);
+    public CharSequence preProcess(CharSequence charSequence, String script, MultiByteFont font, List associations, boolean isVertical) {
+        ScriptProcessor scriptProcessor = ScriptProcessor.getInstance(script, processors, isVertical);
         return scriptProcessor.preProcess(charSequence, font, associations);
     }
 

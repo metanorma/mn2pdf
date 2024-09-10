@@ -310,14 +310,16 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
      * @return unicode scalar value
      */
     // [TBD] - needs optimization, i.e., change from linear search to binary search
-    private int findCharacterFromGlyphIndex(int gi, boolean augment) {
+    private int findCharacterFromGlyphIndex(int gi, boolean augment, int origChar) {
         int cc = 0;
         for (CMapSegment segment : cmap) {
             int s = segment.getGlyphStartIndex();
             int e = s + (segment.getUnicodeEnd() - segment.getUnicodeStart());
             if ((gi >= s) && (gi <= e)) {
                 cc = segment.getUnicodeStart() + (gi - s);
-                break;
+                if (origChar == -1 || cc == origChar) {
+                    break;
+                }
             }
         }
         if ((cc == 0) && augment) {
@@ -327,7 +329,7 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
     }
 
     private int findCharacterFromGlyphIndex(int gi) {
-        return findCharacterFromGlyphIndex(gi, true);
+        return findCharacterFromGlyphIndex(gi, true, -1);
     }
 
     protected BitSet getGlyphIndices() {
@@ -547,11 +549,11 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
 
     /** {@inheritDoc} */
     public CharSequence performSubstitution(CharSequence charSequence, String script, String language,
-                                            List associations, boolean retainControls) {
+                                            List associations, boolean retainControls, boolean isVertical) {
         if (gsub != null) {
-            charSequence = gsub.preProcess(charSequence, script, this, associations);
+            charSequence = gsub.preProcess(charSequence, script, this, associations, isVertical);
             GlyphSequence glyphSequence = charSequenceToGlyphSequence(charSequence, associations);
-            GlyphSequence glyphSequenceSubstituted = gsub.substitute(glyphSequence, script, language);
+            GlyphSequence glyphSequenceSubstituted = gsub.substitute(glyphSequence, script, language, isVertical);
             if (associations != null) {
                 associations.clear();
                 associations.addAll(glyphSequenceSubstituted.getAssociations());
@@ -574,10 +576,10 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
 
     /** {@inheritDoc} */
     public CharSequence reorderCombiningMarks(
-        CharSequence cs, int[][] gpa, String script, String language, List associations) {
+            CharSequence cs, int[][] gpa, String script, String language, List associations, boolean isVertical) {
         if (gdef != null) {
             GlyphSequence igs = mapCharsToGlyphs(cs, associations);
-            GlyphSequence ogs = gdef.reorderCombiningMarks(igs, getUnscaledWidths(igs), gpa, script, language);
+            GlyphSequence ogs = gdef.reorderCombiningMarks(igs, getUnscaledWidths(igs), gpa, script, language, isVertical);
             if (associations != null) {
                 associations.clear();
                 associations.addAll(ogs.getAssociations());
@@ -606,11 +608,11 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
 
     /** {@inheritDoc} */
     public int[][]
-        performPositioning(CharSequence cs, String script, String language, int fontSize) {
+        performPositioning(CharSequence cs, String script, String language, int fontSize, boolean isVertical) {
         if (gpos != null) {
             GlyphSequence gs = mapCharsToGlyphs(cs, null);
             int[][] adjustments = new int [ gs.getGlyphCount() ] [ 4 ];
-            if (gpos.position(gs, script, language, fontSize, this.width, adjustments)) {
+            if (gpos.position(gs, script, language, fontSize, this.width, adjustments, isVertical)) {
                 return scaleAdjustments(adjustments, fontSize);
             } else {
                 return null;
@@ -621,7 +623,7 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
     }
 
     /** {@inheritDoc} */
-    public int[][] performPositioning(CharSequence cs, String script, String language) {
+    public int[][] performPositioning(CharSequence cs, String script, String language, boolean isVertical) {
         throw new UnsupportedOperationException();
     }
 
@@ -711,11 +713,13 @@ public class MultiByteFont extends CIDFont implements Substitutable, Positionabl
     private CharSequence mapGlyphsToChars(GlyphSequence gs) {
         int ng = gs.getGlyphCount();
         int ccMissing = Typeface.NOT_FOUND;
+        int[] charArr = gs.getCharacterArray(false);
         List<Character> chars = new ArrayList<Character>(gs.getUTF16CharacterCount());
 
         for (int i = 0, n = ng; i < n; i++) {
             int gi = gs.getGlyph(i);
-            int cc = findCharacterFromGlyphIndex(gi);
+            //int cc = findCharacterFromGlyphIndex(gi);
+            int cc = findCharacterFromGlyphIndex(gi, true, charArr[i]);
             if ((cc == 0) || (cc > 0x10FFFF)) {
                 cc = ccMissing;
                 log.warn("Unable to map glyph index " + gi
