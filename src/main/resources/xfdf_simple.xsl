@@ -93,7 +93,7 @@
 					<text>
 						<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
 						<xsl:attribute name="opacity"><xsl:value-of select="$opacity_popup"/></xsl:attribute>
-						<xsl:attribute name="flags">nozoom,norotate</xsl:attribute>
+						<xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
 						<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
 						<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
 						<xsl:attribute name="rect"><xsl:value-of select="concat($element_from/@x,',',$element_from/@y)"/></xsl:attribute>

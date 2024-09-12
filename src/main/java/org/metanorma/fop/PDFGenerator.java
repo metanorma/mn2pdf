@@ -490,6 +490,11 @@ public class PDFGenerator {
                 logger.info(WARNING_NONPDFUA);
             }
 
+            // validate PDF by veraPDF
+            VeraPDFValidator veraPDFValidator = new VeraPDFValidator();
+            veraPDFValidator.validate(pdf);
+
+
             fontcfg.printMessages();
 
         } catch (Exception e) {
@@ -580,6 +585,13 @@ public class PDFGenerator {
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent
             foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
+
+            if (encryptionParams.isEmpty()) {
+                foUserAgent.getRendererOptions().put("pdf-a-mode", PDF_A_MODE);
+            } else {
+                logger.severe("PDF/A doesn't allow encrypted PDFs. PDF will be generated in non-PDF/A mode.");
+            }
+
             setEncryptionParams(foUserAgent);
             
             //Adding a simple logging listener that writes to stdout and stderr            
@@ -641,8 +653,7 @@ public class PDFGenerator {
             }
             
         } catch (Exception e) {
-            String excstr=e.toString();
-            if (excstr.contains("PDFConformanceException") && excstr.contains("PDF/UA-1") && !PDFUA_error) { // excstr.contains("all fonts, even the base 14 fonts, have to be embedded")
+            if (PDFConformanceChecker.hasException(e.toString()) && !PDFUA_error) { // excstr.contains("all fonts, even the base 14 fonts, have to be embedded")
                 //System.err.println(e.toString());
                 logger.severe(e.toString());
                 PDFUA_error = true;
@@ -1053,8 +1064,7 @@ public class PDFGenerator {
 
         public void fatalError(TransformerException exc)
                 throws TransformerException {
-            String excstr=exc.toString();
-            if (excstr.contains("PDFConformanceException") && excstr.contains("PDF/UA-1") && !PDFUA_error) { // excstr.contains("all fonts, even the base 14 fonts, have to be embedded")
+            if (PDFConformanceChecker.hasException(exc.toString()) && !PDFUA_error) { // excstr.contains("all fonts, even the base 14 fonts, have to be embedded")
                 //System.err.println(exc.toString());
                 logger.severe(exc.toString());
                 PDFUA_error = true;
