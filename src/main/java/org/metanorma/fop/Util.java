@@ -573,6 +573,13 @@ public class Util {
         return stringWidth;
     }
 
+    public static float getStringWidthByFontSize(String text, String fontName, int fontSize) {
+        float stringWidth = 0.0f;
+        Font font = new Font(fontName, Font.PLAIN, fontSize);
+        stringWidth = SVGUtilities.getStringWidth(text, font);
+        return stringWidth;
+    }
+
     public static String saveFileToDisk(String filename, String content) {
         try {
             Files.createDirectories(tmpfilepath);

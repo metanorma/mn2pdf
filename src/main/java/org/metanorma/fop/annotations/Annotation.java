@@ -269,6 +269,8 @@ public class Annotation {
                     
                     PDAnnotation pdfannot = PDAnnotation.createAnnotation(fdfannot.getCOSObject());
 
+                    pdfannot.constructAppearances(); // requires for PDF/A
+
                     if (map_pdfannots.get(page) == null) {
                         map_pdfannots.put(page, new ArrayList<PDAnnotation>());
                     }
