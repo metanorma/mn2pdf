@@ -28,10 +28,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.fop.complexscripts.fonts.GlyphPositioningTable;
 import org.apache.fop.complexscripts.fonts.GlyphTable;
 import org.apache.fop.complexscripts.util.CharScript;
+import org.apache.fop.complexscripts.util.Characters;
 import org.apache.fop.traits.MinOptMax;
 import org.apache.fop.util.CharUtilities;
 
-import static org.apache.fop.fonts.type1.AdobeStandardEncoding.i;
+// import static org.apache.fop.fonts.type1.AdobeStandardEncoding.i;
 
 /**
  * Stores the mapping of a text fragment to glyphs, along with various information.
@@ -56,31 +57,32 @@ public class GlyphMapping {
     public final int[][] gposAdjustments;
     public String mapping;
     public List associations;
+    public boolean isUpright;
 
     public GlyphMapping(int startIndex, int endIndex, int wordSpaceCount, int letterSpaceCount,
             MinOptMax areaIPD, boolean isHyphenated, boolean isSpace, boolean breakOppAfter,
             Font font, int level, int[][] gposAdjustments) {
         this(startIndex, endIndex, wordSpaceCount, letterSpaceCount, areaIPD, isHyphenated,
-                isSpace, breakOppAfter, font, level, gposAdjustments, null, null);
+                isSpace, breakOppAfter, font, level, gposAdjustments, null, null, false);
     }
 
     public GlyphMapping(int startIndex, int endIndex, int wordSpaceCount, int letterSpaceCount,
                         MinOptMax areaIPD, boolean isHyphenated, boolean isSpace, boolean isZeroWidthSpace, boolean breakOppAfter,
                         Font font, int level, int[][] gposAdjustments) {
         this(startIndex, endIndex, wordSpaceCount, letterSpaceCount, areaIPD, isHyphenated,
-                isSpace, isZeroWidthSpace, breakOppAfter, font, level, gposAdjustments, null, null);
+                isSpace, isZeroWidthSpace, breakOppAfter, font, level, gposAdjustments, null, null, false);
     }
 
     public GlyphMapping(int startIndex, int endIndex, int wordSpaceCount, int letterSpaceCount,
                         MinOptMax areaIPD, boolean isHyphenated, boolean isSpace, boolean breakOppAfter,
-                        Font font, int level, int[][] gposAdjustments, String mapping, List associations) {
+                        Font font, int level, int[][] gposAdjustments, String mapping, List associations, boolean isUpright) {
         this(startIndex, endIndex, wordSpaceCount, letterSpaceCount, areaIPD, isHyphenated,
-                isSpace, false, breakOppAfter, font, level, gposAdjustments, mapping, associations);
+                isSpace, false, breakOppAfter, font, level, gposAdjustments, mapping, associations, isUpright);
     }
 
     public GlyphMapping(int startIndex, int endIndex, int wordSpaceCount, int letterSpaceCount,
             MinOptMax areaIPD, boolean isHyphenated, boolean isSpace, boolean isZeroWidthSpace, boolean breakOppAfter,
-            Font font, int level, int[][] gposAdjustments, String mapping, List associations) {
+            Font font, int level, int[][] gposAdjustments, String mapping, List associations, boolean isUpright) {
         assert startIndex <= endIndex;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
@@ -97,17 +99,18 @@ public class GlyphMapping {
         this.gposAdjustments = gposAdjustments;
         this.mapping = mapping;
         this.associations = associations;
+        this.isUpright = isUpright;
     }
 
     public static GlyphMapping doGlyphMapping(TextFragment text, int startIndex, int endIndex,
             Font font, MinOptMax letterSpaceIPD, MinOptMax[] letterSpaceAdjustArray,
             char precedingChar, char breakOpportunityChar, final boolean endsWithHyphen, int level,
-            boolean dontOptimizeForIdentityMapping, boolean retainAssociations, boolean retainControls) {
+            boolean dontOptimizeForIdentityMapping, boolean retainAssociations, boolean retainControls, boolean isVertical) {
         GlyphMapping mapping;
         if (font.performsSubstitution() || font.performsPositioning()) {
             mapping = processWordMapping(text, startIndex, endIndex, font,
                     breakOpportunityChar, endsWithHyphen, level,
-                    dontOptimizeForIdentityMapping, retainAssociations, retainControls);
+                    dontOptimizeForIdentityMapping, retainAssociations, retainControls, isVertical);
         } else {
             mapping = processWordNoMapping(text, startIndex, endIndex, font,
                     letterSpaceIPD, letterSpaceAdjustArray, precedingChar, breakOpportunityChar, endsWithHyphen, level);
@@ -118,7 +121,7 @@ public class GlyphMapping {
     private static GlyphMapping processWordMapping(TextFragment text, int startIndex,
             int endIndex, final Font font, final char breakOpportunityChar,
             final boolean endsWithHyphen, int level,
-            boolean dontOptimizeForIdentityMapping, boolean retainAssociations, boolean retainControls) {
+            boolean dontOptimizeForIdentityMapping, boolean retainAssociations, boolean retainControls, boolean isVertical) {
         int nLS = 0; // # of letter spaces
         String script = text.getScript();
         String language = text.getLanguage();
@@ -154,13 +157,13 @@ public class GlyphMapping {
             script = "*";
         }
 
-        CharSequence mcs = font.performSubstitution(ics, script, language, associations, retainControls);
+        CharSequence mcs = font.performSubstitution(ics, script, language, associations, retainControls, isVertical);
 
         // 4. compute glyph position adjustments on (substituted) characters.
         int[][] gpa = null;
         if (font.performsPositioning()) {
             // handle GPOS adjustments
-            gpa = font.performPositioning(mcs, script, language);
+            gpa = font.performPositioning(mcs, script, language, isVertical);
         }
         if (useKerningAdjustments(font, script, language)) {
             // handle standard (non-GPOS) kerning adjustments
@@ -169,12 +172,13 @@ public class GlyphMapping {
 
         // 5. reorder combining marks so that they precede (within the mapped char sequence) the
         // base to which they are applied; N.B. position adjustments (gpa) are reordered in place.
-        mcs = font.reorderCombiningMarks(mcs, gpa, script, language, associations);
+        mcs = font.reorderCombiningMarks(mcs, gpa, script, language, associations, isVertical);
 
         // 6. compute word ipd based on final position adjustments.
         MinOptMax ipd = MinOptMax.ZERO;
 
         // The gpa array is sized by code point count
+        boolean isUprightChar = false;
         for (int i = 0, cpi = 0, n = mcs.length(); i < n; i++, cpi++) {
             int c = mcs.charAt(i);
 
@@ -182,7 +186,10 @@ public class GlyphMapping {
                 c = Character.toCodePoint((char) c, mcs.charAt(++i));
             }
 
-            int w = font.getCharWidth(c);
+            if (isVertical) {
+                isUprightChar = isUprightChar || Characters.isUprightOrientation(c);
+            }
+            int w = font.getCharWidth(c); // TODO Vertical text use vertical width
             if (w < 0) {
                 w = 0;
             }
@@ -197,7 +204,7 @@ public class GlyphMapping {
         return new GlyphMapping(startIndex, endIndex, 0, nLS, ipd, endsWithHyphen, false,
                 breakOpportunityChar != 0, font, level, gpa,
                 !dontOptimizeForIdentityMapping && CharUtilities.isSameSequence(mcs, ics) ? null : mcs.toString(),
-                associations);
+                associations, isUprightChar);
     }
 
     private static boolean useKerningAdjustments(final Font font, String script, String language) {
