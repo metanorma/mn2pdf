@@ -101,6 +101,21 @@ public class PDFLink extends PDFObject {
                    + (this.structParent != null
                            ? "/StructParent " + this.structParent.toString() + "\n" : "")
                    + fFlag + "\n>>";
+
+        if (this.action instanceof PDFFileAttachmentAnnotation) {
+            PDFFileAttachmentAnnotation pdfFileAttachmentAnnotation = (PDFFileAttachmentAnnotation) this.action;
+            ulx = brx + 5;
+            brx+=10;
+            uly = bry - 10;
+            s = "<< /Type /Annot /Subtype " + pdfFileAttachmentAnnotation.getFileAttachmentAnnotation()
+                + "/Rect [ "
+                + (ulx) + " " + (uly) + " "
+                + (brx) + " " + (bry) + " ]\n" + "/C [ "
+                + this.color + " ]\n"  + "/Border [ 0 0 0 ]\n"
+                + "/H /I\n"
+                + fFlag + "\n>>";
+        }
+
         return s;
     }
 

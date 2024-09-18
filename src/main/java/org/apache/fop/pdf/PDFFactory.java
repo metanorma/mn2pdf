@@ -743,7 +743,8 @@ public class PDFFactory {
         scriptBuffer.append(fileSpec.getFilename());
         scriptBuffer.append("\", nLaunch:2});");
 
-        PDFJavaScriptLaunchAction action = new PDFJavaScriptLaunchAction(scriptBuffer.toString());
+        //PDFJavaScriptLaunchAction action = new PDFJavaScriptLaunchAction(scriptBuffer.toString());
+        PDFFileAttachmentAnnotation action = new PDFFileAttachmentAnnotation(fileSpec);
         return action;
     }
 
