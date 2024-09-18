@@ -700,6 +700,17 @@ public class PDFGenerator {
             }
         }
 
+        if (isAddFileAttachmentAnnotations && PDFUA_error == false) {
+            logger.log(Level.INFO, "[INFO] File attachment annotation processing...");
+        try {
+            FileAttachmentAnnotation annotations = new FileAttachmentAnnotation();
+            annotations.process(pdf);
+        } catch (Exception ex) {
+            logger.severe("Can't process file attachment annotation (" + ex.toString() + ").");
+            ex.printStackTrace();
+        }
+    }
+
         Profiler.printProcessingTime(methodName, startMethodTime);
         Profiler.removeMethodCall();
     }

@@ -47,6 +47,7 @@ public class SourceXMLDocument {
     String sourceXMLstr = "";
 
     private boolean hasAnnotations = false;
+    private boolean hasFileAttachmentAnnotations = false;
     private boolean hasTables = false;
     private Map<String, Integer> tablesCellsCountMap = new HashMap<>();
     private boolean hasMath = false;
@@ -96,6 +97,8 @@ public class SourceXMLDocument {
     private void readMetaInformation() {
         String element_review =  readValue("//*[local-name() = 'review'][1]");
         hasAnnotations = element_review.length() != 0;
+        String element_link_to_attachment =  readValue("//*[local-name() = 'link'][@attachment = 'true'][1]");
+        hasFileAttachmentAnnotations = element_link_to_attachment.length() != 0;
         String element_math = readValue("//*[local-name() = 'math'][1]");
         hasMath = element_math.length() != 0;
         //tables without colgroup/col (width) or dl
@@ -487,6 +490,11 @@ public class SourceXMLDocument {
     public boolean hasAnnotations() {
         return hasAnnotations;
     }
+
+    public boolean hasFileAttachmentAnnotations() {
+        return hasFileAttachmentAnnotations;
+    }
+
 
     // find tag 'table' or 'dl'
     public boolean hasTables() {
