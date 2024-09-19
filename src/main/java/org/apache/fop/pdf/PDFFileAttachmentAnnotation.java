@@ -48,7 +48,7 @@ public class PDFFileAttachmentAnnotation extends PDFAction {
         String annotationDesc = fileSpec.get("Desc").toString();
         String annotationF = fileSpec.get("F").toString();
         String relationship = fileSpec.get("AFRelationship").toString();
-        String objNumber = "7 0 R"; // Todo
+        String objNumber = fileSpec.referencePDF();  //  "7 0 R"; Todo
         sb.append("/FileAttachment\n" + "/FS " + //this.referencePDF() + "\n"
                 "<<\n" +
                 "/EF << /F " + objNumber +" >> /F (" + annotationF + ") /Type /F\n" +
