@@ -35,22 +35,16 @@ public class FileAttachmentAnnotation {
             for (int pageIndex = 0; pageIndex < numberOfPages; pageIndex++) {
                 PDPage page = document.getPage(pageIndex);
                 List<PDAnnotation> annotations = page.getAnnotations();
-                for(int annotataionIndex = 0; annotataionIndex < annotations.size(); annotataionIndex++) {
-                    PDAnnotation annotation = annotations.get(annotataionIndex);
+                
+                for (PDAnnotation annotation: annotations) {
                     if (annotation instanceof PDAnnotationFileAttachment) {
                         annotation.constructAppearances();
                         PDFileSpecification f = ((PDAnnotationFileAttachment) annotation).getFile();
                         embeddedFileAnnotations.add(f.getFile());
-                        annotations.set(annotataionIndex, annotation);
+                        //annotations.set(annotataionIndex, annotation);
                     }
-
                 }
-                /*for (PDAnnotation annotation: annotations) {
-                    if (annotation instanceof PDAnnotationFileAttachment) {
-                        annotation.constructAppearances();
-                    }
-                }*/
-                document.getPage(pageIndex).setAnnotations(annotations);
+                //document.getPage(pageIndex).setAnnotations(annotations);
             }
 
             // remove attachments which have FileAttachment annotation equivalent
