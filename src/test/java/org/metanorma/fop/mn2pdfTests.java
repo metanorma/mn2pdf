@@ -4,30 +4,29 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
-import com.steadystate.css.dom.CSSStyleRuleImpl;
-import com.steadystate.css.parser.CSSOMParser;
-import com.steadystate.css.parser.SACParserCSS3;
 import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.cos.COSName;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
+import org.apache.pdfbox.pdmodel.common.filespecification.PDFileSpecification;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.PDDocumentInformation;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
 
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFileAttachment;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,14 +42,9 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.metanorma.Constants;
-import static org.metanorma.Constants.ERROR_EXIT_CODE;
-import static org.metanorma.fop.PDFGenerator.logger;
+import org.metanorma.fop.annotations.Annotation;
 import org.metanorma.utils.LoggerHelper;
-import org.w3c.css.sac.InputSource;
-import org.w3c.css.sac.Selector;
-import org.w3c.css.sac.SelectorList;
 import org.w3c.dom.Node;
-import org.w3c.dom.css.*;
 
 public class mn2pdfTests {
 
@@ -448,6 +442,58 @@ public class mn2pdfTests {
             System.out.println("nodeToString Transformer Exception");
         }
         return sw.toString();
+    }
+
+    @Test
+    public void checkAttachments() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("test_attachments.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "test.attachments.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+        // check two attachments - one is embedded file, one is fileattachment annotation
+
+        PDDocument doc;
+        int countFileAttachmentAnnotation = 0;
+        int countFileAttachmentEmbedded = 0;
+        try {
+            doc = PDDocument.load(pdf.toFile());
+
+            int numberOfPages = doc.getNumberOfPages();
+            for (int pageIndex = 0; pageIndex < numberOfPages; pageIndex++) {
+                PDPage page = doc.getPage(pageIndex);
+                List<PDAnnotation> annotations = page.getAnnotations();
+
+                for (PDAnnotation annotation: annotations) {
+                    if (annotation instanceof PDAnnotationFileAttachment) {
+                        countFileAttachmentAnnotation ++;
+                    }
+                }
+                //document.getPage(pageIndex).setAnnotations(annotations);
+            }
+
+            PDDocumentNameDictionary namesDictionary = new PDDocumentNameDictionary(doc.getDocumentCatalog());
+            PDEmbeddedFilesNameTreeNode efTree = namesDictionary.getEmbeddedFiles();
+            if (efTree != null)
+            {
+                Map<String, PDComplexFileSpecification> names = efTree.getNames();
+                countFileAttachmentEmbedded = names.size();
+            }
+
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+
+        assertTrue(countFileAttachmentAnnotation == 1);
+        assertTrue(countFileAttachmentEmbedded == 1);
+
+
     }
 
     
