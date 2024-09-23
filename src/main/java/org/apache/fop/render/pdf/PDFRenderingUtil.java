@@ -690,6 +690,7 @@ class PDFRenderingUtil {
         }
         PDFDictionary dict = new PDFDictionary();
         dict.put("F", file);
+        dict.put("UF", file);
         PDFFileSpec fileSpec = new PDFFileSpec(embeddedFile.getFilename(), embeddedFile.getUnicodeFilename());
         String filename = fileSpec.getFilename();
         pdfDoc.getRoot().addAF(fileSpec);
