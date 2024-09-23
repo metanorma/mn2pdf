@@ -69,12 +69,8 @@ public class PDFFileAttachmentAnnotation extends PDFAction {
     /** {@inheritDoc} */
     public String toPDFString() {
         StringBuffer sb = new StringBuffer(64);
-        sb.append("<<\n/EF << /F ");
-        //sb.append(objId);
-        sb.append("77 0 R");
-        sb.append(" >> /F (_site/documents/_test_attachments.tc4_attachments/document.presentation.pdf) /Type /F");
-        //sb.append(" /Desc ([NO INFORMATION AVAILABLE])");
-        sb.append("\n>>");
+        sb.append("/FS " + objId);
+        sb.append("\n");
         return sb.toString();
     }
     /** {@inheritDoc} */
