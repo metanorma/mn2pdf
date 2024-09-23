@@ -89,7 +89,9 @@ public class PDFLink extends PDFObject {
         if (getDocumentSafely().getProfile().getPDFAMode().isEnabled()) {
             int f = 0;
             f |= 1 << (3 - 1); //Print, bit 3
-            f |= 1 << (4 - 1); //NoZoom, bit 4
+            if (!(this.action instanceof PDFFileAttachmentAnnotation)) {
+                f |= 1 << (4 - 1); //NoZoom, bit 4
+            }
             f |= 1 << (5 - 1); //NoRotate, bit 5
             fFlag = "/F " + f;
         }
@@ -104,9 +106,11 @@ public class PDFLink extends PDFObject {
 
         if (this.action instanceof PDFFileAttachmentAnnotation) {
             PDFFileAttachmentAnnotation pdfFileAttachmentAnnotation = (PDFFileAttachmentAnnotation) this.action;
-            ulx = brx + 5;
+            ulx = brx + 3;
+            uly+=5;
             brx+=10;
-            uly = bry - 10;
+            bry+=5;
+            //uly = bry - 10;*/
             s = "<< /Type /Annot /Subtype " + pdfFileAttachmentAnnotation.getFileAttachmentAnnotation()
                 + "/Rect [ "
                 + (ulx) + " " + (uly) + " "
