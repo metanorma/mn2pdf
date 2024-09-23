@@ -112,7 +112,6 @@ public class PDFLink extends PDFObject {
                 + (ulx) + " " + (uly) + " "
                 + (brx) + " " + (bry) + " ]\n" + "/C [ "
                 + this.color + " ]\n"  + "/Border [ 0 0 0 ]\n"
-                + "/H /I\n"
                 + fFlag + "\n>>";
         }
 
