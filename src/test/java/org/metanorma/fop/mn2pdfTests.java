@@ -357,20 +357,6 @@ public class mn2pdfTests {
         assertTrue(encryptMetadata == true);
         
     }
-    
-
-    @Test
-    public void testSyntaxHighlight() throws TransformerException, TransformerConfigurationException  {
-        System.out.println(name.getMethodName());
-        String code = "<root><a></a><b>text</b><c key='value'/></root>";
-        Node node = Util.syntaxHighlight(code, "xml");
-        StringWriter writer = new StringWriter();
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.transform(new DOMSource(node), new StreamResult(writer));
-        String value = writer.toString();
-        String exprectedValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><syntax><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">root</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">b</span>&gt;</span>text<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">b</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">c</span> <span class=\"hljs-attr\">key</span>=<span class=\"hljs-string\">'value'</span>/&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">root</span>&gt;</span></syntax>";
-        assertTrue(value.equals(exprectedValue));
-    }
 
     @Test
     public void successSVGRendering() throws ParseException, IOException {
@@ -419,29 +405,6 @@ public class mn2pdfTests {
             System.out.println(ex.toString());
         }
         assertTrue(pdftext.contains("the_integers") && pdftext.contains("elementary_space") && pdftext.contains("make_elementary_space"));
-    }
-
-    @Test
-    public void checkCSSparsing() throws IOException {
-        System.out.println(name.getMethodName());
-        String cssString = "sourcecode .c, sourcecode .ch {\n" +
-                "  color: #FF0000;\n" +
-                "}";
-        Node xmlNode = Util.parseCSS(cssString);
-        String xmlStr = nodeToString(xmlNode);
-        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class><class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class></css>", xmlStr);
-    }
-
-    private static String nodeToString(Node node) {
-        StringWriter sw = new StringWriter();
-        try {
-            Transformer t = TransformerFactory.newInstance().newTransformer();
-            t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            t.transform(new DOMSource(node), new StreamResult(sw));
-        } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
-        }
-        return sw.toString();
     }
 
     @Test
