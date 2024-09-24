@@ -78,6 +78,14 @@ public class PDFFileSpec extends PDFDictionary {
         put("Desc", description);
     }
 
+    /**
+     * Sets a AFRelationship for the file spec.
+     * @param relationship the AFRelationship
+     */
+    public void setAFRelationship(String relationship) {
+        put("AFRelationship", new PDFName(relationship));
+    }
+
     /** {@inheritDoc} */
     protected boolean contentEquals(PDFObject obj) {
         if (this == obj) {

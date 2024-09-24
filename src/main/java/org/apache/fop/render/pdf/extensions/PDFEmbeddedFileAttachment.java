@@ -44,6 +44,11 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
     /** a description of the file to be embedded */
     private static final String ATT_DESC = "description";
 
+    /** A relationship between
+     the component of this PDF document that refers to this file specification and
+     the associated file denoted by this file specification dictionary */
+    private static final String ATT_REL = "afrelationship";
+
     /** filename attribute */
     private String filename;
 
@@ -55,6 +60,10 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
 
     /** source name attribute */
     private String src;
+
+    /** associated file relationship */
+    private String rel;
+
 
     /**
      * No-argument contructor.
@@ -74,6 +83,14 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
         this.setFilename(filename);
         this.src = src;
         this.desc = desc;
+    }
+
+    public PDFEmbeddedFileAttachment(String filename, String src, String desc, String rel) {
+        super();
+        this.setFilename(filename);
+        this.src = src;
+        this.desc = desc;
+        this.rel = rel;
     }
 
     /**
@@ -138,6 +155,23 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
         this.src = src;
     }
 
+    /**
+     * Returns the relationship of the file.
+     * @return the AFRelationship
+     */
+    public String getRel() {
+        return rel;
+    }
+
+    /**
+     * Sets the relationship of the file.
+     * @param rel the AFRelationship
+     */
+    public void setRel(String rel) {
+        this.rel = rel;
+    }
+
+
     /** {@inheritDoc} */
     public String getCategory() {
         return CATEGORY;
@@ -167,6 +201,10 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
         if (desc != null && desc.length() > 0) {
             atts.addAttribute("", ATT_DESC, ATT_DESC, "CDATA", desc);
         }
+        if (rel != null && rel.length() > 0) {
+            atts.addAttribute("", ATT_REL, ATT_REL, "CDATA", rel);
+        }
+
         String element = getElement();
         handler.startElement(CATEGORY, element, element, atts);
         handler.endElement(CATEGORY, element, element);

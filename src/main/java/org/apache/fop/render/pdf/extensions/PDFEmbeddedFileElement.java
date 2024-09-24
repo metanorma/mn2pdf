@@ -92,6 +92,10 @@ public class PDFEmbeddedFileElement extends AbstractPDFExtensionElement {
             }
         }
         embeddedFile.setFilename(filename);
+        String rel = attlist.getValue("afrelationship");
+        if (rel != null && rel.length() > 0) {
+            embeddedFile.setRel(rel);
+        }
     }
 
     @Override
