@@ -135,6 +135,7 @@
 								
 								
 								<highlight>
+									<xsl:attribute name="flags">print</xsl:attribute>
 									<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
 									<xsl:attribute name="opacity"><xsl:value-of select="$opacity_highlight"/></xsl:attribute>
 									<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
