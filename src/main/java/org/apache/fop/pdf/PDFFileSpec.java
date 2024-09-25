@@ -24,6 +24,8 @@ package org.apache.fop.pdf;
  */
 public class PDFFileSpec extends PDFDictionary {
 
+    private String linkAsFileAnnotation = "false";
+
     /**
      * create a /FileSpec object.
      *
@@ -84,6 +86,22 @@ public class PDFFileSpec extends PDFDictionary {
      */
     public void setAFRelationship(String relationship) {
         put("AFRelationship", new PDFName(relationship));
+    }
+
+    /**
+     * Sets a linkAsFileAnnotation for the file spec.
+     * @param linkAsFileAnnotation the indication of file attachment annotation
+     */
+    public void setLinkAsFileAnnotation(String linkAsFileAnnotation) {
+        this.linkAsFileAnnotation = linkAsFileAnnotation;
+    }
+
+    /**
+     * Gets the linkAsFileAnnotation.
+     * @return linkAsFileAnnotation
+     */
+    public String getLinkAsFileAnnotation() {
+        return linkAsFileAnnotation;
     }
 
     /** {@inheritDoc} */

@@ -45,9 +45,12 @@ public class PDFFileAttachmentAnnotation extends PDFAction {
 
     public String getFileAttachmentAnnotation() {
         StringBuilder sb = new StringBuilder();
-        String annotationDesc = fileSpec.get("Desc").toString();
-        String annotationF = fileSpec.get("F").toString();
-        String relationship = fileSpec.get("AFRelationship").toString();
+        String annotationDesc = "";
+        if (fileSpec.get("Desc") != null) {
+            annotationDesc = fileSpec.get("Desc").toString();
+        }
+        //String annotationF = fileSpec.get("F").toString();
+        //String relationship = fileSpec.get("AFRelationship").toString();
         String objNumber = fileSpec.referencePDF();  //  "7 0 R"; Todo
         /*sb.append("/FileAttachment\n" + "/FS " + //this.referencePDF() + "\n"
                 "<<\n" +

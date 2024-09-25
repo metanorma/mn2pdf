@@ -701,6 +701,9 @@ class PDFRenderingUtil {
         if (embeddedFile.getRel() != null) {
             fileSpec.setAFRelationship(embeddedFile.getRel());
         }
+        if (embeddedFile.getLinkAsFileAnnotation() != null) {
+            fileSpec.setLinkAsFileAnnotation(embeddedFile.getLinkAsFileAnnotation());
+        }
         this.pdfDoc.registerObject(fileSpec);
 
         //Make sure there is an EmbeddedFiles in the Names dictionary

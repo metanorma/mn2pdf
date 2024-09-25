@@ -49,6 +49,9 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
      the associated file denoted by this file specification dictionary */
     private static final String ATT_REL = "afrelationship";
 
+    /** An indication how to process link to the embedded file */
+    private static final String ATT_LINKASFILEANNOTATION = "linkasfileannotation";
+
     /** filename attribute */
     private String filename;
 
@@ -64,6 +67,8 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
     /** associated file relationship */
     private String rel;
 
+    /** add link as file annotation */
+    private String linkAsFileAnnotation;
 
     /**
      * No-argument contructor.
@@ -171,6 +176,21 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
         this.rel = rel;
     }
 
+    /**
+     * Returns the indication of link as file annotation.
+     * @return the linkAsFileAnnotation
+     */
+    public String getLinkAsFileAnnotation() {
+        return linkAsFileAnnotation;
+    }
+
+    /**
+     * Sets the indication of link as file annotation.
+     * @param linkAsFileAnnotation the indication
+     */
+    public void setLinkAsFileAnnotation(String linkAsFileAnnotation) {
+        this.linkAsFileAnnotation = linkAsFileAnnotation;
+    }
 
     /** {@inheritDoc} */
     public String getCategory() {
@@ -203,6 +223,9 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
         }
         if (rel != null && rel.length() > 0) {
             atts.addAttribute("", ATT_REL, ATT_REL, "CDATA", rel);
+        }
+        if (linkAsFileAnnotation != null && linkAsFileAnnotation.length() > 0) {
+            atts.addAttribute("", ATT_LINKASFILEANNOTATION, ATT_LINKASFILEANNOTATION, "CDATA", linkAsFileAnnotation);
         }
 
         String element = getElement();
