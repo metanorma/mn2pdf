@@ -803,9 +803,10 @@ public class Util {
     }
 
     public static String getFilenameFromPath(String filepath) {
+        filepath = filepath.replace("\\", "/");
         File file = new File(filepath);
         return file.getName();
-        /*filepath = filepath.replace("\\", "/");
+        /*
         String[] filepathComponents = filepath.split("/");
 
         return filepathComponents[filepathComponents.length - 1];*/
