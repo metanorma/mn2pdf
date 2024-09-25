@@ -116,6 +116,8 @@ public class PDFLink extends PDFObject {
                 + (ulx) + " " + (uly) + " "
                 + (brx) + " " + (bry) + " ]\n" + "/C [ "
                 + this.color + " ]\n"  + "/Border [ 0 0 0 ]\n"
+                + (this.structParent != null
+                    ? "/StructParent " + this.structParent.toString() + "\n" : "")
                 + fFlag + "\n>>";
         }
 
