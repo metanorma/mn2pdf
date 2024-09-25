@@ -802,6 +802,16 @@ public class Util {
         return node;
     }
 
+    public static String getFilenameFromPath(String filepath) {
+        filepath = filepath.replace("\\", "/");
+        File file = new File(filepath);
+        return file.getName();
+        /*
+        String[] filepathComponents = filepath.split("/");
+
+        return filepathComponents[filepathComponents.length - 1];*/
+    }
+   
     private static String nodeToString(Node node) {
         StringWriter sw = new StringWriter();
         try {

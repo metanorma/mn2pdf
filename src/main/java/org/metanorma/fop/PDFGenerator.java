@@ -42,6 +42,7 @@ import static org.metanorma.Constants.*;
 import static org.metanorma.fop.fontConfig.DEFAULT_FONT_PATH;
 import static org.metanorma.fop.Util.getStreamFromResources;
 
+import org.metanorma.fop.annotations.FileAttachmentAnnotation;
 import org.metanorma.fop.eventlistener.LoggingEventListener;
 import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
 import org.metanorma.fop.ifhandler.FOPIFFlatHandler;
@@ -97,6 +98,7 @@ public class PDFGenerator {
     private boolean isComplexScriptsFeatures = true;
 
     private boolean isAddAnnotations = false;
+    private boolean isAddFileAttachmentAnnotations = false;
     
     private boolean isTableExists = false;
     
@@ -282,6 +284,7 @@ public class PDFGenerator {
             sourceXMLDocument = new SourceXMLDocument(fPresentationPartXML);
 
             isAddAnnotations = sourceXMLDocument.hasAnnotations();
+            isAddFileAttachmentAnnotations = sourceXMLDocument.hasFileAttachmentAnnotations();
             isTableExists = sourceXMLDocument.hasTables();
             boolean isMathExists = sourceXMLDocument.hasMath();
 
@@ -699,6 +702,17 @@ public class PDFGenerator {
                 ex.printStackTrace();
             }
         }
+
+        if (isAddFileAttachmentAnnotations && PDFUA_error == false) {
+            logger.log(Level.INFO, "[INFO] File attachment annotation processing...");
+        try {
+            FileAttachmentAnnotation annotations = new FileAttachmentAnnotation();
+            annotations.process(pdf);
+        } catch (Exception ex) {
+            logger.severe("Can't process file attachment annotation (" + ex.toString() + ").");
+            ex.printStackTrace();
+        }
+    }
 
         Profiler.printProcessingTime(methodName, startMethodTime);
         Profiler.removeMethodCall();
