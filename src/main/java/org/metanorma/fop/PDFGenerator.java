@@ -495,7 +495,8 @@ public class PDFGenerator {
 
             // validate PDF by veraPDF
             VeraPDFValidator veraPDFValidator = new VeraPDFValidator();
-            veraPDFValidator.validate(pdf);
+            veraPDFValidator.validate(pdf, PDF_A_MODE);
+            veraPDFValidator.validate(pdf, PDF_UA_MODE);
 
 
             fontcfg.printMessages();

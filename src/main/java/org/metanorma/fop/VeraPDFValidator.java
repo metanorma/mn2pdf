@@ -24,9 +24,13 @@ public class VeraPDFValidator {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
     // see https://docs.verapdf.org/develop/
-    public void validate(File filePDF) {
+    public void validate(File filePDF, String validationFlavour) {
         VeraGreenfieldFoundryProvider.initialise();
-        String sPDFAmode = PDF_A_MODE.substring(PDF_A_MODE.indexOf("-"));
+        String sPDFAmode = validationFlavour.substring(validationFlavour.indexOf("-"));
+        if (validationFlavour.contains("/UA-")) {
+            sPDFAmode = validationFlavour.substring(validationFlavour.indexOf("/") + 1).replace("-","").toLowerCase();
+        }
+
         PDFAFlavour flavour = PDFAFlavour.fromString(sPDFAmode);
         try (PDFAParser parser = Foundries.defaultInstance().createParser(new FileInputStream(filePDF), flavour)) {
             PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, false);
@@ -37,7 +41,7 @@ public class VeraPDFValidator {
                 return;
             } else {
                 // it isn't
-                logger.severe("PDF isn't valid " + PDF_A_MODE + ":");
+                logger.severe("PDF isn't valid " + validationFlavour + ":");
                 String veraPDFresult = result.toString();
                 veraPDFresult = veraPDFresult.replaceAll("(TestAssertion )","\n$1")
                         .replaceAll("\\s(message=)","\n$1")
