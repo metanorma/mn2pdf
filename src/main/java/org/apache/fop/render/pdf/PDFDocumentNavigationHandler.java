@@ -158,6 +158,13 @@ public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler
             } else {
                 GoToXYAction a = (GoToXYAction)action;
                 PDFGoTo pdfGoTo = new PDFGoTo(null);
+                PDFStructElem pdfStructElem = (PDFStructElem)a.getStructureTreeElement();
+                if (pdfStructElem != null) {
+                    if (pdfStructElem.get("Alt") != null) {
+                        String alt_text = (String) pdfStructElem.get("Alt");
+                        pdfGoTo.setContents(alt_text);
+                    }
+                }
                 getPDFDoc().assignObjectNumber(pdfGoTo);
                 if (action.isComplete()) {
                     updateTargetLocation(pdfGoTo, a);

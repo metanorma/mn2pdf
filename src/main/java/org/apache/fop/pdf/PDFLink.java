@@ -109,6 +109,12 @@ public class PDFLink extends PDFObject {
                 }
                 contents_key = "(" + uri + ")";
             }
+        } else if (this.action instanceof PDFGoTo) {
+            PDFGoTo pdfGoto = (PDFGoTo) this.action;
+            String pdfGotoContents = pdfGoto.getContents();
+            if (pdfGotoContents != null && !pdfGotoContents.isEmpty()) {
+                contents_key = "(" + pdfGoto.getContents() + ")";
+            }
         }
         String s = "<< /Type /Annot\n" + "/Subtype /Link\n" + "/Rect [ "
                    + (ulx) + " " + (uly) + " "
@@ -117,7 +123,7 @@ public class PDFLink extends PDFObject {
                    + this.action.getAction() + "\n" + "/H /I\n"
                    + (this.structParent != null
                            ? "/StructParent " + this.structParent.toString() + "\n" : "")
-                   + (contents_key != null
+                   + (contents_key != null && !contents_key.isEmpty()
                            ? "/Contents " + contents_key + "\n" : "")
                    + fFlag + "\n>>";
 
