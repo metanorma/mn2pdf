@@ -52,6 +52,10 @@ public class PDFUri extends PDFAction {
         return "<< /URI " + encodeScript(uri) + "\n/S /URI >>";
     }
 
+    public String getUri() {
+        return PDFText.escapeText(uri, false);
+    }
+
     /** {@inheritDoc} */
     public String toPDFString() {
         //TODO Convert this class into a dictionary
