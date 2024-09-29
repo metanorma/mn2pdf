@@ -95,6 +95,27 @@ public class PDFLink extends PDFObject {
             f |= 1 << (5 - 1); //NoRotate, bit 5
             fFlag = "/F " + f;
         }
+        String contents_key = null;
+        if (this.action instanceof PDFUri) {
+            PDFUri pdfUri = (PDFUri) this.action;
+            String uri = pdfUri.getUri();
+            if (uri != null && !uri.isEmpty()) {
+                if (uri.startsWith("(")) {
+                    uri = uri.substring(1, uri.length() - 1);
+                }
+                if (uri.startsWith("mailto:")) {
+                    uri = uri.substring(uri.indexOf("mailto:") + 7);
+                    uri = "Email " + uri;
+                }
+                contents_key = "(" + uri + ")";
+            }
+        } else if (this.action instanceof PDFGoTo) {
+            PDFGoTo pdfGoto = (PDFGoTo) this.action;
+            String pdfGotoContents = pdfGoto.getContents();
+            if (pdfGotoContents != null && !pdfGotoContents.isEmpty()) {
+                contents_key = "(" + pdfGoto.getContents() + ")";
+            }
+        }
         String s = "<< /Type /Annot\n" + "/Subtype /Link\n" + "/Rect [ "
                    + (ulx) + " " + (uly) + " "
                    + (brx) + " " + (bry) + " ]\n" + "/C [ "
@@ -102,6 +123,8 @@ public class PDFLink extends PDFObject {
                    + this.action.getAction() + "\n" + "/H /I\n"
                    + (this.structParent != null
                            ? "/StructParent " + this.structParent.toString() + "\n" : "")
+                   + (contents_key != null && !contents_key.isEmpty()
+                           ? "/Contents " + contents_key + "\n" : "")
                    + fFlag + "\n>>";
 
         if (this.action instanceof PDFFileAttachmentAnnotation) {

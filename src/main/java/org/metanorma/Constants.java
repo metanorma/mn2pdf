@@ -16,6 +16,7 @@ public final class Constants {
     public static final String PDF_OUTPUT = "PDF";
     public static final String WARNING_NONPDFUA = "WARNING: PDF generated in non PDF/UA-1 mode.";
     public static final String PDF_A_MODE = "PDF/A-3a";
+    public static final String PDF_UA_MODE = "PDF/UA-1";
     public static final int ERROR_EXIT_CODE = -1;
     public static boolean DEBUG;
 }
