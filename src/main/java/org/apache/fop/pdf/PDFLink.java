@@ -112,8 +112,8 @@ public class PDFLink extends PDFObject {
         } else if (this.action instanceof PDFGoTo) {
             PDFGoTo pdfGoto = (PDFGoTo) this.action;
             String pdfGotoContents = pdfGoto.getContents();
-            if (pdfGotoContents != null && !pdfGotoContents.isEmpty()) {
-                contents_key = "(" + pdfGoto.getContents() + ")";
+            if (pdfGotoContents != null && !pdfGotoContents.equals("()")) {
+                contents_key = pdfGoto.getContents();
             }
         }
         String s = "<< /Type /Annot\n" + "/Subtype /Link\n" + "/Rect [ "
