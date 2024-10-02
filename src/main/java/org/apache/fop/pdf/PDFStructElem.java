@@ -29,8 +29,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.fop.accessibility.StructureTreeElement;
+import org.apache.fop.fo.extensions.InternalElementMapping;
 import org.apache.fop.pdf.StandardStructureAttributes.Table;
 import org.apache.fop.util.LanguageTags;
+import org.xml.sax.Attributes;
 
 /**
  * Class representing a PDF Structure Element.
@@ -227,22 +229,28 @@ public class PDFStructElem extends StructureHierarchyMember
         return kidsAttached;
     }
 
-    public void setTableAttributeColSpan(int colSpan) {
-        setTableAttributeRowColumnSpan("ColSpan", colSpan);
+    public void setTableAttributeColSpan(int colSpan, Attributes attributes) {
+        setTableAttributeRowColumnSpan("ColSpan", colSpan, attributes);
     }
 
-    public void setTableAttributeRowSpan(int rowSpan) {
-        setTableAttributeRowColumnSpan("RowSpan", rowSpan);
+    public void setTableAttributeRowSpan(int rowSpan, Attributes attributes) {
+        setTableAttributeRowColumnSpan("RowSpan", rowSpan, attributes);
     }
 
-    private void setTableAttributeRowColumnSpan(String typeSpan, int span) {
+    private void setTableAttributeRowColumnSpan(String typeSpan, int span, Attributes attributes) {
         PDFDictionary attribute = new PDFDictionary();
         attribute.put("O", Table.NAME);
         attribute.put(typeSpan, span);
-        if (attributes == null) {
-            attributes = new ArrayList<PDFDictionary>(2);
+        String scopeAttribute = attributes.getValue(InternalElementMapping.URI,
+                InternalElementMapping.SCOPE);
+        Table.Scope scope = (scopeAttribute == null)
+                ? Table.Scope.COLUMN
+                : Table.Scope.valueOf(scopeAttribute.toUpperCase(Locale.ENGLISH));
+        attribute.put("Scope", scope.getName());
+        if (this.attributes == null) {
+            this.attributes = new ArrayList<PDFDictionary>(3);
         }
-        attributes.add(attribute);
+        this.attributes.add(attribute);
     }
 
     public List<PDFObject> getKids() {
