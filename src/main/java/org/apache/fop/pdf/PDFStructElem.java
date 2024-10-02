@@ -23,10 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.fo.extensions.InternalElementMapping;
@@ -70,7 +67,21 @@ public class PDFStructElem extends StructureHierarchyMember
         this(parent);
         this.structureType = structureType;
         put("S", structureType.getName());
+        if (structureType.getName().getName().equals("Note")) {
+            // Note tag shall have ID entry (see https://github.com/metanorma/mn2pdf/issues/288)
+            put("ID", generateHexID(16));
+        }
         setParent(parent);
+    }
+
+    private String generateHexID(int length) {
+        Random r = new Random();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int value = r.nextInt(255);
+            result.append(Integer.toHexString(value));
+        }
+        return result.toString().toUpperCase();
     }
 
     private PDFStructElem(PDFObject parent) {
@@ -247,8 +258,9 @@ public class PDFStructElem extends StructureHierarchyMember
                 ? Table.Scope.COLUMN
                 : Table.Scope.valueOf(scopeAttribute.toUpperCase(Locale.ENGLISH));
         attribute.put("Scope", scope.getName());
+
         if (this.attributes == null) {
-            this.attributes = new ArrayList<PDFDictionary>(3);
+            this.attributes = new ArrayList<PDFDictionary>(attribute.entries.size());
         }
         this.attributes.add(attribute);
     }
