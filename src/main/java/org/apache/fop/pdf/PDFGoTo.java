@@ -125,7 +125,11 @@ public class PDFGoTo extends PDFAction {
      * @param str the PDF Contents key string
      */
     public void setContents(String str) {
-        contents = str;
+        str = str
+                .replaceAll("[\\s\\u200b\\u00a0]+", " ")
+                .trim()
+                .replaceAll("[\\.,:;]+$","");
+        contents = PDFText.escapeText(str, false);
     }
 
     /**
