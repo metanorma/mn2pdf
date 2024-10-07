@@ -701,6 +701,9 @@ class PDFRenderingUtil {
         if (embeddedFile.getRel() != null) {
             fileSpec.setAFRelationship(embeddedFile.getRel());
         }
+        if (embeddedFile.getVolatile() != null) {
+            fileSpec.setVolatile(embeddedFile.getVolatile());
+        }
         if (embeddedFile.getLinkAsFileAnnotation() != null) {
             fileSpec.setLinkAsFileAnnotation(embeddedFile.getLinkAsFileAnnotation());
         }
