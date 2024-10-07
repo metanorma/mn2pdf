@@ -89,6 +89,16 @@ public class PDFFileSpec extends PDFDictionary {
     }
 
     /**
+     * Sets a valatility for the file spec.
+     * //@param volatilily the Volatility
+     */
+    public void setVolatile(String volatilily) {
+        if (volatilily.equals("true")) {
+            put("V", true);
+        }
+    }
+
+    /**
      * Sets a linkAsFileAnnotation for the file spec.
      * @param linkAsFileAnnotation the indication of file attachment annotation
      */

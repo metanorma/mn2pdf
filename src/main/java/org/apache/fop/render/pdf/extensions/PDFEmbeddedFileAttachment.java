@@ -49,6 +49,11 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
      the associated file denoted by this file specification dictionary */
     private static final String ATT_REL = "afrelationship";
 
+    /**  A flag indicating whether the file referenced by the file
+     specification is volatile (changes frequently with time). */
+    private static final String ATT_VOLATILE = "volatile";
+
+
     /** An indication how to process link to the embedded file */
     private static final String ATT_LINKASFILEANNOTATION = "linkasfileannotation";
 
@@ -66,6 +71,9 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
 
     /** associated file relationship */
     private String rel;
+
+    /** associated file volatility */
+    private String volatility;
 
     /** add link as file annotation */
     private String linkAsFileAnnotation;
@@ -177,6 +185,22 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
     }
 
     /**
+     * Returns the volatility of the file.
+     * @return the volatile flag
+     */
+    public String getVolatile() {
+        return volatility;
+    }
+
+    /**
+     * Sets the volatility of the file.
+     * @param volatility the AFRelationship
+     */
+    public void setVolatile(String volatility) {
+        this.volatility = volatility;
+    }
+
+    /**
      * Returns the indication of link as file annotation.
      * @return the linkAsFileAnnotation
      */
@@ -223,6 +247,9 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
         }
         if (rel != null && rel.length() > 0) {
             atts.addAttribute("", ATT_REL, ATT_REL, "CDATA", rel);
+        }
+        if (volatility != null && volatility.length() > 0) {
+            atts.addAttribute("", ATT_VOLATILE, ATT_VOLATILE, "CDATA", volatility);
         }
         if (linkAsFileAnnotation != null && linkAsFileAnnotation.length() > 0) {
             atts.addAttribute("", ATT_LINKASFILEANNOTATION, ATT_LINKASFILEANNOTATION, "CDATA", linkAsFileAnnotation);
