@@ -55,7 +55,7 @@ public class PDFEmbeddedFileAttachment extends PDFExtensionAttachment {
 
 
     /** An indication how to process link to the embedded file */
-    private static final String ATT_LINKASFILEANNOTATION = "linkasfileannotation";
+    private static final String ATT_LINKASFILEANNOTATION = "link-as-file-annotation";
 
     /** filename attribute */
     private String filename;
