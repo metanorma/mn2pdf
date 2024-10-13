@@ -178,8 +178,15 @@ public class PDFExtensionHandler extends DefaultHandler implements ContentHandle
                 String name = lastAttributes.getValue("filename");
                 String src = lastAttributes.getValue("src");
                 String desc = lastAttributes.getValue("description");
+                String rel = lastAttributes.getValue("afrelationship");
+                String volatility = lastAttributes.getValue("volatile");
+                String linkAsFileAnnotation = lastAttributes.getValue("link-as-file-annotation");
+                PDFEmbeddedFileAttachment pdfEmbeddedFileAttachment = new PDFEmbeddedFileAttachment(name, src, desc);
+                pdfEmbeddedFileAttachment.setRel(rel);
+                pdfEmbeddedFileAttachment.setVolatile(volatility);
+                pdfEmbeddedFileAttachment.setLinkAsFileAnnotation(linkAsFileAnnotation);
                 this.lastAttributes = null;
-                this.returnedObject = new PDFEmbeddedFileAttachment(name, src, desc);
+                this.returnedObject = pdfEmbeddedFileAttachment;
             } else if (PDFDictionaryType.hasValueOfElementName(localName)) {
                 if (!collections.empty() && (collections.peek() instanceof PDFDictionaryExtension)) {
                     PDFDictionaryExtension dictionary = (PDFDictionaryExtension) collections.pop();
