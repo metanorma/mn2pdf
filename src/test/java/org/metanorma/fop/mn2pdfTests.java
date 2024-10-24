@@ -43,6 +43,7 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.metanorma.Constants;
 import org.metanorma.fop.annotations.Annotation;
+import org.metanorma.fop.utils.JapaneseToNumbers;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
 
@@ -459,6 +460,16 @@ public class mn2pdfTests {
 
     }
 
+    @Test
+    public void checkJapaneseNumbering() throws ParseException {
+        System.out.println(name.getMethodName());
+        String j1 = JapaneseToNumbers.numToWord(1);
+        String j11 = JapaneseToNumbers.numToWord(11);
+        String j23 = JapaneseToNumbers.numToWord(23);
+        assertTrue(j1.equals("一"));
+        assertTrue(j11.equals("十一"));
+        assertTrue(j23.equals("二十三"));
+    }
     
     @Test
     public void testDates() throws IOException {
