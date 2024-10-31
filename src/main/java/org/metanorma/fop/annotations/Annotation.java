@@ -299,6 +299,9 @@ public class Annotation {
                 HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
                 hashMapDocumentAnnotations = getAnnotationIDmap(document);
 
+
+                clearEmptyAnnotations(document);
+
                 document.save(pdf);
                 
             } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException | XPathException ex) {
@@ -331,6 +334,20 @@ public class Annotation {
             }
         }
         return hashMapDocumentAnnotations;
+    }
+
+    private void clearEmptyAnnotations(PDDocument document) throws IOException {
+        for (int i = 0; i < document.getNumberOfPages(); i++)
+        {
+            List<PDAnnotation> pageAnnotations = new ArrayList<>();
+            PDPage page = document.getPage(i);
+            for(PDAnnotation pageAnnotation: page.getAnnotations()) {
+                if(!(pageAnnotation.getContents().startsWith("Annot___"))) {
+                    pageAnnotations.add(pageAnnotation);
+                }
+            }
+            document.getPage(i).setAnnotations(pageAnnotations);
+        }
     }
 
 }
