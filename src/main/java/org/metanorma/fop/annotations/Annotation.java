@@ -295,7 +295,10 @@ public class Annotation {
                 }
                 
                 fdfDoc.close();
-                
+
+                HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
+                hashMapDocumentAnnotations = getAnnotationIDmap(document);
+
                 document.save(pdf);
                 
             } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException | XPathException ex) {
@@ -311,5 +314,23 @@ public class Annotation {
         }
         
     }
-    
+
+    private HashMap<String,PDAnnotation> getAnnotationIDmap(PDDocument document) throws IOException {
+        HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
+        for(int i = 0; i< document.getNumberOfPages(); i++) {
+            PDPage page = document.getPage(i);
+            for (PDAnnotation pdAnnotation: page.getAnnotations()){
+                COSDictionary pdAnnotationDict = pdAnnotation.getCOSObject();
+                if (pdAnnotationDict != null) {
+                    // subject contains id 'Annot___', see xfdf_simple.xsl, attribute 'subject'
+                    String subj = pdAnnotationDict.getString(COSName.SUBJ);
+                    if (subj != null) {
+                        hashMapDocumentAnnotations.put(subj, pdAnnotation);
+                    }
+                }
+            }
+        }
+        return hashMapDocumentAnnotations;
+    }
+
 }
