@@ -7,16 +7,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,14 +28,12 @@ import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.fop.pdf.PDFObject;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDObjectReference;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
 import org.apache.pdfbox.pdmodel.documentinterchange.taggedpdf.StandardStructureTypes;
@@ -68,7 +62,9 @@ public class Annotation {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     private boolean DEBUG = false;
-    
+
+    private HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
+
     public void process(File pdf, String xmlReview) throws IOException {
         PDDocument document = null;
         
@@ -296,20 +292,28 @@ public class Annotation {
                 
                 fdfDoc.close();
 
-                HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
-                hashMapDocumentAnnotations = getAnnotationIDmap(document);
-
-
-                clearEmptyAnnotations(document);
-
                 document.save(pdf);
-                
+
             } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException | XPathException ex) {
                 logger.severe("Can't read annotation data from xml.");
                 ex.printStackTrace();
             } 
-            
-            
+
+            try {
+                hashMapDocumentAnnotations = getAnnotationIDmap(document);
+
+                PDStructureTreeRoot structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
+                COSArray aDocument = (COSArray) structureTreeRoot.getK();
+                fixAnnotationTags(aDocument, null, 0);
+
+                clearEmptyAnnotations(document);
+
+                document.save(pdf);
+            } catch (IOException ex) {
+                logger.severe("Can't enclose the annotation into the Annot tag.");
+                ex.printStackTrace();
+            }
+
         } finally {
             if( document != null ) {
                 document.close();
@@ -334,6 +338,70 @@ public class Annotation {
             }
         }
         return hashMapDocumentAnnotations;
+    }
+
+    private void fixAnnotationTags(COSArray oArray, COSObject parentObject, int level) throws IOException {
+
+        if (oArray != null) {
+            for(int i = 0; i < oArray.size(); i++) {
+                COSObject oArrayItem = (COSObject) oArray.get(i);
+
+                COSName cName = (COSName) oArrayItem.getItem(COSName.S);
+                if (cName != null) {
+                    String tagName = cName.getName();
+
+                    String levelPrefix = Collections.nCopies(level, " ").toString()
+                            .replace("[", "")
+                            .replace("]", "")
+                            .replace(", ", "");
+                    if (DEBUG) {
+                        System.out.println(levelPrefix + tagName);
+                    }
+
+                    if (tagName.equals("Annot")) {
+                        COSBase cbAlt = oArrayItem.getItem(COSName.ALT);
+                        if (cbAlt != null) {
+                            String tagAlt = ((COSString)cbAlt).toString();
+                            String ANNOT_PREFIX = "COSString{";
+                            if (tagAlt.startsWith(ANNOT_PREFIX + "Annot___")) {
+                                // here replace exising tag Annot with new tag Annot
+
+                                String annotationId = tagAlt.substring(ANNOT_PREFIX.length(), tagAlt.length() - 1);
+
+                                if (DEBUG) {
+                                    System.out.println(levelPrefix + "id=" + tagAlt);
+                                }
+
+                                // add the annotation element
+                                COSDictionary anDict = new COSDictionary();
+                                // set Tag name (S)
+                                anDict.setItem(COSName.S, COSName.ANNOT);
+                                // set Parent (P)
+                                anDict.setItem(COSName.P, parentObject); //oArrayItem oArray
+                                // set Page (PG)
+                                COSArray oArrayK = (COSArray) oArrayItem.getItem(COSName.K);
+                                anDict.setItem(COSName.PG, ((COSObject)oArrayK.get(0)).getItem(COSName.PG));
+
+                                PDObjectReference objRef = new PDObjectReference();
+                                anDict.setItem(COSName.K, objRef);
+
+                                PDAnnotation foundAnnotation = hashMapDocumentAnnotations.get(annotationId);
+                                objRef.setReferencedObject(foundAnnotation);
+
+                                if (DEBUG) {
+                                    System.out.println(oArrayItem.getItem(COSName.K));
+                                }
+
+                                oArrayItem.setObject(anDict);
+                            }
+                        }
+                    }
+                }
+
+                COSArray oA_K = (COSArray) oArrayItem.getItem(COSName.K);
+                fixAnnotationTags(oA_K, oArrayItem, ++level);
+            }
+        }
     }
 
     private void clearEmptyAnnotations(PDDocument document) throws IOException {
