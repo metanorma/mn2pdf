@@ -31,7 +31,19 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.fop.pdf.PDFObject;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
+import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
+import org.apache.pdfbox.pdmodel.documentinterchange.taggedpdf.StandardStructureTypes;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.xml.sax.InputSource;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.fdf.FDFAnnotation;
@@ -114,9 +126,9 @@ public class Annotation {
                     
                     
                     if (DEBUG) {
-                        System.out.println("page=" + page);
+                        /*System.out.println("page=" + page);
                         System.out.println("x=" + x);
-                        System.out.println("y=" + y);
+                        System.out.println("y=" + y);*/
                     }
                     
                     AnnotationArea annotationArea = new AnnotationArea();
@@ -225,7 +237,7 @@ public class Annotation {
                         }
 
                         if (DEBUG) {
-                            System.out.println("postItPopup position=" + Arrays.toString(annotationArea.getPosition()));
+                            //System.out.println("postItPopup position=" + Arrays.toString(annotationArea.getPosition()));
                         }
 
                         Node node_popup = ((Element)node_annotation).getElementsByTagName("popup").item(0);
@@ -253,16 +265,14 @@ public class Annotation {
                         xmlwriter.write(updatedXMLReview);                    
                     }
                 }
-                                
-                
+
                 // import XFDF annotation xml
                 
                 FDFDocument fdfDoc = FDFDocument.loadXFDF(new ByteArrayInputStream(updatedXMLReview.getBytes(StandardCharsets.UTF_8)));
                 List<FDFAnnotation> fdfAnnots = fdfDoc.getCatalog().getFDF().getAnnotations();
                 
                 // group annotations relate to one page and add them into page
-                HashMap<Integer,List<PDAnnotation>> map_pdfannots = new HashMap<>();
-                
+                HashMap<Integer,List<PDAnnotation>> mapPDFannots = new HashMap<>();
                 for (int i=0; i<fdfDoc.getCatalog().getFDF().getAnnotations().size(); i++) {
                     FDFAnnotation fdfannot = fdfAnnots.get(i);
                     int page = fdfannot.getPage();
@@ -270,19 +280,17 @@ public class Annotation {
                     PDAnnotation pdfannot = PDAnnotation.createAnnotation(fdfannot.getCOSObject());
 
                     pdfannot.constructAppearances(); // requires for PDF/A
-
-                    if (map_pdfannots.get(page) == null) {
-                        map_pdfannots.put(page, new ArrayList<PDAnnotation>());
+                    if (mapPDFannots.get(page) == null) {
+                        mapPDFannots.put(page, new ArrayList<PDAnnotation>());
                     }
-                    map_pdfannots.get(page).add(pdfannot);
+                    mapPDFannots.get(page).add(pdfannot);
                 }
-                
-                for (Map.Entry<Integer,List<PDAnnotation>> set: map_pdfannots.entrySet()) {
+
+                for (Map.Entry<Integer,List<PDAnnotation>> set: mapPDFannots.entrySet()) {
                     PDPage page = document.getPage(set.getKey());
                     List<PDAnnotation> pageAnotations = page.getAnnotations();
                     // merge existing annotations (including hyperlinks) and new annotations
                     pageAnotations.addAll(set.getValue());
-                    //document.getPage(set.getKey()).setAnnotations(set.getValue());
                     document.getPage(set.getKey()).setAnnotations(pageAnotations);
                 }
                 
