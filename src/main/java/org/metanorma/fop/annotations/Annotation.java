@@ -397,9 +397,12 @@ public class Annotation {
                         }
                     }
                 }
-
-                COSArray oA_K = (COSArray) oArrayItem.getItem(COSName.K);
-                fixAnnotationTags(oA_K, oArrayItem, ++level);
+                try {
+                    COSArray oA_K = (COSArray) oArrayItem.getItem(COSName.K);
+                    fixAnnotationTags(oA_K, oArrayItem, ++level);
+                } catch (Exception e) {
+                    //
+                }
             }
         }
     }
