@@ -32,8 +32,11 @@ import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.COSObjectable;
+import org.apache.pdfbox.pdmodel.common.PDNumberTreeNode;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDObjectReference;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDParentTreeValue;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
 import org.apache.pdfbox.pdmodel.documentinterchange.taggedpdf.StandardStructureTypes;
@@ -64,6 +67,8 @@ public class Annotation {
     private boolean DEBUG = false;
 
     private HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
+
+    private PDStructureTreeRoot structureTreeRoot;
 
     public void process(File pdf, String xmlReview) throws IOException {
         PDDocument document = null;
@@ -300,9 +305,10 @@ public class Annotation {
             } 
 
             try {
+                document = PDDocument.load(pdf); // important
                 hashMapDocumentAnnotations = getAnnotationIDmap(document);
 
-                PDStructureTreeRoot structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
+                structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
                 COSArray aDocument = (COSArray) structureTreeRoot.getK();
                 fixAnnotationTags(aDocument, null, 0);
 
@@ -392,7 +398,32 @@ public class Annotation {
                                     System.out.println(oArrayItem.getItem(COSName.K));
                                 }
 
-                                oArrayItem.setObject(anDict);
+                                try {
+                                    oArrayItem.setObject(anDict);
+
+                                    // from https://stackoverflow.com/questions/79083813/how-to-add-the-annotation-tag-in-tagged-pdf-using-pdfbox
+
+                                    int parentTreeNextKey = structureTreeRoot.getParentTreeNextKey(); // -1, ignored here
+
+                                    // assign a number to the annotation and insert the annotation element into the parent tree, and set ParentTreeNextKey
+                                    PDNumberTreeNode parentTree = structureTreeRoot.getParentTree();
+                                    Map<Integer, COSObjectable> numberTreeAsMap = getNumberTreeAsMap(parentTree);
+                                    Set<Integer> keySet = numberTreeAsMap.keySet();
+
+                                    if (parentTreeNextKey == -1) {
+                                        parentTreeNextKey = keySet.stream().reduce(Integer::max).get() + 1;
+                                    }
+
+                                    foundAnnotation.setStructParent(parentTreeNextKey);
+                                    structureTreeRoot.setParentTreeNextKey(parentTreeNextKey + 1);
+                                    numberTreeAsMap.put(parentTreeNextKey, anDict);
+                                    parentTree = new PDNumberTreeNode(PDParentTreeValue.class);
+                                    parentTree.setNumbers(numberTreeAsMap);
+                                    structureTreeRoot.setParentTree(parentTree);
+                                    // END from stackoverflow
+                                } catch (IOException e) {
+                                    System.out.println(e.toString());
+                                }
                             }
                         }
                     }
@@ -419,6 +450,32 @@ public class Annotation {
             }
             document.getPage(i).setAnnotations(pageAnnotations);
         }
+    }
+
+    private Map<Integer, COSObjectable> getNumberTreeAsMap(PDNumberTreeNode tree) throws IOException {
+        if (tree == null)
+        {
+            return new LinkedHashMap<>();
+        }
+        Map<Integer, COSObjectable> numbers = tree.getNumbers();
+        if (numbers == null)
+        {
+            numbers = new LinkedHashMap<>();
+        }
+        else
+        {
+            // must copy because the map is read only
+            numbers = new LinkedHashMap<>(numbers);
+        }
+        List<PDNumberTreeNode> kids = tree.getKids();
+        if (kids != null)
+        {
+            for (PDNumberTreeNode kid : kids)
+            {
+                numbers.putAll(getNumberTreeAsMap(kid));
+            }
+        }
+        return numbers;
     }
 
 }
