@@ -447,8 +447,25 @@ public class Annotation {
             List<PDAnnotation> pageAnnotations = new ArrayList<>();
             PDPage page = document.getPage(i);
             for(PDAnnotation pageAnnotation: page.getAnnotations()) {
-                if(pageAnnotation.getContents() != null &&
-                    !(pageAnnotation.getContents().startsWith(ANNOT_PREFIX))) {
+                boolean process = true;
+                if(pageAnnotation.getContents() != null && pageAnnotation.getContents().startsWith(ANNOT_PREFIX)) {
+                    process = false;
+                }
+                // if link with alt-text Annot___ placed near the clause block, then the Contents changed to something like '1 Scope'
+                // therefore need remove links with small difference between coordinates
+                if (process) {
+                    COSArray rect = pageAnnotation.getCOSObject().getCOSArray(COSName.RECT);
+                    if (rect != null) {
+                        float x1 = ((COSFloat)rect.get(0)).floatValue();
+                        float x2 = ((COSFloat)rect.get(2)).floatValue();
+                        if (x2 - x1 < 0.07f) {
+                            process = false;
+                        }
+                    }
+                }
+
+                if (process) {
+                    // clear Subject field with 'Annot___', see xfdf_simple.xsl, attribute 'subject'
                     String subj = pageAnnotation.getCOSObject().getString(COSName.SUBJ);
                     if (subj != null && subj.startsWith(ANNOT_PREFIX)) {
                         pageAnnotation.getCOSObject().setItem(COSName.SUBJ, null);
