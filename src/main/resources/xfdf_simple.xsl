@@ -98,6 +98,8 @@
 						<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
 						<xsl:attribute name="rect"><xsl:value-of select="concat($element_from/@x,',',$element_from/@y)"/></xsl:attribute>
 						<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
+						<!-- for relationship between common.xsl alt-text Annot___@id and this annotation -->
+						<xsl:attribute name="subject">Annot___<xsl:value-of select="@id"/></xsl:attribute>
 					
 						<xsl:element name="contents-richtext">
 							<body xmlns="http://www.w3.org/1999/xhtml">
