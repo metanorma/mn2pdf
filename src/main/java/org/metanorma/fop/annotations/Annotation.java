@@ -425,7 +425,7 @@ public class Annotation {
                                     structureTreeRoot.setParentTree(parentTree);
                                     // END from stackoverflow
                                 } catch (IOException e) {
-                                    System.out.println(e.toString());
+                                    logger.severe("ParentTreeKey update error:" + e.toString());
                                 }
                             }
                         }
@@ -447,7 +447,8 @@ public class Annotation {
             List<PDAnnotation> pageAnnotations = new ArrayList<>();
             PDPage page = document.getPage(i);
             for(PDAnnotation pageAnnotation: page.getAnnotations()) {
-                if(!(pageAnnotation.getContents().startsWith(ANNOT_PREFIX))) {
+                if(pageAnnotation.getContents() != null &&
+                    !(pageAnnotation.getContents().startsWith(ANNOT_PREFIX))) {
                     String subj = pageAnnotation.getCOSObject().getString(COSName.SUBJ);
                     if (subj != null && subj.startsWith(ANNOT_PREFIX)) {
                         pageAnnotation.getCOSObject().setItem(COSName.SUBJ, null);
