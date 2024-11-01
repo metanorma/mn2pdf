@@ -66,6 +66,7 @@ public class Annotation {
     
     private boolean DEBUG = false;
 
+    private final String ANNOT_PREFIX = "Annot___";
     private HashMap<String,PDAnnotation> hashMapDocumentAnnotations = new HashMap<>();
 
     private PDStructureTreeRoot structureTreeRoot;
@@ -304,6 +305,7 @@ public class Annotation {
                 ex.printStackTrace();
             } 
 
+            // add Annot tag for the text annotation
             try {
                 document = PDDocument.load(pdf); // important
                 hashMapDocumentAnnotations = getAnnotationIDmap(document);
@@ -319,6 +321,7 @@ public class Annotation {
                 logger.severe("Can't enclose the annotation into the Annot tag.");
                 ex.printStackTrace();
             }
+            // END Annot tag adding
 
         } finally {
             if( document != null ) {
@@ -337,7 +340,7 @@ public class Annotation {
                 if (pdAnnotationDict != null) {
                     // subject contains id 'Annot___', see xfdf_simple.xsl, attribute 'subject'
                     String subj = pdAnnotationDict.getString(COSName.SUBJ);
-                    if (subj != null) {
+                    if (subj != null && subj.startsWith(ANNOT_PREFIX)) {
                         hashMapDocumentAnnotations.put(subj, pdAnnotation);
                     }
                 }
@@ -368,11 +371,11 @@ public class Annotation {
                         COSBase cbAlt = oArrayItem.getItem(COSName.ALT);
                         if (cbAlt != null) {
                             String tagAlt = ((COSString)cbAlt).toString();
-                            String ANNOT_PREFIX = "COSString{";
-                            if (tagAlt.startsWith(ANNOT_PREFIX + "Annot___")) {
+                            String COSSTRING_PREFIX = "COSString{";
+                            if (tagAlt.startsWith(COSSTRING_PREFIX + ANNOT_PREFIX)) {
                                 // here replace exising tag Annot with new tag Annot
 
-                                String annotationId = tagAlt.substring(ANNOT_PREFIX.length(), tagAlt.length() - 1);
+                                String annotationId = tagAlt.substring(COSSTRING_PREFIX.length(), tagAlt.length() - 1);
 
                                 if (DEBUG) {
                                     System.out.println(levelPrefix + "id=" + tagAlt);
@@ -444,7 +447,11 @@ public class Annotation {
             List<PDAnnotation> pageAnnotations = new ArrayList<>();
             PDPage page = document.getPage(i);
             for(PDAnnotation pageAnnotation: page.getAnnotations()) {
-                if(!(pageAnnotation.getContents().startsWith("Annot___"))) {
+                if(!(pageAnnotation.getContents().startsWith(ANNOT_PREFIX))) {
+                    String subj = pageAnnotation.getCOSObject().getString(COSName.SUBJ);
+                    if (subj != null && subj.startsWith(ANNOT_PREFIX)) {
+                        pageAnnotation.getCOSObject().setItem(COSName.SUBJ, null);
+                    }
                     pageAnnotations.add(pageAnnotation);
                 }
             }
