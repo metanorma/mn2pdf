@@ -17,14 +17,14 @@ You will need the Java Development Kit (JDK) version 8, Update 241 (8u241) or hi
 
 [source,sh]
 ----
-java -Xss5m -Xmx2048m -jar target/mn2pdf-2.07.jar --xml-file <XML-FileName> --xsl-file <XSLT-FileName> --pdf-file <Output-PDF-FileName> [--syntax-highlight]
+java -Xss5m -Xmx2048m -jar target/mn2pdf-2.08.jar --xml-file <XML-FileName> --xsl-file <XSLT-FileName> --pdf-file <Output-PDF-FileName> [--syntax-highlight]
 ----
 
 e.g.
 
 [source,sh]
 ----
-java -Xss5m -Xmx2048m -jar target/mn2pdf-2.07.jar --xml-file tests/G.191.xml --xsl-file tests/itu.recommendation.xsl --pdf-file tests/G.191.pdf
+java -Xss5m -Xmx2048m -jar target/mn2pdf-2.08.jar --xml-file tests/G.191.xml --xsl-file tests/itu.recommendation.xsl --pdf-file tests/G.191.pdf
 ----
 
 === PDF encryption features
@@ -100,7 +100,7 @@ Update version in `pom.xml`, e.g.:
 ----
 <groupId>org.metanorma.fop</groupId>
 <artifactId>mn2pdf</artifactId>
-<version>2.07</version>
+<version>2.08</version>
 <name>Metanorma XML to PDF converter</name>
 ----
 
@@ -111,8 +111,8 @@ Tag the same version in Git:
 
 [source,xml]
 ----
-git tag v2.07
-git push origin v2.07
+git tag v2.08
+git push origin v2.08
 ----
 
 Then the corresponding GitHub release will be automatically created at:
