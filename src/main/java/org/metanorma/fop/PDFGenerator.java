@@ -115,7 +115,10 @@ public class PDFGenerator {
     int pageCount = 0;
     
     boolean PDFUA_error = false;
-    
+
+    boolean PDFUA_enabled = true;
+    boolean PDFA_enabled = true;
+
     private String debugXSLFO = "";
     
     public void setFontsPath(String fontsPath) {
@@ -486,18 +489,23 @@ public class PDFGenerator {
             runFOP(fontcfg, src, pdf);
             
             if(PDFUA_error) {
-                logger.info("WARNING: Trying to generate PDF in non PDF/UA-1 mode.");
+                logger.warning("WARNING: Trying to generate PDF in non " + PDF_UA_MODE + " and non " + PDF_A_MODE + " modes.");
                 fontcfg.setPDFUAmode("DISABLED");
+                PDFUA_enabled = false;
+                PDFA_enabled = false;
                 src = new StreamSource(new StringReader(xmlFO));
                 runFOP(fontcfg, src, pdf);
-                logger.info(WARNING_NONPDFUA);
+                logger.warning(WARNING_NONPDFUA);
             }
 
             // validate PDF by veraPDF
             VeraPDFValidator veraPDFValidator = new VeraPDFValidator();
-            veraPDFValidator.validate(pdf, PDF_A_MODE);
-            veraPDFValidator.validate(pdf, PDF_UA_MODE);
-
+            if (PDFA_enabled) {
+                veraPDFValidator.validate(pdf, PDF_A_MODE);
+            }
+            if (PDFUA_enabled) {
+                veraPDFValidator.validate(pdf, PDF_UA_MODE);
+            }
 
             fontcfg.printMessages();
 
@@ -591,7 +599,9 @@ public class PDFGenerator {
             foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
 
             if (encryptionParams.isEmpty()) {
-                foUserAgent.getRendererOptions().put("pdf-a-mode", PDF_A_MODE);
+                if (PDFA_enabled) {
+                    foUserAgent.getRendererOptions().put("pdf-a-mode", PDF_A_MODE);
+                }
             } else {
                 logger.severe("PDF/A doesn't allow encrypted PDFs. PDF will be generated in non-PDF/A mode.");
             }
