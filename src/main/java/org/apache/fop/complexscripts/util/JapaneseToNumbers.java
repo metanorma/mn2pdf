@@ -1,4 +1,4 @@
-package org.metanorma.fop.utils;
+package org.apache.fop.complexscripts.util;
 
 // From https://github.com/joumorisu/SuuKotoba/blob/master/src/SuuKotoba.java
 
