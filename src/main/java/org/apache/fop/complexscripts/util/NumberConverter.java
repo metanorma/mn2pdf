@@ -19,8 +19,6 @@
 
 package org.apache.fop.complexscripts.util;
 
-import org.metanorma.fop.utils.JapaneseToNumbers;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -270,7 +268,7 @@ public class NumberConverter {
             case (int) 'a': // handled as numeric sequence
             case (int) 'I': // handled as numeric special
             case (int) 'i': // handled as numeric special
-            case 20108: // handled as numeric special - Japanese Numerals, first is &#x4E8C; = 20108 decimal;
+            case 19968: // handled as numeric special - Japanese Numerals, first is &#x4E00; = 19968 decimal;
             default:
                 if (isStartOfDecimalSequence(s)) {
                     fn = formatNumberAsDecimal(number, s, 1);
@@ -557,7 +555,7 @@ public class NumberConverter {
         { '\u3044' },           // kana - hiragana (iroha)
         { '\u30A2' },           // kana - katakana (gojuon) - default alphabetic sequence
         { '\u30A4' },           // kana - katakana (iroha)
-        { '\u4E8C' },           // Japanese numbers
+        { '\u4E00' },           // Japanese numbers
     };
 
     private static boolean isStartOfNumericSpecial(int s) {
@@ -595,7 +593,7 @@ public class NumberConverter {
             return new KanaNumeralsFormatter();
         } else if (one == (int) '\u30A4') {
             return new KanaNumeralsFormatter();
-        } else if (one == (int) '\u4E8C') {
+        } else if (one == (int) '\u4E00') {
             return new JapaneseNumeralsFormatter();
         } else {
             return null;
@@ -1541,7 +1539,7 @@ public class NumberConverter {
 
     private class JapaneseNumeralsFormatter implements SpecialNumberFormatter {
         public Integer[] format(long number, int one, int letterValue, String features, String language, String country) {
-            if (one == 0x4E8C) {
+            if (one == 0x4E00) {
                 List<Integer> items = new ArrayList<>();
 
                 String numStr = JapaneseToNumbers.numToWord((int)number); // add  + 10 for two characters testing

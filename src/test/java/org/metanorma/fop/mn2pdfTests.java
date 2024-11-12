@@ -16,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.cos.COSName;
 
 import org.apache.pdfbox.pdmodel.*;
@@ -43,7 +44,6 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.metanorma.Constants;
 import org.metanorma.fop.annotations.Annotation;
-import org.metanorma.fop.utils.JapaneseToNumbers;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
 
