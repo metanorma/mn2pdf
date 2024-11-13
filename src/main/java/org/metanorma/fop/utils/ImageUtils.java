@@ -34,7 +34,7 @@ public class ImageUtils {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Can''t read DPI from image: {0}", ex.toString());
         }
-        return "100";
+        return "0";
     }
 
 
