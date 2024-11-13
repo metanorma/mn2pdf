@@ -43,8 +43,11 @@ public class ImageUtilTests {
         String imagepathPNG = ImageUtils.convertWebPtoPNG(imageFilename);
         assertTrue(Files.exists(Paths.get(imagepathPNG)));
 
-        String imageScale = Util.getImageScale(imagepathPNG, "100", "200");
+        String imageScale = ImageUtils.getImageScale(imagepathPNG, "100", "200");
         assertTrue(imageScale.equals("37"));
+
+        String imageWidth = ImageUtils.getImageWidth(imagepathPNG, "10", "20");
+        assertTrue(imageWidth.equals("10.0"));
     }
 
     @Test
@@ -56,7 +59,7 @@ public class ImageUtilTests {
         String imageContentBase64 = "data:image/webp;base64," + Base64.getEncoder().encodeToString(imageContent);
         String imagePNGBase64 = ImageUtils.convertWebPtoPNG(imageContentBase64);
         assertTrue(imagePNGBase64.startsWith("data:image/png;base64,"));
-        String imageScale = Util.getImageScale(imagePNGBase64, "100", "200");
+        String imageScale = ImageUtils.getImageScale(imagePNGBase64, "100", "200");
         assertTrue(imageScale.equals("37"));
     }
 
