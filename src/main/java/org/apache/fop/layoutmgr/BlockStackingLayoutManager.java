@@ -237,13 +237,13 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
 
     /** {@inheritDoc} */
     @Override
-    public List getNextKnuthElements(LayoutContext context, int alignment) {
+    public List<ListElement> getNextKnuthElements(LayoutContext context, int alignment) {
         return getNextKnuthElements(context, alignment, null, null, null);
     }
 
     /** {@inheritDoc} */
     @Override
-    public List getNextKnuthElements(LayoutContext context, int alignment,
+    public List<ListElement> getNextKnuthElements(LayoutContext context, int alignment,
             Stack lmStack, Position restartPosition, LayoutManager restartAtLM) {
         isRestartAtLM = restartAtLM != null;
         referenceIPD = context.getRefIPD();
@@ -670,12 +670,12 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
 
     /** {@inheritDoc} */
     @Override
-    public List getChangedKnuthElements(List oldList, int alignment) {
+    public List<ListElement> getChangedKnuthElements(List oldList, int alignment) {
         ListIterator<KnuthElement> oldListIterator = oldList.listIterator();
         KnuthElement currElement = null;
         KnuthElement prevElement = null;
         List<KnuthElement> returnedList = new LinkedList<KnuthElement>();
-        List<KnuthElement> returnList = new LinkedList<KnuthElement>();
+        List<ListElement> returnList = new LinkedList<>();
         int fromIndex = 0;
 
         // "unwrap" the Positions stored in the elements
@@ -992,7 +992,7 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
      * @param isFirst true if this is the first time a layout manager instance needs to generate
      *                border and padding
      */
-    protected void addKnuthElementsForBorderPaddingBefore(List returnList, boolean isFirst) {
+    protected void addKnuthElementsForBorderPaddingBefore(List<ListElement> returnList, boolean isFirst) {
         //Border and Padding (before)
         CommonBorderPaddingBackground borderAndPadding = getBorderPaddingBackground();
         if (borderAndPadding != null) {
@@ -1019,7 +1019,7 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
      * @param isLast true if this is the last time a layout manager instance needs to generate
      *               border and padding
      */
-    protected void addKnuthElementsForBorderPaddingAfter(List returnList, boolean isLast) {
+    protected void addKnuthElementsForBorderPaddingAfter(List<ListElement> returnList, boolean isLast) {
         //Border and Padding (after)
         CommonBorderPaddingBackground borderAndPadding = getBorderPaddingBackground();
         if (borderAndPadding != null) {
@@ -1165,7 +1165,7 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
      * @param sourceList source list
      * @param targetList target list receiving the wrapped position elements
      */
-    protected void wrapPositionElements(List sourceList, List targetList) {
+    protected void wrapPositionElements(List sourceList, List<ListElement> targetList) {
         wrapPositionElements(sourceList, targetList, false);
     }
 
@@ -1176,7 +1176,7 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
      * @param targetList target list receiving the wrapped position elements
      * @param force if true, every Position is wrapped regardless of its LM of origin
      */
-    protected void wrapPositionElements(List sourceList, List targetList, boolean force) {
+    protected void wrapPositionElements(List sourceList, List<ListElement> targetList, boolean force) {
 
         ListIterator listIter = sourceList.listIterator();
         Object tempElement;
@@ -1202,7 +1202,7 @@ public abstract class BlockStackingLayoutManager extends AbstractLayoutManager
      * @param targetList target list receiving the wrapped position elements
      * @param force if true, every Position is wrapped regardless of its LM of origin
      */
-    protected void wrapPositionElement(ListElement el, List targetList, boolean force) {
+    protected void wrapPositionElement(ListElement el, List<ListElement> targetList, boolean force) {
         if (force || el.getLayoutManager() != this) {
             el.setPosition(notifyPos(new NonLeafPosition(this, el.getPosition())));
         }

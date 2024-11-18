@@ -59,6 +59,8 @@ public class FopConfParser {
     private static final String TABLE_BORDER_OVERPAINT = "table-border-overpaint";
     private static final String SIMPLE_LINE_BREAKING = "simple-line-breaking";
     private static final String SKIP_PAGE_POSITION_ONLY_ALLOWED = "skip-page-position-only-allowed";
+    private static final String LEGACY_SKIP_PAGE_POSITION_ONLY = "legacy-skip-page-position-only";
+    private static final String LEGACY_LAST_PAGE_CHANGE_IPD = "legacy-last-page-change-ipd";
 
     private final Log log = LogFactory.getLog(FopConfParser.class);
 
@@ -295,6 +297,22 @@ public class FopConfParser {
             try {
                 fopFactoryBuilder.setSkipPagePositionOnlyAllowed(
                         cfg.getChild(SKIP_PAGE_POSITION_ONLY_ALLOWED).getValueAsBoolean());
+            } catch (ConfigurationException e) {
+                LogUtil.handleException(log, e, false);
+            }
+        }
+        if (cfg.getChild(LEGACY_SKIP_PAGE_POSITION_ONLY, false) != null) {
+            try {
+                fopFactoryBuilder.setLegacySkipPagePositionOnly(
+                        cfg.getChild(LEGACY_SKIP_PAGE_POSITION_ONLY).getValueAsBoolean());
+            } catch (ConfigurationException e) {
+                LogUtil.handleException(log, e, false);
+            }
+        }
+        if (cfg.getChild(LEGACY_LAST_PAGE_CHANGE_IPD, false) != null) {
+            try {
+                fopFactoryBuilder.setLegacyLastPageChangeIPD(
+                        cfg.getChild(LEGACY_LAST_PAGE_CHANGE_IPD).getValueAsBoolean());
             } catch (ConfigurationException e) {
                 LogUtil.handleException(log, e, false);
             }

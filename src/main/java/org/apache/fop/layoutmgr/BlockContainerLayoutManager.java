@@ -187,7 +187,7 @@ public class BlockContainerLayoutManager extends SpacedBorderedPaddedBlockLayout
 
     /** {@inheritDoc} */
     @Override
-    public List getNextKnuthElements(LayoutContext context, int alignment) {
+    public List<ListElement> getNextKnuthElements(LayoutContext context, int alignment) {
         return getNextKnuthElements(context, alignment, null, null, null);
     }
 
@@ -208,7 +208,7 @@ public class BlockContainerLayoutManager extends SpacedBorderedPaddedBlockLayout
 
     /** {@inheritDoc} */
     @Override
-    public List getNextKnuthElements(LayoutContext context, int alignment, Stack lmStack,
+    public List<ListElement> getNextKnuthElements(LayoutContext context, int alignment, Stack lmStack,
         Position restartPosition, LayoutManager restartAtLM) {
 
         resetSpaces();
@@ -674,14 +674,14 @@ public class BlockContainerLayoutManager extends SpacedBorderedPaddedBlockLayout
             return lc;
         }
 
-        protected List getNextKnuthElements(LayoutContext context, int alignment) {
+        protected List<ListElement> getNextKnuthElements(LayoutContext context, int alignment) {
             LayoutManager curLM; // currently active LM
             List<ListElement> returnList = new LinkedList<ListElement>();
 
             while ((curLM = getChildLM()) != null) {
                 LayoutContext childLC = makeChildLayoutContext(context);
 
-                List returnedList = null;
+                List<ListElement> returnedList = null;
                 if (!curLM.isFinished()) {
                     returnedList = curLM.getNextKnuthElements(childLC, alignment);
                 }

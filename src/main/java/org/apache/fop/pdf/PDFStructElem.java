@@ -50,6 +50,7 @@ public class PDFStructElem extends StructureHierarchyMember
     protected List<PDFObject> kids;
 
     private List<PDFDictionary> attributes;
+    private PDFObject parent;
 
     /**
      * Creates PDFStructElem with no entries.
@@ -71,7 +72,9 @@ public class PDFStructElem extends StructureHierarchyMember
             // Note tag shall have ID entry (see https://github.com/metanorma/mn2pdf/issues/288)
             put("ID", generateHexID(16));
         }
-        setParent(parent);
+        if (parent != null) {
+            put("P", null);
+        }
     }
 
     private String generateHexID(int length) {
@@ -87,6 +90,10 @@ public class PDFStructElem extends StructureHierarchyMember
     private PDFStructElem(PDFObject parent) {
         if (parent instanceof PDFStructElem) {
             parentElement = (PDFStructElem) parent;
+        }
+        this.parent = parent;
+        if (parent != null) {
+            setDocument(parent.getDocument());
         }
     }
 
@@ -115,9 +122,20 @@ public class PDFStructElem extends StructureHierarchyMember
     @Override
     public void addKid(PDFObject kid) {
         if (kids == null) {
+            assignObjectNumber();
             kids = new ArrayList<PDFObject>();
         }
         kids.add(kid);
+    }
+
+    private void assignObjectNumber() {
+        if (parentElement != null) {
+            parentElement.assignObjectNumber();
+        }
+        if (getDocument() != null && !hasObjectNumber()) {
+            getDocument().assignObjectNumber(this);
+        }
+        setParent(parent);
     }
 
     /**
