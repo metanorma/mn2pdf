@@ -46,6 +46,7 @@ import org.apache.fop.layoutmgr.KnuthPenalty;
 import org.apache.fop.layoutmgr.KnuthSequence;
 import org.apache.fop.layoutmgr.LayoutContext;
 import org.apache.fop.layoutmgr.LeafPosition;
+import org.apache.fop.layoutmgr.ListElement;
 import org.apache.fop.layoutmgr.Position;
 import org.apache.fop.layoutmgr.PositionIterator;
 import org.apache.fop.layoutmgr.TraitSetter;
@@ -116,7 +117,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
     private int changeOffset;
     private int thisStart;
     private int tempStart;
-    private List changeList = new LinkedList();
+    private List<PendingChange> changeList = new LinkedList<>();
 
     private AlignmentContext alignmentContext;
 
@@ -334,6 +335,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
         textArea.setTextLetterSpaceAdjust(letterSpaceDim);
         textArea.setTextWordSpaceAdjust(wordSpaceDim - spaceCharIPD
                 - 2 * textArea.getTextLetterSpaceAdjust());
+        textArea.setFromFootnote(isFromFootnote());
         if (context.getIPDAdjust() != 0) {
             // add information about space width
             textArea.setSpaceDifference(wordSpaceIPD.getOpt() - spaceCharIPD
@@ -762,7 +764,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
     }
 
     /** {@inheritDoc} */
-    public List getNextKnuthElements(final LayoutContext context, final int alignment) {
+    public List<KnuthSequence> getNextKnuthElements(final LayoutContext context, final int alignment) {
 
         lineStartBAP = context.getLineStartBorderAndPaddingWidth();
         lineEndBAP = context.getLineEndBorderAndPaddingWidth();
@@ -1004,12 +1006,12 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
     }
 
     /** {@inheritDoc} */
-    public List addALetterSpaceTo(List oldList) {
+    public List<ListElement> addALetterSpaceTo(List<ListElement> oldList) {
         return addALetterSpaceTo(oldList, 0);
     }
 
     /** {@inheritDoc} */
-    public List addALetterSpaceTo(final List oldList, int depth) {
+    public List<ListElement> addALetterSpaceTo(final List<ListElement> oldList, int depth) {
         // old list contains only a box, or the sequence: box penalty glue box;
         // look at the Position stored in the first element in oldList
         // which is always a box
@@ -1127,12 +1129,12 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
     }
 
     /** {@inheritDoc} */
-    public boolean applyChanges(final List oldList) {
+    public boolean applyChanges(final List<ListElement> oldList) {
         return applyChanges(oldList, 0);
     }
 
     /** {@inheritDoc} */
-    public boolean applyChanges(final List oldList, int depth) {
+    public boolean applyChanges(final List<ListElement> oldList, int depth) {
 
         // make sure the LM appears unfinished in between this call
         // and the next call to getChangedKnuthElements()
@@ -1204,12 +1206,12 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
     }
 
     /** {@inheritDoc} */
-    public List getChangedKnuthElements(final List oldList, final int alignment) {
+    public List<ListElement> getChangedKnuthElements(final List<ListElement> oldList, final int alignment) {
         if (isFinished()) {
             return null;
         }
 
-        final LinkedList returnList = new LinkedList();
+        final LinkedList<ListElement> returnList = new LinkedList<>();
 
         for (; returnedIndices[0] <= returnedIndices[1]; returnedIndices[0]++) {
             GlyphMapping mapping = getGlyphMapping(returnedIndices[0]);

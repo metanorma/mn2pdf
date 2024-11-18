@@ -108,7 +108,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
      * Each value holds the start and end indexes into a List of
      * inline break positions.
      */
-    static class LineBreakPosition extends LeafPosition {
+    public static class LineBreakPosition extends LeafPosition {
         private final int parIndex; // index of the Paragraph this Position refers to
         private final int startIndex; //index of the first element this Position refers to
         private final int availableShrink;
@@ -610,7 +610,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
 
     /** {@inheritDoc} */
     @Override
-    public List getNextKnuthElements(LayoutContext context, int alignment) {
+    public List<ListElement> getNextKnuthElements(LayoutContext context, int alignment) {
         if (alignmentContext == null) {
             FontInfo fi = fobj.getFOEventHandler().getFontInfo();
             FontTriplet[] fontkeys = fobj.getCommonFont().getFontState(fi);
@@ -652,7 +652,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
      * @return the list of KnuthElements
      * @see LayoutManager#getNextKnuthElements(LayoutContext,int)
      */
-    public List getNextKnuthElements(LayoutContext context, int alignment,
+    public List<ListElement> getNextKnuthElements(LayoutContext context, int alignment,
             LeafPosition restartPosition) {
         int parIndex = 0;
         int restartPositionIdx = 0;
@@ -663,7 +663,9 @@ public class LineLayoutManager extends InlineStackingLayoutManager
         }
 
         for (int i = 0; i < parIndex; i++) {
-            knuthParagraphs.remove(0);
+            if (knuthParagraphs.size() > 1) {
+                knuthParagraphs.remove(0);
+            }
         }
         parIndex = 0;
 
@@ -709,7 +711,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
 
         InlineLevelLayoutManager curLM;
         while ((curLM = (InlineLevelLayoutManager) getChildLM()) != null) {
-            List inlineElements = curLM.getNextKnuthElements(inlineLC, effectiveAlignment);
+            List<KnuthSequence> inlineElements = curLM.getNextKnuthElements(inlineLC, effectiveAlignment);
             if (inlineElements == null || inlineElements.size() == 0) {
                 /* curLM.getNextKnuthElements() returned null or an empty list;
                  * this can happen if there is nothing more to layout,
@@ -718,7 +720,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
             }
 
             if (lastPar != null) {
-                KnuthSequence firstSeq = (KnuthSequence) inlineElements.get(0);
+                KnuthSequence firstSeq = inlineElements.get(0);
 
                 // finish last paragraph before a new block sequence
                 if (!firstSeq.isInlineSequence()) {
@@ -936,7 +938,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
      */
     private List<ListElement> postProcessLineBreaks(int alignment, LayoutContext context) {
 
-        List<ListElement> returnList = new LinkedList<ListElement>();
+        List<ListElement> returnList = new LinkedList<>();
 
         int endIndex = -1;
         for (int p = 0; p < knuthParagraphs.size(); p++) {
@@ -1223,14 +1225,14 @@ public class LineLayoutManager extends InlineStackingLayoutManager
 
     /** {@inheritDoc} */
     @Override
-    public List getChangedKnuthElements(List oldList, int alignment, int depth) {
+    public List<ListElement> getChangedKnuthElements(List<ListElement> oldList, int alignment, int depth) {
         return getChangedKnuthElements(oldList, alignment);
     }
 
     /** {@inheritDoc} */
     @Override
-    public List getChangedKnuthElements(List oldList, int alignment) {
-        List<KnuthElement> returnList = new LinkedList<KnuthElement>();
+    public List<ListElement> getChangedKnuthElements(List<ListElement> oldList, int alignment) {
+        List<ListElement> returnList = new LinkedList<>();
         for (int p = 0; p < knuthParagraphs.size(); p++) {
             LineLayoutPossibilities llPoss = lineLayoutsList[p];
             //log.debug("demerits of the chosen layout: " + llPoss.getChosenDemerits());
@@ -1284,7 +1286,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
         // hyphenate every word
         ListIterator currParIterator = currPar.listIterator(currPar.ignoreAtStart);
         // list of TLM involved in hyphenation
-        List updateList = new LinkedList();
+        List<Update> updateList = new LinkedList<>();
         KnuthElement firstElement;
         KnuthElement nextElement;
         // current InlineLevelLayoutManager
@@ -1369,7 +1371,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
         processUpdates(currPar, updateList);
     }
 
-    private void processUpdates(Paragraph par, List updateList) {
+    private void processUpdates(Paragraph par, List<Update> updateList) {
         // create iterator for the updateList
         ListIterator updateListIterator = updateList.listIterator();
         Update currUpdate;
@@ -1397,7 +1399,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
                 .applyChanges(par.subList(fromIndex + elementsAdded,
                                               toIndex + elementsAdded))) {
                 // insert the new KnuthElements
-                List newElements = currUpdate.inlineLM.getChangedKnuthElements(
+                List<ListElement> newElements = currUpdate.inlineLM.getChangedKnuthElements(
                     par.subList(fromIndex + elementsAdded,
                                      toIndex + elementsAdded),
                      /*flaggedPenalty,*/ effectiveAlignment);
@@ -1628,7 +1630,7 @@ public class LineLayoutManager extends InlineStackingLayoutManager
          * The positionList must contain one area-generating position,
          * which creates one line area.
          */
-        List positionList = new ArrayList(1);
+        List<Position> positionList = new ArrayList<>(1);
         Position innerPosition = pos.getPosition();
         positionList.add(innerPosition);
 
