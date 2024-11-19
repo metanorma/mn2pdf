@@ -28,7 +28,10 @@ import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.fop.pdf.PDFObject;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -72,11 +75,9 @@ public class Annotation {
     private PDStructureTreeRoot structureTreeRoot;
 
     public void process(File pdf, String xmlReview) throws IOException {
-        PDDocument document = null;
-        
-        try {
-            document = PDDocument.load(pdf);
-            
+
+        try (PDDocument document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.getAbsoluteFile()))) {
+
             // iterate for each 'annotation' in xmlReview
             try {
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -269,65 +270,69 @@ public class Annotation {
                 }
 
                 // import XFDF annotation xml
-                
-                FDFDocument fdfDoc = FDFDocument.loadXFDF(new ByteArrayInputStream(updatedXMLReview.getBytes(StandardCharsets.UTF_8)));
-                List<FDFAnnotation> fdfAnnots = fdfDoc.getCatalog().getFDF().getAnnotations();
-                
-                // group annotations relate to one page and add them into page
-                HashMap<Integer,List<PDAnnotation>> mapPDFannots = new HashMap<>();
-                for (int i=0; i<fdfDoc.getCatalog().getFDF().getAnnotations().size(); i++) {
-                    FDFAnnotation fdfannot = fdfAnnots.get(i);
-                    int page = fdfannot.getPage();
-                    
-                    PDAnnotation pdfannot = PDAnnotation.createAnnotation(fdfannot.getCOSObject());
 
-                    pdfannot.constructAppearances(); // requires for PDF/A
-                    if (mapPDFannots.get(page) == null) {
-                        mapPDFannots.put(page, new ArrayList<PDAnnotation>());
+                try (FDFDocument fdfDoc = Loader.loadXFDF(new ByteArrayInputStream(updatedXMLReview.getBytes(StandardCharsets.UTF_8)))) {
+
+                    //FDFDocument fdfDoc = FDFDocument.loadXFDF(new ByteArrayInputStream(updatedXMLReview.getBytes(StandardCharsets.UTF_8)));
+
+                    List<FDFAnnotation> fdfAnnots = fdfDoc.getCatalog().getFDF().getAnnotations();
+
+                    // group annotations relate to one page and add them into page
+                    HashMap<Integer, List<PDAnnotation>> mapPDFannots = new HashMap<>();
+                    for (int i = 0; i < fdfDoc.getCatalog().getFDF().getAnnotations().size(); i++) {
+                        FDFAnnotation fdfannot = fdfAnnots.get(i);
+                        int page = fdfannot.getPage();
+
+                        PDAnnotation pdfannot = PDAnnotation.createAnnotation(fdfannot.getCOSObject());
+
+                        pdfannot.constructAppearances(); // requires for PDF/A
+                        if (mapPDFannots.get(page) == null) {
+                            mapPDFannots.put(page, new ArrayList<PDAnnotation>());
+                        }
+                        mapPDFannots.get(page).add(pdfannot);
                     }
-                    mapPDFannots.get(page).add(pdfannot);
-                }
 
-                for (Map.Entry<Integer,List<PDAnnotation>> set: mapPDFannots.entrySet()) {
-                    PDPage page = document.getPage(set.getKey());
-                    List<PDAnnotation> pageAnotations = page.getAnnotations();
-                    // merge existing annotations (including hyperlinks) and new annotations
-                    pageAnotations.addAll(set.getValue());
-                    document.getPage(set.getKey()).setAnnotations(pageAnotations);
+                    for (Map.Entry<Integer, List<PDAnnotation>> set : mapPDFannots.entrySet()) {
+                        PDPage page = document.getPage(set.getKey());
+                        List<PDAnnotation> pageAnotations = page.getAnnotations();
+                        // merge existing annotations (including hyperlinks) and new annotations
+                        pageAnotations.addAll(set.getValue());
+                        document.getPage(set.getKey()).setAnnotations(pageAnotations);
+                    }
                 }
-                
-                fdfDoc.close();
+                //fdfDoc.close();
+
 
                 document.save(pdf);
 
             } catch (IOException | NumberFormatException | ParserConfigurationException | DOMException | TransformerException | SAXException | XPathException ex) {
                 logger.severe("Can't read annotation data from xml.");
                 ex.printStackTrace();
-            } 
-
-            // add Annot tag for the text annotation
-            try {
-                document = PDDocument.load(pdf); // important
-                hashMapDocumentAnnotations = getAnnotationIDmap(document);
-
-                structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
-                COSArray aDocument = (COSArray) structureTreeRoot.getK();
-                fixAnnotationTags(aDocument, null, 0);
-
-                clearEmptyAnnotations(document);
-
-                document.save(pdf);
-            } catch (IOException ex) {
-                logger.severe("Can't enclose the annotation into the Annot tag.");
-                ex.printStackTrace();
             }
-            // END Annot tag adding
+        }
+        // add Annot tag for the text annotation
+        try (PDDocument document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.getAbsoluteFile()))) {
+            //document = PDDocument.load(pdf); // important
+            hashMapDocumentAnnotations = getAnnotationIDmap(document);
 
-        } finally {
+            structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
+            COSArray aDocument = (COSArray) structureTreeRoot.getK();
+            fixAnnotationTags(aDocument, null, 0);
+
+            clearEmptyAnnotations(document);
+
+            document.save(pdf);
+        } catch (IOException ex) {
+            logger.severe("Can't enclose the annotation into the Annot tag.");
+            ex.printStackTrace();
+        }
+        // END Annot tag adding
+
+         /*finally {
             if( document != null ) {
                 document.close();
             }
-        }
+        }*/
         
     }
 

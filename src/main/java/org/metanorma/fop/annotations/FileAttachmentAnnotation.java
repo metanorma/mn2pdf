@@ -1,5 +1,7 @@
 package org.metanorma.fop.annotations;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentNameDictionary;
 import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
@@ -24,10 +26,10 @@ public class FileAttachmentAnnotation {
     private boolean DEBUG = false;
     
     public void process(File pdf) throws IOException {
-        PDDocument document = null;
-        
-        try {
-            document = PDDocument.load(pdf);
+        //PDDocument document = null;
+
+        try (PDDocument document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.getAbsoluteFile()))) {
+            //document = PDDocument.load(pdf);
 
             ArrayList<String> embeddedFileAnnotations = new ArrayList<>();
 
@@ -77,11 +79,11 @@ public class FileAttachmentAnnotation {
         }
 
 
-        finally {
+        /*finally {
             if( document != null ) {
                 document.close();
             }
-        }
+        }*/
         
     }
     
