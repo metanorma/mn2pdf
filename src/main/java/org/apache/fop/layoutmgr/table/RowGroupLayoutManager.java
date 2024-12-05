@@ -115,6 +115,7 @@ class RowGroupLayoutManager {
                     LayoutContext childLC = LayoutContext.newInstance();
                     childLC.setStackLimitBP(context.getStackLimitBP()); //necessary?
                     childLC.setRefIPD(spanWidth);
+                    childLC.setWritingMode(context.getWritingMode());
 
                     //Get the element list for the cell contents
                     List elems = primary.getCellLM().getNextKnuthElements(

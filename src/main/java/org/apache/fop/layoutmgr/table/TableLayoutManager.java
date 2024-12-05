@@ -273,6 +273,7 @@ public class TableLayoutManager extends SpacedBorderedPaddedBlockLayoutManager
                                  stackSize));*/
         childLC.setRefIPD(context.getRefIPD());
         childLC.copyPendingMarksFrom(context);
+        childLC.setWritingMode(context.getWritingMode());
 
         contentKnuthElements = contentLM.getNextKnuthElements(childLC, alignment);
         //Set index values on elements coming from the content LM

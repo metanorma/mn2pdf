@@ -183,6 +183,8 @@ public class TableCellLayoutManager extends BlockStackingLayoutManager {
         LayoutManager prevLM = null; // previously active LM
         while ((curLM = getChildLM()) != null) {
             LayoutContext childLC = LayoutContext.newInstance();
+            childLC.setWritingMode(context.getWritingMode());
+						
             // curLM is a ?
             childLC.setStackLimitBP(context.getStackLimitBP().minus(stackLimit));
             childLC.setRefIPD(cellIPD);

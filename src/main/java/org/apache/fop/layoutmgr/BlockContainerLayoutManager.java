@@ -202,7 +202,8 @@ public class BlockContainerLayoutManager extends SpacedBorderedPaddedBlockLayout
         childLC.setStackLimitBP(
                 context.getStackLimitBP().minus(MinOptMax.getInstance(relDims.bpd)));
         childLC.setRefIPD(relDims.ipd);
-        childLC.setWritingMode(getBlockContainerFO().getWritingMode());
+        //childLC.setWritingMode(getBlockContainerFO().getWritingMode());
+        childLC.setWritingMode(context.getWritingMode());
         return childLC;
     }
 
