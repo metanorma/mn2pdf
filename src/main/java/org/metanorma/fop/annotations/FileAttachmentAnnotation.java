@@ -1,7 +1,6 @@
 package org.metanorma.fop.annotations;
 
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentNameDictionary;
 import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
@@ -12,6 +11,10 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFileAttachment;
 import org.metanorma.utils.LoggerHelper;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -28,7 +31,10 @@ public class FileAttachmentAnnotation {
     public void process(File pdf) throws IOException {
         //PDDocument document = null;
 
-        try (PDDocument document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.getAbsoluteFile()))) {
+        Path pdf_tmp = Paths.get(pdf.getAbsolutePath() + "_annotation_tmp");
+        Files.copy(Paths.get(pdf.getAbsolutePath()), pdf_tmp, StandardCopyOption.REPLACE_EXISTING);
+        try (PDDocument document = Loader.loadPDF(pdf_tmp.toFile())) {
+        //try {
             //document = PDDocument.load(pdf);
 
             ArrayList<String> embeddedFileAnnotations = new ArrayList<>();
@@ -71,6 +77,7 @@ public class FileAttachmentAnnotation {
                 namesDictionary.setEmbeddedFiles(efTree);
             }
 
+            Files.deleteIfExists(pdf.toPath());
             document.save(pdf);
                 
         } catch (IOException ex) {
