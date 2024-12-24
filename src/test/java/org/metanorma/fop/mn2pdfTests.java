@@ -20,7 +20,6 @@ import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 
-import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDFileSpecification;
@@ -264,7 +263,7 @@ public class mn2pdfTests {
         String PDFkeywords = "";
         
         //PDDocument  doc;
-        try (PDDocument doc = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.toFile().getAbsoluteFile()))) {
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
             //doc = PDDocument.load(pdf.toFile());
         
             PDPageTree  pages = doc.getDocumentCatalog().getPages();
@@ -328,12 +327,12 @@ public class mn2pdfTests {
         boolean encryptMetadata = false;
                 
         //PDDocument  doc;
-        try (PDDocument doc = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.toFile().getAbsoluteFile()), "userpass")) {
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile(), "userpass")) {
             //doc = PDDocument.load(pdf.toFile(), "userpass");
         
             AccessPermission ap = doc.getCurrentAccessPermission();
             allowPrint = ap.canPrint();
-            allowPrintHQ = ap.canPrintFaithful();// canPrintDegraded() in 2.0.27;
+            allowPrintHQ = ap.canPrintFaithful();// ap.canPrintDegraded();
             allowCopyContent = ap.canExtractContent();
             allowEditContent = ap.canModify();
             allowEditAnnotations = ap.canModifyAnnotations();
@@ -401,7 +400,7 @@ public class mn2pdfTests {
 
         String pdftext = "";
         //PDDocument  doc;
-        try (PDDocument doc = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.toFile().getAbsoluteFile()))) {
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
             //doc = PDDocument.load(pdf.toFile());
             pdftext = new PDFTextStripper().getText(doc);
         } catch (IOException ex) {
@@ -428,7 +427,7 @@ public class mn2pdfTests {
         //PDDocument doc;
         int countFileAttachmentAnnotation = 0;
         int countFileAttachmentEmbedded = 0;
-        try (PDDocument doc = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf.toFile().getAbsoluteFile()))) {
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
             //doc = PDDocument.load(pdf.toFile());
 
             int numberOfPages = doc.getNumberOfPages();

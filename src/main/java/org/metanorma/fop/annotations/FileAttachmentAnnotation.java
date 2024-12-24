@@ -86,11 +86,12 @@ public class FileAttachmentAnnotation {
         }
 
 
-        /*finally {
-            if( document != null ) {
+        finally {
+            /*if( document != null ) {
                 document.close();
-            }
-        }*/
+            }*/
+            Files.deleteIfExists(pdf_tmp);
+        }
         
     }
     

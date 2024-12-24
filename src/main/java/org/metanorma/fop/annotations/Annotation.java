@@ -376,9 +376,17 @@ public class Annotation {
 
         if (oArray != null) {
             for(int i = 0; i < oArray.size(); i++) {
-                COSObject oArrayItem = (COSObject) oArray.get(i);
-                COSBase oBaseItem = oArrayItem.getObject();
-                COSDictionary dArrayItem = (COSDictionary) oBaseItem;
+                COSObject oArrayItem = null;
+                COSDictionary dArrayItem;
+                if (oArray.get(i) instanceof COSDictionary) {
+                    //oArrayItem = (COSObject) oArray.get(i).getCOSObject();
+                    dArrayItem = (COSDictionary) oArray.get(i);
+                } else {
+                    oArrayItem = (COSObject) oArray.get(i);
+                    COSBase oBaseItem = oArrayItem.getObject();
+                    dArrayItem = (COSDictionary) oBaseItem;
+                }
+
                 COSName cName = (COSName) dArrayItem.getItem(COSName.S);
 
                 if (cName != null) {
@@ -466,7 +474,7 @@ public class Annotation {
                     COSArray oA_K = (COSArray) dArrayItem.getItem(COSName.K);
                     fixAnnotationTags(oA_K, oArrayItem, ++level);
                 } catch (Exception e) {
-                    //
+                    //System.out.println(e.toString());
                 }
             }
         }
