@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.fop.complexscripts.util.JapaneseToNumbers;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 
 import org.apache.pdfbox.pdmodel.*;
@@ -261,9 +262,9 @@ public class mn2pdfTests {
         String PDFsubject = "";
         String PDFkeywords = "";
         
-        PDDocument  doc;
-        try {
-            doc = PDDocument.load(pdf.toFile());
+        //PDDocument  doc;
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
         
             PDPageTree  pages = doc.getDocumentCatalog().getPages();
             for (int i = 0; i < pages.getCount(); i++) {
@@ -325,13 +326,13 @@ public class mn2pdfTests {
         boolean allowAssembleDocument = true;
         boolean encryptMetadata = false;
                 
-        PDDocument  doc;
-        try {
-            doc = PDDocument.load(pdf.toFile(), "userpass");
+        //PDDocument  doc;
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile(), "userpass")) {
+            //doc = PDDocument.load(pdf.toFile(), "userpass");
         
             AccessPermission ap = doc.getCurrentAccessPermission();
             allowPrint = ap.canPrint();
-            allowPrintHQ = ap.canPrintDegraded();
+            allowPrintHQ = ap.canPrintFaithful();// ap.canPrintDegraded();
             allowCopyContent = ap.canExtractContent();
             allowEditContent = ap.canModify();
             allowEditAnnotations = ap.canModifyAnnotations();
@@ -398,9 +399,9 @@ public class mn2pdfTests {
         mn2pdf.main(args);
 
         String pdftext = "";
-        PDDocument  doc;
-        try {
-            doc = PDDocument.load(pdf.toFile());
+        //PDDocument  doc;
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
             pdftext = new PDFTextStripper().getText(doc);
         } catch (IOException ex) {
             System.out.println(ex.toString());
@@ -423,11 +424,11 @@ public class mn2pdfTests {
         assertTrue(Files.exists(pdf));
         // check two attachments - one is embedded file, one is fileattachment annotation
 
-        PDDocument doc;
+        //PDDocument doc;
         int countFileAttachmentAnnotation = 0;
         int countFileAttachmentEmbedded = 0;
-        try {
-            doc = PDDocument.load(pdf.toFile());
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
 
             int numberOfPages = doc.getNumberOfPages();
             for (int pageIndex = 0; pageIndex < numberOfPages; pageIndex++) {

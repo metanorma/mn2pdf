@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDAppearanceContentStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -46,27 +45,20 @@ public class PDFileAttachmentAppearanceHandler extends PDAbstractAppearanceHandl
     }
 
     @Override
-    public void generateAppearanceStreams()
-    {
-        generateNormalAppearance();
-        generateRolloverAppearance();
-        generateDownAppearance();
-    }
-
-    @Override
     public void generateNormalAppearance()
     {
         PDAnnotationFileAttachment annotation = (PDAnnotationFileAttachment) getAnnotation();
-
-        PDAppearanceContentStream contentStream  = null;
-        try
+        PDRectangle rect = getRectangle();
+        if (rect == null)
         {
-            contentStream = getNormalAppearanceAsContentStream();
+            return;
+        }
+        try (PDAppearanceContentStream contentStream = getNormalAppearanceAsContentStream())
+        {
             setOpacity(contentStream, annotation.getConstantOpacity());
 
             // minimum code of PDTextAppearanceHandler.adjustRectAndBBox() 
             int size = 18;
-            PDRectangle rect = getRectangle();
             rect.setUpperRightX(rect.getLowerLeftX() + size);
             rect.setLowerLeftY(rect.getUpperRightY() - size);
             annotation.setRectangle(rect);
@@ -79,15 +71,11 @@ public class PDFileAttachmentAppearanceHandler extends PDAbstractAppearanceHandl
         {
             LOG.error(e);
         }
-        finally
-        {
-            IOUtils.closeQuietly(contentStream);
-        }
     }
 
     /**
      * Draw a paperclip. Shape is from
-     * <a href="https://raw.githubusercontent.com/Iconscout/unicons/master/svg/line/paperclip.svg>Iconscout</a>
+     * <a href="https://raw.githubusercontent.com/Iconscout/unicons/master/svg/line/paperclip.svg">Iconscout</a>
      * (Apache licensed).
      *
      * @param contentStream
