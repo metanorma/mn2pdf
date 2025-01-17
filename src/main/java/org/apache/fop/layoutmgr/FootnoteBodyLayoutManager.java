@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.apache.fop.area.Area;
 import org.apache.fop.fo.flow.FootnoteBody;
+import org.apache.fop.fo.pagination.Region;
+import org.apache.fop.traits.WritingMode;
 
 /**
  * Layout manager for footnote bodies.
@@ -43,6 +45,8 @@ public class FootnoteBodyLayoutManager extends BlockStackingLayoutManager {
     @Override
     public List getNextKnuthElements(LayoutContext context, int alignment) {
         if (knuthElements == null) {
+            // added for fixing https://github.com/metanorma/xmlgraphics-fop/issues/37
+            context.setWritingMode(getCurrentPage().getSimplePageMaster().getRegion(Region.FO_REGION_BODY).getWritingMode());
             knuthElements = super.getNextKnuthElements(context, alignment);
         }
         return knuthElements;
