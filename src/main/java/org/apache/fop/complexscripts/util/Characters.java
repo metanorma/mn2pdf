@@ -695,6 +695,9 @@ public class Characters {
             for (int f = 0, t = n; f <= t; ) {
                 int m  = (f + t) / 2;
                 int i  = 2 * m;
+                if (i >= voRanges1.length) {
+                    return null;
+                }
                 int c0 = voRanges1[i + 0];
                 int c1 = voRanges1[i + 1];
                 if (c1 < c) {
@@ -715,6 +718,8 @@ public class Characters {
         if (n > 0) {
             for (int f = 0, t = n;  f <= t; ) {
                 int m  = (f + t) >>> 1;
+                if (m >= voSingles1.length)
+                    return null;
                 int c0 = voSingles1[m];
                 if (c0 < c) {
                     if ((f = m + 1) > n)
