@@ -322,7 +322,7 @@ public class PageBreaker extends AbstractBreaker {
      * or whether to take into account a 'last-page' condition.
      */
     protected void doPhase3(PageBreakingAlgorithm alg, int partCount,
-            BlockSequence originalList, BlockSequence effectiveList) {
+            BlockSequence originalList, BlockSequence effectiveList, LayoutContext context) {
 
         if (needColumnBalancing) {
             //column balancing for the last part

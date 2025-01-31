@@ -19,6 +19,8 @@
 
 package org.apache.fop.layoutmgr.inline;
 
+import java.util.List;
+
 import org.apache.fop.area.PageViewport;
 import org.apache.fop.area.Trait;
 import org.apache.fop.area.inline.InlineArea;
@@ -28,6 +30,7 @@ import org.apache.fop.fo.flow.AbstractPageNumberCitation;
 import org.apache.fop.fonts.Font;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.fonts.FontTriplet;
+import org.apache.fop.layoutmgr.KnuthSequence;
 import org.apache.fop.layoutmgr.LayoutContext;
 import org.apache.fop.layoutmgr.TraitSetter;
 import org.apache.fop.traits.MinOptMax;
@@ -47,6 +50,9 @@ public abstract class AbstractPageNumberCitationLayoutManager extends LeafNodeLa
     private boolean resolved;
 
     private String citationString;
+
+    /** Indicate whether the writing mode is vertical */
+    private boolean isVertical;
 
     /**
      * Constructor
@@ -120,6 +126,13 @@ public abstract class AbstractPageNumberCitationLayoutManager extends LeafNodeLa
         return area;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public List<KnuthSequence> getNextKnuthElements(LayoutContext context, int alignment) {
+        isVertical = context.getWritingMode().isVertical();
+        return super.getNextKnuthElements(context, alignment);
+    }
+
     private InlineArea getPageNumberCitationArea() {
         TextArea text;
         if (resolved) {
@@ -129,7 +142,7 @@ public abstract class AbstractPageNumberCitationLayoutManager extends LeafNodeLa
             text.addWord(citationString, getStringWidth(citationString), null, null, null, 0);
         } else {
             UnresolvedPageNumber unresolved = new UnresolvedPageNumber(citation.getRefId(), font,
-                    getReferenceType());
+                    getReferenceType(), isVertical);
             getPSLM().addUnresolvedArea(citation.getRefId(), unresolved);
             text = unresolved;
         }

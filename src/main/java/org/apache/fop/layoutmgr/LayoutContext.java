@@ -665,7 +665,8 @@ public final class LayoutContext {
                 + "\nKeeps: \t[keep-with-next=" + getKeepWithNextPending()
                 + "][keep-with-previous=" + getKeepWithPreviousPending() + "] pending"
                 + "\nBreaks: \tforced [" + (breakBefore != Constants.EN_AUTO ? "break-before" : "") + "]["
-                + (breakAfter != Constants.EN_AUTO ? "break-after" : "") + "]";
+                + (breakAfter != Constants.EN_AUTO ? "break-after" : "") + "]"
+                + "\nWriting Mode: \t" + getWritingMode();
     }
 
     /**

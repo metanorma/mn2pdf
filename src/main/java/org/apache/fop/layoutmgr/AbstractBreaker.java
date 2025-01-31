@@ -457,7 +457,7 @@ public abstract class AbstractBreaker {
                                 + " pageBreaks.size()= " + alg.getPageBreaks().size());
 
                         //*** Phase 3: Add areas ***
-                        doPhase3(alg, optimalPageCount, blockList, blockList);
+                        doPhase3(alg, optimalPageCount, blockList, blockList, childLC);
                     }
                 }
             } catch (PagePositionOnlyException e) {
@@ -519,7 +519,7 @@ public abstract class AbstractBreaker {
      * @param effectiveList effective Knuth element list (after adjustments)
      */
     protected abstract void doPhase3(PageBreakingAlgorithm alg, int partCount,
-            BlockSequence originalList, BlockSequence effectiveList);
+            BlockSequence originalList, BlockSequence effectiveList, LayoutContext context);
 
     /**
      * Phase 3 of Knuth algorithm: Adds the areas

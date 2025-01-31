@@ -137,7 +137,7 @@ public abstract class LocalBreaker extends AbstractBreaker {
     }
 
     protected void doPhase3(PageBreakingAlgorithm alg, int partCount, BlockSequence originalList,
-            BlockSequence effectiveList) {
+            BlockSequence effectiveList, LayoutContext context) {
         if (partCount > 1) {
             PageBreakPosition pos = alg.getPageBreaks().getFirst();
             int firstPartLength = ElementListUtils.calcContentLength(effectiveList,
@@ -148,7 +148,9 @@ public abstract class LocalBreaker extends AbstractBreaker {
         // overflow should be visible.
         alg.removeAllPageBreaks();
         // Directly add areas after finding the breaks
-        this.addAreas(alg, 1, originalList, effectiveList);
+        LayoutContext childLC = LayoutContext.newInstance();
+        childLC.setWritingMode(context.getWritingMode());
+        this.addAreas(alg, 0, 1, originalList, effectiveList, childLC);
     }
 
     protected void finishPart(PageBreakingAlgorithm alg, PageBreakPosition pbp) {

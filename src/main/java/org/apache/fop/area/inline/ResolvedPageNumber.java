@@ -22,6 +22,8 @@ package org.apache.fop.area.inline;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import org.apache.fop.fonts.Font;
+
 /**
  * Always (pre-) resolved page number area. Needed by BIDI code to distinguish
  * from UnresolvedPageNumber.
@@ -30,8 +32,27 @@ public class ResolvedPageNumber extends TextArea {
 
     private static final long serialVersionUID = -1758369835371647979L;
 
+    //Transient fields
+    transient Font font;
+
+    private boolean isVertical;
+
+    public ResolvedPageNumber(Font f, boolean v) {
+        font = f;
+        isVertical = v;
+    }
+
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
         ois.defaultReadObject();
     }
 
+    @Override
+    public void addWord(String word, int offset, int level) {
+        if(isVertical) {
+            for(int i=0; i<word.length(); i++) {
+                addWord(word.substring(i, i+1), font.getFontSize(), null, null, null, offset, false, true);
+            }
+        } else
+            super.addWord(word, offset, level);
+    }
 }

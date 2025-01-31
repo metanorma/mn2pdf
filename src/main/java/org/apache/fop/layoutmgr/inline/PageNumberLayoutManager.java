@@ -19,6 +19,8 @@
 
 package org.apache.fop.layoutmgr.inline;
 
+import java.util.List;
+
 import org.apache.fop.area.Trait;
 import org.apache.fop.area.inline.InlineArea;
 import org.apache.fop.area.inline.ResolvedPageNumber;
@@ -26,6 +28,7 @@ import org.apache.fop.fo.flow.PageNumber;
 import org.apache.fop.fonts.Font;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.fonts.FontTriplet;
+import org.apache.fop.layoutmgr.KnuthSequence;
 import org.apache.fop.layoutmgr.LayoutContext;
 import org.apache.fop.layoutmgr.TraitSetter;
 import org.apache.fop.traits.MinOptMax;
@@ -73,7 +76,7 @@ public class PageNumberLayoutManager extends LeafNodeLayoutManager {
     /** {@inheritDoc} */
     public InlineArea get(LayoutContext context) {
         // get page string from parent, build area
-        ResolvedPageNumber pn = new ResolvedPageNumber();
+        ResolvedPageNumber pn = new ResolvedPageNumber(font, context.getWritingMode().isVertical());
         String str = getCurrentPV().getPageNumberString();
         int width = getStringWidth(str);
         int level = getBidiLevel();
@@ -94,7 +97,7 @@ public class PageNumberLayoutManager extends LeafNodeLayoutManager {
         //TODO Maybe replace that with a clone() call or better, a copy constructor
         //TODO or even better: delay area creation until addAreas() stage
         //ResolvedPageNumber is cloned because the LM is reused in static areas and the area can't be.
-        ResolvedPageNumber pn = new ResolvedPageNumber();
+        ResolvedPageNumber pn = new ResolvedPageNumber(font, layoutContext.getWritingMode().isVertical());
         TraitSetter.setProducerID(pn, fobj.getId());
         pn.setIPD(baseArea.getIPD());
         pn.setBPD(baseArea.getBPD());
