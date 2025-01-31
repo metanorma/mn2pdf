@@ -708,7 +708,7 @@ public class BlockContainerLayoutManager extends SpacedBorderedPaddedBlockLayout
         }
 
         protected void doPhase3(PageBreakingAlgorithm alg, int partCount,
-                BlockSequence originalList, BlockSequence effectiveList) {
+                BlockSequence originalList, BlockSequence effectiveList, LayoutContext context) {
             //Defer adding of areas until addAreas is called by the parent LM
             this.deferredAlg = alg;
             this.deferredOriginalList = originalList;
