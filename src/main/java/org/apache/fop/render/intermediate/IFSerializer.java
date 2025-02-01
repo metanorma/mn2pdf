@@ -856,6 +856,16 @@ implements IFConstants, IFPainter, IFDocumentNavigationHandler {
         }
     }
 
+    private void noteActionBookmark(AbstractAction action) {
+        if (action == null) {
+            //throw new NullPointerException("action must not be null");
+        }
+        if (action != null && !action.isComplete()) {
+            assert action.hasID();
+            incompleteActions.put(action.getID(), action);
+        }
+    }
+
     /** {@inheritDoc} */
     public void renderNamedDestination(NamedDestination destination) throws IFException {
         noteAction(destination.getAction());
@@ -878,9 +888,9 @@ implements IFConstants, IFPainter, IFDocumentNavigationHandler {
             handler.startElement(DocumentNavigationExtensionConstants.BOOKMARK_TREE, atts);
             for (Object o : tree.getBookmarks()) {
                 Bookmark b = (Bookmark) o;
-                if (b.getAction() != null) {
+                //if (b.getAction() != null) {
                     serializeBookmark(b);
-                }
+                //}
             }
             handler.endElement(DocumentNavigationExtensionConstants.BOOKMARK_TREE);
         } catch (SAXException e) {
@@ -889,14 +899,16 @@ implements IFConstants, IFPainter, IFDocumentNavigationHandler {
     }
 
     private void serializeBookmark(Bookmark bookmark) throws SAXException, IFException {
-        noteAction(bookmark.getAction());
+        noteActionBookmark(bookmark.getAction());
 
         AttributesImpl atts = new AttributesImpl();
         atts.addAttribute("", "title", "title", XMLUtil.CDATA, bookmark.getTitle());
         atts.addAttribute("", "starting-state", "starting-state",
                 XMLUtil.CDATA, bookmark.isShown() ? "show" : "hide");
         handler.startElement(DocumentNavigationExtensionConstants.BOOKMARK, atts);
-        serializeXMLizable(bookmark.getAction());
+        if (bookmark.getAction() != null) {
+            serializeXMLizable(bookmark.getAction());
+        }
         for (Object o : bookmark.getChildBookmarks()) {
             Bookmark b = (Bookmark) o;
             if (b.getAction() != null) {
