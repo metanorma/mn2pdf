@@ -27,7 +27,7 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -51,7 +51,7 @@ jobs:
           fontist update
           fontist manifest-install --confirm-license .github/mscorefonts.yml
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ~/.fontist
           key: fontist-${{ runner.os }}
