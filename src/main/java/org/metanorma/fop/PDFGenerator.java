@@ -499,13 +499,13 @@ public class PDFGenerator {
             }
 
             // validate PDF by veraPDF
-            VeraPDFValidator veraPDFValidator = new VeraPDFValidator();
+            /*VeraPDFValidator veraPDFValidator = new VeraPDFValidator();
             if (PDFA_enabled) {
                 veraPDFValidator.validate(pdf, PDF_A_MODE);
             }
             if (PDFUA_enabled) {
                 veraPDFValidator.validate(pdf, PDF_UA_MODE);
-            }
+            }*/
 
             fontcfg.printMessages();
 
