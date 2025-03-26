@@ -73,7 +73,7 @@
 	<xsl:variable name="reviews_container" select="xalan:nodeset($reviews_container_)"/>
 
 	<xsl:template match="*[local-name() = 'fmt-review-start']">
-		<xsl:variable name="id_from" select="@id"/>
+		<xsl:variable name="id_from" select="@source"/>
 		<xsl:variable name="id_to_">
 			<xsl:choose>
 				<!--  or 
