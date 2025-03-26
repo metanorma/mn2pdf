@@ -76,9 +76,6 @@
 		<xsl:variable name="id_from" select="@source"/>
 		<xsl:variable name="id_to_">
 			<xsl:choose>
-				<!--  or 
-				(following-sibling::node()[1][local-name() = 'bookmark'][@id = $id_from] and
-				following-sibling::node()[2][local-name() = 'fmt-review-end'][@source = $id_from]) -->
 				<xsl:when test="@source = @end"><!-- skip --></xsl:when>
 				<xsl:otherwise><xsl:value-of select="@end"/></xsl:otherwise>
 			</xsl:choose>
