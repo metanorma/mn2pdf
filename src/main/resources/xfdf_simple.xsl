@@ -2,6 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:java="http://xml.apache.org/xalan/java"
+											xmlns="http://ns.adobe.com/xfdf/"
 											exclude-result-prefixes="java xalan"
 											version="1.0">
 
@@ -49,160 +50,221 @@
 
 	<xsl:template match="/">
 		
-		<xfdf xmlns="http://ns.adobe.com/xfdf/">
+		<xfdf>
 		
 			<xsl:element name="annots">
-			
-			
-				<xsl:for-each select="//*[local-name() = 'review']">
-					<xsl:variable name="id_from">
-						<xsl:choose>
-							<xsl:when test="normalize-space(@from) != ''"><xsl:value-of select="@from"/></xsl:when>
-							<xsl:otherwise><xsl:value-of select="@id"/></xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					<xsl:variable name="id_to" select="@to"/>
-			
-					<xsl:variable name="reviewer" select="@reviewer"/>
-					<xsl:variable name="date" select="@date"/>
-				
-					<!-- add Post-It popup -->
-					<!-- Example:
-						<text color="#FFC333" opacity="0.600000" flags="nozoom,norotate" date="D:20220422000000+03'00'" name="d4e12061-3dbc-4b51-9b7d-89dcdad52d34" page="4" rect="70.865997,289.942993,88.865997,309.942993" title="Reese Plews">
-							<contents-richtext>
-								<body xmlns="http://www.w3.org/1999/xhtml">
-									<p dir="ltr">Propose to deprecate this entry as a definition built upon the <span style="font-style:italic">concepts</span> from
-				the SAG MRS has already been proposed by ISO.</p>
-								</body>
-							</contents-richtext>
-							<popup flags="nozoom,norotate" open="yes" page="4" rect="595.275024,195.942993,799.275024,309.942993"/>
-						</text>
-					-->
-					
-					<xsl:variable name="element_from_" select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
-					<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
-					
-					<xsl:variable name="page" select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
-					
-					<!-- <debug>
-						<id_from><xsl:value-of select="$id_from"/></id_from>
-						<element><xsl:copy-of select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/></element>
-						<element_from><xsl:copy-of select="$element_from"/></element_from>
-					</debug> -->
-					
-					<text>
-						<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
-						<xsl:attribute name="opacity"><xsl:value-of select="$opacity_popup"/></xsl:attribute>
-						<xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
-						<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
-						<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
-						<xsl:attribute name="rect"><xsl:value-of select="concat($element_from/@x,',',$element_from/@y)"/></xsl:attribute>
-						<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
-						<!-- for relationship between common.xsl alt-text Annot___@id and this annotation -->
-						<xsl:attribute name="subject">Annot___<xsl:value-of select="@id"/></xsl:attribute>
-					
-						<xsl:element name="contents-richtext">
-							<body xmlns="http://www.w3.org/1999/xhtml">
-								<xsl:apply-templates mode="pdf_richtext"/>
-							</body>
-						</xsl:element>
-						
-						<!-- <popup flags="nozoom,norotate" open="yes" page="4" rect="595.275024,195.942993,799.275024,309.942993"/> -->
-						<popup>
-							<xsl:attribute name="flags">nozoom,norotate</xsl:attribute>
-							<xsl:attribute name="open">yes</xsl:attribute>
-							<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
-							<xsl:attribute name="rect"></xsl:attribute>
-						</popup>
-						
-					</text>
-					
-					
-					
-					<!-- add text highlight -->
-					
-					<!-- Example:
-						<highlight color="#FFC333" opacity="0.300000" date="D:20220422000000+03'00'" name="921c0030-b204-4ce8-a2f1-89eae80cc9b1" page="4" coords="474.315000,148.304960,533.885000,148.304960,474.315000,137.644960,533.885000,137.644960" rect="474.315000,139.644960,533.885000,161.304960" subject="Highlight" title="Reese Plews">
-							<popup flags="print,nozoom,norotate" open="no" page="4" rect="595.275024,34.304962,799.275024,148.304962"/>
-						</highlight>
-					-->
-					
-					<xsl:if test="$id_to != ''">
-					
-					
-						<xsl:variable name="highlight_sequence_">
-					
-							<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
-								<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
-								
-								
-								<highlight>
-									<xsl:attribute name="flags">print</xsl:attribute>
-									<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
-									<xsl:attribute name="opacity"><xsl:value-of select="$opacity_highlight"/></xsl:attribute>
-									<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
-									<xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
-									<xsl:attribute name="coords"></xsl:attribute>
-									<xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
-									<xsl:attribute name="subject">Highlight</xsl:attribute>
-									<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
-									
-									<popup>
-									 <xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
-									 <xsl:attribute name="open">no</xsl:attribute>
-									 <xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
-									 <xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
-									</popup>
-									
-									<hightlighttext><xsl:copy-of select="node()"/></hightlighttext>
-									
-								</highlight>
-								
-							</xsl:for-each>
-						</xsl:variable>
-						
-						<xsl:variable name="highlight_sequence" select="xalan:nodeset($highlight_sequence_)"/>
-								
-						<!-- <xsl:copy-of select="$highlight_sequence"/> -->
-						
-						<xsl:variable name="pages">
-							<xsl:for-each select="$highlight_sequence/*[local-name() = 'highlight']">
-								<xsl:if test="not(preceding-sibling::*[local-name() = 'highlight'][@page = current()/@page])">
-									<page><xsl:value-of select="@page"/></page>
-								</xsl:if>
-							</xsl:for-each>
-						</xsl:variable>
-						
-						<!-- <xsl:copy-of select="$pages"/> -->
-						
-						<!-- group of highlight sequence -->
-						<xsl:for-each select="xalan:nodeset($pages)//*[local-name() = 'page']">
-							<xsl:variable name="page" select="."/>
-							
-							<xsl:for-each select="$highlight_sequence/*[local-name() = 'highlight'][@page = $page][1]">
-							
-								<highlight>
-									<xsl:copy-of select="@*"/>
-									<xsl:copy-of select="node()"/>
-									
-									<xsl:for-each select="following-sibling::*[local-name() = 'highlight'][@page = $page]">
-										<next_highlight>
-											<xsl:copy-of select="@*"/>
-											<xsl:copy-of select="node()"/>
-										</next_highlight>
-									</xsl:for-each>
-								
-								</highlight>
-							
-							</xsl:for-each>
-							
-						</xsl:for-each>
-						
-					</xsl:if>
-					
-				</xsl:for-each>
+				<xsl:choose>
+					<xsl:when test="//*[local-name() = 'fmt-review-start']">
+						<xsl:apply-templates select="//*[local-name() = 'fmt-review-start']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="//*[local-name() = 'review']"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:element>
 		</xfdf>
+	</xsl:template>
+
+	<xsl:variable name="reviews_container_">
+		<xsl:for-each select="//*[local-name() = 'review-container']/*[local-name() = 'fmt-review-body']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="reviews_container" select="xalan:nodeset($reviews_container_)"/>
+
+	<xsl:template match="*[local-name() = 'fmt-review-start']">
+		<xsl:variable name="id_from" select="@source"/>
+		<xsl:variable name="id_to_">
+			<xsl:choose>
+				<xsl:when test="@source = @end"><!-- skip --></xsl:when>
+				<xsl:otherwise><xsl:value-of select="@end"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="id_to" select="normalize-space($id_to_)"/>
+		
+		<xsl:variable name="target" select="@target"/>
+		
+		<xsl:variable name="review_body_" select="$reviews_container//*[local-name() = 'fmt-review-body'][@id = $target]"/>
+		<xsl:variable name="review_body" select="xalan:nodeset($review_body_)"/>
+		<xsl:variable name="reviewer" select="$review_body/@reviewer"/>
+		<xsl:variable name="date" select="$review_body/@date"/>
+		
+		<xsl:call-template name="createAnnotation">
+			<xsl:with-param name="id_from" select="$id_from"/>
+			<xsl:with-param name="id_to" select="$id_to"/>
+			<xsl:with-param name="reviewer" select="$reviewer"/>
+			<xsl:with-param name="date" select="$date"/>
+			<xsl:with-param name="review_body" select="$review_body"/>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'review']">
+		<xsl:variable name="id_from">
+			<xsl:choose>
+				<xsl:when test="normalize-space(@from) != ''"><xsl:value-of select="@from"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="@id"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="id_to"><xsl:if test="normalize-space(@from) != '' and @to and @from != @to"><xsl:value-of select="@to"/></xsl:if></xsl:variable>
+
+		<xsl:variable name="reviewer" select="@reviewer"/>
+		<xsl:variable name="date" select="@date"/>
+		
+		<xsl:call-template name="createAnnotation">
+			<xsl:with-param name="id_from" select="$id_from"/>
+			<xsl:with-param name="id_to" select="$id_to"/>
+			<xsl:with-param name="reviewer" select="$reviewer"/>
+			<xsl:with-param name="date" select="$date"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="createAnnotation">
+		<xsl:param name="id_from"/>
+		<xsl:param name="id_to"/>
+		<xsl:param name="reviewer"/>
+		<xsl:param name="date"/>
+		<xsl:param name="review_body"/>
+		<!-- add Post-It popup -->
+		<!-- Example:
+			<text color="#FFC333" opacity="0.600000" flags="nozoom,norotate" date="D:20220422000000+03'00'" name="d4e12061-3dbc-4b51-9b7d-89dcdad52d34" page="4" rect="70.865997,289.942993,88.865997,309.942993" title="Reese Plews">
+				<contents-richtext>
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<p dir="ltr">Propose to deprecate this entry as a definition built upon the <span style="font-style:italic">concepts</span> from
+	the SAG MRS has already been proposed by ISO.</p>
+					</body>
+				</contents-richtext>
+				<popup flags="nozoom,norotate" open="yes" page="4" rect="595.275024,195.942993,799.275024,309.942993"/>
+			</text>
+		-->
+		
+		<xsl:variable name="element_from_" select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/>
+		<xsl:variable name="element_from" select="xalan:nodeset($element_from_)"/>
+		
+		<xsl:variable name="page" select="count($element_from/preceding-sibling::*[local-name() = 'page'])"/>
+		
+		<!-- <debug>
+			<id_from><xsl:value-of select="$id_from"/></id_from>
+			<element><xsl:copy-of select="$if_xml_flatten//*[local-name() = 'id'][@name = $id_from]/following-sibling::*[local-name() = 'text'][1]"/></element>
+			<element_from><xsl:copy-of select="$element_from"/></element_from>
+		</debug> -->
+		
+		<text>
+			<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
+			<xsl:attribute name="opacity"><xsl:value-of select="$opacity_popup"/></xsl:attribute>
+			<xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
+			<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
+			<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
+			<xsl:attribute name="rect"><xsl:value-of select="concat($element_from/@x,',',$element_from/@y)"/></xsl:attribute>
+			<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
+			<!-- for relationship between common.xsl alt-text Annot___@id and this annotation -->
+			<xsl:attribute name="subject">Annot___<xsl:value-of select="@id"/></xsl:attribute>
+		
+			<xsl:element name="contents-richtext">
+				<body xmlns="http://www.w3.org/1999/xhtml">
+					<xsl:choose>
+						<xsl:when test="local-name() = 'fmt-review-start'">
+							<xsl:apply-templates select="$review_body" mode="pdf_richtext"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates mode="pdf_richtext"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+				</body>
+			</xsl:element>
+			
+			<!-- <popup flags="nozoom,norotate" open="yes" page="4" rect="595.275024,195.942993,799.275024,309.942993"/> -->
+			<popup>
+				<xsl:attribute name="flags">nozoom,norotate</xsl:attribute>
+				<xsl:attribute name="open">yes</xsl:attribute>
+				<xsl:attribute name="page"><xsl:value-of select="$page - 1"/></xsl:attribute>
+				<xsl:attribute name="rect"></xsl:attribute>
+			</popup>
+			
+		</text>
+		
+		
+		
+		<!-- add text highlight -->
+		
+		<!-- Example:
+			<highlight color="#FFC333" opacity="0.300000" date="D:20220422000000+03'00'" name="921c0030-b204-4ce8-a2f1-89eae80cc9b1" page="4" coords="474.315000,148.304960,533.885000,148.304960,474.315000,137.644960,533.885000,137.644960" rect="474.315000,139.644960,533.885000,161.304960" subject="Highlight" title="Reese Plews">
+				<popup flags="print,nozoom,norotate" open="no" page="4" rect="595.275024,34.304962,799.275024,148.304962"/>
+			</highlight>
+		-->
+		
+		<xsl:if test="$id_to != ''">
+			<!-- <xsl:message>debug id=<xsl:value-of select="@id"/></xsl:message> -->
+		
+			<xsl:variable name="highlight_sequence_">
+		
+				<xsl:for-each select="$element_from/following-sibling::*[local-name() = 'text'][not(preceding-sibling::*[local-name() = 'id'][@name = $id_to])]">
+					<xsl:variable name="page_to" select="count(preceding-sibling::*[local-name() = 'page'])"/>
+					
+					
+					<highlight>
+						<xsl:attribute name="flags">print</xsl:attribute>
+						<xsl:attribute name="color"><xsl:value-of select="$color_annotation"/></xsl:attribute>
+						<xsl:attribute name="opacity"><xsl:value-of select="$opacity_highlight"/></xsl:attribute>
+						<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
+						<xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
+						<xsl:attribute name="coords"></xsl:attribute>
+						<xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
+						<xsl:attribute name="subject">Highlight</xsl:attribute>
+						<xsl:attribute name="title"><xsl:value-of select="$reviewer"/></xsl:attribute>
+						
+						<popup>
+						 <xsl:attribute name="flags">print,nozoom,norotate</xsl:attribute>
+						 <xsl:attribute name="open">no</xsl:attribute>
+						 <xsl:attribute name="page"><xsl:value-of select="$page_to - 1"/></xsl:attribute>
+						 <xsl:attribute name="rect"><xsl:value-of select="concat(@x,',',@y)"/></xsl:attribute>
+						</popup>
+						
+						<hightlighttext><xsl:copy-of select="node()"/></hightlighttext>
+						
+					</highlight>
+					
+				</xsl:for-each>
+			</xsl:variable>
+			
+			<xsl:variable name="highlight_sequence" select="xalan:nodeset($highlight_sequence_)"/>
+					
+			<!-- <xsl:copy-of select="$highlight_sequence"/> -->
+			
+			<xsl:variable name="pages">
+				<xsl:for-each select="$highlight_sequence/*[local-name() = 'highlight']">
+					<xsl:if test="not(preceding-sibling::*[local-name() = 'highlight'][@page = current()/@page])">
+						<page><xsl:value-of select="@page"/></page>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			
+			<!-- <xsl:copy-of select="$pages"/> -->
+			
+			<!-- group of highlight sequence -->
+			<xsl:for-each select="xalan:nodeset($pages)//*[local-name() = 'page']">
+				<xsl:variable name="page" select="."/>
+				
+				<xsl:for-each select="$highlight_sequence/*[local-name() = 'highlight'][@page = $page][1]">
+				
+					<highlight>
+						<xsl:copy-of select="@*"/>
+						<xsl:copy-of select="node()"/>
+						
+						<xsl:for-each select="following-sibling::*[local-name() = 'highlight'][@page = $page]">
+							<next_highlight>
+								<xsl:copy-of select="@*"/>
+								<xsl:copy-of select="node()"/>
+							</next_highlight>
+						</xsl:for-each>
+					
+					</highlight>
+				
+				</xsl:for-each>
+				
+			</xsl:for-each>
+			
+		</xsl:if>
 	</xsl:template>
 
 	<!-- ==================== -->
@@ -214,6 +276,14 @@
 	</xsl:template>
 	<xsl:template match="text()" mode="pdf_richtext">
 		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-review-body']" mode="pdf_richtext">
+		<xsl:apply-templates mode="pdf_richtext"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'semx']" mode="pdf_richtext">
+		<xsl:apply-templates mode="pdf_richtext"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'strong']" mode="pdf_richtext">
