@@ -61,7 +61,7 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
         currentElement = qName;
 
-        if (qName.startsWith("semantic__") || qName.equals("emf")) {
+        if (qName.startsWith("semantic__") || qName.equals("emf") || qName.equals("stem")) {
             // skip
             skipElements.push(true);
         } else {
@@ -77,13 +77,18 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
     private void copyStartElement(String qName, Attributes attr) {
         StringBuilder sbTmp = new StringBuilder();
 
-        updateStackChar(sbTmp);
+        if (qName.equals("semx")) {
+            // skip element name `semx`
+        } else {
 
-        sbTmp.append("<");
-        sbTmp.append(qName);
-        sbTmp.append(copyAttributes(attr));
+            updateStackChar(sbTmp);
 
-        stackChar.push(SIGN_GREATER);
+            sbTmp.append("<");
+            sbTmp.append(qName);
+            sbTmp.append(copyAttributes(attr));
+
+            stackChar.push(SIGN_GREATER);
+        }
 
         sbResult.append(sbTmp.toString());
     }
@@ -149,7 +154,12 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
         if (skipElements.contains(true)) {
             // skip
         } else {
-            copyEndElement(qName);
+            if (qName.equals("semx")) {
+                // skip element name `semx`
+            } else {
+                copyEndElement(qName);
+            }
+
         }
         skipElements.pop();
     }
