@@ -29,6 +29,7 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.BreakPropertySet;
 import org.apache.fop.fo.properties.CommonAbsolutePosition;
+import org.apache.fop.fo.properties.CommonAccessibilityHolder;
 import org.apache.fop.fo.properties.CommonBorderPaddingBackground;
 import org.apache.fop.fo.properties.CommonMarginBlock;
 import org.apache.fop.fo.properties.KeepProperty;
@@ -42,9 +43,11 @@ import org.apache.fop.traits.WritingModeTraitsGetter;
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_block-container">
  * <code>fo:block-container</code></a> object.
  */
-public class BlockContainer extends FObj implements BreakPropertySet, WritingModeTraitsGetter {
+public class BlockContainer extends FObj implements BreakPropertySet, WritingModeTraitsGetter,
+        CommonAccessibilityHolder {
     // The value of FO traits (refined properties) that apply to fo:block-container.
     private CommonAbsolutePosition commonAbsolutePosition;
+    private CommonAccessibility commonAccessibility;
     private CommonBorderPaddingBackground commonBorderPaddingBackground;
     private CommonMarginBlock commonMarginBlock;
     private LengthRangeProperty blockProgressionDimension;
@@ -84,6 +87,7 @@ public class BlockContainer extends FObj implements BreakPropertySet, WritingMod
     public void bind(PropertyList pList) throws FOPException {
         super.bind(pList);
         commonAbsolutePosition = pList.getAbsolutePositionProps();
+        commonAccessibility = CommonAccessibility.getInstance(pList);
         commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
         commonMarginBlock = pList.getMarginBlockProps();
         blockProgressionDimension = pList.get(PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
@@ -317,4 +321,8 @@ public class BlockContainer extends FObj implements BreakPropertySet, WritingMod
         return getExplicitWritingMode();
     }
 
+    @Override
+    public CommonAccessibility getCommonAccessibility() {
+        return commonAccessibility;
+    }
 }
