@@ -49,6 +49,7 @@ import org.metanorma.fop.ifhandler.FOPIFFlatHandler;
 import org.metanorma.fop.ifhandler.FOPIFHiddenMathHandler;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.fop.ifhandler.FOPXMLPresentationHandler;
+import org.metanorma.fop.tags.TableCaption;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
