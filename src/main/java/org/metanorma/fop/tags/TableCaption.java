@@ -63,14 +63,6 @@ public class TableCaption {
         if (element instanceof PDStructureElement) {
             PDStructureElement pdStructureElement = (PDStructureElement) element;
 
-            if (pdStructureElement.getStructureType().equals("Table") &&
-                    pdStructureNodePreviousParent != null &&
-                    pdStructureElementTableCaption != null) {
-                // remove Caption element before the table
-                pdStructureNodePreviousParent.removeKid(pdStructureElementTableCaption);
-            }
-            pdStructureNodePreviousParent = null;
-
             if (!pdStructureElement.getStructureType().equals("Table")) {
                 pdStructureElementTableCaption = null;
             }
@@ -80,7 +72,13 @@ public class TableCaption {
                 pdStructureNodePreviousParent = pdStructureElement.getParent();
 
             } else if ("Table".equals(pdStructureElement.getStructureType())) {
-                if (pdStructureElementTableCaption != null) {
+                if (pdStructureElementTableCaption != null &&
+                    pdStructureNodePreviousParent != null) {
+
+                    // remove Caption element before the table
+                    pdStructureNodePreviousParent.removeKid(pdStructureElementTableCaption);
+                    pdStructureNodePreviousParent = null;
+
                     List<Object> kids = pdStructureElement.getKids();
                     // add Caption element as first child in Table
                     pdStructureElementTableCaption.setParent(pdStructureElement);
