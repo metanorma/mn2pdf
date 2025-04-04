@@ -49,6 +49,7 @@ import org.metanorma.fop.ifhandler.FOPIFFlatHandler;
 import org.metanorma.fop.ifhandler.FOPIFHiddenMathHandler;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.fop.ifhandler.FOPXMLPresentationHandler;
+import org.metanorma.fop.tags.TableCaption;
 import org.metanorma.utils.LoggerHelper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -691,7 +692,13 @@ public class PDFGenerator {
                 out.close();
             }
         }
-        
+
+
+        if (PDFUA_error == false) {
+            logger.log(Level.INFO, "[INFO] Table Caption tag processing...");
+            TableCaption tableCaption = new TableCaption();
+            tableCaption.process(pdf);
+        }
 
         
         if (isAddAnnotations && PDFUA_error == false) {
@@ -716,14 +723,14 @@ public class PDFGenerator {
 
         if (isAddFileAttachmentAnnotations && PDFUA_error == false) {
             logger.log(Level.INFO, "[INFO] File attachment annotation processing...");
-        try {
-            FileAttachmentAnnotation annotations = new FileAttachmentAnnotation();
-            annotations.process(pdf);
-        } catch (Exception ex) {
-            logger.severe("Can't process file attachment annotation (" + ex.toString() + ").");
-            ex.printStackTrace();
+            try {
+                FileAttachmentAnnotation annotations = new FileAttachmentAnnotation();
+                annotations.process(pdf);
+            } catch (Exception ex) {
+                logger.severe("Can't process file attachment annotation (" + ex.toString() + ").");
+                ex.printStackTrace();
+            }
         }
-    }
 
         Profiler.printProcessingTime(methodName, startMethodTime);
         Profiler.removeMethodCall();
