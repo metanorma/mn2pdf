@@ -1,25 +1,17 @@
 package org.metanorma.fop.tags;
 
-import org.apache.fop.pdf.StructureType;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.common.COSObjectable;
-import org.apache.pdfbox.pdmodel.common.PDNumberTreeNode;
-import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.*;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.metanorma.utils.LoggerHelper;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.*;
+import org.metanorma.utils.LoggerHelper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -36,10 +28,9 @@ public class TableCaption {
 
     private PDStructureElement pdStructureElementTableCaption;
 
-    COSDictionary newCaption;
+    private PDStructureNode pdStructureNodePreviousParent;
 
-    private PDStructureElement elementToRemove;
-    private PDStructureNode parentNodeFromRemove;
+
 
     public void process(File pdf) throws IOException {
 
@@ -57,7 +48,7 @@ public class TableCaption {
             }
 
             Files.deleteIfExists(pdf.toPath());
-            document.save(pdf);
+            document.save(pdf); // , CompressParameters.NO_COMPRESSION
         } catch (IOException ex) {
             logger.severe("Can't process Caption tag for Table.");
             ex.printStackTrace();
@@ -72,68 +63,29 @@ public class TableCaption {
         if (element instanceof PDStructureElement) {
             PDStructureElement pdStructureElement = (PDStructureElement) element;
 
+            if (pdStructureElement.getStructureType().equals("Table") &&
+                    pdStructureNodePreviousParent != null &&
+                    pdStructureElementTableCaption != null) {
+                // remove Caption element before the table
+                pdStructureNodePreviousParent.removeKid(pdStructureElementTableCaption);
+            }
+            pdStructureNodePreviousParent = null;
+
             if (!pdStructureElement.getStructureType().equals("Table")) {
                 pdStructureElementTableCaption = null;
             }
 
             if (pdStructureElement.getStructureType().equals("Caption")) {
-
-                newCaption = new COSDictionary();
-                newCaption.setItem(COSName.S, pdStructureElement.getCOSObject().getCOSName(COSName.S));
-                newCaption.setItem(COSName.P, pdStructureElement.getCOSObject().getItem("P"));
-                newCaption.setItem(COSName.K, pdStructureElement.getCOSObject().getItem("K"));
-
                 pdStructureElementTableCaption = pdStructureElement;
+                pdStructureNodePreviousParent = pdStructureElement.getParent();
 
-                String elementKey = pdStructureElement.getCOSObject().getKey().toString();
-
-                PDStructureNode parentNode = pdStructureElement.getParent();
-                if (parentNode != null) {
-                    for (Object parentKid : parentNode.getKids()) {
-                        if (parentKid instanceof PDStructureElement) {
-                            PDStructureElement parentPDStructureElement = (PDStructureElement) parentKid;
-                            String parentNodeKey = parentPDStructureElement.getCOSObject().getKey().toString();
-                            if (parentPDStructureElement.getStructureType().equals("Caption") &&
-                                    elementKey.equals(parentNodeKey)) {
-
-                                //parentNode.removeKid(parentPDStructureElement);
-
-                                // Element to remove:
-                                // parentNodeFromRemove from which
-                                // elementToRemove which should be removed
-                                parentNodeFromRemove = parentNode;
-                                elementToRemove = parentPDStructureElement;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }else if ("Table".equals(pdStructureElement.getStructureType())) {
+            } else if ("Table".equals(pdStructureElement.getStructureType())) {
                 if (pdStructureElementTableCaption != null) {
                     List<Object> kids = pdStructureElement.getKids();
                     // add Caption element as first child in Table
-
-                    newCaption.setItem(COSName.P, pdStructureElement);
-
-                    //pdStructureElementTableCaption.setParent(pdStructureElement);
-
-                    //pdStructureElementTableCaption.getCOSObject().setItem(COSName.P, new COSString(pdStructureElement.getCOSObject().getKey().toString()));
-
-                    //kids.add(0, pdStructureElementTableCaption);
-                    kids.add(0, newCaption);
-
+                    pdStructureElementTableCaption.setParent(pdStructureElement);
+                    kids.add(0, pdStructureElementTableCaption);
                     pdStructureElement.setKids(kids);
-                    //pdStructureElementTableCaption = null;
-
-                    //elementToRemove.setStructureType(COSName.ARTIFACT.getName());
-                    /*List<Object> elementToRemoveKids = elementToRemove.getKids();
-                    for (Object elementToRemoveKid: elementToRemoveKids) {
-                        if (elementToRemoveKid instanceof PDMarkedContentReference) {
-                            elementToRemove.removeKid((PDMarkedContentReference)elementToRemoveKid);
-                        }
-                    }*/
-
-                    parentNodeFromRemove.removeKid(elementToRemove);
                 }
             }
         }
