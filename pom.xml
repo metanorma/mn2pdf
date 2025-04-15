@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.metanorma.fop</groupId>
 	<artifactId>mn2pdf</artifactId>
-	<version>2.20</version>
+	<version>2.21</version>
 	<name>Metanorma XML to PDF converter</name>
 	<packaging>jar</packaging>
 	<url>https://www.metanorma.org</url>
@@ -106,13 +106,22 @@
 						</transformer>
 						<transformer
 								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-						<transformer
+
+						<!-- https://stackoverflow.com/questions/38243222/how-can-i-specify-a-custom-manifest-mf-file-while-using-the-maven-shade-plugin -->
+						<transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+							<resource>MANIFEST.MF</resource>
+						</transformer>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+							<resource>META-INF/MANIFEST.MF</resource>
+							<file>src/main/resources/META-INF/MANIFEST.MF</file>
+						</transformer>
+						<!-- <transformer
 								implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 							<manifestEntries>
 								<Main-Class>org.metanorma.fop.mn2pdf</Main-Class>
 								<Implementation-Version>${project.version}</Implementation-Version>
 							</manifestEntries>
-						</transformer>
+						</transformer> -->
 					</transformers>
 					<filters>
 						<filter>
@@ -186,6 +195,11 @@
 					<artifactId>batik-ext</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jeuclid</groupId>
+			<artifactId>ams-fonts</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
