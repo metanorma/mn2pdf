@@ -141,7 +141,7 @@ public class DocumentNavigationHandler extends DefaultHandler
                         location = null;
                         unresolvedIds.put(id, null);
                     } else {
-                        if (hasNavigation() && !inBookmark() && pageIndexRelative >= 0) {
+                        if (hasNavigation() && !inBookmark() && !inNamedDestination() && pageIndexRelative >= 0) {
                             int currentPageIndex = navHandler.getPageIndex();
                             if (currentPageIndex >= 0) {
                                 pageIndex = currentPageIndex;
@@ -202,6 +202,10 @@ public class DocumentNavigationHandler extends DefaultHandler
 
     private boolean inBookmark() {
         return !objectStack.empty() && objectStack.peek() instanceof Bookmark;
+    }
+
+    private boolean inNamedDestination() {
+        return !objectStack.empty() && objectStack.peek() instanceof NamedDestination;
     }
 
     /** {@inheritDoc} */
