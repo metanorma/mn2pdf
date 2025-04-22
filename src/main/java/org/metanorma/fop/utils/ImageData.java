@@ -1,5 +1,9 @@
 package org.metanorma.fop.utils;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Descriptor;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.NodeList;
 
@@ -30,6 +34,7 @@ public class ImageData {
     private double height_mm;
 
      ImageData(String img, String width_effective, String height_effective) throws IOException {
+        byte[] fileContent = null;
         if (!img.startsWith("data:")) {
             File file = new File(img);
             bufferedImage = ImageIO.read(file);
@@ -37,7 +42,7 @@ public class ImageData {
         } else {
             String base64String = img.substring(img.indexOf("base64,") + 7);
             Base64.Decoder base64Decoder = Base64.getDecoder();
-            byte[] fileContent = base64Decoder.decode(base64String);
+            fileContent = base64Decoder.decode(base64String);
             ByteArrayInputStream bais = new ByteArrayInputStream(fileContent);
             bufferedImage = ImageIO.read(bais);
 
@@ -50,6 +55,13 @@ public class ImageData {
              int height_px = bufferedImage.getHeight();
 
              int image_dpi = getDPI(imageInputStream);
+             if (image_dpi == -1) {
+                 if (!img.startsWith("data:")) {
+                     image_dpi = getDPIFromMetadata(new File(img));
+                 } else {
+                     image_dpi = getDPIFromMetadata(new ByteArrayInputStream(fileContent));
+                 }
+             }
 
              this.width_mm = Double.valueOf(width_px) / image_dpi * 25.4;
              this.height_mm = Double.valueOf(height_px) / image_dpi * 25.4;
@@ -81,7 +93,7 @@ public class ImageData {
     }
 
     private static int getDPI(ImageInputStream imageInputStream) {
-        int default_DPI = 96;
+        int default_DPI = -1;
         if (imageInputStream != null) {
             try {
                 Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
@@ -93,7 +105,7 @@ public class ImageData {
                     IIOMetadataNode standardTree = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
                     IIOMetadataNode dimension = (IIOMetadataNode) standardTree.getElementsByTagName("Dimension").item(0);
                     float pixelSizeMM = getPixelSizeMM(dimension, "HorizontalPixelSize");
-                    if (pixelSizeMM == -1.0f) { // try get verrical pixel size
+                    if (pixelSizeMM == -1.0f) { // try get vertical pixel size
                         pixelSizeMM = getPixelSizeMM(dimension, "VerticalPixelSize");
                     }
                     if (pixelSizeMM == -1.0f) return default_DPI;
@@ -103,8 +115,40 @@ public class ImageData {
             } catch (Exception ex) {
             }
         }
+        logger.log(Level.SEVERE, "Could not read image DPI");
+        return default_DPI; //default DPI
+    }
 
-        logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
+    private static int getDPIFromMetadata(Object img) {
+        int default_DPI = 96;
+        try {
+            Metadata metadata = null;
+            if (img instanceof File) {
+                metadata = ImageMetadataReader.readMetadata((File)img);
+            } else if (img instanceof ByteArrayInputStream) {
+                metadata = ImageMetadataReader.readMetadata((ByteArrayInputStream)img);
+            }
+            if (metadata != null) {
+                /*for (Directory directory : metadata.getDirectories()) {
+                    for (Tag tag : directory.getTags()) {
+                        System.out.println(tag);
+                    }
+                }*/
+                ExifIFD0Descriptor descriptor = new ExifIFD0Descriptor(metadata.getFirstDirectoryOfType(ExifIFD0Directory.class));
+                String strXRes = descriptor.getXResolutionDescription();
+                strXRes = strXRes.replaceAll("(\\d+).*", "$1");
+
+                try {
+                    int xRes = Integer.parseInt(strXRes);
+                    return xRes;
+                }
+                catch (NumberFormatException e) {
+                    logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
+                    return default_DPI; //default DPI
+                }
+            }
+        } catch (Exception e) {
+        }
         return default_DPI; //default DPI
     }
 
