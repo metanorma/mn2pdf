@@ -143,12 +143,11 @@ public class ImageData {
                     return xRes;
                 }
                 catch (NumberFormatException e) {
+                    logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
                     return default_DPI; //default DPI
                 }
             }
-
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not read image DPI, use default value {0} DPI", default_DPI);
         }
         return default_DPI; //default DPI
     }
