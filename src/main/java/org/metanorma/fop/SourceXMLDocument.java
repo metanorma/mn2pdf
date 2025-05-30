@@ -97,7 +97,7 @@ public class SourceXMLDocument {
     private void readMetaInformation() {
         String element_review =  readValue("//*[local-name() = 'review-container' or local-name() = 'review'][1]");
         hasAnnotations = element_review.length() != 0;
-        String element_link_to_attachment =  readValue("//*[local-name() = 'link'][@attachment = 'true'][1]");
+        String element_link_to_attachment =  readValue("//*[local-name() = 'link' or local-name() = 'fmt-link'][@attachment = 'true'][1]");
         hasFileAttachmentAnnotations = element_link_to_attachment.length() != 0;
         String element_math = readValue("//*[local-name() = 'math'][1]");
         hasMath = element_math.length() != 0;
