@@ -59,8 +59,9 @@ public class PDFileAttachmentAppearanceHandler extends PDAbstractAppearanceHandl
 
             // minimum code of PDTextAppearanceHandler.adjustRectAndBBox() 
             int size = 18;
-            rect.setUpperRightX(rect.getLowerLeftX() + size);
-            rect.setLowerLeftY(rect.getUpperRightY() - size);
+            rect.setUpperRightX(rect.getLowerLeftX() + (size - 5));
+            rect.setUpperRightY(rect.getLowerLeftY() + 8);
+            rect.setLowerLeftY(rect.getUpperRightY() - (size - 5));
             annotation.setRectangle(rect);
             annotation.getNormalAppearanceStream().setBBox(new PDRectangle(size, size));
 
