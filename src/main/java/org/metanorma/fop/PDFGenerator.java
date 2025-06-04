@@ -77,6 +77,8 @@ public class PDFGenerator {
     String sourceDocumentFilePath = "";
 
     final private String inputXSLFilePath;
+
+    final private String inputXSLoverrideFilePath;
     
     final private String outputPDFFilePath;
     
@@ -203,9 +205,10 @@ public class PDFGenerator {
         this.isSyntaxHighlight = isSyntaxHighlight;
     }
     
-    public PDFGenerator (String inputXMLFilePath, String inputXSLFilePath, String outputPDFFilePath) {
+    public PDFGenerator (String inputXMLFilePath, String inputXSLFilePath, String inputXSLoverrideFilePath, String outputPDFFilePath) {
         this.inputXMLFilePath = inputXMLFilePath;
         this.inputXSLFilePath = inputXSLFilePath;
+        this.inputXSLoverrideFilePath = inputXSLoverrideFilePath;
         this.outputPDFFilePath = outputPDFFilePath;
     }
     
@@ -230,7 +233,16 @@ public class PDFGenerator {
                 logger.severe(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSL));
                 return false;
             }
-            
+
+            File fXSLoverride;
+            if (inputXSLoverrideFilePath != null && !inputXSLoverrideFilePath.isEmpty()) {
+                fXSLoverride = new File(inputXSLoverrideFilePath);
+                if (!fXSLoverride.exists()) {
+                    logger.severe(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSLoverride));
+                    return false;
+                }
+            }
+
             File fFontsManifest = null;
             if (!fontsManifest.isEmpty()) {
                 fFontsManifest = new File(fontsManifest);
@@ -442,11 +454,13 @@ public class PDFGenerator {
 
             File fInputXML = new File(inputXMLFilePath);
             String fInputXMLParent = fInputXML.getAbsoluteFile().getParent() + File.separator;
+            String fOutputPDFParent = pdf.getAbsoluteFile().getParent() + File.separator;
            
             additionalXSLTparams.setProperty("inputxml_basepath", fInputXMLParent);
             additionalXSLTparams.setProperty("inputxml_filename", fInputXML.getName());
 
             additionalXSLTparams.setProperty("output_path", pdf.getAbsolutePath());
+            additionalXSLTparams.setProperty("outputpdf_basepath", fOutputPDFParent);
 
             xsltConverter.setParams(additionalXSLTparams);
             

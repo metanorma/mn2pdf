@@ -67,6 +67,13 @@ public class mn2pdf {
                 .argName("file")
                 .required(true)
                 .build());
+            addOption(Option.builder("so")
+                .longOpt("xsl-file-override")
+                .desc("path to override XSL file")
+                .hasArg()
+                .argName("file")
+                .required(false)
+                .build());
             addOption(Option.builder("o")
                 .longOpt("pdf-file")
                 .desc("path to output PDF file")
@@ -256,11 +263,12 @@ public class mn2pdf {
                 
                 final String argXML = cmd.getOptionValue("xml-file");
                 final String argXSL = cmd.getOptionValue("xsl-file");
+                final String argXSLoverride = cmd.getOptionValue("xsl-file-override");
                 final String argPDF = cmd.getOptionValue("pdf-file");
 
                 LoggerHelper.setupLogger(argPDF);
 
-                PDFGenerator pdfGenerator = new PDFGenerator(argXML, argXSL, argPDF);
+                PDFGenerator pdfGenerator = new PDFGenerator(argXML, argXSL, argXSLoverride, argPDF);
                 
                 if (cmd.hasOption("font-path")) {
                     pdfGenerator.setFontsPath(cmd.getOptionValue("font-path"));
