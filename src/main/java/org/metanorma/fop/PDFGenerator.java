@@ -235,7 +235,7 @@ public class PDFGenerator {
             }
 
             File fXSLoverride;
-            if (!inputXSLoverrideFilePath.isEmpty()) {
+            if (inputXSLoverrideFilePath != null && !inputXSLoverrideFilePath.isEmpty()) {
                 fXSLoverride = new File(inputXSLoverrideFilePath);
                 if (!fXSLoverride.exists()) {
                     logger.severe(String.format(INPUT_NOT_FOUND, XSL_INPUT, fXSLoverride));
