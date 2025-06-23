@@ -46,7 +46,8 @@
 						local-name() = 'quote' or 
 						local-name() = 'formula' or 
 						local-name() = 'figure' or 
-						local-name() = 'toc'
+						local-name() = 'toc' or
+						local-name() = 'source' or local-name() = 'fmt-source'
 						][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc' or local-name() = 'pagebreak'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
 
 	<xsl:template match="*[local-name() = 'bibliography' or local-name() = 'references'][not(.//*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc' or local-name() = 'pagebreak'])][not(ancestor::*[local-name() = 'table' or local-name() = 'dl' or local-name() = 'toc'])]"/>
