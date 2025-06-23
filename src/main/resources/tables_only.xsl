@@ -120,6 +120,8 @@
 
 	<xsl:template match="*[local-name() = 'image'][not(ancestor::*[local-name() = 'table']) and not(ancestor::*[local-name() = 'dl'])]" priority="2"/>
 
+	<xsl:template match="@semx-id | @anchor | @valign | @align" />
+
 	<xsl:template match="@*|node()" mode="simple_td">
 		<xsl:copy>
 				<xsl:apply-templates select="@*|node()" mode="simple_td"/>
