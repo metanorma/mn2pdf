@@ -54,11 +54,11 @@
 		
 			<xsl:element name="annots">
 				<xsl:choose>
-					<xsl:when test="//*[local-name() = 'fmt-review-start']">
-						<xsl:apply-templates select="//*[local-name() = 'fmt-review-start']"/>
+					<xsl:when test="//*[local-name() = 'fmt-annotation-start']">
+						<xsl:apply-templates select="//*[local-name() = 'fmt-annotation-start']"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates select="//*[local-name() = 'review']"/>
+						<xsl:apply-templates select="//*[local-name() = 'annotation']"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:element>
@@ -66,13 +66,13 @@
 	</xsl:template>
 
 	<xsl:variable name="reviews_container_">
-		<xsl:for-each select="//*[local-name() = 'review-container']/*[local-name() = 'fmt-review-body']">
+		<xsl:for-each select="//*[local-name() = 'annotation-container']/*[local-name() = 'fmt-annotation-body']">
 			<xsl:copy-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="reviews_container" select="xalan:nodeset($reviews_container_)"/>
 
-	<xsl:template match="*[local-name() = 'fmt-review-start']">
+	<xsl:template match="*[local-name() = 'fmt-annotation-start']">
 		<xsl:variable name="id_from" select="@source"/>
 		<xsl:variable name="id_to_">
 			<xsl:choose>
@@ -84,7 +84,7 @@
 		
 		<xsl:variable name="target" select="@target"/>
 		
-		<xsl:variable name="review_body_" select="$reviews_container//*[local-name() = 'fmt-review-body'][@id = $target]"/>
+		<xsl:variable name="review_body_" select="$reviews_container//*[local-name() = 'fmt-annotation-body'][@id = $target]"/>
 		<xsl:variable name="review_body" select="xalan:nodeset($review_body_)"/>
 		<xsl:variable name="reviewer" select="$review_body/@reviewer"/>
 		<xsl:variable name="date" select="$review_body/@date"/>
@@ -98,7 +98,7 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'review']">
+	<xsl:template match="*[local-name() = 'annotation']">
 		<xsl:variable name="id_from">
 			<xsl:choose>
 				<xsl:when test="normalize-space(@from) != ''"><xsl:value-of select="@from"/></xsl:when>
@@ -162,7 +162,7 @@
 			<xsl:element name="contents-richtext">
 				<body xmlns="http://www.w3.org/1999/xhtml">
 					<xsl:choose>
-						<xsl:when test="local-name() = 'fmt-review-start'">
+						<xsl:when test="local-name() = 'fmt-annotation-start'">
 							<xsl:apply-templates select="$review_body" mode="pdf_richtext"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -278,7 +278,7 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fmt-review-body']" mode="pdf_richtext">
+	<xsl:template match="*[local-name() = 'fmt-annotation-body']" mode="pdf_richtext">
 		<xsl:apply-templates mode="pdf_richtext"/>
 	</xsl:template>
 	
