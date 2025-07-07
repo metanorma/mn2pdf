@@ -1220,6 +1220,7 @@ public abstract class CSSEngine {
             // e.printStackTrace();
             String m = e.getMessage();
             if (m == null) m = "";
+            if (uri == null) uri = new ParsedURL("");
             String s = Messages.formatMessage
                 ("stylesheet.syntax.error",
                  new Object[] { uri.toString(), rules, m });
