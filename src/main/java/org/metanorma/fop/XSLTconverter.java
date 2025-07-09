@@ -21,6 +21,8 @@ import javax.xml.xpath.XPathFactory;
 import static org.metanorma.Constants.DEBUG;
 import static org.metanorma.Constants.ERROR_EXIT_CODE;
 import static org.metanorma.fop.PDFGenerator.logger;
+import static org.metanorma.fop.Util.getStreamFromResources;
+
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -57,22 +59,41 @@ public class XSLTconverter {
         transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
     }
 
-    public XSLTconverter(File fXSL, String preprocessXSLT, String outPath) {
+    public XSLTconverter(File fXSL, File fXSLoverride, String preprocessXSLT, String outPath) {
         TransformerFactory factoryFO = TransformerFactory.newInstance();
         try {
             sourceXSLT = getDocument(fXSL);
 
-            if (!preprocessXSLT.isEmpty()) {
-                // content of fXSL file
+            if (fXSLoverride != null || !preprocessXSLT.isEmpty()) {
+				// content of fXSL file
                 String xsltString = new String(Files.readAllBytes(fXSL.toPath()));
-                String xsltEnd = "</xsl:stylesheet>";
-                // add preprocess XSLT at the end of main XSLT
-                xsltString = xsltString.replace(xsltEnd, preprocessXSLT + xsltEnd);
 
-                // SystemId Unknown; Line #0; Column #0; Unknown error in XPath.
-                // SystemId Unknown; Line #10648; Column #30; java.lang.NullPointerException
-                //transformerFO = factoryFO.newTransformer(new StreamSource(new StringReader(xsltString)));
+                if (fXSLoverride != null) {
+                    try {
+                        // merge main XSL and override XSL by merge_override.xsl
+                        Source mergeXSL = new StreamSource(getStreamFromResources(getClass().getClassLoader(), "merge_override.xsl"));
+                        TransformerFactory factory = TransformerFactory.newInstance();
+                        Transformer transformer = factory.newTransformer(mergeXSL);
+                        transformer.setParameter("override_xsl", fXSLoverride.getAbsolutePath());
+                        Source src = new StreamSource(new StringReader(xsltString));
+                        StringWriter resultWriter = new StringWriter();
+                        StreamResult sr = new StreamResult(resultWriter);
+                        transformer.transform(src, sr);
+                        xsltString = resultWriter.toString();
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.err);
+                    }
+                }
 
+                if (!preprocessXSLT.isEmpty()) {
+                    String xsltEnd = "</xsl:stylesheet>";
+                    // add preprocess XSLT at the end of main XSLT
+                    xsltString = xsltString.replace(xsltEnd, preprocessXSLT + xsltEnd);
+
+                    // SystemId Unknown; Line #0; Column #0; Unknown error in XPath.
+                    // SystemId Unknown; Line #10648; Column #30; java.lang.NullPointerException
+                    //transformerFO = factoryFO.newTransformer(new StreamSource(new StringReader(xsltString)));
+                }
                 // save XSLT to the file
                 String tmpXSL = outPath + ".xsl";
                 BufferedWriter writer = new BufferedWriter(new FileWriter(tmpXSL));
