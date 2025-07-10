@@ -1,6 +1,7 @@
 package org.metanorma.fop;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -66,8 +67,15 @@ public class XSLTconverter {
 
             if (fXSLoverride != null || !preprocessXSLT.isEmpty()) {
 				// content of fXSL file
-                String xsltString = new String(Files.readAllBytes(fXSL.toPath()));
-
+                byte[] xslBytes = Files.readAllBytes(fXSL.toPath());
+                String xsltString = new String(xslBytes, StandardCharsets.UTF_8);
+                // DEBUG:
+                /*System.out.println("Default charset: " + Charset.defaultCharset().displayName());
+                System.out.println("file.encoding: " + System.getProperty("file.encoding"));
+                System.out.println("xslBytes length=" + xslBytes.length);
+                System.out.println("xsltString length=" + xsltString.length());
+                System.out.println("source '" + fXSL.getAbsolutePath() + "':");
+                System.out.println(xsltString);*/
                 if (fXSLoverride != null) {
                     try {
                         // merge main XSL and override XSL by merge_override.xsl
@@ -80,6 +88,9 @@ public class XSLTconverter {
                         StreamResult sr = new StreamResult(resultWriter);
                         transformer.transform(src, sr);
                         xsltString = resultWriter.toString();
+                        //DEBUG
+                        //System.out.println("updated:");
+                        //System.out.println(xsltString);
                     } catch (Exception ex) {
                         ex.printStackTrace(System.err);
                     }
@@ -96,9 +107,13 @@ public class XSLTconverter {
                 }
                 // save XSLT to the file
                 String tmpXSL = outPath + ".xsl";
-                BufferedWriter writer = new BufferedWriter(new FileWriter(tmpXSL));
+
+                /*BufferedWriter writer = new BufferedWriter(new FileWriter(tmpXSL));
                 writer.write(xsltString);
-                writer.close();
+                writer.close();*/
+                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpXSL), StandardCharsets.UTF_8))) {
+                    writer.write(xsltString);
+                }
 
                 tmpfileXSL = new File(tmpXSL);
                 transformerFO = factoryFO.newTransformer(new StreamSource(tmpfileXSL));

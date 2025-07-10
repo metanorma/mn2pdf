@@ -263,7 +263,6 @@ public class mn2pdf {
                 
                 final String argXML = cmd.getOptionValue("xml-file");
                 final String argXSL = cmd.getOptionValue("xsl-file");
-                final String argXSLoverride = cmd.getOptionValue("xsl-file-override");
                 final String argPDF = cmd.getOptionValue("pdf-file");
 
                 LoggerHelper.setupLogger(argPDF);
