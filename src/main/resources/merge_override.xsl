@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:java="http://xml.apache.org/xalan/java"
 											xmlns="http://ns.adobe.com/xfdf/"
@@ -34,6 +35,43 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="xsl:stylesheet/xsl:template[@name = 'layout-master-set']">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="node()"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="node()"/>
+			
+			<xsl:variable name="nodes_">
+				<xsl:copy-of select="node()"/>
+			</xsl:variable>
+			<xsl:variable name="nodes" select="xalan:nodeset($nodes_)"/>
+			
+			<!-- add elements from the override xsl which non exist in the fo:layout-master-set-->
+			<xsl:for-each select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/node()">
+				<xsl:choose>
+					<xsl:when test="$nodes//*[@master-name = current()/@master-name]"><!-- skip --></xsl:when>
+					<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/*">
+		<xsl:choose>
+			<!-- if in override xslt there is <fo:simple-page-master or <fo:page-sequence-master with @master-name with same name, then replace it -->
+			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/*[@master-name = current()/@master-name]">
+				<xsl:copy-of select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/*[@master-name = current()/@master-name]"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="xsl:stylesheet/xsl:variable">
 		<xsl:choose>
 			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:variable[@name = current()/@name]"><!-- skip from the main xsl --></xsl:when>
@@ -53,5 +91,8 @@
 			<xsl:apply-templates select="@*|node()" mode="override"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<!-- the elements from xsl:template name="layout-master-set" added above -->
+	<xsl:template match="xsl:template[@name = 'layout-master-set']" mode="override"/>
 	
 </xsl:stylesheet>
