@@ -14,6 +14,11 @@
 	<!-- <xsl:variable name="override_xsl_xml" select="xalan:nodeset($override_xsl)"/> -->
 	<xsl:variable name="override_xsl_xml" select="document($override_xsl)"/>
 	
+	<xsl:variable name="main_xsl_xml_">
+		<xsl:copy-of select="."/>
+	</xsl:variable>
+	<xsl:variable name="main_xsl_xml" select="xalan:nodeset($main_xsl_xml_)"/>
+	
 	<xsl:template match="@*|node()">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()"/>
@@ -28,9 +33,16 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- Example: <xsl:template name="...", or <xsl:template match="..." name="..." -->
 	<xsl:template match="xsl:stylesheet/xsl:template[@name]">
 		<xsl:choose>
-			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]"><!-- skip from the main xsl --></xsl:when>
+			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]">
+				<!-- replace the content of the template -->
+				<xsl:copy>
+					<xsl:copy-of select="@*"/> <!-- copy all attributes, includes 'match' -->
+					<xsl:copy-of select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]/node()"/>
+				</xsl:copy>
+			</xsl:when>
 			<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -90,6 +102,13 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="override"/>
 		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="xsl:template[@name]" mode="override">
+		<xsl:choose>
+			<xsl:when test="$main_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]"><!-- skip, replaced above --></xsl:when>
+			<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- the elements from xsl:template name="layout-master-set" added above -->
