@@ -78,7 +78,7 @@ public class PDFGenerator {
 
     final private String inputXSLFilePath;
 
-    final private String inputXSLoverrideFilePath;
+    private String inputXSLoverrideFilePath;
     
     final private String outputPDFFilePath;
     
@@ -123,7 +123,11 @@ public class PDFGenerator {
     boolean PDFA_enabled = true;
 
     private String debugXSLFO = "";
-    
+
+    public void setInputXSLoverrideFilePath(String inputXSLoverrideFilePath) {
+        this.inputXSLoverrideFilePath = inputXSLoverrideFilePath;
+    }
+
     public void setFontsPath(String fontsPath) {
         this.fontsPath = fontsPath;
     }
@@ -205,10 +209,9 @@ public class PDFGenerator {
         this.isSyntaxHighlight = isSyntaxHighlight;
     }
     
-    public PDFGenerator (String inputXMLFilePath, String inputXSLFilePath, String inputXSLoverrideFilePath, String outputPDFFilePath) {
+    public PDFGenerator (String inputXMLFilePath, String inputXSLFilePath, String outputPDFFilePath) {
         this.inputXMLFilePath = inputXMLFilePath;
         this.inputXSLFilePath = inputXSLFilePath;
-        this.inputXSLoverrideFilePath = inputXSLoverrideFilePath;
         this.outputPDFFilePath = outputPDFFilePath;
     }
     
@@ -234,7 +237,7 @@ public class PDFGenerator {
                 return false;
             }
 
-            File fXSLoverride;
+            File fXSLoverride = null;
             if (inputXSLoverrideFilePath != null && !inputXSLoverrideFilePath.isEmpty()) {
                 fXSLoverride = new File(inputXSLoverrideFilePath);
                 if (!fXSLoverride.exists()) {
@@ -304,7 +307,7 @@ public class PDFGenerator {
             isTableExists = sourceXMLDocument.hasTables();
             boolean isMathExists = sourceXMLDocument.hasMath();
 
-            XSLTconverter xsltConverter = new XSLTconverter(fXSL, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
+            XSLTconverter xsltConverter = new XSLTconverter(fXSL, fXSLoverride, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
 
             isAddMathAsText = xsltConverter.hasParamAddMathAsText()  && isMathExists;
             isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
