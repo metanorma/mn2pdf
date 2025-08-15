@@ -204,6 +204,12 @@ class StructureTreeEventTrigger extends FOEventHandler {
     public void startBlock(Block bl) {
         CommonHyphenation hyphProperties = bl.getCommonHyphenation();
         AttributesImpl attributes = createLangAttribute(hyphProperties);
+        // special case for Sect /T attribute (see https://github.com/metanorma/mn2pdf/issues/348)
+        String title = bl.getTitle();
+        if (title != null && !title.isEmpty()) {
+            addAttribute(attributes, ExtensionElementMapping.URI, "title",
+                    ExtensionElementMapping.STANDARD_PREFIX, title);
+        }
         startElement(bl, attributes);
     }
 
