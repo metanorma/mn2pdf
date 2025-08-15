@@ -230,6 +230,11 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
                 Locale locale = LanguageTags.toLocale(xmlLang);
                 structElem.setLanguage(locale);
             }
+            // Special case for Sect /T (see https://github.com/metanorma/mn2pdf/issues/348)
+            String titleNode = attributes.getValue(ExtensionElementMapping.URI, "title");
+            if (titleNode != null) {
+                structElem.put("T", titleNode);
+            }
         }
 
     }
