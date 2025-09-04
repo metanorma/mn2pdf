@@ -1395,6 +1395,8 @@ public class PDFGenerator {
             }
         } catch (Exception e) {
             xsltConverter.setParam("table_if", "false");
+            xsltConverter.setParam("table_only_with_id", "");
+            xsltConverter.setParam("table_only_with_ids", "");
             logger.log(Level.SEVERE, "Can''t obtain table''s widths information: {0}", e.toString());
         }
         Profiler.printProcessingTime(methodName, startMethodTime);
