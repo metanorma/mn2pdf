@@ -1253,7 +1253,7 @@ public class PDFGenerator {
     
     private void setTablesWidths(fontConfig fontcfg, XSLTconverter xsltConverter, File pdf) {
 
-        int TABLE_CELLS_COUNT_MAX = 20000;//30000;
+        int TABLE_CELLS_COUNT_MAX = 10000;//30000; 20000
 
         String methodName = getClass().getSimpleName() + "." + (new Object(){}.getClass().getEnclosingMethod().getName());
         Profiler.addMethodCall(methodName);
