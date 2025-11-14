@@ -37,9 +37,14 @@
 	<xsl:template match="xsl:stylesheet/xsl:template[@name]">
 		<xsl:choose>
 			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]">
-				<!-- replace the content of the template -->
+				<!-- replace/extend the content of the template -->
 				<xsl:copy>
 					<xsl:copy-of select="@*"/> <!-- copy all attributes, includes 'match' -->
+					<!-- if 'extend' then add existing code -->
+					<xsl:if test="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]/processing-instruction('extend')">
+						<xsl:copy-of select="node()"/>
+					</xsl:if>
+					<!-- add code from the override xsl -->
 					<xsl:copy-of select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]/node()"/>
 				</xsl:copy>
 			</xsl:when>
@@ -93,7 +98,18 @@
 	
 	<xsl:template match="xsl:stylesheet/xsl:attribute-set">
 		<xsl:choose>
-			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:attribute-set[@name = current()/@name]"><!-- skip from the main xsl --></xsl:when>
+			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:attribute-set[@name = current()/@name]">
+				<xsl:choose>
+					<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:attribute-set[@name = current()/@name]/processing-instruction('extend')">
+						<xsl:copy>
+							<xsl:copy-of select="@*"/>
+							<xsl:copy-of select="node()"/>
+							<xsl:copy-of select="$override_xsl_xml/xsl:stylesheet/xsl:attribute-set[@name = current()/@name]/node()"/>
+						</xsl:copy>
+					</xsl:when>
+					<xsl:otherwise><!-- skip from the main xsl --></xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -107,6 +123,13 @@
 	<xsl:template match="xsl:template[@name]" mode="override">
 		<xsl:choose>
 			<xsl:when test="$main_xsl_xml/xsl:stylesheet/xsl:template[@name = current()/@name]"><!-- skip, replaced above --></xsl:when>
+			<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="xsl:stylesheet/xsl:attribute-set[processing-instruction('extend')]" mode="override">
+		<xsl:choose>
+			<xsl:when test="$main_xsl_xml/xsl:stylesheet/xsl:attribute-set[@name = current()/@name]"><!-- skip, replaced/extended above --></xsl:when>
 			<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

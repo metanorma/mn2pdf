@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Implementation-Version: 2.31
+Implementation-Version: 2.32
 Build-Jdk-Spec: 1.8
 Created-By: Maven JAR Plugin 3.3.0
 Main-Class: org.metanorma.fop.mn2pdf
