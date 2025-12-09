@@ -13,6 +13,9 @@ public class PDFResult {
 
     private String outFolder;
 
+    private File outFile;
+    private String outFilename;
+
     private Path outTmpImagesPath;
 
     private PDFResult() {
@@ -27,6 +30,8 @@ public class PDFResult {
         }
         outTmpImagesPath = Paths.get(parentFolder, "_tmp_images_" + UUID.randomUUID().toString());
         outFolder = parentFolder;
+        outFile = pdfFile;
+        outFilename = pdfFile.getName();
     }
 
     public static PDFResult PDFResult(File pdfFile)
@@ -40,6 +45,10 @@ public class PDFResult {
     public String getOutFolder() {
         return outFolder;
     }
+
+    public String getPDFFilename() { return outFilename; }
+
+    public File getPDFFile() { return outFile; }
 
     public Path getOutTmpImagesPath() {
         return outTmpImagesPath;

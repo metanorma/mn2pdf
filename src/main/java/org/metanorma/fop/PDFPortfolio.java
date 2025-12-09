@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -75,7 +76,7 @@ public class PDFPortfolio
                 listPDComplexFileSpecification.add(fs);
             }
 
-            Map<String, PDComplexFileSpecification> map = new HashMap<>();
+            Map<String, PDComplexFileSpecification> map = new LinkedHashMap<>();
 
             String firstFile = listPDComplexFileSpecification.get(0).getFile();
             for (PDComplexFileSpecification listPDComplexFileSpecificationItem : listPDComplexFileSpecification) {
@@ -136,6 +137,19 @@ public class PDFPortfolio
 
             Files.deleteIfExists(Paths.get(outPDF));
             doc.save(outPDF);
+        }
+    }
+
+    public void flushTempPDF() {
+        for (Map.Entry<String, String> item : filesList.entrySet()) {
+            Path pdfFilePath = Paths.get(item.getKey());
+            if (Files.exists(pdfFilePath)) {
+                try {
+                    Files.deleteIfExists(pdfFilePath);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 }

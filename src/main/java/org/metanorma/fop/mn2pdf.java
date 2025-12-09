@@ -74,6 +74,14 @@ public class mn2pdf {
                 .argName("file")
                 .required(false)
                 .build());
+            addOption(Option.builder("pp")
+                    .longOpt("pdf-portfolio")
+                    .desc("generate PDF Portfolio")
+                    .hasArg()
+                    .argName("true|false(default)")
+                    .type(Boolean.class)
+                    .required(false)
+                    .build());
             addOption(Option.builder("o")
                 .longOpt("pdf-file")
                 .desc("path to output PDF file")
@@ -271,6 +279,10 @@ public class mn2pdf {
 
                 if (cmd.hasOption("xsl-file-override")) {
                     pdfGenerator.setInputXSLoverrideFilePath(cmd.getOptionValue("xsl-file-override"));
+                }
+
+                if (cmd.hasOption("pdf-portfolio")) {
+                    pdfGenerator.setPDFPortfolio(Boolean.valueOf(cmd.getOptionValue("pdf-portfolio")));
                 }
 
                 if (cmd.hasOption("font-path")) {

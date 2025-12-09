@@ -79,7 +79,9 @@ public class PDFGenerator {
     final private String inputXSLFilePath;
 
     private String inputXSLoverrideFilePath;
-    
+
+    private boolean isPDFPortfolio = false;
+
     final private String outputPDFFilePath;
     
     //private boolean isDebugMode = false;
@@ -126,6 +128,10 @@ public class PDFGenerator {
 
     public void setInputXSLoverrideFilePath(String inputXSLoverrideFilePath) {
         this.inputXSLoverrideFilePath = inputXSLoverrideFilePath;
+    }
+
+    public void setPDFPortfolio(boolean PDFPortfolio) {
+        isPDFPortfolio = PDFPortfolio;
     }
 
     public void setFontsPath(String fontsPath) {
@@ -282,8 +288,8 @@ public class PDFGenerator {
             
             logger.info(String.format(INPUT_LOG, XML_INPUT, fXML));
             logger.info(String.format(INPUT_LOG, XSL_INPUT, fXSL));
-            
-            if (!xsltParams.isEmpty()) {                    
+
+            if (!xsltParams.isEmpty()) {
                 logger.info(String.format(INPUT_LOG, XSL_INPUT_PARAMS, xsltParams.toString()));
             }
             
@@ -297,86 +303,114 @@ public class PDFGenerator {
                 sourceDocumentFilePath = System.getProperty("user.dir");
             }
 
+            Map<String, String> pdfFilesMap = new LinkedHashMap<>();
+
             //File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
-            File fPresentationPartXML = getPresentationPartXML(fXML, pdfResult.getOutFolder());
+            //File fPresentationPartXML = getPresentationPartXML(fXML, pdfResult.getOutFolder());
+            Map<String, String> mapPresentationPartsXML = getPresentationPartsXML(fXML, pdfResult);
+            for (Map.Entry<String, String> entry : mapPresentationPartsXML.entrySet())
+            {
+                File fPresentationPartXML = new File(entry.getKey());
 
-            sourceXMLDocument = new SourceXMLDocument(fPresentationPartXML);
+                if (isPDFPortfolio) {
+                    Path pdfItemPath = Paths.get(fPDF.getAbsoluteFile().getParent(), entry.getValue());
+                    fPDF = pdfItemPath.toFile();
+                }
 
-            isAddAnnotations = sourceXMLDocument.hasAnnotations();
-            isAddFileAttachmentAnnotations = sourceXMLDocument.hasFileAttachmentAnnotations();
-            isTableExists = sourceXMLDocument.hasTables();
-            boolean isMathExists = sourceXMLDocument.hasMath();
+                sourceXMLDocument = new SourceXMLDocument(fPresentationPartXML);
 
-            XSLTconverter xsltConverter = new XSLTconverter(fXSL, fXSLoverride, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
+                isAddAnnotations = sourceXMLDocument.hasAnnotations();
+                isAddFileAttachmentAnnotations = sourceXMLDocument.hasFileAttachmentAnnotations();
+                isTableExists = sourceXMLDocument.hasTables();
+                boolean isMathExists = sourceXMLDocument.hasMath();
 
-            isAddMathAsText = xsltConverter.hasParamAddMathAsText()  && isMathExists;
-            isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
+                XSLTconverter xsltConverter = new XSLTconverter(fXSL, fXSLoverride, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
 
-            isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
+                isAddMathAsText = xsltConverter.hasParamAddMathAsText() && isMathExists;
+                isAddMathAsAttachment = xsltConverter.hasParamAddMathAsAttachment();
 
-            isComplexScriptsFeatures = !xsltConverter.isIgnoreComplexScripts();
+                isApplyAutolayoutAlgorithm = xsltConverter.isApplyAutolayoutAlgorithm();
 
-            if (isSyntaxHighlight) {
-                xsltParams.put("syntax-highlight", "true");
-            }
-            xsltConverter.setParams(xsltParams);
-            
-            
-            fontConfig fontcfg = new fontConfig();
-            fontcfg.setFontPath(fontsPath);
-            fontcfg.setFontConfigPath(fPDF.getAbsolutePath());
+                isComplexScriptsFeatures = !xsltConverter.isIgnoreComplexScripts();
 
-            fontcfg.setFontManifest(fFontsManifest);
-            fontcfg.saveFontManifest(fPDF.getParent()); // for debug purposes
+                if (isSyntaxHighlight) {
+                    xsltParams.put("syntax-highlight", "true");
+                }
+                xsltConverter.setParams(xsltParams);
 
-            //debug
-            fontcfg.outputFontManifestLog(Paths.get(fPDF.getAbsolutePath() + ".fontmanifest.log.txt"));
-            
-            
-            convertmn2pdf(fontcfg, xsltConverter, fPDF);
-            
-            
-            if (isSplitByLanguage) {
-                int initial_page_number = 1;
-                int coverpages_count = Util.getCoverPagesCount(fXSL);
-                //determine how many documents in source XML
-                ArrayList<String> languages = sourceXMLDocument.getLanguagesList(); 
-                for (int i = 0; i< languages.size(); i++) {
-                    if (i>=1)  {
-                        xsltParams.setProperty("initial_page_number", "" + initial_page_number);
+
+                fontConfig fontcfg = new fontConfig();
+                fontcfg.setFontPath(fontsPath);
+                fontcfg.setFontConfigPath(fPDF.getAbsolutePath());
+
+                fontcfg.setFontManifest(fFontsManifest);
+                fontcfg.saveFontManifest(fPDF.getParent()); // for debug purposes
+
+                //debug
+                fontcfg.outputFontManifestLog(Paths.get(fPDF.getAbsolutePath() + ".fontmanifest.log.txt"));
+
+                convertmn2pdf(fontcfg, xsltConverter, fPDF);
+
+                pdfFilesMap.put(fPDF.getAbsolutePath(), entry.getValue());
+
+                if (isSplitByLanguage) {
+                    int initial_page_number = 1;
+                    int coverpages_count = Util.getCoverPagesCount(fXSL);
+                    //determine how many documents in source XML
+                    ArrayList<String> languages = sourceXMLDocument.getLanguagesList();
+                    for (int i = 0; i < languages.size(); i++) {
+                        if (i >= 1) {
+                            xsltParams.setProperty("initial_page_number", "" + initial_page_number);
+                        }
+                        xsltParams.setProperty("doc_split_by_language", "" + languages.get(i));
+
+                        xsltConverter.setParams(xsltParams);
+
+                        //add language code to output PDF
+                        String argPDFsplit = outputPDFFilePath;
+                        argPDFsplit = argPDFsplit.substring(0, argPDFsplit.lastIndexOf(".")) + "_" + languages.get(i) + argPDFsplit.substring(argPDFsplit.lastIndexOf("."));
+                        File fPDFsplit = new File(argPDFsplit);
+
+                        logger.log(Level.INFO, "Generate PDF for language ''{0}''.", languages.get(i));
+                        logger.log(Level.INFO, "Output: PDF ({0})", fPDFsplit);
+
+                        convertmn2pdf(fontcfg, xsltConverter, fPDFsplit);
+
+                        pdfFilesMap.put(fPDFsplit.getAbsolutePath(), fPDFsplit.getName());
+
+                        // initial page number for 'next' document
+                        initial_page_number = (getPageCount() - coverpages_count) + 1;
                     }
-                    xsltParams.setProperty("doc_split_by_language", "" + languages.get(i));
+                }
 
-                    xsltConverter.setParams(xsltParams);
+                // flush temporary folder
+                if (!DEBUG) {
+                    if (!fPresentationPartXML.getAbsolutePath().equals(fXML.getAbsolutePath())) {
+                        try {
+                            Files.deleteIfExists(fPresentationPartXML.toPath());
+                        } catch (IOException e) {
+                            e.printStackTrace(System.err);
+                        }
+                    }
+                    xsltConverter.deleteTmpXSL();
+                    fontcfg.deleteConfigFile();
+                    fontcfg.flushTempPath();
+                }
 
-                    //add language code to output PDF
-                    String argPDFsplit = outputPDFFilePath;                            
-                    argPDFsplit = argPDFsplit.substring(0, argPDFsplit.lastIndexOf(".")) + "_" + languages.get(i) + argPDFsplit.substring(argPDFsplit.lastIndexOf("."));
-                    File fPDFsplit = new File(argPDFsplit);
-
-                    logger.log(Level.INFO, "Generate PDF for language ''{0}''.", languages.get(i));
-                    logger.log(Level.INFO, "Output: PDF ({0})", fPDFsplit);
-
-                    convertmn2pdf(fontcfg, xsltConverter, fPDFsplit);
-
-                    // initial page number for 'next' document
-                    initial_page_number = (getPageCount() - coverpages_count) + 1;
-                }                        
             }
-            
+
+            if (isPDFPortfolio) {
+                PDFPortfolio pdfPortfolio = new PDFPortfolio(pdfFilesMap);
+                pdfPortfolio.generate(outputPDFFilePath);
+                if (!DEBUG) {
+                    pdfPortfolio.flushTempPDF();
+                }
+            }
+
             // flush temporary folder
             if (!DEBUG) {
                 sourceXMLDocument.flushTempPath();
-                if (!fPresentationPartXML.getAbsolutePath().equals(fXML.getAbsolutePath())) {
-                    try {
-                        Files.deleteIfExists(fPresentationPartXML.toPath());
-                    } catch (IOException e) {
-                        e.printStackTrace(System.err);
-                    }
-                }
-                xsltConverter.deleteTmpXSL();
-                fontcfg.deleteConfigFile();
-				pdfResult.flushOutTmpImagesFolder();
+                pdfResult.flushOutTmpImagesFolder();
             }
             
             logger.info("Success!");
@@ -389,7 +423,8 @@ public class PDFGenerator {
         return true;
     }
 
-    private File getPresentationPartXML(File fXML, String outputFolder) {
+    private Map<String, String> getPresentationPartsXML(File fXML, PDFResult pdfResult) {
+        Map<String, String> outputFiles = new LinkedHashMap<>();
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
@@ -398,19 +433,26 @@ public class PDFGenerator {
             InputSource inputSource = new InputSource( new StringReader(sourceXML));
             saxParser.parse(inputSource, fopXMLPresentationHandler);
             StringBuilder resultedXML = fopXMLPresentationHandler.getResultedXML();
+            String outputFolder = pdfResult.getOutFolder();
             File outputFile = Paths.get(outputFolder, fXML.getName() + "_tmp").toFile();
 
             try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
                 writer.write(resultedXML.toString());
             }
-
-            return outputFile;
+            if (isPDFPortfolio) {
+                // split collection XML into separate documents
+                outputFiles.put(outputFile.getAbsolutePath(), pdfResult.getPDFFilename());
+            } else {
+                outputFiles.put(outputFile.getAbsolutePath(), pdfResult.getPDFFilename());
+            }
+            return outputFiles;
         }
         catch (Exception ex) {
             logger.severe("Can't obtain the presentation part of the XML:");
             logger.severe(ex.getMessage());
             ex.printStackTrace();
-            return fXML;
+            outputFiles.put(fXML.getAbsolutePath(), outputPDFFilePath);
+            return outputFiles;
         }
     }
 
