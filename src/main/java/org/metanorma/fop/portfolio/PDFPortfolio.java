@@ -11,10 +11,7 @@ import java.util.*;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentNameDictionary;
-import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
-import org.apache.pdfbox.pdmodel.PageMode;
+import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.metanorma.fop.Util;
@@ -24,12 +21,18 @@ public class PDFPortfolio
 {
     private List<PDFPortfolioItem> pdfPortfolioItems;
 
+    private String fieldAuthor = "";
+
     /**
      * Constructor.
      */
     public PDFPortfolio(List<PDFPortfolioItem> pdfPortfolioItems)
     {
         this.pdfPortfolioItems = pdfPortfolioItems;
+    }
+
+    public void setAuthor(String fieldAuthor) {
+        this.fieldAuthor = fieldAuthor;
     }
 
     /**
@@ -45,6 +48,14 @@ public class PDFPortfolio
 
         try (PDDocument doc = Loader.loadPDF(pdfDefaultBytes))
         {
+            // redefine fields in "pdfportfolio_default_page.pdf"
+            PDDocumentInformation info = doc.getDocumentInformation();
+            info.setCreationDate(Calendar.getInstance());
+            info.setModificationDate(Calendar.getInstance());
+            info.setCreator("");
+            info.setAuthor(fieldAuthor);
+            info.setProducer(Util.getPDFProducer());
+
             //embedded files are stored in a named tree
             PDEmbeddedFilesNameTreeNode efTree = new PDEmbeddedFilesNameTreeNode();
 

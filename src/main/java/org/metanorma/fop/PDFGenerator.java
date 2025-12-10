@@ -309,8 +309,9 @@ public class PDFGenerator {
             if (sourceDocumentFilePath == null) {
                 sourceDocumentFilePath = System.getProperty("user.dir");
             }
-            
+
             List<PDFPortfolioItem> pdfPortfolioItems = new ArrayList<>();
+            String portfolioAuthor = "";
 
             //File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
             List<PDFMetainfo> listPresentationParts = getPresentationPartsFromXML(fXML, pdfResult);
@@ -416,6 +417,7 @@ public class PDFGenerator {
 
             if (isPDFPortfolio) {
                 PDFPortfolio pdfPortfolio = new PDFPortfolio(pdfPortfolioItems);
+                pdfPortfolio.setAuthor(portfolioAuthor); // To do
                 pdfPortfolio.generate(outputPDFFilePath);
                 if (!DEBUG) {
                     pdfPortfolio.flushTempPDF();
@@ -786,7 +788,8 @@ public class PDFGenerator {
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent
-            foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
+            //foUserAgent.setProducer("Ribose Metanorma mn2pdf version " + Util.getAppVersion());
+            foUserAgent.setProducer(Util.getPDFProducer());
 
             if (encryptionParams.isEmpty()) {
                 if (PDFA_enabled) {
