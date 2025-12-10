@@ -502,7 +502,9 @@ public class PDFGenerator {
                         if (nodeIdentifier != null) {
                             entry_identifier = nodeIdentifier.getTextContent();
                         }
-                        pdffile = entry_identifier + "_" + docidentifier.replaceAll("\\s", "_") +".pdf";
+                        pdffile = entry_identifier + "_" + docidentifier;
+                        String restrictedCharsRegex = "[\\\\/:*?\"<>|]";
+                        pdffile = pdffile.replaceAll(restrictedCharsRegex, "_") + ".pdf";
                     }
 
                     // extract //doc-container[@id=@target]/metanorma and save to temp xml file

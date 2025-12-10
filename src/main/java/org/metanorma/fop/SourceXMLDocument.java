@@ -350,7 +350,7 @@ public class SourceXMLDocument {
 
             XPathFactory xPathfactory = XPathFactory.newInstance();
             XPath xpath = xPathfactory.newXPath();
-            XPathExpression expr = xpath.compile("//*[contains(local-name(),'-standard')]/*[local-name()='bibdata']//*[local-name()='language']");
+            XPathExpression expr = xpath.compile("//*[local-name() = 'metanorma']/*[local-name()='bibdata']//*[local-name()='language']");
             NodeList languages = (NodeList) expr.evaluate(sourceXML, XPathConstants.NODESET);
             
             for (int i = 0; i < languages.getLength(); i++) {
@@ -374,7 +374,7 @@ public class SourceXMLDocument {
         try {
 
             XPath xPath = XPathFactory.newInstance().newXPath();
-            XPathExpression query = xPath.compile("//*[contains(local-name(),'ogc-standard')]/*[local-name()='render']/*[local-name()='preprocess-xslt']/*[local-name()='stylesheet']");
+            XPathExpression query = xPath.compile("//*[local-name() = 'metanorma']/*[local-name()='render']/*[local-name()='preprocess-xslt']/*[local-name()='stylesheet']");
             NodeList nList = (NodeList)query.evaluate(sourceXML, XPathConstants.NODESET);
 
             for (int i = 0; i < nList.getLength(); i++) {
