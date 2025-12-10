@@ -197,7 +197,11 @@ public class Util {
         
         return version;
     }
-    
+
+    public static String getPDFProducer() {
+        return "Ribose Metanorma mn2pdf version " + Util.getAppVersion();
+    }
+
     public static String getDecodedBase64SVGnode(String encodedString) { //throws SAXException, IOException, ParserConfigurationException {
         byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
         String decodedString = new String(decodedBytes);
