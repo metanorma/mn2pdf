@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iec-standard xmlns="https://www.metanorma.org/ns/iec">
+<metanorma xmlns="https://www.metanorma.org/ns/standoc">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="main">Cereals and pulses — Specifications and test methods — Rice</title>
 <title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
@@ -844,4 +844,4 @@ end<annotation id="_325b01a3-115e-4fd4-b2e5-f8ff6987110b">
   <formattedref format="application/x-isodoc+xml"><smallcap>Tkachuk R.</smallcap> Nitrogen-to-protein conversion factors for cereals and oilseed meals. <em>Cereal Chem.</em> 1969, <strong>46</strong> (4) pp 419-423</formattedref>
   <docidentifier type="metanorma">[16]</docidentifier>
 </bibitem>         </references></bibliography>
-</iec-standard>
+</metanorma>

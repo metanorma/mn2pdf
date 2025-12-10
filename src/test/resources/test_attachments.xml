@@ -1,131 +1,1142 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/iso" type="presentation" version="2.8.4" schema-version="v1.3.3">
+<metanorma xmlns="https://www.metanorma.org/ns/standoc" type="presentation" version="3.2.3" schema-version="v2.1.5" flavor="iso">
 <bibdata type="standard">
-<title language="en" format="text/plain" type="main">Attachment test — Attachment test</title>
+<title language="en" type="main">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
 
-<title language="en" format="text/plain" type="title-intro">Attachment test</title>
+<title language="en" type="title-intro">Cereals and pulses</title>
 
-<title language="en" format="text/plain" type="title-main">Attachment test</title>
+<title language="en" type="title-main">Specifications and test methods</title>
 
+<title language="en" type="title-part">Rice (Final)</title>
 
+<title language="fr" type="main">Céréales et légumineuses — Spécification et méthodes d’essai — Riz (Final)</title>
 
+<title language="fr" type="title-intro">Céréales et légumineuses</title>
 
-<docidentifier type="ISO" primary="true">ISO 1234:2024</docidentifier><docidentifier type="iso-reference">ISO 1234:2024(E)</docidentifier><docidentifier type="URN">urn:iso:std:iso:1234:stage-60.60:en</docidentifier><docidentifier type="iso-undated">ISO 1234</docidentifier><docidentifier type="iso-with-lang">ISO 1234:2024(en)</docidentifier><docnumber>1234</docnumber><contributor><role type="author"/><organization>
+<title language="fr" type="title-main">Spécification et méthodes d’essai</title>
+
+<title language="fr" type="title-part">Riz (Final)</title>
+<docidentifier type="ISO" primary="true">ISO 17301-1:2016</docidentifier><docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier><docidentifier type="URN">urn:iso:std:iso:17301:-1:stage-60.60:en</docidentifier><docidentifier type="iso-undated">ISO 17301-1</docidentifier><docidentifier type="iso-with-lang">ISO 17301-1:2016(en)</docidentifier><docidentifier type="iso-tc">17301</docidentifier><docnumber>17301</docnumber><contributor><role type="author"/><organization>
 <name>International Organization for Standardization</name>
-<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="authorizer"><description>Agency</description></role><organization>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="author"><description>committee</description></role><organization>
 <name>International Organization for Standardization</name>
-<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="publisher"/><organization>
+<subdivision type="Technical committee" subtype="TC">
+<name>Food products</name>
+<identifier id="_455665e8-ea74-f710-9db5-fb2bd3550350">TC 34</identifier><fmt-identifier><tt><semx element="identifier" source="_455665e8-ea74-f710-9db5-fb2bd3550350">TC 34</semx></tt></fmt-identifier><identifier type="full" id="_90d316f1-05ec-4bc5-dd7a-3c0483358a94">TC 34/SC 4/WG 4</identifier><fmt-identifier><tt><semx element="identifier" source="_90d316f1-05ec-4bc5-dd7a-3c0483358a94">TC 34/SC 4/WG 4</semx></tt></fmt-identifier></subdivision><subdivision type="Subcommittee" subtype="SC">
+<name>Cereals and pulses</name>
+<identifier id="_8f57e2d2-cecb-bed6-254d-b1941a12f99c">SC 4</identifier><fmt-identifier><tt><semx element="identifier" source="_8f57e2d2-cecb-bed6-254d-b1941a12f99c">SC 4</semx></tt></fmt-identifier></subdivision><subdivision type="Workgroup" subtype="WG">
+<name>Amylose in rice</name>
+<identifier id="_c940f6e6-ec4b-20c8-f46d-f0f41da76bf4">WG 4</identifier><fmt-identifier><tt><semx element="identifier" source="_c940f6e6-ec4b-20c8-f46d-f0f41da76bf4">WG 4</semx></tt></fmt-identifier></subdivision><abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="authorizer"><description>Agency</description></role><organization>
 <name>International Organization for Standardization</name>
-<abbreviation>ISO</abbreviation></organization></contributor><version><revision-date>2024-01-01</revision-date></version><language current="true">en</language><script current="true">Latn</script><status><stage language="">60</stage><stage language="en">International Standard</stage><substage>60</substage></status><copyright><from>2024</from><owner><organization>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="author"><description>secretariat</description></role><organization>
 <name>International Organization for Standardization</name>
-<abbreviation>ISO</abbreviation></organization></owner></copyright><ext><doctype language="">international-standard</doctype><doctype language="en">International Standard</doctype><editorialgroup identifier="ISO"><agency>ISO</agency></editorialgroup><approvalgroup identifier="ISO"><agency>ISO</agency></approvalgroup><structuredidentifier><project-number>ISO 1234</project-number></structuredidentifier><stagename>International Standard</stagename></ext></bibdata><localized-strings><localized-string key="term_def_boilerplate" language="en"><p>ISO and IEC maintain terminology databases for use in
-standardization at the following addresses:</p>
+<subdivision type="Secretariat">
+<name>SAC</name>
+</subdivision><abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="publisher"/><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="authorizer"><description>committee</description></role><organization>
+<name>International Organization for Standardization</name>
+<subdivision type="Technical committee" subtype="TC">
+<name>Food products</name>
+<identifier id="_b97a634f-1369-2b15-8159-a128f0e6cd87">TC 34</identifier><fmt-identifier><tt><semx element="identifier" source="_b97a634f-1369-2b15-8159-a128f0e6cd87">TC 34</semx></tt></fmt-identifier><identifier type="full" id="_ceb797f5-fded-81ca-6d13-e8e750e73449">TC 34/SC 4/WG 4</identifier><fmt-identifier><tt><semx element="identifier" source="_ceb797f5-fded-81ca-6d13-e8e750e73449">TC 34/SC 4/WG 4</semx></tt></fmt-identifier></subdivision><subdivision type="Subcommittee" subtype="SC">
+<name>Cereals and pulses</name>
+<identifier id="_5bb43d1d-504c-ef62-9a41-2f62d1606c6c">SC 4</identifier><fmt-identifier><tt><semx element="identifier" source="_5bb43d1d-504c-ef62-9a41-2f62d1606c6c">SC 4</semx></tt></fmt-identifier></subdivision><subdivision type="Workgroup" subtype="WG">
+<name>Amylose in rice</name>
+<identifier id="_ce0647ae-f8d6-93cf-af0d-fc054fddf9b8">WG 4</identifier><fmt-identifier><tt><semx element="identifier" source="_ce0647ae-f8d6-93cf-af0d-fc054fddf9b8">WG 4</semx></tt></fmt-identifier></subdivision><abbreviation>ISO</abbreviation></organization></contributor><edition language="">2</edition><edition language="en">second edition</edition><version><revision-date>2016-05-01</revision-date></version><language current="true">en</language><script current="true">Latn</script><status><stage abbreviation="IS" language="">60</stage><stage abbreviation="IS" language="en">International Standard</stage><substage>60</substage></status><copyright><from>2016</from><owner><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></owner></copyright><classification type="UDC">563.5.081:537.71</classification><ext><doctype language="">international-standard</doctype><doctype language="en">International Standard</doctype><flavor>iso</flavor><ics><code>67.060</code><text>Cereals, pulses and derived products</text></ics><structuredidentifier><project-number part="1">ISO 17301</project-number></structuredidentifier><stagename abbreviation="IS">International Standard</stagename></ext></bibdata><localized-strings><localized-string key="term_def_boilerplate" language="en">ISO and IEC maintain terminology databases for use in
+standardization at the following addresses:
 
-<ul>
-<li><p>ISO Online browsing platform: available at
-  <link target="https://www.iso.org/obp"/></p></li>
-<li><p>IEC Electropedia: available at
-<link target="https://www.electropedia.org"/></p></li>
-</ul>
-</localized-string><localized-string key="scope" language="en">Scope</localized-string><localized-string key="symbolsabbrev" language="en">Symbols and abbreviated terms</localized-string><localized-string key="abbrev" language="en">Abbreviated terms</localized-string><localized-string key="symbols" language="en">Symbols</localized-string><localized-string key="table_of_contents" language="en">Contents</localized-string><localized-string key="introduction" language="en">Introduction</localized-string><localized-string key="foreword" language="en">Foreword</localized-string><localized-string key="abstract" language="en">Abstract</localized-string><localized-string key="acknowledgements" language="en">Acknowledgements</localized-string><localized-string key="termsdef" language="en">Terms and definitions</localized-string><localized-string key="termsdefsymbolsabbrev" language="en">Terms, definitions, symbols and abbreviated terms</localized-string><localized-string key="termsdefsymbols" language="en">Terms, definitions and symbols</localized-string><localized-string key="termsdefabbrev" language="en">Terms, definitions and abbreviated terms</localized-string><localized-string key="normref" language="en">Normative references</localized-string><localized-string key="bibliography" language="en">Bibliography</localized-string><localized-string key="preface" language="en">Preface</localized-string><localized-string key="section" language="en">Section</localized-string><localized-string key="clause" language="en">Clause</localized-string><localized-string key="annex" language="en">Annex</localized-string><localized-string key="appendix" language="en">Appendix</localized-string><localized-string key="continued" language="en">continued</localized-string><localized-string key="no_terms_boilerplate" language="en">No terms and definitions are listed in this document.
+* ISO Online browsing platform: available at https://www.iso.org/obp[]
+* IEC Electropedia: available at https://www.electropedia.org[]
+</localized-string><localized-string key="scope" language="en">Scope</localized-string><localized-string key="symbolsabbrev" language="en">Symbols and abbreviated terms</localized-string><localized-string key="abbrev" language="en">Abbreviated terms</localized-string><localized-string key="symbols" language="en">Symbols</localized-string><localized-string key="table_of_contents" language="en">Contents</localized-string><localized-string key="introduction" language="en">Introduction</localized-string><localized-string key="foreword" language="en">Foreword</localized-string><localized-string key="abstract" language="en">Abstract</localized-string><localized-string key="acknowledgements" language="en">Acknowledgements</localized-string><localized-string key="executivesummary" language="en">Executive summary</localized-string><localized-string key="termsdef" language="en">Terms and definitions</localized-string><localized-string key="termsdefsymbolsabbrev" language="en">Terms, definitions, symbols and abbreviated terms</localized-string><localized-string key="termsdefsymbols" language="en">Terms, definitions and symbols</localized-string><localized-string key="termsdefabbrev" language="en">Terms, definitions and abbreviated terms</localized-string><localized-string key="normref" language="en">Normative references</localized-string><localized-string key="bibliography" language="en">Bibliography</localized-string><localized-string key="index" language="en">Index</localized-string><localized-string key="see" language="en">see</localized-string><localized-string key="see_also" language="en">see also</localized-string><localized-string key="preface" language="en">Preface</localized-string><localized-string key="section" language="en">Section</localized-string><localized-string key="clause" language="en">Clause</localized-string><localized-string key="annex" language="en">Annex</localized-string><localized-string key="appendix" language="en">Appendix</localized-string><localized-string key="continued" language="en">continued</localized-string><localized-string key="no_terms_boilerplate" language="en">No terms and definitions are listed in this document.
 </localized-string><localized-string key="internal_terms_boilerplate" language="en">For the purposes of this document, the following terms and definitions apply.
 </localized-string><localized-string key="norm_with_refs_pref" language="en">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</localized-string><localized-string key="norm_empty_pref" language="en">There are no normative references in this document.</localized-string><localized-string key="external_terms_boilerplate" language="en">For the purposes of this document, the terms and definitions given in % apply.
 </localized-string><localized-string key="internal_external_terms_boilerplate" language="en">For the purposes of this document, the terms and definitions given in % and the following apply.
-</localized-string><localized-string key="no_information_available" language="en">[NO INFORMATION AVAILABLE]</localized-string><localized-string key="term_defined_in" language="en">(%)</localized-string><localized-string key="binary_and" language="en">%1 and %2</localized-string><localized-string key="multiple_and" language="en">%1 and %2</localized-string><localized-string key="binary_or" language="en">%1 or %2</localized-string><localized-string key="multiple_or" language="en">%1 or %2</localized-string><localized-string key="chain_and" language="en">%1 and %2</localized-string><localized-string key="chain_or" language="en">%1 or %2</localized-string><localized-string key="chain_from" language="en">%1 from %2</localized-string><localized-string key="chain_to" language="en">%1 to %2</localized-string><localized-string key="nested_xref" language="en">%1, %2</localized-string><localized-string key="list_nested_xref" language="en">%1 %2</localized-string><localized-string key="SpelloutRules" language="en">spellout-ordinal</localized-string><localized-string key="OrdinalRules" language="en">digits-ordinal</localized-string><localized-string key="note" language="en">NOTE</localized-string><localized-string key="note_xref" language="en">Note</localized-string><localized-string key="termnote" language="en">Note % to entry</localized-string><localized-string key="list" language="en">List</localized-string><localized-string key="deflist" language="en">Definition List</localized-string><localized-string key="figure" language="en">Figure</localized-string><localized-string key="diagram" language="en">Diagram</localized-string><localized-string key="formula" language="en">Formula</localized-string><localized-string key="inequality" language="en">Formula</localized-string><localized-string key="table" language="en">Table</localized-string><localized-string key="requirement" language="en">Requirement</localized-string><localized-string key="recommendation" language="en">Recommendation</localized-string><localized-string key="permission" language="en">Permission</localized-string><localized-string key="box" language="en">Box</localized-string><localized-string key="no_identifier" language="en">(NO ID)</localized-string><localized-string key="recommendationtest" language="en">Recommendation test</localized-string><localized-string key="requirementtest" language="en">Requirement test</localized-string><localized-string key="permissiontest" language="en">Permission test</localized-string><localized-string key="recommendationclass" language="en">Recommendations class</localized-string><localized-string key="requirementclass" language="en">Requirements class</localized-string><localized-string key="permissionclass" language="en">Permissions class</localized-string><localized-string key="abstracttest" language="en">Abstract test</localized-string><localized-string key="conformanceclass" language="en">Conformance class</localized-string><localized-string key="key" language="en">Key</localized-string><localized-string key="example" language="en">EXAMPLE</localized-string><localized-string key="example_xref" language="en">Example</localized-string><localized-string key="where" language="en">where</localized-string><localized-string key="where_one" language="en">where</localized-string><localized-string key="wholeoftext" language="en">Whole of text</localized-string><localized-string key="draft_label" language="en">draft</localized-string><localized-string key="inform_annex" language="en">informative</localized-string><localized-string key="norm_annex" language="en">normative</localized-string><localized-string key="modified" language="en">modified</localized-string><localized-string key="adapted" language="en">adapted</localized-string><localized-string key="deprecated" language="en">DEPRECATED</localized-string><localized-string key="source" language="en">SOURCE</localized-string><localized-string key="and" language="en">and</localized-string><localized-string key="all_parts" language="en">All Parts</localized-string><localized-string key="edition_ordinal" language="en">{{ var1 | ordinal_word: '', '' }} edition</localized-string><localized-string key="edition" language="en">edition</localized-string><localized-string key="version" language="en">version</localized-string><localized-string key="toc_figures" language="en">List of figures</localized-string><localized-string key="toc_tables" language="en">List of tables</localized-string><localized-string key="toc_recommendations" language="en">List of recommendations</localized-string><localized-string key="month_january" language="en">January</localized-string><localized-string key="month_february" language="en">February</localized-string><localized-string key="month_march" language="en">March</localized-string><localized-string key="month_april" language="en">April</localized-string><localized-string key="month_may" language="en">May</localized-string><localized-string key="month_june" language="en">June</localized-string><localized-string key="month_july" language="en">July</localized-string><localized-string key="month_august" language="en">August</localized-string><localized-string key="month_september" language="en">September</localized-string><localized-string key="month_october" language="en">October</localized-string><localized-string key="month_november" language="en">November</localized-string><localized-string key="month_december" language="en">December</localized-string><localized-string key="obligation" language="en">Obligation</localized-string><localized-string key="admonition.danger" language="en">Danger</localized-string><localized-string key="admonition.warning" language="en">Warning</localized-string><localized-string key="admonition.caution" language="en">Caution</localized-string><localized-string key="admonition.important" language="en">Important</localized-string><localized-string key="admonition.safety_precautions" language="en">Safety Precautions</localized-string><localized-string key="admonition.editorial" language="en">Editorial Note</localized-string><localized-string key="locality.section" language="en">Section</localized-string><localized-string key="locality.clause" language="en">Clause</localized-string><localized-string key="locality.part" language="en">Part</localized-string><localized-string key="locality.paragraph" language="en">Paragraph</localized-string><localized-string key="locality.chapter" language="en">Chapter</localized-string><localized-string key="locality.page" language="en">Page</localized-string><localized-string key="locality.table" language="en">Table</localized-string><localized-string key="locality.annex" language="en">Annex</localized-string><localized-string key="locality.figure" language="en">Figure</localized-string><localized-string key="locality.example" language="en">Example</localized-string><localized-string key="locality.note" language="en">Note</localized-string><localized-string key="locality.formula" language="en">Formula</localized-string><localized-string key="locality.appendix" language="en">Appendix</localized-string><localized-string key="grammar_abbrevs.masculine" language="en">m</localized-string><localized-string key="grammar_abbrevs.feminine" language="en">f</localized-string><localized-string key="grammar_abbrevs.neuter" language="en">n</localized-string><localized-string key="grammar_abbrevs.common" language="en">common</localized-string><localized-string key="grammar_abbrevs.singular" language="en">sg</localized-string><localized-string key="grammar_abbrevs.dual" language="en">dual</localized-string><localized-string key="grammar_abbrevs.pl" language="en">pl</localized-string><localized-string key="grammar_abbrevs.isPreposition" language="en">prep</localized-string><localized-string key="grammar_abbrevs.isParticiple" language="en">part</localized-string><localized-string key="grammar_abbrevs.isAdjective" language="en">adj</localized-string><localized-string key="grammar_abbrevs.isAdverb" language="en">adv</localized-string><localized-string key="grammar_abbrevs.isNoun" language="en">noun</localized-string><localized-string key="grammar_abbrevs.isVerb" language="en">verb</localized-string><localized-string key="relatedterms.deprecates" language="en">deprecates</localized-string><localized-string key="relatedterms.supersedes" language="en">supersedes</localized-string><localized-string key="relatedterms.narrower" language="en">narrower</localized-string><localized-string key="relatedterms.broader" language="en">broader</localized-string><localized-string key="relatedterms.equivalent" language="en">equivalent</localized-string><localized-string key="relatedterms.compare" language="en">compare</localized-string><localized-string key="relatedterms.contrast" language="en">contrast</localized-string><localized-string key="relatedterms.see" language="en">see</localized-string><localized-string key="relatedterms.seealso" language="en">see also</localized-string><localized-string key="Clause.sg" language="en">Clause</localized-string><localized-string key="Clause.pl" language="en">Clauses</localized-string><localized-string key="Annex.sg" language="en">Annex</localized-string><localized-string key="Annex.pl" language="en">Annexes</localized-string><localized-string key="Appendix.sg" language="en">Appendix</localized-string><localized-string key="Appendix.pl" language="en">Appendixes</localized-string><localized-string key="Note.sg" language="en">Note</localized-string><localized-string key="Note.pl" language="en">Notes</localized-string><localized-string key="Note_%_to_entry.sg" language="en">Note % to entry</localized-string><localized-string key="Note_%_to_entry.pl" language="en">Notes % to entry</localized-string><localized-string key="List.sg" language="en">List</localized-string><localized-string key="List.pl" language="en">Lists</localized-string><localized-string key="Figure.sg" language="en">Figure</localized-string><localized-string key="Figure.pl" language="en">Figures</localized-string><localized-string key="Formula.sg" language="en">Formula</localized-string><localized-string key="Formula.pl" language="en">Formulas</localized-string><localized-string key="Table.sg" language="en">Table</localized-string><localized-string key="Table.pl" language="en">Tables</localized-string><localized-string key="Requirement.sg" language="en">Requirement</localized-string><localized-string key="Requirement.pl" language="en">Requirements</localized-string><localized-string key="Recommendation.sg" language="en">Recommendation</localized-string><localized-string key="Recommendation.pl" language="en">Recommendations</localized-string><localized-string key="Permission.sg" language="en">Permission</localized-string><localized-string key="Permission.pl" language="en">Permissions</localized-string><localized-string key="Example.sg" language="en">Example</localized-string><localized-string key="Example.pl" language="en">Examples</localized-string><localized-string key="Part.sg" language="en">Part</localized-string><localized-string key="Part.pl" language="en">Parts</localized-string><localized-string key="Section.sg" language="en">Section</localized-string><localized-string key="Section.pl" language="en">Sections</localized-string><localized-string key="Paragraph.sg" language="en">Paragraph</localized-string><localized-string key="Paragraph.pl" language="en">Paragraphs</localized-string><localized-string key="Chapter.sg" language="en">Chapter</localized-string><localized-string key="Chapter.pl" language="en">Chapters</localized-string><localized-string key="Page.sg" language="en">Page</localized-string><localized-string key="Page.pl" language="en">Pages</localized-string><localized-string key="Provision.sg" language="en">Provision</localized-string><localized-string key="Provision.pl" language="en">Provisions</localized-string><localized-string key="Statement.sg" language="en">Statement</localized-string><localized-string key="Statement.pl" language="en">Statements</localized-string><localized-string key="Descriptor.sg" language="en">Descriptor</localized-string><localized-string key="Descriptor.pl" language="en">Descriptors</localized-string><localized-string key="all_rights_reserved" language="en">All rights reserved</localized-string><localized-string key="reference_number" language="en">Reference number</localized-string><localized-string key="reference_number_abbrev" language="en">Ref. No.</localized-string><localized-string key="price_based_on" language="en">Price based on % pages</localized-string><localized-string key="price" language="en">Price</localized-string><localized-string key="date_first_printing" language="en">Date of the first printing</localized-string><localized-string key="date_printing" language="en">Date of the {{ var1 | ordinal_word: '', '' }} printing</localized-string><localized-string key="descriptor" language="en">Descriptor</localized-string><localized-string key="under_preparation" language="en">Under preparation. (Stage at the time of publication %).</localized-string><localized-string key="withdrawn" language="en">Withdrawn.</localized-string><localized-string key="cancelled_and_replaced" language="en">Cancelled and replaced by %.</localized-string><localized-string key="date" language="en">Date</localized-string><localized-string key="index" language="en">Index</localized-string><localized-string key="see" language="en">see</localized-string><localized-string key="see_also" language="en">see also</localized-string><localized-string key="secretariat" language="en">Secretariat</localized-string><localized-string key="edition_ordinal_old" language="en">{{ var1 | ordinal_num: 'edition', '' }} EDITION</localized-string><localized-string key="edition_replacement" language="en">This {{ var1 | ordinal_word: 'edition', '' }} edition supersedes the {{ var2 | ordinal_word: 'edition', '' }} edition</localized-string><localized-string key="termsrelated" language="en">Terms related to</localized-string><localized-string key="availablefrom" language="en">Available from</localized-string><localized-string key="voting_begins_on" language="en">Voting begins on</localized-string><localized-string key="voting_terminates_on" language="en">Voting terminates on</localized-string><localized-string key="corrected_version" language="en">Corrected version</localized-string><localized-string key="fast-track-procedure" language="en">Fast track procedure</localized-string><localized-string key="classification-UDC" language="en">UDC</localized-string><localized-string key="doctype_dict.international-standard" language="en">International Standard</localized-string><localized-string key="doctype_dict.technical-specification" language="en">Technical Specification</localized-string><localized-string key="doctype_dict.technical-report" language="en">Technical Report</localized-string><localized-string key="doctype_dict.publicly-available-specification" language="en">Publicly Available Specification</localized-string><localized-string key="doctype_dict.international-workshop-agreement" language="en">International Workshop Agreement</localized-string><localized-string key="doctype_dict.guide" language="en">Guide</localized-string><localized-string key="doctype_dict.amendment" language="en">Amendment</localized-string><localized-string key="doctype_dict.technical-corrigendum" language="en">Technical Corrigendum</localized-string><localized-string key="doctype_dict.directive" language="en">Directive</localized-string><localized-string key="doctype_dict.committee-document" language="en">Committee Document</localized-string><localized-string key="doctype_dict.recommendation" language="en">ISO Recommendation</localized-string><localized-string key="stage_dict.00" language="en">Preliminary work item</localized-string><localized-string key="stage_dict.10" language="en">New work item proposal</localized-string><localized-string key="stage_dict.20" language="en">Working draft</localized-string><localized-string key="stage_dict.30" language="en">Committee draft</localized-string><localized-string key="40.international-standard" language="en">Draft International Standard</localized-string><localized-string key="40.technical-specification" language="en">Draft Technical Specification</localized-string><localized-string key="40.technical-report" language="en">Draft Technical Report</localized-string><localized-string key="40.publicly-available-specification" language="en">Draft Publicly Available Specification</localized-string><localized-string key="40.international-workshop-agreement" language="en">Draft International Workshop Agreement</localized-string><localized-string key="40.guide" language="en">Draft Guide</localized-string><localized-string key="40.amendment" language="en">Draft Amendment</localized-string><localized-string key="40.technical-corrigendum" language="en">Draft Technical Corrigendum</localized-string><localized-string key="40.directive" language="en">Draft Directive</localized-string><localized-string key="50.international-standard" language="en">Final Draft International Standard</localized-string><localized-string key="50.technical-specification" language="en">Final Draft Technical Specification</localized-string><localized-string key="50.technical-report" language="en">Final Draft Technical Report</localized-string><localized-string key="50.publicly-available-specification" language="en">Final Draft Publicly Available Specification</localized-string><localized-string key="50.international-workshop-agreement" language="en">Final Draft International Workshop Agreement</localized-string><localized-string key="50.guide" language="en">Final Draft Guide</localized-string><localized-string key="50.amendment" language="en">Final Draft Amendment</localized-string><localized-string key="50.technical-corrigendum" language="en">Final Draft Technical Corrigendum</localized-string><localized-string key="50.directive" language="en">Final Draft Directive</localized-string><localized-string key="60.international-standard" language="en">International Standard</localized-string><localized-string key="60.technical-specification" language="en">Technical Specification</localized-string><localized-string key="60.technical-report" language="en">Technical Report</localized-string><localized-string key="60.publicly-available-specification" language="en">Publicly Available Specification</localized-string><localized-string key="60.international-workshop-agreement" language="en">International Workshop Agreement</localized-string><localized-string key="60.guide" language="en">Guide</localized-string><localized-string key="60.amendment" language="en">Amendment</localized-string><localized-string key="60.technical-corrigendum" language="en">Technical Corrigendum</localized-string><localized-string key="60.directive" language="en">Directive</localized-string><localized-string key="stage_dict.90" language="en">Review</localized-string><localized-string key="stage_dict.95" language="en">Withdrawal</localized-string><localized-string key="modspec.provision" language="en">Provision</localized-string><localized-string key="modspec.conformancetest" language="en">Conformance test</localized-string><localized-string key="language" language="en">en</localized-string><localized-string key="script" language="en">Latn</localized-string></localized-strings><metanorma-extension><presentation-metadata><name>document-scheme</name><value>2024</value></presentation-metadata><attachment name="_test_attachments_attachments/program.c">data:text/x-csrc;base64,I2luY2x1ZGUgPHN0ZGlvLmg+DQppbnQgbWFp
-bigpIHsNCiAgIHByaW50ZigiSGVsbG8sIFdvcmxkISIpOw0KICAgcmV0dXJu
-IDA7DQp9
-</attachment><attachment name="_test_attachments_attachments/program.pas">data:application/octet-stream;base64,cHJvZ3JhbSBIZWxsb1dvcmx
-kOw0KDQpiZWdpbg0KICAgd3JpdGVsbignSGVsbG8sIFdvcmxkIScpOw0KICA
-gcmVhZGtleTsNCmVuZC4NCg==
-</attachment><presentation-metadata><name>TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>HTML TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>DOC TOC Heading Levels</name><value>3</value></presentation-metadata><presentation-metadata><name>PDF TOC Heading Levels</name><value>3</value></presentation-metadata><metanorma><source><semantic__iso-standard type="semantic" version="2.8.4" schema-version="v1.3.3">
-<semantic__bibdata type="standard">
-<semantic__title language="en" format="text/plain" type="main">Attachment test — Attachment test</semantic__title>
-
-<semantic__title language="en" format="text/plain" type="title-intro">Attachment test</semantic__title>
-
-<semantic__title language="en" format="text/plain" type="title-main">Attachment test</semantic__title>
-
-
-
-
-<semantic__docidentifier type="ISO" primary="true">ISO 1234:2024</semantic__docidentifier><semantic__docidentifier type="iso-reference">ISO 1234:2024(E)</semantic__docidentifier><semantic__docidentifier type="URN">urn:iso:std:iso:1234:stage-60.60:en</semantic__docidentifier><semantic__docidentifier type="iso-undated">ISO 1234</semantic__docidentifier><semantic__docidentifier type="iso-with-lang">ISO 1234:2024(en)</semantic__docidentifier><semantic__docnumber>1234</semantic__docnumber><semantic__contributor><semantic__role type="author"/><semantic__organization>
-<semantic__name>International Organization for Standardization</semantic__name>
-<semantic__abbreviation>ISO</semantic__abbreviation></semantic__organization></semantic__contributor><semantic__contributor><semantic__role type="authorizer"><semantic__description>Agency</semantic__description></semantic__role><semantic__organization>
-<semantic__name>International Organization for Standardization</semantic__name>
-<semantic__abbreviation>ISO</semantic__abbreviation></semantic__organization></semantic__contributor><semantic__contributor><semantic__role type="publisher"/><semantic__organization>
-<semantic__name>International Organization for Standardization</semantic__name>
-<semantic__abbreviation>ISO</semantic__abbreviation></semantic__organization></semantic__contributor><semantic__version><semantic__revision-date>2024-01-01</semantic__revision-date></semantic__version><semantic__language>en</semantic__language><semantic__script>Latn</semantic__script><semantic__status><semantic__stage>60</semantic__stage><semantic__substage>60</semantic__substage></semantic__status><semantic__copyright><semantic__from>2024</semantic__from><semantic__owner><semantic__organization>
-<semantic__name>International Organization for Standardization</semantic__name>
-<semantic__abbreviation>ISO</semantic__abbreviation></semantic__organization></semantic__owner></semantic__copyright><semantic__ext><semantic__doctype>international-standard</semantic__doctype><semantic__editorialgroup><semantic__agency>ISO</semantic__agency></semantic__editorialgroup><semantic__approvalgroup><semantic__agency>ISO</semantic__agency></semantic__approvalgroup><semantic__structuredidentifier><semantic__project-number>ISO 1234</semantic__project-number></semantic__structuredidentifier><semantic__stagename>International Standard</semantic__stagename></semantic__ext></semantic__bibdata><semantic__metanorma-extension><semantic__presentation-metadata><semantic__name>document-scheme</semantic__name><semantic__value>2024</semantic__value></semantic__presentation-metadata><semantic__attachment name="_test_attachments_attachments/program.c">data:text/x-csrc;base64,I2luY2x1ZGUgPHN0ZGlvLmg+DQppbnQgbWFp
-bigpIHsNCiAgIHByaW50ZigiSGVsbG8sIFdvcmxkISIpOw0KICAgcmV0dXJu
-IDA7DQp9
-</semantic__attachment><semantic__attachment name="_test_attachments_attachments/program.pas">data:application/octet-stream;base64,cHJvZ3JhbSBIZWxsb1dvcmx
-kOw0KDQpiZWdpbg0KICAgd3JpdGVsbignSGVsbG8sIFdvcmxkIScpOw0KICA
-gcmVhZGtleTsNCmVuZC4NCg==
-</semantic__attachment><semantic__presentation-metadata><semantic__name>TOC Heading Levels</semantic__name><semantic__value>2</semantic__value></semantic__presentation-metadata><semantic__presentation-metadata><semantic__name>HTML TOC Heading Levels</semantic__name><semantic__value>2</semantic__value></semantic__presentation-metadata><semantic__presentation-metadata><semantic__name>DOC TOC Heading Levels</semantic__name><semantic__value>3</semantic__value></semantic__presentation-metadata><semantic__presentation-metadata><semantic__name>PDF TOC Heading Levels</semantic__name><semantic__value>3</semantic__value></semantic__presentation-metadata></semantic__metanorma-extension>
-<semantic__boilerplate><semantic__copyright-statement>
-
-<semantic__clause id="semantic___copyright_protected_document" inline-header="false" obligation="normative">
-<semantic__title>COPYRIGHT PROTECTED DOCUMENT</semantic__title>
-<semantic__p id="semantic__boilerplate-year">© <semantic__span class="std_publisher">ISO </semantic__span><semantic__span class="date">2024</semantic__span></semantic__p>
-
-<semantic__p id="semantic__boilerplate-message">All rights reserved. Unless otherwise specified, or required in the context of its implementation, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</semantic__p>
-
-<semantic__p id="semantic__boilerplate-address" align="left">ISO copyright office<semantic__br/> CP 401 • Ch. de Blandonnet 8 <semantic__br/> CH-1214 Vernier, Geneva <semantic__br/> Phone: +41 22 749 01 11 <semantic__br/> Email: <semantic__link target="mailto:copyright@iso.org"/><semantic__br/> Website: <semantic__link target="https://www.iso.org/">www.iso.org</semantic__link></semantic__p>
-
-<semantic__p id="semantic__boilerplate-place">Published in Switzerland</semantic__p>
-</semantic__clause>
-</semantic__copyright-statement>
-</semantic__boilerplate><semantic__sections><semantic__clause id="semantic___scope" type="scope" inline-header="false" obligation="normative">
-<semantic__title>Scope</semantic__title>
-<semantic__p id="semantic___937d1be2-f2fb-f7f6-befd-9e847d1b25aa">The sample PDF attachment: <semantic__eref type="inline" bibitemid="semantic__file1" citeas="[sources/program.c]"/></semantic__p>
-</semantic__clause>
-
-
-</semantic__sections><semantic__bibliography><semantic__references id="semantic___bibliography" normative="false" obligation="informative">
-<semantic__title>Bibliography</semantic__title><semantic__bibitem id="semantic__file1" hidden="true">
-  <semantic__formattedref format="application/x-isodoc+xml">[NO INFORMATION AVAILABLE]</semantic__formattedref>
-  <semantic__uri type="attachment">_test_attachments_attachments/program.c</semantic__uri>
-  <semantic__uri type="citation">_test_attachments_attachments/program.c</semantic__uri>
-  <semantic__docidentifier type="metanorma">[sources/program.c]</semantic__docidentifier>
-</semantic__bibitem><semantic__bibitem id="semantic__file2" hidden="true">
-  <semantic__formattedref format="application/x-isodoc+xml">[NO INFORMATION AVAILABLE]</semantic__formattedref>
-  <semantic__uri type="attachment">_test_attachments_attachments/program.pas</semantic__uri>
-  <semantic__uri type="citation">_test_attachments_attachments/program.pas</semantic__uri>
-  <semantic__docidentifier type="metanorma">[sources/program.pas]</semantic__docidentifier>
-</semantic__bibitem>
-
-
-</semantic__references></semantic__bibliography>
-</semantic__iso-standard></source></metanorma><render><preprocess-xslt format="presentation">
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-  <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
-  <xsl:template match="@* | node()"><xsl:copy><xsl:apply-templates select="@* | node()"/></xsl:copy></xsl:template>
-<xsl:template match="*[local-name() = 'passthrough']">
-  <xsl:if test="contains(@formats,',presentation,')"> <!-- delimited -->
-  <xsl:copy><xsl:apply-templates select="@* | node()"/></xsl:copy>
-  </xsl:if>
-</xsl:template>
-
-</xsl:stylesheet>
-
-</preprocess-xslt>
-
-<preprocess-xslt format="presentation">
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-  <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
-  <xsl:template match="@* | node()"><xsl:copy><xsl:apply-templates select="@* | node()"/></xsl:copy></xsl:template>
-<xsl:template match="*[local-name() = 'math-with-linebreak']">
-
-</xsl:template>
-<xsl:template match="*[local-name() = 'math-no-linebreak']">
-<xsl:apply-templates select="node()"/>
-</xsl:template>
-
-</xsl:stylesheet>
-
-</preprocess-xslt>
-</render><source-highlighter-css>sourcecode table td { padding: 5px; }
+</localized-string><localized-string key="no_information_available" language="en">[NO INFORMATION AVAILABLE]</localized-string><localized-string key="term_defined_in" language="en">(%)</localized-string><localized-string key="binary_and" language="en">%1 <conn>and</conn> %2</localized-string><localized-string key="multiple_and" language="en">%1 <span class="fmt-conn">and</span> %2</localized-string><localized-string key="binary_or" language="en">%1 <conn>or</conn> %2</localized-string><localized-string key="multiple_or" language="en">%1 <span class="fmt-conn">or</span> %2</localized-string><localized-string key="chain_and" language="en">%1 <conn>and</conn> %2</localized-string><localized-string key="chain_or" language="en">%1 <conn>or</conn> %2</localized-string><localized-string key="chain_from" language="en">%1 <conn>from</conn> %2</localized-string><localized-string key="chain_to" language="en">%1 <conn>to</conn> %2</localized-string><localized-string key="nested_xref" language="en">%1<comma>,</comma> %2</localized-string><localized-string key="list_nested_xref" language="en">%1 %2</localized-string><localized-string key="SpelloutRules" language="en">spellout-ordinal</localized-string><localized-string key="OrdinalRules" language="en">digits-ordinal</localized-string><localized-string key="note" language="en">NOTE</localized-string><localized-string key="note_xref" language="en">Note</localized-string><localized-string key="termnote" language="en">Note % to entry</localized-string><localized-string key="list" language="en">List</localized-string><localized-string key="deflist" language="en">Definition List</localized-string><localized-string key="figure" language="en">Figure</localized-string><localized-string key="diagram" language="en">Diagram</localized-string><localized-string key="formula" language="en">Formula</localized-string><localized-string key="inequality" language="en">Formula</localized-string><localized-string key="table" language="en">Table</localized-string><localized-string key="requirement" language="en">Requirement</localized-string><localized-string key="recommendation" language="en">Recommendation</localized-string><localized-string key="permission" language="en">Permission</localized-string><localized-string key="box" language="en">Box</localized-string><localized-string key="no_identifier" language="en">(NO ID)</localized-string><localized-string key="recommendationtest" language="en">Recommendation test</localized-string><localized-string key="requirementtest" language="en">Requirement test</localized-string><localized-string key="permissiontest" language="en">Permission test</localized-string><localized-string key="recommendationclass" language="en">Recommendations class</localized-string><localized-string key="requirementclass" language="en">Requirements class</localized-string><localized-string key="permissionclass" language="en">Permissions class</localized-string><localized-string key="abstracttest" language="en">Abstract test</localized-string><localized-string key="conformanceclass" language="en">Conformance class</localized-string><localized-string key="key" language="en">Key</localized-string><localized-string key="example" language="en">EXAMPLE</localized-string><localized-string key="example_xref" language="en">Example</localized-string><localized-string key="where" language="en">where</localized-string><localized-string key="where_one" language="en">where</localized-string><localized-string key="wholeoftext" language="en">Whole of text</localized-string><localized-string key="draft_label" language="en">draft</localized-string><localized-string key="inform_annex" language="en">informative</localized-string><localized-string key="norm_annex" language="en">normative</localized-string><localized-string key="modified" language="en">modified</localized-string><localized-string key="adapted" language="en">adapted</localized-string><localized-string key="deprecated" language="en">DEPRECATED</localized-string><localized-string key="source" language="en">SOURCE</localized-string><localized-string key="and" language="en">and</localized-string><localized-string key="all_parts" language="en">All Parts</localized-string><localized-string key="edition_ordinal" language="en">{{ var1 | ordinal_word: '', '' }} edition</localized-string><localized-string key="edition" language="en">edition</localized-string><localized-string key="version" language="en">version</localized-string><localized-string key="toc_figures" language="en">List of figures</localized-string><localized-string key="toc_tables" language="en">List of tables</localized-string><localized-string key="toc_recommendations" language="en">List of recommendations</localized-string><localized-string key="month_january" language="en">January</localized-string><localized-string key="month_february" language="en">February</localized-string><localized-string key="month_march" language="en">March</localized-string><localized-string key="month_april" language="en">April</localized-string><localized-string key="month_may" language="en">May</localized-string><localized-string key="month_june" language="en">June</localized-string><localized-string key="month_july" language="en">July</localized-string><localized-string key="month_august" language="en">August</localized-string><localized-string key="month_september" language="en">September</localized-string><localized-string key="month_october" language="en">October</localized-string><localized-string key="month_november" language="en">November</localized-string><localized-string key="month_december" language="en">December</localized-string><localized-string key="obligation" language="en">Obligation</localized-string><localized-string key="admonition.danger" language="en">Danger</localized-string><localized-string key="admonition.warning" language="en">Warning</localized-string><localized-string key="admonition.caution" language="en">Caution</localized-string><localized-string key="admonition.important" language="en">Important</localized-string><localized-string key="admonition.safety_precautions" language="en">Safety Precautions</localized-string><localized-string key="admonition.editorial" language="en">Editorial Note</localized-string><localized-string key="locality.section" language="en">Section</localized-string><localized-string key="locality.clause" language="en">Clause</localized-string><localized-string key="locality.part" language="en">Part</localized-string><localized-string key="locality.paragraph" language="en">Paragraph</localized-string><localized-string key="locality.chapter" language="en">Chapter</localized-string><localized-string key="locality.page" language="en">Page</localized-string><localized-string key="locality.table" language="en">Table</localized-string><localized-string key="locality.annex" language="en">Annex</localized-string><localized-string key="locality.figure" language="en">Figure</localized-string><localized-string key="locality.example" language="en">Example</localized-string><localized-string key="locality.note" language="en">Note</localized-string><localized-string key="locality.formula" language="en">Formula</localized-string><localized-string key="locality.appendix" language="en">Appendix</localized-string><localized-string key="grammar_abbrevs.masculine" language="en">m</localized-string><localized-string key="grammar_abbrevs.feminine" language="en">f</localized-string><localized-string key="grammar_abbrevs.neuter" language="en">n</localized-string><localized-string key="grammar_abbrevs.common" language="en">common</localized-string><localized-string key="grammar_abbrevs.singular" language="en">sg</localized-string><localized-string key="grammar_abbrevs.dual" language="en">dual</localized-string><localized-string key="grammar_abbrevs.pl" language="en">pl</localized-string><localized-string key="grammar_abbrevs.isPreposition" language="en">prep</localized-string><localized-string key="grammar_abbrevs.isParticiple" language="en">part</localized-string><localized-string key="grammar_abbrevs.isAdjective" language="en">adj</localized-string><localized-string key="grammar_abbrevs.isAdverb" language="en">adv</localized-string><localized-string key="grammar_abbrevs.isNoun" language="en">noun</localized-string><localized-string key="grammar_abbrevs.isVerb" language="en">verb</localized-string><localized-string key="relatedterms.deprecates" language="en">deprecates</localized-string><localized-string key="relatedterms.supersedes" language="en">supersedes</localized-string><localized-string key="relatedterms.narrower" language="en">narrower</localized-string><localized-string key="relatedterms.broader" language="en">broader</localized-string><localized-string key="relatedterms.equivalent" language="en">equivalent</localized-string><localized-string key="relatedterms.compare" language="en">compare</localized-string><localized-string key="relatedterms.contrast" language="en">contrast</localized-string><localized-string key="relatedterms.see" language="en">see</localized-string><localized-string key="relatedterms.seealso" language="en">see also</localized-string><localized-string key="Clause.sg" language="en">Clause</localized-string><localized-string key="Clause.pl" language="en">Clauses</localized-string><localized-string key="Annex.sg" language="en">Annex</localized-string><localized-string key="Annex.pl" language="en">Annexes</localized-string><localized-string key="Appendix.sg" language="en">Appendix</localized-string><localized-string key="Appendix.pl" language="en">Appendixes</localized-string><localized-string key="Note.sg" language="en">Note</localized-string><localized-string key="Note.pl" language="en">Notes</localized-string><localized-string key="Note_%_to_entry.sg" language="en">Note % to entry</localized-string><localized-string key="Note_%_to_entry.pl" language="en">Notes % to entry</localized-string><localized-string key="List.sg" language="en">List</localized-string><localized-string key="List.pl" language="en">Lists</localized-string><localized-string key="Figure.sg" language="en">Figure</localized-string><localized-string key="Figure.pl" language="en">Figures</localized-string><localized-string key="Formula.sg" language="en">Formula</localized-string><localized-string key="Formula.pl" language="en">Formulas</localized-string><localized-string key="Table.sg" language="en">Table</localized-string><localized-string key="Table.pl" language="en">Tables</localized-string><localized-string key="Requirement.sg" language="en">Requirement</localized-string><localized-string key="Requirement.pl" language="en">Requirements</localized-string><localized-string key="Recommendation.sg" language="en">Recommendation</localized-string><localized-string key="Recommendation.pl" language="en">Recommendations</localized-string><localized-string key="Permission.sg" language="en">Permission</localized-string><localized-string key="Permission.pl" language="en">Permissions</localized-string><localized-string key="Example.sg" language="en">Example</localized-string><localized-string key="Example.pl" language="en">Examples</localized-string><localized-string key="Part.sg" language="en">Part</localized-string><localized-string key="Part.pl" language="en">Parts</localized-string><localized-string key="Section.sg" language="en">Section</localized-string><localized-string key="Section.pl" language="en">Sections</localized-string><localized-string key="Paragraph.sg" language="en">Paragraph</localized-string><localized-string key="Paragraph.pl" language="en">Paragraphs</localized-string><localized-string key="Chapter.sg" language="en">Chapter</localized-string><localized-string key="Chapter.pl" language="en">Chapters</localized-string><localized-string key="Page.sg" language="en">Page</localized-string><localized-string key="Page.pl" language="en">Pages</localized-string><localized-string key="Provision.sg" language="en">Provision</localized-string><localized-string key="Provision.pl" language="en">Provisions</localized-string><localized-string key="Statement.sg" language="en">Statement</localized-string><localized-string key="Statement.pl" language="en">Statements</localized-string><localized-string key="Descriptor.sg" language="en">Descriptor</localized-string><localized-string key="Descriptor.pl" language="en">Descriptors</localized-string><localized-string key="Reference.sg" language="en">Reference</localized-string><localized-string key="Reference.pl" language="en">References</localized-string><localized-string key="punct.colon" language="en">:</localized-string><localized-string key="punct.comma" language="en">,</localized-string><localized-string key="punct.enum-comma" language="en">,</localized-string><localized-string key="punct.semicolon" language="en">;</localized-string><localized-string key="punct.period" language="en">.</localized-string><localized-string key="punct.close-paren" language="en">)</localized-string><localized-string key="punct.open-paren" language="en">(</localized-string><localized-string key="punct.close-bracket" language="en">]</localized-string><localized-string key="punct.open-bracket" language="en">[</localized-string><localized-string key="punct.question-mark" language="en">?</localized-string><localized-string key="punct.exclamation-mark" language="en">!</localized-string><localized-string key="punct.em-dash" language="en">—</localized-string><localized-string key="punct.en-dash" language="en">–</localized-string><localized-string key="punct.number-en-dash" language="en">–</localized-string><localized-string key="punct.open-quote" language="en">“</localized-string><localized-string key="punct.close-quote" language="en">”</localized-string><localized-string key="punct.open-nested-quote" language="en">‘</localized-string><localized-string key="punct.close-nested-quote" language="en">’</localized-string><localized-string key="punct.ellipse" language="en">…</localized-string><localized-string key="all_rights_reserved" language="en">All rights reserved</localized-string><localized-string key="reference_number" language="en">Reference number</localized-string><localized-string key="reference_number_abbrev" language="en">Ref. No.</localized-string><localized-string key="price_based_on" language="en">Price based on % pages</localized-string><localized-string key="price" language="en">Price</localized-string><localized-string key="date_first_printing" language="en">Date of the first printing</localized-string><localized-string key="date_printing" language="en">Date of the {{ var1 | ordinal_word: '', '' }} printing</localized-string><localized-string key="descriptor" language="en">Descriptor</localized-string><localized-string key="reference" language="en">Reference</localized-string><localized-string key="under_preparation" language="en">Under preparation. (Stage at the time of publication %).</localized-string><localized-string key="withdrawn" language="en">Withdrawn.</localized-string><localized-string key="cancelled_and_replaced" language="en">Cancelled and replaced by %.</localized-string><localized-string key="date" language="en">Date</localized-string><localized-string key="secretariat" language="en">Secretariat</localized-string><localized-string key="edition_ordinal_old" language="en">{{ var1 | ordinal_num: 'edition', '' }} EDITION</localized-string><localized-string key="edition_replacement" language="en">This {{ var1 | ordinal_word: 'edition', '' }} edition supersedes the {{ var2 | ordinal_word: 'edition', '' }} edition</localized-string><localized-string key="termsrelated" language="en">Terms related to</localized-string><localized-string key="availablefrom" language="en">Available at</localized-string><localized-string key="voting_begins_on" language="en">Voting begins on</localized-string><localized-string key="voting_terminates_on" language="en">Voting terminates on</localized-string><localized-string key="corrected_version" language="en">Corrected version</localized-string><localized-string key="fast-track-procedure" language="en">Fast track procedure</localized-string><localized-string key="classification-UDC" language="en">UDC</localized-string><localized-string key="website" language="en">website</localized-string><localized-string key="formerly_id" language="en">(formerly %)</localized-string><localized-string key="was_developed_by" language="en">%1 was developed by %2</localized-string><localized-string key="iso-cen-parallel" language="en">ISO/CEN PARALLEL PROCESSING</localized-string><localized-string key="draft_comment_1" language="en">This document is a draft circulated for comments and approval. It is therefore subject to change and may not be referred to as an international standard until published as such.</localized-string><localized-string key="draft_comment_2" language="en">In addition to their evaluation as being acceptable for industrial, technological, commercial and user purposes, draft international standards may on occasion have to be considered in the light of their potential to become standards to which reference may be made in national regulations.</localized-string><localized-string key="draft_comment_3" language="en">Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</localized-string><localized-string key="doctype_dict.international-standard" language="en">International Standard</localized-string><localized-string key="doctype_dict.technical-specification" language="en">Technical Specification</localized-string><localized-string key="doctype_dict.technical-report" language="en">Technical Report</localized-string><localized-string key="doctype_dict.publicly-available-specification" language="en">Publicly Available Specification</localized-string><localized-string key="doctype_dict.international-workshop-agreement" language="en">International Workshop Agreement</localized-string><localized-string key="doctype_dict.guide" language="en">Guide</localized-string><localized-string key="doctype_dict.amendment" language="en">Amendment</localized-string><localized-string key="doctype_dict.addendum" language="en">Addendum</localized-string><localized-string key="doctype_dict.technical-corrigendum" language="en">Technical Corrigendum</localized-string><localized-string key="doctype_dict.directive" language="en">Directive</localized-string><localized-string key="doctype_dict.committee-document" language="en">Committee Document</localized-string><localized-string key="doctype_dict.recommendation" language="en">ISO Recommendation</localized-string><localized-string key="contributor_role_desc_dict.Technical_committee" language="en">Technical committee</localized-string><localized-string key="stage_dict.00" language="en">Preliminary work item</localized-string><localized-string key="stage_dict.10" language="en">New work item proposal</localized-string><localized-string key="stage_dict.20" language="en">Working draft</localized-string><localized-string key="stage_dict.30" language="en">Committee draft</localized-string><localized-string key="40.international-standard" language="en">Draft International Standard</localized-string><localized-string key="40.technical-specification" language="en">Draft Technical Specification</localized-string><localized-string key="40.technical-report" language="en">Draft Technical Report</localized-string><localized-string key="40.publicly-available-specification" language="en">Draft Publicly Available Specification</localized-string><localized-string key="40.international-workshop-agreement" language="en">Draft International Workshop Agreement</localized-string><localized-string key="40.guide" language="en">Draft Guide</localized-string><localized-string key="40.amendment" language="en">Draft Amendment</localized-string><localized-string key="40.technical-corrigendum" language="en">Draft Technical Corrigendum</localized-string><localized-string key="40.directive" language="en">Draft Directive</localized-string><localized-string key="50.international-standard" language="en">Final Draft International Standard</localized-string><localized-string key="50.technical-specification" language="en">Final Draft Technical Specification</localized-string><localized-string key="50.technical-report" language="en">Final Draft Technical Report</localized-string><localized-string key="50.publicly-available-specification" language="en">Final Draft Publicly Available Specification</localized-string><localized-string key="50.international-workshop-agreement" language="en">Final Draft International Workshop Agreement</localized-string><localized-string key="50.guide" language="en">Final Draft Guide</localized-string><localized-string key="50.amendment" language="en">Final Draft Amendment</localized-string><localized-string key="50.technical-corrigendum" language="en">Final Draft Technical Corrigendum</localized-string><localized-string key="50.directive" language="en">Final Draft Directive</localized-string><localized-string key="60.international-standard" language="en">International Standard</localized-string><localized-string key="60.technical-specification" language="en">Technical Specification</localized-string><localized-string key="60.technical-report" language="en">Technical Report</localized-string><localized-string key="60.publicly-available-specification" language="en">Publicly Available Specification</localized-string><localized-string key="60.international-workshop-agreement" language="en">International Workshop Agreement</localized-string><localized-string key="60.guide" language="en">Guide</localized-string><localized-string key="60.amendment" language="en">Amendment</localized-string><localized-string key="60.technical-corrigendum" language="en">Technical Corrigendum</localized-string><localized-string key="60.directive" language="en">Directive</localized-string><localized-string key="stage_dict.90" language="en">Review</localized-string><localized-string key="stage_dict.95" language="en">Withdrawal</localized-string><localized-string key="Draft_International_Standard.coverpage" language="en">DRAFT<br/>International Standard</localized-string><localized-string key="Draft_International_Standard.firstpage" language="en">DRAFT International Standard</localized-string><localized-string key="Draft_Technical_Specification.coverpage" language="en">DRAFT<br/>Technical Specification</localized-string><localized-string key="Draft_Technical_Specification.firstpage" language="en">DRAFT Technical Specification</localized-string><localized-string key="Draft_Technical_Report.coverpage" language="en">DRAFT<br/>Technical Report</localized-string><localized-string key="Draft_Technical_Report.firstpage" language="en">DRAFT Technical Report</localized-string><localized-string key="Draft_Publicly_Available_Specification.coverpage" language="en">DRAFT<br/>Publicly Available Specification</localized-string><localized-string key="Draft_Publicly_Available_Specification.firstpage" language="en">DRAFT Publicly Available Specification</localized-string><localized-string key="Draft_International_Workshop_Agreement.coverpage" language="en">DRAFT<br/>International Workshop Agreement</localized-string><localized-string key="Draft_International_Workshop_Agreement.firstpage" language="en">DRAFT International Workshop Agreement</localized-string><localized-string key="Draft_Guide.coverpage" language="en">DRAFT<br/>Guide</localized-string><localized-string key="Draft_Guide.firstpage" language="en">DRAFT Guide</localized-string><localized-string key="Draft_Amendment.coverpage" language="en">DRAFT<br/>Amendment</localized-string><localized-string key="Draft_Amendment.firstpage" language="en">DRAFT Amendment</localized-string><localized-string key="Draft_Technical_Corrigendum.coverpage" language="en">DRAFT<br/>Technical Corrigendum</localized-string><localized-string key="Draft_Technical_Corrigendum.firstpage" language="en">DRAFT Technical Corrigendum</localized-string><localized-string key="Draft_Directive.coverpage" language="en">DRAFT<br/>Directive</localized-string><localized-string key="Draft_Directive.firstpage" language="en">DRAFT Directive</localized-string><localized-string key="Final_Draft_International_Standard.coverpage" language="en">FINAL DRAFT<br/>International Standard</localized-string><localized-string key="Final_Draft_International_Standard.firstpage" language="en">FINAL DRAFT International Standard</localized-string><localized-string key="Final_Draft_Technical_Specification.coverpage" language="en">FINAL DRAFT<br/>Technical Specification</localized-string><localized-string key="Final_Draft_Technical_Specification.firstpage" language="en">FINAL DRAFT Technical Specification</localized-string><localized-string key="Final_Draft_Technical_Report.coverpage" language="en">FINAL DRAFT<br/>Technical Report</localized-string><localized-string key="Final_Draft_Technical_Report.firstpage" language="en">FINAL DRAFT Technical Report</localized-string><localized-string key="Final_Draft_Publicly_Available_Specification.coverpage" language="en">FINAL DRAFT<br/>Publicly Available Specification</localized-string><localized-string key="Final_Draft_Publicly_Available_Specification.firstpage" language="en">FINAL DRAFT Publicly Available Specification</localized-string><localized-string key="Final_Draft_International_Workshop_Agreement.coverpage" language="en">FINAL DRAFT<br/>International Workshop Agreement</localized-string><localized-string key="Final_Draft_International_Workshop_Agreement.firstpage" language="en">FINAL DRAFT International Workshop Agreement</localized-string><localized-string key="Final_Draft_Guide.coverpage" language="en">FINAL DRAFT<br/>Guide</localized-string><localized-string key="Final_Draft_Guide.firstpage" language="en">FINAL DRAFT Guide</localized-string><localized-string key="Final_Draft_Amendment.coverpage" language="en">FINAL DRAFT<br/>Amendment</localized-string><localized-string key="Final_Draft_Amendment.firstpage" language="en">FINAL DRAFT Amendment</localized-string><localized-string key="Final_Draft_Technical_Corrigendum.coverpage" language="en">FINAL DRAFT<br/>Technical Corrigendum</localized-string><localized-string key="Final_Draft_Technical_Corrigendum.firstpage" language="en">FINAL DRAFT Technical Corrigendum</localized-string><localized-string key="Final_Draft_Directive.coverpage" language="en">FINAL DRAFT<br/>Directive</localized-string><localized-string key="Final_Draft_Directive.firstpage" language="en">FINAL DRAFT Directive</localized-string><localized-string key="modspec.provision" language="en">Provision</localized-string><localized-string key="modspec.conformancetest" language="en">Conformance test</localized-string><localized-string key="language" language="en">en</localized-string><localized-string key="script" language="en">Latn</localized-string></localized-strings><metanorma-extension><semantic-metadata><stage-published>true</stage-published></semantic-metadata>
+<semantic-metadata><feedback-link>www.iso.org/standard/30539.html</feedback-link></semantic-metadata><presentation-metadata><name>document-scheme</name><value>2013</value></presentation-metadata><attachment name="_test.attachment_attachments/action_schema.exp">data:application/octet-stream;base64,KCoNCiRJZDogYWN0aW9uX3N
+jaGVtYS5leHAsdiAxLjM2IDIwMjEvMDUvMDYgMTY6MjM6MDAga2V2aW4gRXh
+wICQNCklTTyAxMDMwMyBUQzE4NC9TQzQvV0cxMiBOMTA2OTMNCg0KRVhQUkV
+TUyBTb3VyY2U6DQpJU08gMTAzMDMtNDEgZWQ3IEZ1bmRhbWVudGFscyBvZiB
+wcm9kdWN0IGRlc2NyaXB0aW9uIGFuZCBzdXBwb3J0IC0gQWN0aW9uIHNjaGV
+tYQ0KDQpUaGUgZm9sbG93aW5nIHBlcm1pc3Npb24gbm90aWNlIGFuZCBkaXN
+jbGFpbWVyIHNoYWxsIGJlIGluY2x1ZGVkIGluIGFsbCBjb3BpZXMgb2YgdGh
+pcyBFWFBSRVNTIHNjaGVtYSAoInRoZSBTY2hlbWEiKSwgDQphbmQgZGVyaXZ
+hdGlvbnMgb2YgdGhlIFNjaGVtYToNCg0KQ29weXJpZ2h0IElTTyAyMDIxICB
+BbGwgcmlnaHRzIHJlc2VydmVkDQpQZXJtaXNzaW9uIGlzIGhlcmVieSBncmF
+udGVkLCBmcmVlIG9mIGNoYXJnZSBpbiBwZXJwZXR1aXR5LCB0byBhbnkgcGV
+yc29uIG9idGFpbmluZyBhIGNvcHkgb2YgdGhlIFNjaGVtYSwNCnRvIHVzZSw
+gY29weSwgbW9kaWZ5LCBtZXJnZSBhbmQgZGlzdHJpYnV0ZSBmcmVlIG9mIGN
+oYXJnZSwgY29waWVzIG9mIHRoZSBTY2hlbWEgZm9yIHRoZSBwdXJwb3NlcyB
+vZiBkZXZlbG9waW5nLCANCmltcGxlbWVudGluZywgaW5zdGFsbGluZyBhbmQ
+gdXNpbmcgc29mdHdhcmUgYmFzZWQgb24gdGhlIFNjaGVtYSwgYW5kIHRvIHB
+lcm1pdCBwZXJzb25zIHRvIHdob20gdGhlIFNjaGVtYSBpcyBmdXJuaXNoZWQ
+gdG8gZG8gc28sIA0Kc3ViamVjdCB0byB0aGUgZm9sbG93aW5nIGNvbmRpdGl
+vbnM6DQoNClRIRSBTQ0hFTUEgSVMgUFJPVklERUQgIkFTIElTIiwgV0lUSE9
+VVCBXQVJSQU5UWSBPRiBBTlkgS0lORCwgRVhQUkVTUyBPUiBJTVBMSUVELCA
+NCklOQ0xVRElORyBCVVQgTk9UIExJTUlURUQgVE8gVEhFIFdBUlJBTlRJRVM
+gT0YgTUVSQ0hBTlRBQklMSVRZLCBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVI
+gUFVSUE9TRSBBTkQgTk9OSU5GUklOR0VNRU5ULiANCklOIE5PIEVWRU5UIFN
+IQUxMIFRIRSBBVVRIT1JTIE9SIENPUFlSSUdIVCBIT0xERVJTIEJFIExJQUJ
+MRSBGT1IgQU5ZIENMQUlNLCANCkRBTUFHRVMgT1IgT1RIRVIgTElBQklMSVR
+ZLCBXSEVUSEVSIElOIEFOIEFDVElPTiBPRiBDT05UUkFDVCwgVE9SVCBPUiB
+PVEhFUldJU0UsIA0KQVJJU0lORyBGUk9NLCBPVVQgT0YgT1IgSU4gQ09OTkV
+DVElPTiBXSVRIIFRIRSBTQ0hFTUEgT1IgVEhFIA0KVVNFIE9SIE9USEVSIER
+FQUxJTkdTIElOIFRIRSBTQ0hFTUEuDQoNCkluIGFkZGl0aW9uLCBhbnkgbW9
+kaWZpZWQgY29weSBvZiB0aGUgU2NoZW1hIHNoYWxsIGluY2x1ZGUgdGhlIGZ
+vbGxvd2luZyBub3RpY2U6DQoNClRISVMgU0NIRU1BIEhBUyBCRUVOIE1PREl
+GSUVEIEZST00gVEhFIFNDSEVNQSBERUZJTkVEIElODQpJU08gMTAzMDMtNDE
+gZWQ3IEZ1bmRhbWVudGFscyBvZiBwcm9kdWN0IGRlc2NyaXB0aW9uIGFuZCB
+zdXBwb3J0IC0gQWN0aW9uIHNjaGVtYQ0KQU5EIFNIT1VMRCBOT1QgQkUgSU5
+URVJQUkVURUQgQVMgQ09NUExZSU5HIFdJVEggVEhBVCBTVEFOREFSRA0KKik
+NCg0KU0NIRU1BIGFjdGlvbl9zY2hlbWEgJ3tpc28gc3RhbmRhcmQgMTAzMDM
+gcGFydCg0MSkgdmVyc2lvbig5KSBvYmplY3QoMSkgYWN0aW9uLXNjaGVtYSg
+xKX0nOw0KICBSRUZFUkVOQ0UgRlJPTSBiYXNpY19hdHRyaWJ1dGVfc2NoZW1
+hICgJLS0gSVNPIDEwMzAzLTQxDQogICAgZGVzY3JpcHRpb25fYXR0cmlidXR
+lLCANCiAgICBkZXNjcmlwdGlvbl9hdHRyaWJ1dGVfc2VsZWN0LA0KICAgIGd
+ldF9kZXNjcmlwdGlvbl92YWx1ZSwgDQogICAgZ2V0X2lkX3ZhbHVlLCANCiA
+gICBnZXRfbmFtZV92YWx1ZSwNCiAgICBnZXRfcm9sZSwgDQogICAgaWRfYXR
+0cmlidXRlLCANCiAgICBpZF9hdHRyaWJ1dGVfc2VsZWN0LA0KICAgIG5hbWV
+fYXR0cmlidXRlLA0KICAgIG5hbWVfYXR0cmlidXRlX3NlbGVjdCwNCiAgICB
+vYmplY3Rfcm9sZSwNCiAgICByb2xlX3NlbGVjdCwNCiAgICByb2xlX2Fzc29
+jaWF0aW9uKTsNCiAgICANCiAgUkVGRVJFTkNFIEZST00gc3VwcG9ydF9yZXN
+vdXJjZV9zY2hlbWEgKCAtLSBJU08gMTAzMDMtNDENCiAgICBiYWdfdG9fc2V
+0LCANCiAgICBpZGVudGlmaWVyLCANCiAgICBsYWJlbCwgDQogICAgdGV4dCk
+7DQogIA0KICBUWVBFIGFzX2Rlc2NyaXB0aW9uX2F0dHJpYnV0ZV9zZWxlY3Q
+gPSBTRUxFQ1QgQkFTRURfT04gZGVzY3JpcHRpb25fYXR0cmlidXRlX3NlbGV
+jdCBXSVRIICgNCiAgICBhY3Rpb25fcmVxdWVzdF9zb2x1dGlvbik7DQogIEV
+ORF9UWVBFOw0KICBUWVBFIGFzX2lkX2F0dHJpYnV0ZV9zZWxlY3QgPSBTRUx
+FQ1QgQkFTRURfT04gaWRfYXR0cmlidXRlX3NlbGVjdCBXSVRIICgNCiAgICB
+hY3Rpb24pOw0KICBFTkRfVFlQRTsNCiAgVFlQRSBhc19uYW1lX2F0dHJpYnV
+0ZV9zZWxlY3QgPSBTRUxFQ1QgQkFTRURfT04gbmFtZV9hdHRyaWJ1dGVfc2V
+sZWN0IFdJVEggKA0KICAgIGFjdGlvbl9yZXF1ZXN0X3NvbHV0aW9uKTsNCiA
+gRU5EX1RZUEU7DQogIFRZUEUgYXNfcm9sZV9zZWxlY3QgPSBTRUxFQ1QgQkF
+TRURfT04gcm9sZV9zZWxlY3QgV0lUSCAoDQogICAgZGlyZWN0ZWRfYWN0aW9
+uX2Fzc2lnbm1lbnQpOw0KICBFTkRfVFlQRTsNCiAgDQogIFRZUEUgc3VwcG9
+ydGVkX2l0ZW0gPSBTRUxFQ1QgKGFjdGlvbl9kaXJlY3RpdmUsIGFjdGlvbiw
+gYWN0aW9uX21ldGhvZCk7DQogIEVORF9UWVBFOw0KDQogIEVOVElUWSBhY3R
+pb247DQogICAgbmFtZSA6IGxhYmVsOw0KICAgIGRlc2NyaXB0aW9uIDogT1B
+USU9OQUwgdGV4dDsNCiAgICBjaG9zZW5fbWV0aG9kIDogYWN0aW9uX21ldGh
+vZDsNCiAgREVSSVZFDQogICAgaWQgOiBpZGVudGlmaWVyIDo9IGdldF9pZF9
+2YWx1ZShTRUxGKTsNCiAgV0hFUkUNCiAgICBXUjE6IFNJWkVPRihVU0VESU4
+oU0VMRiwgJ0JBU0lDX0FUVFJJQlVURV9TQ0hFTUEuJyArICdJRF9BVFRSSUJ
+VVEUuSURFTlRJRklFRF9JVEVNJykpIDw9IDE7DQogIEVORF9FTlRJVFk7DQo
+NCiAgRU5USVRZIGFjdGlvbl9kaXJlY3RpdmU7DQogICAgbmFtZSA6IGxhYmV
+sOw0KICAgIGRlc2NyaXB0aW9uIDogT1BUSU9OQUwgdGV4dDsNCiAgICBhbmF
+seXNpcyA6IHRleHQ7DQogICAgY29tbWVudCA6IHRleHQ7DQogICAgcmVxdWV
+zdHMgOiBTRVQgWzE6P10gT0YgdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0Ow0
+KICBFTkRfRU5USVRZOw0KDQogIEVOVElUWSBhY3Rpb25fbWV0aG9kOw0KICA
+gIG5hbWUgOiBsYWJlbDsNCiAgICBkZXNjcmlwdGlvbiA6IE9QVElPTkFMIHR
+leHQ7DQogICAgY29uc2VxdWVuY2UgOiB0ZXh0Ow0KICAgIHB1cnBvc2UgOiB
+0ZXh0Ow0KICBFTkRfRU5USVRZOw0KDQogIEVOVElUWSBhY3Rpb25fbWV0aG9
+kX3JlbGF0aW9uc2hpcDsNCiAgICBuYW1lIDogbGFiZWw7DQogICAgZGVzY3J
+pcHRpb24gOiBPUFRJT05BTCB0ZXh0Ow0KICAgIHJlbGF0aW5nX21ldGhvZCA
+6IGFjdGlvbl9tZXRob2Q7DQogICAgcmVsYXRlZF9tZXRob2QgOiBhY3Rpb25
+fbWV0aG9kOw0KICBFTkRfRU5USVRZOw0KDQogIEVOVElUWSBhY3Rpb25fcmV
+sYXRpb25zaGlwOw0KICAgIG5hbWUgOiBsYWJlbDsNCiAgICBkZXNjcmlwdGl
+vbiA6IE9QVElPTkFMIHRleHQ7DQogICAgcmVsYXRpbmdfYWN0aW9uIDogYWN
+0aW9uOw0KICAgIHJlbGF0ZWRfYWN0aW9uIDogYWN0aW9uOw0KICBFTkRfRU5
+USVRZOw0KDQogIEVOVElUWSBhY3Rpb25fcmVxdWVzdF9zb2x1dGlvbjsNCiA
+gICBtZXRob2QgOiBhY3Rpb25fbWV0aG9kOw0KICAgIHJlcXVlc3QgOiB2ZXJ
+zaW9uZWRfYWN0aW9uX3JlcXVlc3Q7DQogIERFUklWRQ0KICAgIGRlc2NyaXB
+0aW9uIDogdGV4dCA6PSBnZXRfZGVzY3JpcHRpb25fdmFsdWUoU0VMRik7DQo
+gICAgbmFtZSA6IGxhYmVsIDo9IGdldF9uYW1lX3ZhbHVlKFNFTEYpOw0KICB
+XSEVSRQ0KICAgIFdSMTogU0laRU9GKFVTRURJTihTRUxGLCAnQkFTSUNfQVR
+UUklCVVRFX1NDSEVNQS4nICsgJ0RFU0NSSVBUSU9OX0FUVFJJQlVURS5ERVN
+DUklCRURfSVRFTScpKSA8PSAxOw0KICAgIFdSMjogU0laRU9GKFVTRURJTih
+TRUxGLCAnQkFTSUNfQVRUUklCVVRFX1NDSEVNQS4nICsgJ05BTUVfQVRUUkl
+CVVRFLk5BTUVEX0lURU0nKSkgPD0gMTsNCiAgRU5EX0VOVElUWTsNCg0KICB
+FTlRJVFkgYWN0aW9uX3JlcXVlc3Rfc3RhdHVzOw0KICAgIHN0YXR1cyA6IGx
+hYmVsOw0KICAgIGFzc2lnbmVkX3JlcXVlc3QgOiB2ZXJzaW9uZWRfYWN0aW9
+uX3JlcXVlc3Q7DQogIEVORF9FTlRJVFk7DQoNCiAgRU5USVRZIGFjdGlvbl9
+yZXNvdXJjZTsNCiAgICBuYW1lIDogbGFiZWw7DQogICAgZGVzY3JpcHRpb24
+gOiBPUFRJT05BTCB0ZXh0Ow0KICAgIHVzYWdlIDogU0VUIFsxOj9dIE9GIHN
+1cHBvcnRlZF9pdGVtOw0KICAgIGtpbmQgOiBhY3Rpb25fcmVzb3VyY2VfdHl
+wZTsNCiAgRU5EX0VOVElUWTsNCg0KICBFTlRJVFkgYWN0aW9uX3Jlc291cmN
+lX3JlbGF0aW9uc2hpcDsNCiAgICBuYW1lIDogbGFiZWw7DQogICAgZGVzY3J
+pcHRpb24gOiBPUFRJT05BTCB0ZXh0Ow0KICAgIHJlbGF0aW5nX3Jlc291cmN
+lIDogYWN0aW9uX3Jlc291cmNlOw0KICAgIHJlbGF0ZWRfcmVzb3VyY2UgOiB
+hY3Rpb25fcmVzb3VyY2U7DQogIEVORF9FTlRJVFk7DQoNCiAgRU5USVRZIGF
+jdGlvbl9yZXNvdXJjZV90eXBlOw0KICAgIG5hbWUgOiBsYWJlbDsNCiAgRU5
+EX0VOVElUWTsNCg0KICBFTlRJVFkgYWN0aW9uX3N0YXR1czsNCiAgICBzdGF
+0dXMgOiBsYWJlbDsNCiAgICBhc3NpZ25lZF9hY3Rpb24gOiBleGVjdXRlZF9
+hY3Rpb247DQogIEVORF9FTlRJVFk7DQoNCiAgRU5USVRZIGRpcmVjdGVkX2F
+jdGlvbg0KICAgIFNVQlRZUEUgT0YgKGV4ZWN1dGVkX2FjdGlvbik7DQogICA
+gZGlyZWN0aXZlIDogYWN0aW9uX2RpcmVjdGl2ZTsNCiAgRU5EX0VOVElUWTs
+NCiAgDQogIAlFTlRJVFkgZGlyZWN0ZWRfYWN0aW9uX2Fzc2lnbm1lbnQNCgk
+JQUJTVFJBQ1QgU1VQRVJUWVBFIDsNCgkJYXNzaWduZWRfZGlyZWN0ZWRfYWN
+0aW9uIDogZGlyZWN0ZWRfYWN0aW9uOw0KCSAgREVSSVZFDQoJCXJvbGUgOiB
+vYmplY3Rfcm9sZSA6PSBnZXRfcm9sZShTRUxGKTsNCgkgIFdIRVJFDQoJCVd
+SMTogU0laRU9GKFVTRURJTihTRUxGLCAnQkFTSUNfQVRUUklCVVRFX1NDSEV
+NQS4nICsgJ1JPTEVfQVNTT0NJQVRJT04uSVRFTV9XSVRIX1JPTEUnKSkgPD0
+gMTsNCgkgIEVORF9FTlRJVFk7DQoNCiAgRU5USVRZIGV4ZWN1dGVkX2FjdGl
+vbg0KICAgIFNVQlRZUEUgT0YgKGFjdGlvbik7DQogIEVORF9FTlRJVFk7DQo
+NCiAgRU5USVRZIHZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdDsNCiAgICBpZCA
+6IGlkZW50aWZpZXI7DQogICAgdmVyc2lvbiA6IE9QVElPTkFMIGxhYmVsOw0
+KICAgIHB1cnBvc2UgOiB0ZXh0Ow0KICAgIGRlc2NyaXB0aW9uIDogT1BUSU9
+OQUwgdGV4dDsNCiAgRU5EX0VOVElUWTsNCg0KICBFTlRJVFkgdmVyc2lvbmV
+kX2FjdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcDsNCiAgICBpZCA6IGlkZW5
+0aWZpZXI7DQogICAgbmFtZSA6IGxhYmVsOw0KICAgIGRlc2NyaXB0aW9uIDo
+gT1BUSU9OQUwgdGV4dDsNCiAgICByZWxhdGluZ192ZXJzaW9uZWRfYWN0aW9
+uX3JlcXVlc3QgOiB2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3Q7DQogICAgcmV
+sYXRlZF92ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QgOiB2ZXJzaW9uZWRfYWN
+0aW9uX3JlcXVlc3Q7DQogIEVORF9FTlRJVFk7DQoNCkVOVElUWSBhY3Rpb25
+fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcDsNCgluYW1lCQkJOiBsYWJlbDsgCQ0
+KCWRlc2NyaXB0aW9uIAk6IE9QVElPTkFMIFNUUklORzsgCQkJCQkNCglyZWx
+hdGluZyAJCTogYWN0aW9uX2RpcmVjdGl2ZTsJDQoJcmVsYXRlZCAJCTogYWN
+0aW9uX2RpcmVjdGl2ZTsJCQkJCQkJCQkJDQoJcmVsYXRpb25fdHlwZSAJOiB
+TVFJJTkc7IAkJCQkJCQkJCQ0KIFdIRVJFDQoJV1IxIDogYWN5Y2xpY19hY3R
+pb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcChTRUxGLCBbcmVsYXRlZF0sICd
+BQ1RJT05fU0NIRU1BLkFDVElPTl9ESVJFQ1RJVkVfUkVMQVRJT05TSElQJyk
+7DQpFTkRfRU5USVRZOw0KDQogIEZVTkNUSU9OIGFjeWNsaWNfYWN0aW9uX21
+ldGhvZF9yZWxhdGlvbnNoaXAgKHJlbGF0aW9uIDogYWN0aW9uX21ldGhvZF9
+yZWxhdGlvbnNoaXA7IHJlbGF0aXZlcyA6IFNFVCBbMTo/XSBPRiBhY3Rpb25
+fbWV0aG9kOyBzcGVjaWZpY19yZWxhdGlvbiA6IFNUUklORyk6Qk9PTEVBTjs
+NCiAgICBMT0NBTA0KICAgICAgeCA6IFNFVCBPRiBhY3Rpb25fbWV0aG9kX3J
+lbGF0aW9uc2hpcDsNCiAgICBFTkRfTE9DQUw7DQoNCiAgICBJRiByZWxhdGl
+vbi5yZWxhdGluZ19tZXRob2QgSU4gcmVsYXRpdmVzIFRIRU4NCiAgICAgIFJ
+FVFVSTiAoRkFMU0UpOw0KICAgIEVORF9JRjsNCiAgICB4IDo9IFFVRVJZKGF
+tIDwqIGJhZ190b19zZXQoVVNFRElOKHJlbGF0aW9uLnJlbGF0aW5nX21ldGh
+vZCwgJ0FDVElPTl9TQ0hFTUEuJyArICdBQ1RJT05fTUVUSE9EX1JFTEFUSU9
+OU0hJUC4nICsgJ1JFTEFURURfTUVUSE9EJykpIHwgc3BlY2lmaWNfcmVsYXR
+pb24gSU4gVFlQRU9GKGFtKSk7DQogICAgUkVQRUFUIGkgOj0gMSBUTyBISUl
+OREVYKHgpOw0KICAgICAgSUYgTk9UIGFjeWNsaWNfYWN0aW9uX21ldGhvZF9
+yZWxhdGlvbnNoaXAoeFtpXSwgcmVsYXRpdmVzICsgcmVsYXRpb24ucmVsYXR
+pbmdfbWV0aG9kLCBzcGVjaWZpY19yZWxhdGlvbikgVEhFTg0KICAgICAgICB
+SRVRVUk4gKEZBTFNFKTsNCiAgICAgIEVORF9JRjsNCiAgICBFTkRfUkVQRUF
+UOw0KICAgIFJFVFVSTiAoVFJVRSk7DQogIEVORF9GVU5DVElPTjsNCg0KICB
+GVU5DVElPTiBhY3ljbGljX2FjdGlvbl9yZWxhdGlvbnNoaXAgKHJlbGF0aW9
+uIDogYWN0aW9uX3JlbGF0aW9uc2hpcDsgcmVsYXRpdmVzIDogU0VUIFsxOj9
+dIE9GIGFjdGlvbjsgc3BlY2lmaWNfcmVsYXRpb24gOiBTVFJJTkcpOkJPT0x
+FQU47DQogICAgTE9DQUwNCiAgICAgIHggOiBTRVQgT0YgYWN0aW9uX3JlbGF
+0aW9uc2hpcDsNCiAgICBFTkRfTE9DQUw7DQoNCiAgICBJRiByZWxhdGlvbi5
+yZWxhdGluZ19hY3Rpb24gSU4gcmVsYXRpdmVzIFRIRU4NCiAgICAgIFJFVFV
+STiAoRkFMU0UpOw0KICAgIEVORF9JRjsNCiAgICB4IDo9IFFVRVJZKGFjdG4
+gPCogYmFnX3RvX3NldChVU0VESU4ocmVsYXRpb24ucmVsYXRpbmdfYWN0aW9
+uLCAnQUNUSU9OX1NDSEVNQS4nICsgJ0FDVElPTl9SRUxBVElPTlNISVAuJyA
+rICdSRUxBVEVEX0FDVElPTicpKSB8IHNwZWNpZmljX3JlbGF0aW9uIElOIFR
+ZUEVPRihhY3RuKSk7DQogICAgUkVQRUFUIGkgOj0gMSBUTyBISUlOREVYKHg
+pOw0KICAgICAgSUYgTk9UIGFjeWNsaWNfYWN0aW9uX3JlbGF0aW9uc2hpcCh
+4W2ldLCByZWxhdGl2ZXMgKyByZWxhdGlvbi5yZWxhdGluZ19hY3Rpb24sIHN
+wZWNpZmljX3JlbGF0aW9uKSBUSEVODQogICAgICAgIFJFVFVSTiAoRkFMU0U
+pOw0KICAgICAgRU5EX0lGOw0KICAgIEVORF9SRVBFQVQ7DQogICAgUkVUVVJ
+OIChUUlVFKTsNCiAgRU5EX0ZVTkNUSU9OOw0KDQogIEZVTkNUSU9OIGFjeWN
+saWNfYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcCAocmVsYXRpb24gOiB
+hY3Rpb25fcmVzb3VyY2VfcmVsYXRpb25zaGlwOyByZWxhdGl2ZXMgOiBTRVQ
+gWzE6P10gT0YgYWN0aW9uX3Jlc291cmNlOyBzcGVjaWZpY19yZWxhdGlvbiA
+6IFNUUklORyk6Qk9PTEVBTjsNCiAgICBMT0NBTA0KICAgICAgeCA6IFNFVCB
+PRiBhY3Rpb25fcmVzb3VyY2VfcmVsYXRpb25zaGlwOw0KICAgIEVORF9MT0N
+BTDsNCg0KICAgIElGIHJlbGF0aW9uLnJlbGF0aW5nX3Jlc291cmNlIElOIHJ
+lbGF0aXZlcyBUSEVODQogICAgICBSRVRVUk4gKEZBTFNFKTsNCiAgICBFTkR
+fSUY7DQogICAgeCA6PSBRVUVSWShhciA8KiBiYWdfdG9fc2V0KFVTRURJTih
+yZWxhdGlvbi5yZWxhdGluZ19yZXNvdXJjZSwgJ0FDVElPTl9TQ0hFTUEuJyA
+rICdBQ1RJT05fUkVTT1VSQ0VfUkVMQVRJT05TSElQLicgKyAnUkVMQVRFRF9
+SRVNPVVJDRScpKSB8IHNwZWNpZmljX3JlbGF0aW9uIElOIFRZUEVPRihhcik
+pOw0KICAgIFJFUEVBVCBpIDo9IDEgVE8gSElJTkRFWCh4KTsNCiAgICAgIEl
+GIE5PVCBhY3ljbGljX2FjdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnNoaXAoeFt
+pXSwgcmVsYXRpdmVzICsgcmVsYXRpb24ucmVsYXRpbmdfcmVzb3VyY2UsIHN
+wZWNpZmljX3JlbGF0aW9uKSBUSEVODQogICAgICAgIFJFVFVSTiAoRkFMU0U
+pOw0KICAgICAgRU5EX0lGOw0KICAgIEVORF9SRVBFQVQ7DQogICAgUkVUVVJ
+OIChUUlVFKTsNCiAgRU5EX0ZVTkNUSU9OOw0KDQogIEZVTkNUSU9OIGFjeWN
+saWNfdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcCAocmV
+sYXRpb24gOiB2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXRpb25zaGl
+wOyByZWxhdGl2ZXMgOiBTRVQgT0YgdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN
+0OyBzcGVjaWZpY19yZWxhdGlvbiA6IFNUUklORyk6Qk9PTEVBTjsNCiAgICB
+MT0NBTA0KICAgICAgeCA6IFNFVCBPRiB2ZXJzaW9uZWRfYWN0aW9uX3JlcXV
+lc3RfcmVsYXRpb25zaGlwOw0KICAgIEVORF9MT0NBTDsNCg0KICAgIElGIHJ
+lbGF0aW9uLnJlbGF0aW5nX3ZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdCBJTiB
+yZWxhdGl2ZXMgVEhFTg0KICAgICAgUkVUVVJOIChGQUxTRSk7DQogICAgRU5
+EX0lGOw0KICAgIHggOj0gUVVFUlkodmFyciA8KiBiYWdfdG9fc2V0KFVTRUR
+JTihyZWxhdGlvbi5yZWxhdGluZ192ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3Q
+sICdBQ1RJT05fU0NIRU1BLicgKyAnVkVSU0lPTkVEX0FDVElPTl9SRVFVRVN
+UX1JFTEFUSU9OU0hJUC4nICsgJ1JFTEFURURfVkVSU0lPTkVEX0FDVElPTl9
+SRVFVRVNUJykpIHwgc3BlY2lmaWNfcmVsYXRpb24gSU4gVFlQRU9GKHZhcnI
+pKTsNCiAgICBSRVBFQVQgaSA6PSAxIFRPIEhJSU5ERVgoeCk7DQogICAgICB
+JRiBOT1QgYWN5Y2xpY192ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXR
+pb25zaGlwKHhbaV0sIHJlbGF0aXZlcyArIHJlbGF0aW9uLnJlbGF0aW5nX3Z
+lcnNpb25lZF9hY3Rpb25fcmVxdWVzdCwgc3BlY2lmaWNfcmVsYXRpb24pIFR
+IRU4NCiAgICAgICAgUkVUVVJOIChGQUxTRSk7DQogICAgICBFTkRfSUY7DQo
+gICAgRU5EX1JFUEVBVDsNCiAgICBSRVRVUk4gKFRSVUUpOw0KICBFTkRfRlV
+OQ1RJT047DQogIA0KRlVOQ1RJT04gYWN5Y2xpY19hY3Rpb25fZGlyZWN0aXZ
+lX3JlbGF0aW9uc2hpcCAocmVsYXRpb24gOiBhY3Rpb25fZGlyZWN0aXZlX3J
+lbGF0aW9uc2hpcDsgcmVsYXRpdmVzIDogU0VUIFsxOj9dIG9mIGFjdGlvbl9
+kaXJlY3RpdmU7IHNwZWNpZmljX3JlbGF0aW9uIDogU1RSSU5HKTpCT09MRUF
+OOw0KCUxPQ0FMIA0KCQl4IDogU0VUIG9mIGFjdGlvbl9kaXJlY3RpdmVfcmV
+sYXRpb25zaGlwOw0KCUVORF9MT0NBTDsNCglJRiByZWxhdGlvbi5yZWxhdGl
+uZyBJTiByZWxhdGl2ZXMgVEhFTiANCgkJUkVUVVJOIChGQUxTRSk7DQoJRU5
+EX0lGOw0KCXggOj0gUVVFUlkoYWRyIDwqIGJhZ190b19zZXQoVVNFRElOKHJ
+lbGF0aW9uLnJlbGF0aW5nLCAnQUNUSU9OX1NDSEVNQS4nICsgJ0FDVElPTl9
+ESVJFQ1RJVkVfUkVMQVRJT05TSElQLicgKyAnUkVMQVRFRCcpKSB8IHNwZWN
+pZmljX3JlbGF0aW9uIElOIFRZUEVPRihhZHIpKTsNCglSRVBFQVQgaSA6PSA
+xIFRPIEhJSU5ERVgoeCk7DQoJCUlGIE5PVCBhY3ljbGljX2FjdGlvbl9kaXJ
+lY3RpdmVfcmVsYXRpb25zaGlwKHhbaV0sIHJlbGF0aXZlcyArIHJlbGF0aW9
+uLnJlbGF0aW5nLCBzcGVjaWZpY19yZWxhdGlvbikgVEhFTiANCgkgCQlSRVR
+VUk4gKEZBTFNFKTsNCgkJRU5EX0lGOw0KCUVORF9SRVBFQVQ7DQoJUkVUVVJ
+OIChUUlVFKTsNCkVORF9GVU5DVElPTjsNCg0KRU5EX1NDSEVNQTsNCg0KKCo
+iYWN0aW9uX3NjaGVtYS5fX3B1Ymxpc2hlZF9pbiINCklTTyAxMDMwMy00MTo
+yMDIyIEVENw0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS5fX2lkZW50aWZpZXI
+iDQpJU08vVEMgMTg0L1NDIDQvV0cgMTIgTjEwNjkzDQoqKQ0KDQooKiJhY3R
+pb25fc2NoZW1hLl9fc3VwZXJzZWRlcyINCklTTy9UQyAxODQvU0MgNC9XRyA
+xMiBOMTAyMzANCiopDQoNCigqImFjdGlvbl9zY2hlbWEuX19zdGF0dXMiDQp
+JUw0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS5fX3RpdGxlIg0KZnVuZGFtZW5
+0YWxzX29mX3Byb2R1Y3RfZGVzY3JpcHRpb25fYW5kX3N1cHBvcnQNCiopDQo
+NCg0KKCoiYWN0aW9uX3NjaGVtYSINClRoZSBzdWJqZWN0IG9mIHRoZSAqYWN
+0aW9uX3NjaGVtYSogaXMgdGhlIGRlc2NyaXB0aW9uIG9mIGFjdGlvbnMsIHR
+oZSByZWFzb25zIGZvciB0aGVzZSBhY3Rpb25zLCBhbmQgdGhlIHN0YXR1cyB
+vZiB0aGVzZSBhY3Rpb25zLiANCg0KW2V4YW1wbGVdDQo9PT09DQpSZWFzb25
+zIGZvciBhY3Rpb24gaW5jbHVkZSBldm9sdmluZyB1c2VyIHJlcXVpcmVtZW5
+0cywgbWFudWZhY3R1cmluZyBwcm9ibGVtcyBhbmQgZGlmZmljdWx0aWVzIHR
+oYXQgYXJpc2Ugd2hlbiBhIHByb2R1Y3QgaXMgaW4gdXNlLg0KPT09PQ0KDQo
+qKQ0KKCoiYWN0aW9uX3NjaGVtYS5fX2Z1bmRfY29ucyINCg0KQWN0aW9uIGl
+uZm9ybWF0aW9uIGNhbiBiZSBhdHRhY2hlZCB0byBhbnkgYXNwZWN0IG9mIHB
+yb2R1Y3QgZGF0YS4NCg0KKikNCigqImFjdGlvbl9zY2hlbWEuX19leHByZXN
+zZyINCltbYWN0aW9uX3NjaGVtYWV4cGcxXV0NClsuc3ZnbWFwXQ0KPT09PQ0
+KaW1hZ2U6OmFjdGlvbl9zY2hlbWFleHBnMS5zdmdbXQ0KDQoqIDw8ZXhwcmV
+zczpiYXNpY19hdHRyaWJ1dGVfc2NoZW1hPj47IDENCiogPDxleHByZXNzOmF
+jdGlvbl9zY2hlbWE+PjsgMg0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJ
+jZV9zY2hlbWE+PjsgMw0KPT09PQ0KDQoqKQ0KKCoiYWN0aW9uX3NjaGVtYS5
+fX2V4cHJlc3NnIg0KW1thY3Rpb25fc2NoZW1hZXhwZzJdXQ0KWy5zdmdtYXB
+dDQo9PT09DQppbWFnZTo6YWN0aW9uX3NjaGVtYWV4cGcyLnN2Z1tdDQoNCio
+gPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYXNfbmFtZV9hdHRyaWJ1dGVfc2V
+sZWN0Pj47IDENCiogPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYXNfZGVzY3J
+pcHRpb25fYXR0cmlidXRlX3NlbGVjdD4+OyAyDQoqIDw8ZXhwcmVzczphY3R
+pb25fc2NoZW1hLmFzX2lkX2F0dHJpYnV0ZV9zZWxlY3Q+PjsgMw0KKiA8PGV
+4cHJlc3M6YWN0aW9uX3NjaGVtYS5hc19yb2xlX3NlbGVjdD4+OyA0DQoqIDw
+8ZXhwcmVzczphY3Rpb25fc2NoZW1hLnN1cHBvcnRlZF9pdGVtPj47IDUNCio
+gPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2Vfc2NoZW1hLmlkZW50aWZpZXI
++PjsgNg0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEubGF
+iZWw+PjsgNw0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWE
+ubGFiZWw+PjsgOA0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2h
+lbWEubGFiZWw+PjsgOQ0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9
+zY2hlbWEuaWRlbnRpZmllcj4+OyAxMA0KKiA8PGV4cHJlc3M6c3VwcG9ydF9
+yZXNvdXJjZV9zY2hlbWEudGV4dD4+OyAxMQ0KKiA8PGV4cHJlc3M6c3VwcG9
+ydF9yZXNvdXJjZV9zY2hlbWEudGV4dD4+OyAxMg0KKiA8PGV4cHJlc3M6YmF
+zaWNfYXR0cmlidXRlX3NjaGVtYS5pZF9hdHRyaWJ1dGVfc2VsZWN0Pj47IDE
+zDQoqIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5sYWJlbD4
++OyAxNA0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEudGV
+4dD4+OyAxNQ0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWE
+ubGFiZWw+PjsgMTYNCiogPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2Vfc2N
+oZW1hLnRleHQ+PjsgMTcNCiogPDxleHByZXNzOmJhc2ljX2F0dHJpYnV0ZV9
+zY2hlbWEuZGVzY3JpcHRpb25fYXR0cmlidXRlX3NlbGVjdD4+OyAxOA0KKiA
+8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEubGFiZWw+PjsgMTk
+NCiogPDxleHByZXNzOmJhc2ljX2F0dHJpYnV0ZV9zY2hlbWEub2JqZWN0X3J
+vbGU+PjsgMjANCiogPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2Vfc2NoZW1
+hLnRleHQ+PjsgMjENCiogPDxleHByZXNzOmJhc2ljX2F0dHJpYnV0ZV9zY2h
+lbWEubmFtZV9hdHRyaWJ1dGVfc2VsZWN0Pj47IDIyDQoqIDw8ZXhwcmVzczp
+iYXNpY19hdHRyaWJ1dGVfc2NoZW1hLnJvbGVfc2VsZWN0Pj47IDIzDQoqIDw
+8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5sYWJlbD4+OyAyNA0
+KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEuaWRlbnRpZml
+lcj4+OyAyNQ0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWE
+ubGFiZWw+PjsgMjYNCiogPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2Vfc2N
+oZW1hLnRleHQ+PjsgMjcNCiogPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2V
+fc2NoZW1hLmxhYmVsPj47IDI4DQoqIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc29
+1cmNlX3NjaGVtYS5sYWJlbD4+OyAyOQ0KKiA8PGV4cHJlc3M6c3VwcG9ydF9
+yZXNvdXJjZV9zY2hlbWEudGV4dD4+OyAzMA0KKiA8PGV4cHJlc3M6c3VwcG9
+ydF9yZXNvdXJjZV9zY2hlbWEudGV4dD4+OyAzMQ0KKiA8PGV4cHJlc3M6c3V
+wcG9ydF9yZXNvdXJjZV9zY2hlbWEubGFiZWw+PjsgMzINCiogPDxleHByZXN
+zOnN1cHBvcnRfcmVzb3VyY2Vfc2NoZW1hLmxhYmVsPj47IDMzDQoqIDw8ZXh
+wcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5sYWJlbD4+OyAzNA0KKiA
+8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEudGV4dD4+OyAzNQ0
+KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEudGV4dD4+OyA
+zNg0KKiA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEubGFiZWw
++PjsgMzcNCiogPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uX3Jlc29
+1cmNlX3JlbGF0aW9uc2hpcD4+OyAzOA0KKiA8PGV4cHJlc3M6YWN0aW9uX3N
+jaGVtYS5hY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcD4+OyAzOQ0KKiA
+8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVzb3VyY2VfdHlwZT4
++OyA0MA0KKiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fbWV0aG9
+kX3JlbGF0aW9uc2hpcD4+OyA0MQ0KKiA8PGV4cHJlc3M6YWN0aW9uX3NjaGV
+tYS5hY3Rpb25fc3RhdHVzPj47IDQyDQoqIDw8ZXhwcmVzczphY3Rpb25fc2N
+oZW1hLmFjdGlvbl9kaXJlY3RpdmU+PjsgNDMNCiogPDxleHByZXNzOmFjdGl
+vbl9zY2hlbWEuZGlyZWN0ZWRfYWN0aW9uPj47IDQ0DQoqIDw8ZXhwcmVzczp
+hY3Rpb25fc2NoZW1hLmRpcmVjdGVkX2FjdGlvbl9hc3NpZ25tZW50Pj47IDQ
+1DQoqIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbj4+OyA0Ng0KKiA
+8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVxdWVzdF9zb2x1dGl
+vbj4+OyA0Nw0KKiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fcmV
+xdWVzdF9zdGF0dXM+PjsgNDgNCiogPDxleHByZXNzOmFjdGlvbl9zY2hlbWE
+uYWN0aW9uX3Jlc291cmNlPj47IDQ5DQoqIDw8ZXhwcmVzczphY3Rpb25fc2N
+oZW1hLmFjdGlvbl9yZWxhdGlvbnNoaXA+PjsgNTANCiogPDxleHByZXNzOmF
+jdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0Pj47IDUxDQo
+qIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25fcmV
+xdWVzdF9yZWxhdGlvbnNoaXA+PjsgNTINCiogPDxleHByZXNzOmFjdGlvbl9
+zY2hlbWEuYWN0aW9uX21ldGhvZD4+OyA1Mw0KKiA8PGV4cHJlc3M6YWN0aW9
+uX3NjaGVtYS5leGVjdXRlZF9hY3Rpb24+PjsgNTQNCj09PT0NCiopDQoNCig
+qImFjdGlvbl9zY2hlbWEuc3VwcG9ydGVkX2l0ZW0iDQpUaGUgKipzdXBwb3J
+0ZWRfaXRlbSoqIGFsbG93cyBmb3IgdGhlIGRlc2lnbmF0aW9uIG9mIGFuIDw
+8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmUsYWN0aW9
+uX2RpcmVjdGl2ZT4+LCBhbiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3R
+pb24sYWN0aW9uPj4sIG9yIGFuIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmF
+jdGlvbl9tZXRob2QsYWN0aW9uX21ldGhvZD4+Lg0KKikNCg0KDQooKiJhY3R
+pb25fc2NoZW1hLnN1cHBvcnRlZF9pdGVtLl9fbm90ZSINClRoaXMgc3BlY2l
+maWVzIHRoZSB1c2Ugb2YgYW4gPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN
+0aW9uX3Jlc291cmNlLGFjdGlvbl9yZXNvdXJjZT4+Lg0KKikNCg0KKCoiYWN
+0aW9uX3NjaGVtYS5hY3Rpb24iDQpBbiAqKmFjdGlvbioqIGlzIHRoZSBpZGV
+udGlmaWNhdGlvbiBvZiB0aGUgb2NjdXJyZW5jZSBvZiBhbiBhY3Rpdml0eSB
+hbmQgYSBkZXNjcmlwdGlvbiBvZiBpdHMgcmVzdWx0LiANCg0KQW4gKiphY3R
+pb24qKiBpZGVudGlmaWVzIGFuIGFjdGl2aXR5IHRoYXQgaGFzIHRha2VuIHB
+sYWNlLCBpcyB0YWtpbmcgcGxhY2UsIG9yIGlzIGV4cGVjdGVkIHRvIHRha2U
+gcGxhY2UgaW4gdGhlIGZ1dHVyZS4NCg0KQW4gYWN0aW9uIGhhcyBhIGRlZml
+uaXRpb24gdGhhdCBpcyBzcGVjaWZpZWQgYnkgYW4gPDxleHByZXNzOmFjdGl
+vbl9zY2hlbWEuYWN0aW9uX21ldGhvZCxhY3Rpb25fbWV0aG9kPj4uDQoqKQ0
+KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi5fX2V4YW1wbGUiDQpDaGFuZ2U
+sIGRpc3RpbGxpbmcsIGRlc2lnbiwgYSBwcm9jZXNzIHRvIGRyaWxsIGEgaG9
+sZSwgYW5kIGEgdGFzayBzdWNoIGFzIHRyYWluaW5nIHNvbWVvbmUgYXJlIGV
+4YW1wbGVzIG9mIGFjdGlvbnMuDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmF
+jdGlvbi5fX25vdGUiDQpJbiBwYXJ0aWN1bGFyIGFwcGxpY2F0aW9uIGRvbWF
+pbnMsIHRlcm1zIHN1Y2ggYXMgdGFzaywgcHJvY2VzcywgYWN0aXZpdHksIG9
+wZXJhdGlvbiwgYW5kIGV2ZW50IG1heSBiZSBzeW5vbnltcyBmb3IgKmFjdGl
+vbiouDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi5uYW1lIg0KdGh
+lIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5sYWJlbCxsYWJ
+lbD4+IGJ5IHdoaWNoIHRoZSAqKmFjdGlvbioqIGlzIGtub3duLg0KKikNCg0
+KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi5kZXNjcmlwdGlvbiINCnRoZSA
+8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEudGV4dCx0ZXh0Pj4
+gdGhhdCBjaGFyYWN0ZXJpemVzIHRoZSAqKmFjdGlvbioqLiBUaGUgdmFsdWU
+gb2YgdGhlIGF0dHJpYnV0ZSBuZWVkIG5vdCBiZSBzcGVjaWZpZWQuDQoqKQ0
+KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uLmNob3Nlbl9tZXRob2QiDQp
+0aGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZCxhY3R
+pb25fbWV0aG9kPj4gdGhhdCBzcGVjaWZpZXMgdGhlIHByb2NlZHVyZSBzZWx
+lY3RlZCB0byBjYXJyeSBvdXQgdGhlICoqYWN0aW9uKiogYW5kIGEgZGVzY3J
+pcHRpb24gb2YgdGhlIHJlc3VsdHMgb2YgdGhhdCAqKmFjdGlvbioqLg0KKik
+NCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi5pZCINCnRoZSA8PGV4cHJ
+lc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEuaWRlbnRpZmllcixpZGVudGl
+maWVyPj4gdGhhdCBkaXN0aW5ndWlzaGVzIHRoZSAqKmFjdGlvbioqLg0KKik
+NCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi5pZC5fX25vdGUiDQpUaGl
+zIGF0dHJpYnV0ZSBpcyBhbiBlbmhhbmNlbWVudCB0byB0aGUgZGVmaW5pdGl
+vbiBvZiAqYWN0aW9uKiB1c2luZyBhIG1ldGhvZCB0aGF0IGlzIHVwd2FyZGx
+5IGNvbXBhdGlibGUgd2l0aCBJU08gMTAzMDMtNDE6MTk5NC4NCiopDQoNCig
+qImFjdGlvbl9zY2hlbWEuYWN0aW9uLmlkLl9fbm90ZSINClRoZSBtZWFuaW5
+nIG9mIHRoaXMgYXR0cmlidXRlIGNhbiBiZSBkZWZpbmVkIGluIHRoZSBhbm5
+vdGF0ZWQgRVhQUkVTUyBzY2hlbWFzIHRoYXQgdXNlIG9yIHNwZWNpYWxpemU
+gdGhpcyBlbnRpdHksIG9yIGluIGFuIGFncmVlbWVudCBvZiBjb21tb24gdW5
+kZXJzdGFuZGluZyBiZXR3ZWVuIHRoZSBwYXJ0bmVycyBzaGFyaW5nIHRoaXM
+gaW5mb3JtYXRpb24uDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi5
+pZC5fX25vdGUiDQpUaGUgY29udGV4dCBpbiB3aGljaCBpZCBpcyB1c2VkIGF
+zIGEgZGlzY3JpbWluYXRpbmcgY2hhcmFjdGVyaXN0aWMgY2FuIGJlIGlkZW5
+0aWZpZWQgaW4gYW4gYW5ub3RhdGVkIEV4cHJlc3Mgc2NoZW1hIHRoYXQgdXN
+lcyBvciBzcGVjaWFsaXplcyB0aGlzIGVudGl0eSwgb3IgYnkgZGVmYXVsdCw
+gaW4gYW4gYWdyZWVtZW50IG9mIGNvbW1vbiB1bmRlcnN0YW5kaW5nIGJldHd
+lZW4gcGFydG5lcnMgc2hhcmluZyB0aGlzIGluZm9ybWF0aW9uLg0KKikNCg0
+KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb24ud3I6V1IxIg0KRWFjaCAqKmFjdGl
+vbioqIHNoYWxsIGJlIHRoZSA8PGV4cHJlc3M6YmFzaWNfYXR0cmlidXRlX3N
+jaGVtYS5pZF9hdHRyaWJ1dGUuaWRlbnRpZmllZF9pdGVtLGlkZW50aWZpZWR
+faXRlbT4+IGluIGF0IG1vc3Qgb25lIDw8ZXhwcmVzczpiYXNpY19hdHRyaWJ
+1dGVfc2NoZW1hLmlkX2F0dHJpYnV0ZSxpZF9hdHRyaWJ1dGU+Pi4NCiopDQo
+NCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb24ud3I6V1IxLl9fbm90ZSINClR
+oZSA8PGV4cHJlc3M6YmFzaWNfYXR0cmlidXRlX3NjaGVtYS5pZF9hdHRyaWJ
+1dGUsaWRfYXR0cmlidXRlPj4gZGF0YSB0eXBlIGlzIGRlZmluZWQgaW4gPDx
+leHByZXNzOmJhc2ljX2F0dHJpYnV0ZV9zY2hlbWEsYmFzaWNfYXR0cmlidXR
+lX3NjaGVtYT4+IG9mIHRoaXMgcGFydCBvZiBJU08gMTAzMDMuDQoqKQ0KDQo
+oKiJhY3Rpb25fc2NoZW1hLmFjdGlvbi53cjpXUjEuX19ub3RlIg0KQSB0ZW1
+wbGF0ZSBmb3IgY29uc3RyYWluaW5nIHRoZSBwb3B1bGF0aW9uIG9mIHRoZSB
+lbnRpdHkgZGF0YSB0eXBlcyBkZWZpbmVkIGluIHRoZSA8PGV4cHJlc3M6YmF
+zaWNfYXR0cmlidXRlX3NjaGVtYSxiYXNpY19hdHRyaWJ1dGVfc2NoZW1hPj4
+gaXMgZGVzY3JpYmVkIGluIGFubmV4IEUuDQoqKQ0KDQooKiJhY3Rpb25fc2N
+oZW1hLmFjdGlvbl9kaXJlY3RpdmUiDQpBbiAqKmFjdGlvbl9kaXJlY3RpdmU
+qKiBpcyBhbiBhdXRob3JpdGF0aXZlIGluc3RydW1lbnQgdGhhdCBwcm92aWR
+lcyBkaXJlY3Rpb25zIHRvIGFjaGlldmUgdGhlIHNwZWNpZmllZCByZXN1bHR
+zLg0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fZGlyZWN0aXZlLl9
+fZXhhbXBsZSINCklTTyBEaXJlY3RpdmVzIFBhcnQgMyBwcm92aWRlcyBndWl
+kYW5jZSBmb3IgdGhlIGRldmVsb3BtZW50IG9mIHN0YW5kYXJkcyBkb2N1bWV
+udHMgd2l0aGluIElTTy4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9
+uX2RpcmVjdGl2ZS5hbmFseXNpcyINCmFuIGluZm9ybWFsIGRlc2NyaXB0aW9
+uIG9mIHRoZSByZXN1bHRzIG9mIHRoZSBhbmFseXNpcyB0aGF0IHdhcyBjYXJ
+yaWVkIG91dCBvbiB0aGUgZWxlbWVudHMgb2YgdGhlIHJlcXVlc3RzIHNldC4
+gVGhlIHJlcXVlc3Qgc2V0cyBhcmUgdGhlIDw8ZXhwcmVzczphY3Rpb25fc2N
+oZW1hLnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdCx2ZXJzaW9uZWRfYWN0aW9
+uX3JlcXVlc3Q+PnMgcmVmZXJlbmNlZCBpbiB0aGUgcmVxdWVzdHMgYXR0cml
+idXRlLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3R
+pdmUuYW5hbHlzaXMuX19ub3RlIg0KVGhlIHJlYXNvbiB0aGF0IGRpZmZlcmV
+udCByZXF1ZXN0cyBhcmUgc2F0aXNmaWVkIGJ5IHRoZSAqYWN0aW9uX2RpcmV
+jdGl2ZSogY291bGQgYmUgcmVjb3JkZWQgaW4gdGhpcyBhdHRyaWJ1dGUuDQo
+qKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmUuY29tbWV
+udCINCmFuIGluZm9ybWFsIGRlc2NyaXB0aW9uIG9mIGFueSBvdGhlciBwZXJ
+0aW5lbnQgaW5mb3JtYXRpb24uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWE
+uYWN0aW9uX2RpcmVjdGl2ZS5kZXNjcmlwdGlvbiINCnRoZSA8PGV4cHJlc3M
+6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEudGV4dCx0ZXh0Pj4gdGhhdCBjaGF
+yYWN0ZXJpemVzIHRoZSAqKmFjdGlvbl9kaXJlY3RpdmUqKi4gVGhlIHZhbHV
+lIG9mIHRoZSBhdHRyaWJ1dGUgbmVlZCBub3QgYmUgc3BlY2lmaWVkLg0KKik
+NCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmUubmFtZSI
+NCnRoZSA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEubGFiZWw
+sbGFiZWw+PiBieSB3aGljaCB0aGUgKiphY3Rpb25fZGlyZWN0aXZlKiogaXM
+ga25vd24uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX2RpcmV
+jdGl2ZS5yZXF1ZXN0cyINCmEgc2V0IG9mIDw8ZXhwcmVzczphY3Rpb25fc2N
+oZW1hLnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdCx2ZXJzaW9uZWRfYWN0aW9
+uX3JlcXVlc3Q+PiBlbnRpdHkgZGF0YSB0eXBlcyB0aGF0IGRlZmluZXMgdGh
+lIGV4cGVjdGVkIHJlc3VsdHMuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWE
+uYWN0aW9uX21ldGhvZCINCkFuICoqYWN0aW9uX21ldGhvZCoqIGlzIHRoZSB
+kZWZpbml0aW9uIG9mIGFuIGFjdGl2aXR5LiBUaGlzIGRlZmluaXRpb24gaW5
+jbHVkZXMgdGhlIGFjdGl2aXR54oCZcyBvYmplY3RpdmVzIGFuZCBlZmZlY3R
+zLg0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fbWV0aG9kLl9fZXh
+hbXBsZSINCkZvciB0aGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9
+uLGFjdGlvbj4+IHdob3NlIG5hbWUgYXR0cmlidXRlIGlzICdzZXJ2ZSBkaW5
+uZXInLCB0aGUgbmFtZSBhdHRyaWJ1dGUgb2YgcmVsYXRlZCBpbnN0YW5jZSB
+vZiAqYWN0aW9uX21ldGhvZCogY291bGQgYmUgJ2Nvb2sgYnkgcmVjaXBlJyB
+vciAncHVyY2hhc2UgdGFrZW91dCBmb29kJy4NCiopDQoNCigqImFjdGlvbl9
+zY2hlbWEuYWN0aW9uX21ldGhvZC5fX25vdGUiDQpUaGlzIGRlZmluaXRpb24
+gbWF5IGJlIHRoZSBiYXNpcyBmb3IgYWN0aW9ucyBvciB0aGUgc29sdXRpb24
+gZm9yIGFjdGlvbiByZXF1ZXN0cy4NCiopDQoNCigqImFjdGlvbl9zY2hlbWE
+uYWN0aW9uX21ldGhvZC5uYW1lIg0KdGhlIDw8ZXhwcmVzczpzdXBwb3J0X3J
+lc291cmNlX3NjaGVtYS5sYWJlbCxsYWJlbD4+IGJ5IHdoaWNoIHRoZSAqKmF
+jdGlvbl9tZXRob2QqKiBpcyBrbm93bi4NCiopDQoNCg0KKCoiYWN0aW9uX3N
+jaGVtYS5hY3Rpb25fbWV0aG9kLmRlc2NyaXB0aW9uIg0KdGhlIDw8ZXhwcmV
+zczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS50ZXh0LHRleHQ+PiB0aGF0IGN
+oYXJhY3Rlcml6ZXMgdGhlICoqYWN0aW9uX21ldGhvZCoqLiBUaGUgdmFsdWU
+gb2YgdGhlIGF0dHJpYnV0ZSBuZWVkIG5vdCBiZSBzcGVjaWZpZWQuDQoqKQ0
+KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZC5jb25zZXF1ZW5
+jZSINCmFuIGluZm9ybWFsIGRlc2NyaXB0aW9uIG9mIHRoZSBlZmZlY3RzIG9
+mIHRoZSAqKmFjdGlvbl9tZXRob2QqKi4NCiopDQoNCg0KKCoiYWN0aW9uX3N
+jaGVtYS5hY3Rpb25fbWV0aG9kLnB1cnBvc2UiDQphbiBpbmZvcm1hbCBkZXN
+jcmlwdGlvbiBvZiB0aGUgb2JqZWN0aXZlcyBvZiB0aGUgKiphY3Rpb25fbWV
+0aG9kKiouDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGh
+vZF9yZWxhdGlvbnNoaXAiDQpBbiAqKmFjdGlvbl9tZXRob2RfcmVsYXRpb25
+zaGlwKiogaXMgYSByZWxhdGlvbnNoaXAgYmV0d2VlbiB0d28gaW5zdGFuY2V
+zIG9mIHRoZSBlbnRpdHkgZGF0YSB0eXBlIDw8ZXhwcmVzczphY3Rpb25fc2N
+oZW1hLmFjdGlvbl9tZXRob2QsYWN0aW9uX21ldGhvZD4+IGFuZCBwcm92aWR
+lcyBhbiBpZGVudGlmaWNhdGlvbiBhbmQgZGVzY3JpcHRpb24gb2YgdGhpcyB
+yZWxhdGlvbnNoaXAuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9
+uX21ldGhvZF9yZWxhdGlvbnNoaXAuX19ub3RlIg0KVGhlIHJvbGUgb2YgKmF
+jdGlvbl9tZXRob2RfcmVsYXRpb25zaGlwKiBjYW4gYmUgZGVmaW5lZCBpbiB
+0aGUgYW5ub3RhdGVkIEVYUFJFU1Mgc2NoZW1hcyB0aGF0IHVzZSBvciBzcGV
+jaWFsaXplIHRoaXMgZW50aXR5LCBvciBieSBkZWZhdWx0LCBpbiBhbiBhZ3J
+lZW1lbnQgb2YgY29tbW9uIHVuZGVyc3RhbmRpbmcgYmV0d2VlbiB0aGUgcGF
+ydG5lcnMgc2hhcmluZyB0aGlzIGluZm9ybWF0aW9uLg0KKikNCg0KKCoiYWN
+0aW9uX3NjaGVtYS5hY3Rpb25fbWV0aG9kX3JlbGF0aW9uc2hpcC5fX25vdGU
+iDQpUaGlzIGVudGl0eSwgdG9nZXRoZXIgd2l0aCB0aGUgPDxleHByZXNzOmF
+jdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZCxhY3Rpb25fbWV0aG9kPj4gZW5
+0aXR5LCBpcyBiYXNlZCBvbiB0aGUgcmVsYXRpb25zaGlwIHRlbXBsYXRlIHR
+oYXQgaXMgZGVzY3JpYmVkIGluIGFubmV4IEUuMy4NCiopDQoNCigqImFjdGl
+vbl9zY2hlbWEuYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXAuX19ub3RlIg0
+KVGhpcyBlbnRpdHkgbWF5IGJlIHVzZWQgdG8gZGVmaW5lIGEgcHJvY2VkdXJ
+hbCByZWxhdGlvbnNoaXAgYW1vbmcgY29uc3RpdHVlbnQgYWN0aXZpdGllcy4
+NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZF9yZWxhdGl
+vbnNoaXAubmFtZSINCnRoZSA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9
+zY2hlbWEubGFiZWwsbGFiZWw+PiBieSB3aGljaCB0aGUgKiphY3Rpb25fbWV
+0aG9kX3JlbGF0aW9uc2hpcCoqIGlzIGtub3duLg0KKikNCg0KDQooKiJhY3R
+pb25fc2NoZW1hLmFjdGlvbl9tZXRob2RfcmVsYXRpb25zaGlwLmRlc2NyaXB
+0aW9uIg0KdGhlIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5
+0ZXh0LHRleHQ+PiB0aGF0IGNoYXJhY3Rlcml6ZXMgdGhlICoqYWN0aW9uX21
+ldGhvZF9yZWxhdGlvbnNoaXAqKi4gVGhlIHZhbHVlIG9mIHRoZSBhdHRyaWJ
+1dGUgbmVlZCBub3QgYmUgc3BlY2lmaWVkLg0KKikNCg0KDQooKiJhY3Rpb25
+fc2NoZW1hLmFjdGlvbl9tZXRob2RfcmVsYXRpb25zaGlwLnJlbGF0aW5nX21
+ldGhvZCINCm9uZSBvZiB0aGUgaW5zdGFuY2VzIG9mIDw8ZXhwcmVzczphY3R
+pb25fc2NoZW1hLmFjdGlvbl9tZXRob2QsYWN0aW9uX21ldGhvZD4+IHRoYXQ
+gaXMgYSBwYXJ0IG9mIHRoZSByZWxhdGlvbnNoaXAuDQoqKQ0KDQoNCigqImF
+jdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXAucmVsYXR
+pbmdfbWV0aG9kLl9fbm90ZSINClRoZSBtZWFuaW5nIG9mIHRoaXMgYXR0cml
+idXRlIGNhbiBiZSBkZWZpbmVkIGluIHRoZSBhbm5vdGF0ZWQgRVhQUkVTUyB
+zY2hlbWFzIHRoYXQgdXNlIG9yIHNwZWNpYWxpemUgdGhpcyBlbnRpdHksIG9
+yIGluIGFuIGFncmVlbWVudCBvZiBjb21tb24gdW5kZXJzdGFuZGluZyBiZXR
+3ZWVuIHRoZSBwYXJ0bmVycyBzaGFyaW5nIHRoaXMgaW5mb3JtYXRpb24uDQo
+qKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9tZXRob2RfcmVsYXRpb25
+zaGlwLnJlbGF0ZWRfbWV0aG9kIg0KdGhlIG90aGVyIGluc3RhbmNlIG9mIDw
+8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9tZXRob2QsYWN0aW9uX21
+ldGhvZD4+IHRoYXQgaXMgYSBwYXJ0IG9mIHRoZSByZWxhdGlvbnNoaXAuIEl
+mIG9uZSBlbGVtZW50IG9mIHRoZSByZWxhdGlvbnNoaXAgaXMgZGVwZW5kZW5
+0IHVwb24gdGhlIG90aGVyIHRoaXMgYXR0cmlidXRlIHNoYWxsIGJlIHRoZSB
+kZXBlbmRlbnQgb25lLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGl
+vbl9tZXRob2RfcmVsYXRpb25zaGlwLnJlbGF0ZWRfbWV0aG9kLl9fbm90ZSI
+NClRoZSBtZWFuaW5nIG9mIHRoaXMgYXR0cmlidXRlIGNhbiBiZSBkZWZpbmV
+kIGluIHRoZSBhbm5vdGF0ZWQgRVhQUkVTUyBzY2hlbWFzIHRoYXQgdXNlIG9
+yIHNwZWNpYWxpemUgdGhpcyBlbnRpdHksIG9yIGluIGFuIGFncmVlbWVudCB
+vZiBjb21tb24gdW5kZXJzdGFuZGluZyBiZXR3ZWVuIHRoZSBwYXJ0bmVycyB
+zaGFyaW5nIHRoaXMgaW5mb3JtYXRpb24uDQoqKQ0KDQooKiJhY3Rpb25fc2N
+oZW1hLmFjdGlvbl9yZWxhdGlvbnNoaXAiDQpBbiAqKmFjdGlvbl9yZWxhdGl
+vbnNoaXAqKiBpcyBhIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIHR3byBpbnN0YW5
+jZXMgb2YgdGhlIGVudGl0eSBkYXRhIHR5cGUgPDxleHByZXNzOmFjdGlvbl9
+zY2hlbWEuYWN0aW9uLGFjdGlvbj4+IGFuZCBwcm92aWRlcyBhbiBpZGVudGl
+maWNhdGlvbiBhbmQgZGVzY3JpcHRpb24gb2YgdGhpcyByZWxhdGlvbnNoaXA
+uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3JlbGF0aW9uc2h
+pcC5fX25vdGUiDQpUaGUgcm9sZSBvZiAqYWN0aW9uX3JlbGF0aW9uc2hpcCo
+gY2FuIGJlIGRlZmluZWQgaW4gdGhlIGFubm90YXRlZCBFWFBSRVNTIHNjaGV
+tYXMgdGhhdCB1c2Ugb3Igc3BlY2lhbGl6ZSB0aGlzIGVudGl0eSwgb3IgYnk
+gZGVmYXVsdCwgaW4gYW4gYWdyZWVtZW50IG9mIGNvbW1vbiB1bmRlcnN0YW5
+kaW5nIGJldHdlZW4gdGhlIHBhcnRuZXJzIHNoYXJpbmcgdGhpcyBpbmZvcm1
+hdGlvbi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3JlbGF0aW9
+uc2hpcC5uYW1lIg0KdGhlIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3N
+jaGVtYS5sYWJlbCxsYWJlbD4+IGJ5IHdoaWNoIHRoZSAqKmFjdGlvbl9yZWx
+hdGlvbnNoaXAqKiBpcyBrbm93bi4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGV
+tYS5hY3Rpb25fcmVsYXRpb25zaGlwLmRlc2NyaXB0aW9uIg0KdGhlIDw8ZXh
+wcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS50ZXh0LHRleHQ+PiB0aGF
+0IGNoYXJhY3Rlcml6ZXMgdGhlICoqYWN0aW9uX3JlbGF0aW9uc2hpcCoqLiB
+UaGUgdmFsdWUgb2YgdGhlIGF0dHJpYnV0ZSBuZWVkIG5vdCBiZSBzcGVjaWZ
+pZWQuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3JlbGF0aW9
+uc2hpcC5yZWxhdGluZ19hY3Rpb24iDQpvbmUgb2YgdGhlIGluc3RhbmNlcyB
+vZiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb24sYWN0aW9uPj4gdGh
+hdCBpcyBhIHBhcnQgb2YgdGhlIHJlbGF0aW9uc2hpcC4NCiopDQoNCg0KKCo
+iYWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVsYXRpb25zaGlwLnJlbGF0aW5nX2F
+jdGlvbi5fX25vdGUiDQpUaGUgbWVhbmluZyBvZiB0aGlzIGF0dHJpYnV0ZSB
+jYW4gYmUgZGVmaW5lZCBpbiB0aGUgYW5ub3RhdGVkIEVYUFJFU1Mgc2NoZW1
+hcyB0aGF0IHVzZSBvciBzcGVjaWFsaXplIHRoaXMgZW50aXR5LCBvciBpbiB
+hbiBhZ3JlZW1lbnQgb2YgY29tbW9uIHVuZGVyc3RhbmRpbmcgYmV0d2VlbiB
+0aGUgcGFydG5lcnMgc2hhcmluZyB0aGlzIGluZm9ybWF0aW9uLg0KKikNCg0
+KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVsYXRpb25zaGlwLnJlbGF0ZWR
+fYWN0aW9uIg0KdGhlIG90aGVyIGluc3RhbmNlIG9mIDw8ZXhwcmVzczphY3R
+pb25fc2NoZW1hLmFjdGlvbixhY3Rpb24+PiB0aGF0IGlzIGEgcGFydCBvZiB
+0aGUgcmVsYXRpb25zaGlwLiBJZiBvbmUgZWxlbWVudCBvZiB0aGUgcmVsYXR
+pb25zaGlwIGlzIGRlcGVuZGVudCB1cG9uIHRoZSBvdGhlciB0aGlzIGF0dHJ
+pYnV0ZSBzaGFsbCBiZSB0aGUgZGVwZW5kZW50IG9uZS4NCiopDQoNCg0KKCo
+iYWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVsYXRpb25zaGlwLnJlbGF0ZWRfYWN
+0aW9uLl9fbm90ZSINClRoZSBtZWFuaW5nIG9mIHRoaXMgYXR0cmlidXRlIGN
+hbiBiZSBkZWZpbmVkIGluIHRoZSBhbm5vdGF0ZWQgRVhQUkVTUyBzY2hlbWF
+zIHRoYXQgdXNlIG9yIHNwZWNpYWxpemUgdGhpcyBlbnRpdHksIG9yIGluIGF
+uIGFncmVlbWVudCBvZiBjb21tb24gdW5kZXJzdGFuZGluZyBiZXR3ZWVuIHR
+oZSBwYXJ0bmVycyBzaGFyaW5nIHRoaXMgaW5mb3JtYXRpb24uDQoqKQ0KDQo
+oKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXF1ZXN0X3NvbHV0aW9uIg0KQW4
+gKiphY3Rpb25fcmVxdWVzdF9zb2x1dGlvbioqIGlzIGFuIGFzc29jaWF0aW9
+uIGJldHdlZW4gYSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS52ZXJzaW9uZWR
+fYWN0aW9uX3JlcXVlc3QsdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0Pj4gYW5
+kIGFuIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9tZXRob2QsYWN
+0aW9uX21ldGhvZD4+IHRoYXQgaXMgYSBwb3RlbnRpYWwgc29sdXRpb24gZm9
+yIHRoZSByZXF1ZXN0Lg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGl
+vbl9yZXF1ZXN0X3NvbHV0aW9uLm1ldGhvZCINCnRoZSA8PGV4cHJlc3M6YWN
+0aW9uX3NjaGVtYS5hY3Rpb25fbWV0aG9kLGFjdGlvbl9tZXRob2Q+PiB0aGF
+0IGlzIGEgcG90ZW50aWFsIHNvbHV0aW9uLg0KKikNCg0KDQooKiJhY3Rpb25
+fc2NoZW1hLmFjdGlvbl9yZXF1ZXN0X3NvbHV0aW9uLnJlcXVlc3QiDQp0aGU
+gPDxleHByZXNzOmFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF
+1ZXN0LHZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdD4+IGZvciB3aGljaCBhIHN
+vbHV0aW9uIGlzIHNwZWNpZmllZC4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGV
+tYS5hY3Rpb25fcmVxdWVzdF9zb2x1dGlvbi5kZXNjcmlwdGlvbiINCnRoZSA
+8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9zY2hlbWEudGV4dCx0ZXh0Pj4
+gdGhhdCBjaGFyYWN0ZXJpemVzIHRoZSAqKmFjdGlvbl9yZXF1ZXN0X3NvbHV
+0aW9uKiouDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3JlcXV
+lc3Rfc29sdXRpb24uZGVzY3JpcHRpb24uX19ub3RlIg0KVGhpcyBhdHRyaWJ
+1dGUgaXMgYW4gdXB3YXJkbHkgY29tcGF0aWJsZSBhZGRpdGlvbiB0byAqYWN
+0aW9uX3JlcXVlc3Rfc29sdXRpb24qIGFzIHNwZWNpZmllZCBpbiBJU08gMTA
+zMDMtNDE6MTk5NC4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3J
+lcXVlc3Rfc29sdXRpb24ubmFtZSINCnRoZSA8PGV4cHJlc3M6c3VwcG9ydF9
+yZXNvdXJjZV9zY2hlbWEubGFiZWwsbGFiZWw+PiBieSB3aGljaCB0aGUgKip
+hY3Rpb25fcmVxdWVzdF9zb2x1dGlvbioqIGlzIGtub3duLg0KKikNCg0KDQo
+oKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXF1ZXN0X3NvbHV0aW9uLm5hbWU
+uX19ub3RlIg0KVGhpcyBhdHRyaWJ1dGUgaXMgYW4gdXB3YXJkbHkgY29tcGF
+0aWJsZSBhZGRpdGlvbiB0byAqYWN0aW9uX3JlcXVlc3Rfc29sdXRpb24qIGF
+zIHNwZWNpZmllZCBpbiBJU08gMTAzMDMtNDE6MTk5NC4NCiopDQoNCigqImF
+jdGlvbl9zY2hlbWEuYWN0aW9uX3JlcXVlc3Rfc29sdXRpb24ud3I6V1IxIg0
+KRWFjaCAqKmFjdGlvbl9yZXF1ZXN0X3NvbHV0aW9uKiogc2hhbGwgYmUgdGh
+lIDw8ZXhwcmVzczpiYXNpY19hdHRyaWJ1dGVfc2NoZW1hLmRlc2NyaXB0aW9
+uX2F0dHJpYnV0ZS5kZXNjcmliZWRfaXRlbSxkZXNjcmliZWRfaXRlbT4+IGl
+uIGF0IG1vc3Qgb25lIDw8ZXhwcmVzczpiYXNpY19hdHRyaWJ1dGVfc2NoZW1
+hLmRlc2NyaXB0aW9uX2F0dHJpYnV0ZSxkZXNjcmlwdGlvbl9hdHRyaWJ1dGU
++Pi4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVxdWVzdF9
+zb2x1dGlvbi53cjpXUjEuX19ub3RlIg0KVGhlIDw8ZXhwcmVzczpiYXNpY19
+hdHRyaWJ1dGVfc2NoZW1hLmRlc2NyaXB0aW9uX2F0dHJpYnV0ZSxkZXNjcml
+wdGlvbl9hdHRyaWJ1dGU+PiBkYXRhIHR5cGUgaXMgZGVmaW5lZCBpbiA8PGV
+4cHJlc3M6YmFzaWNfYXR0cmlidXRlX3NjaGVtYSxiYXNpY19hdHRyaWJ1dGV
+fc2NoZW1hPj4gb2YgdGhpcyBwYXJ0IG9mIElTTyAxMDMwMy4NCiopDQoNCig
+qImFjdGlvbl9zY2hlbWEuYWN0aW9uX3JlcXVlc3Rfc29sdXRpb24ud3I6V1I
+yIg0KRWFjaCAqKmFjdGlvbl9yZXF1ZXN0X3NvbHV0aW9uKiogc2hhbGwgYmU
+gdGhlIDw8ZXhwcmVzczpiYXNpY19hdHRyaWJ1dGVfc2NoZW1hLm5hbWVfYXR
+0cmlidXRlLm5hbWVkX2l0ZW0sbmFtZWRfaXRlbT4+IGluIGF0IG1vc3Qgb25
+lIDw8ZXhwcmVzczpiYXNpY19hdHRyaWJ1dGVfc2NoZW1hLm5hbWVfYXR0cml
+idXRlLG5hbWVfYXR0cmlidXRlPj4uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2h
+lbWEuYWN0aW9uX3JlcXVlc3Rfc29sdXRpb24ud3I6V1IyLl9fbm90ZSINClR
+oZSA8PGV4cHJlc3M6YmFzaWNfYXR0cmlidXRlX3NjaGVtYS5uYW1lX2F0dHJ
+pYnV0ZSxuYW1lX2F0dHJpYnV0ZT4+IGRhdGEgdHlwZSBpcyBkZWZpbmVkIGl
+uIDw8ZXhwcmVzczpiYXNpY19hdHRyaWJ1dGVfc2NoZW1hLGJhc2ljX2F0dHJ
+pYnV0ZV9zY2hlbWE+PiBvZiB0aGlzIHBhcnQgb2YgSVNPIDEwMzAzLg0KKik
+NCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVxdWVzdF9zb2x1dGlvbi5
+3cjpXUjIuX19ub3RlIg0KQSB0ZW1wbGF0ZSBmb3IgY29uc3RyYWluaW5nIHR
+oZSBwb3B1bGF0aW9uIG9mIHRoZSBlbnRpdHkgZGF0YSB0eXBlcyBkZWZpbmV
+kIGluIHRoZSA8PGV4cHJlc3M6YmFzaWNfYXR0cmlidXRlX3NjaGVtYSxiYXN
+pY19hdHRyaWJ1dGVfc2NoZW1hPj4gaXMgZGVzY3JpYmVkIGluIGFubmV4IEU
+uDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXF1ZXN0X3N0YXR
+1cyINCkFuICoqYWN0aW9uX3JlcXVlc3Rfc3RhdHVzKiogaXMgdGhlIGFzc29
+jaWF0aW9uIG9mIGEgc3RhdHVzIHdpdGggYSA8PGV4cHJlc3M6YWN0aW9uX3N
+jaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QsdmVyc2lvbmVkX2FjdGl
+vbl9yZXF1ZXN0Pj4uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9
+uX3JlcXVlc3Rfc3RhdHVzLmFzc2lnbmVkX3JlcXVlc3QiDQp0aGUgPDxleHB
+yZXNzOmFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0LHZ
+lcnNpb25lZF9hY3Rpb25fcmVxdWVzdD4+IHRvIHdoaWNoIHRoZSAqKnN0YXR
+1cyoqIGFwcGxpZXMuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9
+uX3JlcXVlc3Rfc3RhdHVzLnN0YXR1cyINCnRoZSA8PGV4cHJlc3M6c3VwcG9
+ydF9yZXNvdXJjZV9zY2hlbWEubGFiZWwsbGFiZWw+PiB0aGF0IHByb3ZpZGV
+zIGEgdXNlciBpbnRlcnByZXRhYmxlIGRlc2lnbmF0aW9uIGZvciB0aGUgbGV
+2ZWwgb2YgY29tcGxldGlvbiBvZiB0aGUgYWN0aW9uLg0KKikNCg0KDQooKiJ
+hY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXF1ZXN0X3N0YXR1cy5zdGF0dXMuX19
+ub3RlIg0KVGhlIG1lYW5pbmcgb2YgdGhpcyBhdHRyaWJ1dGUgY2FuIGJlIGR
+lZmluZWQgaW4gdGhlIGFubm90YXRlZCBFWFBSRVNTIHNjaGVtYXMgdGhhdCB
+1c2Ugb3Igc3BlY2lhbGl6ZSB0aGlzIGVudGl0eSwgb3IgaW4gYW4gYWdyZWV
+tZW50IG9mIGNvbW1vbiB1bmRlcnN0YW5kaW5nIGJldHdlZW4gdGhlIHBhcnR
+uZXJzIHNoYXJpbmcgdGhpcyBpbmZvcm1hdGlvbi4NCiopDQoNCigqImFjdGl
+vbl9zY2hlbWEuYWN0aW9uX3Jlc291cmNlIg0KQW4gKiphY3Rpb25fcmVzb3V
+yY2UqKiBpcyBhIHRoaW5nIHRoYXQgaXMgaWRlbnRpZmllZCBhcyBiZWluZyB
+uZWVkZWQgdG8gY2Fycnkgb3V0IGFuIGFjdGlvbi4NCiopDQoNCg0KKCoiYWN
+0aW9uX3NjaGVtYS5hY3Rpb25fcmVzb3VyY2UuZGVzY3JpcHRpb24iDQp0aGU
+gPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2Vfc2NoZW1hLnRleHQsdGV4dD4
++IHRoYXQgY2hhcmFjdGVyaXplcyB0aGUgKiphY3Rpb25fcmVzb3VyY2UqKi4
+gVGhlIHZhbHVlIG9mIHRoZSBhdHRyaWJ1dGUgbmVlZCBub3QgYmUgc3BlY2l
+maWVkLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJ
+jZS5raW5kIg0KdGhlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9
+yZXNvdXJjZV90eXBlLGFjdGlvbl9yZXNvdXJjZV90eXBlPj4gdGhhdCBzcGV
+jaWZpZXMgdGhlIHNvcnQgb2YgKiphY3Rpb25fcmVzb3VyY2UqKiB0aGF0IGl
+zIGJlaW5nIHVzZWQuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9
+uX3Jlc291cmNlLm5hbWUiDQp0aGUgPDxleHByZXNzOnN1cHBvcnRfcmVzb3V
+yY2Vfc2NoZW1hLmxhYmVsLGxhYmVsPj4gYnkgd2hpY2ggdGhlICoqYWN0aW9
+uX3Jlc291cmNlKiogaXMga25vd24uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2h
+lbWEuYWN0aW9uX3Jlc291cmNlLnVzYWdlIg0KYSBzZXQgb2YgPDxleHByZXN
+zOmFjdGlvbl9zY2hlbWEuc3VwcG9ydGVkX2l0ZW0sc3VwcG9ydGVkX2l0ZW0
++PnMgZm9yIHdoaWNoIHRoZSAqKmFjdGlvbl9yZXNvdXJjZSoqIGlzIHVzZWQ
+uDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3Jlc291cmNlX3J
+lbGF0aW9uc2hpcCINCkFuICoqYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2h
+pcCoqIGlzIGEgcmVsYXRpb25zaGlwIGJldHdlZW4gdHdvIGluc3RhbmNlcyB
+vZiB0aGUgZW50aXR5IGRhdGEgdHlwZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGV
+tYS5hY3Rpb25fcmVzb3VyY2UsYWN0aW9uX3Jlc291cmNlPj4gYW5kIHByb3Z
+pZGVzIGFuIGlkZW50aWZpY2F0aW9uIGFuZCBkZXNjcmlwdGlvbiBvZiB0aGl
+zIHJlbGF0aW9uc2hpcC4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3R
+pb25fcmVzb3VyY2VfcmVsYXRpb25zaGlwLl9fbm90ZSINClRoZSByb2xlIG9
+mICphY3Rpb25fcmVzb3VyY2VfcmVsYXRpb25zaGlwKiBjYW4gYmUgZGVmaW5
+lZCBpbiB0aGUgYW5ub3RhdGVkIEVYUFJFU1Mgc2NoZW1hcyB0aGF0IHVzZSB
+vciBzcGVjaWFsaXplIHRoaXMgZW50aXR5LCBvciBieSBkZWZhdWx0LCBpbiB
+hbiBhZ3JlZW1lbnQgb2YgY29tbW9uIHVuZGVyc3RhbmRpbmcgYmV0d2VlbiB
+0aGUgcGFydG5lcnMgc2hhcmluZyB0aGlzIGluZm9ybWF0aW9uLg0KKikNCg0
+KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVzb3VyY2VfcmVsYXRpb25zaGl
+wLl9fbm90ZSINClRoaXMgZW50aXR5LCB0b2dldGhlciB3aXRoIHRoZSA8PGV
+4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVzb3VyY2UsYWN0aW9uX3J
+lc291cmNlPj4gZW50aXR5LCBpcyBiYXNlZCBvbiB0aGUgcmVsYXRpb25zaGl
+wIHRlbXBsYXRlIHRoYXQgaXMgZGVzY3JpYmVkIGluIGFubmV4IEUuMy4NCio
+pDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9
+uc2hpcC5kZXNjcmlwdGlvbiINCnRoZSA8PGV4cHJlc3M6c3VwcG9ydF9yZXN
+vdXJjZV9zY2hlbWEudGV4dCx0ZXh0Pj4gdGhhdCBjaGFyYWN0ZXJpemVzIHR
+oZSAqKmFjdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnNoaXAqKi4gVGhlIHZhbHV
+lIG9mIHRoZSBhdHRyaWJ1dGUgbmVlZCBub3QgYmUgc3BlY2lmaWVkLg0KKik
+NCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZV9yZWxhdGl
+vbnNoaXAubmFtZSINCnRoZSA8PGV4cHJlc3M6c3VwcG9ydF9yZXNvdXJjZV9
+zY2hlbWEubGFiZWwsbGFiZWw+PiBieSB3aGljaCB0aGUgKiphY3Rpb25fcmV
+zb3VyY2VfcmVsYXRpb25zaGlwKiogaXMga25vd24uDQoqKQ0KDQoNCigqImF
+jdGlvbl9zY2hlbWEuYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcC5yZWx
+hdGVkX3Jlc291cmNlIg0KdGhlIG90aGVyIGluc3RhbmNlIG9mIDw8ZXhwcmV
+zczphY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZSxhY3Rpb25fcmVzb3V
+yY2U+PiB0aGF0IGlzIGEgcGFydCBvZiB0aGUgcmVsYXRpb25zaGlwLiBJZiB
+vbmUgZWxlbWVudCBvZiB0aGUgcmVsYXRpb25zaGlwIGlzIGRlcGVuZGVudCB
+1cG9uIHRoZSBvdGhlciB0aGlzIGF0dHJpYnV0ZSBzaGFsbCBiZSB0aGUgZGV
+wZW5kZW50IG9uZS4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25
+fcmVzb3VyY2VfcmVsYXRpb25zaGlwLnJlbGF0ZWRfcmVzb3VyY2UuX19ub3R
+lIg0KVGhlIG1lYW5pbmcgb2YgdGhpcyBhdHRyaWJ1dGUgY2FuIGJlIGRlZml
+uZWQgaW4gdGhlIGFubm90YXRlZCBFWFBSRVNTIHNjaGVtYXMgdGhhdCB1c2U
+gb3Igc3BlY2lhbGl6ZSB0aGlzIGVudGl0eSwgb3IgaW4gYW4gYWdyZWVtZW5
+0IG9mIGNvbW1vbiB1bmRlcnN0YW5kaW5nIGJldHdlZW4gdGhlIHBhcnRuZXJ
+zIHNoYXJpbmcgdGhpcyBpbmZvcm1hdGlvbi4NCiopDQoNCigqImFjdGlvbl9
+zY2hlbWEuYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcC5yZWxhdGluZ19
+yZXNvdXJjZSINCm9uZSBvZiB0aGUgaW5zdGFuY2VzIG9mIDw8ZXhwcmVzczp
+hY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZSxhY3Rpb25fcmVzb3VyY2U
++PiB0aGF0IGlzIGEgcGFydCBvZiB0aGUgcmVsYXRpb25zaGlwLg0KKikNCg0
+KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnN
+oaXAucmVsYXRpbmdfcmVzb3VyY2UuX19ub3RlIg0KVGhlIG1lYW5pbmcgb2Y
+gdGhpcyBhdHRyaWJ1dGUgY2FuIGJlIGRlZmluZWQgaW4gdGhlIGFubm90YXR
+lZCBFWFBSRVNTIHNjaGVtYXMgdGhhdCB1c2Ugb3Igc3BlY2lhbGl6ZSB0aGl
+zIGVudGl0eSwgb3IgaW4gYW4gYWdyZWVtZW50IG9mIGNvbW1vbiB1bmRlcnN
+0YW5kaW5nIGJldHdlZW4gdGhlIHBhcnRuZXJzIHNoYXJpbmcgdGhpcyBpbmZ
+vcm1hdGlvbi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3Jlc29
+1cmNlX3R5cGUiDQpBbiAqKmFjdGlvbl9yZXNvdXJjZV90eXBlKiogaXMgdGh
+lIGlkZW50aWZpY2F0aW9uIG9mIHRoZSBraW5kIG9mIDw8ZXhwcmVzczphY3R
+pb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZSxhY3Rpb25fcmVzb3VyY2U+PiB
+uZWVkZWQgdG8gY2Fycnkgb3V0IGFuIGFjdGlvbi4NCiopDQoNCigqImFjdGl
+vbl9zY2hlbWEuYWN0aW9uX3Jlc291cmNlX3R5cGUuX19leGFtcGxlIg0KVGh
+pcyBlbnRpdHkgbWF5IGJlIHVzZWQgdG8gc3BlY2lmeSB0aGUga2luZCBvZiB
+0b29sIG5lZWRlZCB0byBwZXJmb3JtIGEgcHJvY2VzcyBvcGVyYXRpb24uDQo
+qKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZV90eXBlLm5
+hbWUiDQp0aGUgPDxleHByZXNzOnN1cHBvcnRfcmVzb3VyY2Vfc2NoZW1hLmx
+hYmVsLGxhYmVsPj4gYnkgd2hpY2ggdGhlICoqYWN0aW9uX3Jlc291cmNlX3R
+5cGUqKiBpcyBrbm93bi4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3R
+pb25fc3RhdHVzIg0KQW4gKiphY3Rpb25fc3RhdHVzKiogaXMgdGhlIGFzc29
+jaWF0aW9uIG9mIGEgc3RhdHVzIHdpdGggYW4gPDxleHByZXNzOmFjdGlvbl9
+zY2hlbWEuZXhlY3V0ZWRfYWN0aW9uLGV4ZWN1dGVkX2FjdGlvbj4+Lg0KKik
+NCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9zdGF0dXMuX19ub3RlIg0
+KSW5mb3JtYXRpb24gYWJvdXQgdGhlIGRhdGUgYW5kIHRpbWUgbWF5IGJlIGF
+zc29jaWF0ZWQgd2l0aCB0aGUgKmFjdGlvbl9zdGF0dXMqIHRocm91Z2ggdGh
+lIHVzZSBvZiA8PGV4cHJlc3M6bWFuYWdlbWVudF9yZXNvdXJjZXNfc2NoZW1
+hLmRhdGVfYXNzaWdubWVudCxkYXRlX2Fzc2lnbm1lbnQ+PiwgPDxleHByZXN
+zOm1hbmFnZW1lbnRfcmVzb3VyY2VzX3NjaGVtYS5kYXRlX2FuZF90aW1lX2F
+zc2lnbm1lbnQsZGF0ZV9hbmRfdGltZV9hc3NpZ25tZW50Pj4sIG9yIDw8ZXh
+wcmVzczptYW5hZ2VtZW50X3Jlc291cmNlc19zY2hlbWEudGltZV9hc3NpZ25
+tZW50LHRpbWVfYXNzaWdubWVudD4+Lg0KKikNCg0KKCoiYWN0aW9uX3NjaGV
+tYS5hY3Rpb25fc3RhdHVzLmFzc2lnbmVkX2FjdGlvbiINCnRoZSA8PGV4cHJ
+lc3M6YWN0aW9uX3NjaGVtYS5leGVjdXRlZF9hY3Rpb24sZXhlY3V0ZWRfYWN
+0aW9uPj4gdG8gd2hpY2ggdGhlIHN0YXR1cyBhcHBsaWVzLg0KKikNCg0KDQo
+oKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9zdGF0dXMuc3RhdHVzIg0KdGhlIDw
+8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5sYWJlbCxsYWJlbD4
++IHRoYXQgcHJvdmlkZXMgYSB1c2VyIGludGVycHJldGFibGUgZGVzaWduYXR
+pb24gZm9yIHRoZSBsZXZlbCBvZiBjb21wbGV0aW9uIG9mIHRoZSBhY3Rpb24
+uDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9zdGF0dXMuc3RhdHV
+zLl9fZXhhbXBsZSINClRlcm1zIHN1Y2ggYXMgJ3BlbmRpbmcnLCAnY29tcGx
+ldGVkJywgb3IgJ3NjaGVkdWxlZCcgYXJlIGV4YW1wbGVzIG9mIHN0YXR1cy4
+NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN0aW9uX3N0YXR1cy5zdGF0dXM
+uX19ub3RlIg0KVGhlIG1lYW5pbmcgb2YgdGhpcyBhdHRyaWJ1dGUgY2FuIGJ
+lIGRlZmluZWQgaW4gdGhlIGFubm90YXRlZCBFWFBSRVNTIHNjaGVtYXMgdGh
+hdCB1c2Ugb3Igc3BlY2lhbGl6ZSB0aGlzIGVudGl0eSwgb3IgaW4gYW4gYWd
+yZWVtZW50IG9mIGNvbW1vbiB1bmRlcnN0YW5kaW5nIGJldHdlZW4gdGhlIHB
+hcnRuZXJzIHNoYXJpbmcgdGhpcyBpbmZvcm1hdGlvbi4NCiopDQoNCigqImF
+jdGlvbl9zY2hlbWEuZGlyZWN0ZWRfYWN0aW9uIg0KQSAqKmRpcmVjdGVkX2F
+jdGlvbioqIGlzIGEgdHlwZSBvZiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5
+leGVjdXRlZF9hY3Rpb24sZXhlY3V0ZWRfYWN0aW9uPj4gdGhhdCBpcyBnb3Z
+lcm5lZCBieSBhbiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fZGl
+yZWN0aXZlLGFjdGlvbl9kaXJlY3RpdmU+Pi4NCiopDQoNCigqImFjdGlvbl9
+zY2hlbWEuZGlyZWN0ZWRfYWN0aW9uLl9fZXhhbXBsZSINCkEgKmRpcmVjdGV
+kX2FjdGlvbiogY291bGQgYmUgdGhlIGluc3BlY3Rpb24gb2YgYSBidWlsZGl
+uZyBhcyBkaXJlY3RlZCBieSBjaXR5IG9mZmljaWFscyBhY2NvcmRpbmcgdG8
+gdGhlIGNpdHkgYnVpbGRpbmcgY29kZXMgZm9yIGVhcnRocXVha2Ugc2FmZXR
+5LiBUaGUgYWN0aW9uIGlzIHRoZSBpbnNwZWN0aW9uIG9mIHRoZSBidWlsZGl
+uZy4gVGhlIGRpcmVjdGl2ZSBpcyBpc3N1ZWQgYnkgY2l0eSBvZmZpY2lhbHM
+gZ3VpZGVkIGJ5IHRoZSBjaXR5IGJ1aWxkaW5nIGNvZGVzLiBJbiBhbiBhcHB
+saWNhdGlvbiBwcm90b2NvbCwgdGhlIGJ1aWxkaW5nIGF1dGhvcml0eSBtYXk
+gYmUgYXNzb2NpYXRlZCB3aXRoIGFuIDw8ZXhwcmVzczptYW5hZ2VtZW50X3J
+lc291cmNlc19zY2hlbWEub3JnYW5pemF0aW9uX2Fzc2lnbm1lbnQsb3JnYW5
+pemF0aW9uX2Fzc2lnbm1lbnQ+Pi4gVGhlIGJ1aWxkaW5nIGNvZGVzIG1heSB
+iZSBhc3NvY2lhdGVkIHdpdGggYSA8PGV4cHJlc3M6bWFuYWdlbWVudF9yZXN
+vdXJjZXNfc2NoZW1hLmRvY3VtZW50X3JlZmVyZW5jZSxkb2N1bWVudF9yZWZ
+lcmVuY2U+Pi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuZGlyZWN0ZWRfYWN
+0aW9uLmRpcmVjdGl2ZSINCnRoZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5
+hY3Rpb25fZGlyZWN0aXZlLGFjdGlvbl9kaXJlY3RpdmU+PiB0aGF0IGdvdmV
+ybnMgdGhlICoqZGlyZWN0ZWRfYWN0aW9uKiouDQoqKQ0KDQoNCigqImFjdGl
+vbl9zY2hlbWEuZGlyZWN0ZWRfYWN0aW9uX2Fzc2lnbm1lbnQiDQpBICoqZGl
+yZWN0ZWRfYWN0aW9uX2Fzc2lnbm1lbnQqKiBpcyBhbiBhc3NvY2lhdGlvbiB
+vZiBhIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmRpcmVjdGVkX2FjdGlvbix
+kaXJlY3RlZF9hY3Rpb24+PiB3aXRoIHByb2R1Y3QgZGF0YS4NCiopDQoNCg0
+KKCoiYWN0aW9uX3NjaGVtYS5kaXJlY3RlZF9hY3Rpb25fYXNzaWdubWVudC5
+hc3NpZ25lZF9kaXJlY3RlZF9hY3Rpb24iDQp0aGUgaW5zdGFuY2Ugb2YgdGh
+lICoqZGlyZWN0ZWRfYWN0aW9uKiogZW50aXR5IGRhdGEgdGhhdCBpcyB0byB
+iZSBhc3NvY2lhdGVkIHdpdGggcHJvZHVjdCBkYXRhLg0KKikNCg0KDQooKiJ
+hY3Rpb25fc2NoZW1hLmRpcmVjdGVkX2FjdGlvbl9hc3NpZ25tZW50LnJvbGU
+iDQp0aGUgKipvYmplY3Rfcm9sZSoqIHRoYXQgc3BlY2lmaWVzIHRoZSBwdXJ
+wb3NlIG9mIHRoZSBhc3NvY2lhdGlvbiBvZiB0aGUgKipkaXJlY3RlZF9hY3R
+pb25fYXNzaWdubWVudCoqIHdpdGggcHJvZHVjdCBkYXRhLg0KKikNCg0KDQo
+oKiJhY3Rpb25fc2NoZW1hLmRpcmVjdGVkX2FjdGlvbl9hc3NpZ25tZW50Lnd
+yOldSMSINCkVhY2ggKipkaXJlY3RlZF9hY3Rpb25fYXNzaWdubWVudCoqIHN
+oYWxsIGJlICoqaXRlbV93aXRoX3JvbGUqKiBpbiBhdCBtb3N0IG9uZSA8PGV
+4cHJlc3M6YmFzaWNfYXR0cmlidXRlX3NjaGVtYS5yb2xlX2Fzc29jaWF0aW9
+uLHJvbGVfYXNzb2NpYXRpb24+Pi4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGV
+tYS5leGVjdXRlZF9hY3Rpb24iDQpBbiAqKmV4ZWN1dGVkX2FjdGlvbioqIGl
+zIGEgdHlwZSBvZiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb24sYWN
+0aW9uPj4gdGhhdCBpcyBjb21wbGV0ZWQsIHBhcnRpYWxseSBjb21wbGV0ZWQ
+sIG9yIGp1c3QgaWRlbnRpZmllZC4gSXQgbWF5IGJ1dCBuZWVkIG5vdCBoYXZ
+lIHN0YXR1cyBpbmZvcm1hdGlvbiBhc3NvY2lhdGVkIHdpdGggaXQuDQoqKQ0
+KDQooKiJhY3Rpb25fc2NoZW1hLmV4ZWN1dGVkX2FjdGlvbi5fX2V4YW1wbGU
+iDQpBbiAqZXhlY3V0ZWRfYWN0aW9uKiBjb3VsZCBiZSB0byAncGFpbnQgdGh
+lIG9mZmljZScgd2l0aCBhIHN0YXR1cyBvZiAnc2NoZWR1bGVkJy4gVGhlIGF
+jdGlvbiBpcyAncGFpbnQgdGhlIG9mZmljZScuIFRoZSBzdGF0dXMgZnVydGh
+lciBxdWFsaWZpZXMgdGhlIGFjdGlvbiBhcyAncGxhbm5lZCcsICdzY2hlZHV
+sZWQnLCBvciAnY29tcGxldGVkJy4NCiopDQoNCigqImFjdGlvbl9zY2hlbWE
+uZXhlY3V0ZWRfYWN0aW9uLl9fbm90ZSINClRoZSByb2xlIG9mICpleGVjdXR
+lZF9hY3Rpb24qIGNhbiBiZSBkZWZpbmVkIGluIHRoZSBhbm5vdGF0ZWQgRVh
+QUkVTUyBzY2hlbWFzIHRoYXQgdXNlIG9yIHNwZWNpYWxpemUgdGhpcyBlbnR
+pdHksIG9yIGJ5IGRlZmF1bHQsIGluIGFuIGFncmVlbWVudCBvZiBjb21tb24
+gdW5kZXJzdGFuZGluZyBiZXR3ZWVuIHRoZSBwYXJ0bmVycyBzaGFyaW5nIHR
+oaXMgaW5mb3JtYXRpb24uDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmV4ZWN
+1dGVkX2FjdGlvbi5fX25vdGUiDQpTdGF0dXMgaW5mb3JtYXRpb24gaXMgYXN
+zb2NpYXRlZCB0byAqZXhlY3V0ZWRfYWN0aW9uKiB0aHJvdWdoIDw8ZXhwcmV
+zczphY3Rpb25fc2NoZW1hLmFjdGlvbl9zdGF0dXMsYWN0aW9uX3N0YXR1cz4
++Lg0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3J
+lcXVlc3QiDQpBICoqdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0KiogaXMgYSB
+zcGVjaWZpY2F0aW9uIG9mIGEgZGVzaXJlZCByZXN1bHQuDQoqKQ0KDQoNCig
+qImFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0Ll9fbm9
+0ZSINClRoZSBkZXNpcmVkIHJlc3VsdCBiZWluZyBpZGVudGlmaWVkIGFuZCB
+kZXNjcmliZWQgbWF5IGJlIG9idGFpbmVkIHRocm91Z2ggb25lIG9mIG1vcmU
+gPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZCxhY3Rpb25
+fbWV0aG9kPj5zLg0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS52ZXJzaW9uZWR
+fYWN0aW9uX3JlcXVlc3QuaWQiDQp0aGUgPDxleHByZXNzOnN1cHBvcnRfcmV
+zb3VyY2Vfc2NoZW1hLmlkZW50aWZpZXIsaWRlbnRpZmllcj4+IHRoYXQgZGl
+zdGluZ3Vpc2hlcyB0aGUgKip2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QqKi4
+NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3J
+lcXVlc3QuaWQuX19ub3RlIg0KVGhlIG1lYW5pbmcgb2YgdGhpcyBhdHRyaWJ
+1dGUgY2FuIGJlIGRlZmluZWQgaW4gdGhlIGFubm90YXRlZCBFWFBSRVNTIHN
+jaGVtYXMgdGhhdCB1c2Ugb3Igc3BlY2lhbGl6ZSB0aGlzIGVudGl0eSwgb3I
+gaW4gYW4gYWdyZWVtZW50IG9mIGNvbW1vbiB1bmRlcnN0YW5kaW5nIGJldHd
+lZW4gdGhlIHBhcnRuZXJzIHNoYXJpbmcgdGhpcyBpbmZvcm1hdGlvbi4NCio
+pDQoNCigqImFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN
+0LmlkLl9fbm90ZSINClRoZSBjb250ZXh0IGluIHdoaWNoIGlkIGlzIHVzZWQ
+gYXMgYSBkaXNjcmltaW5hdGluZyBjaGFyYWN0ZXJpc3RpYyBjYW4gYmUgaWR
+lbnRpZmllZCBpbiBhbiBhbm5vdGF0ZWQgRXhwcmVzcyBzY2hlbWEgdGhhdCB
+1c2VzIG9yIHNwZWNpYWxpemVzIHRoaXMgZW50aXR5LCBvciBieSBkZWZhdWx
+0LCBpbiBhbiBhZ3JlZW1lbnQgb2YgY29tbW9uIHVuZGVyc3RhbmRpbmcgYmV
+0d2VlbiBwYXJ0bmVycyBzaGFyaW5nIHRoaXMgaW5mb3JtYXRpb24uDQoqKQ0
+KDQooKiJhY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdC5
+2ZXJzaW9uIg0KdGhlIGlkZW50aWZpY2F0aW9uIG9mIHRoZSB2ZXJzaW9uIG9
+mIHRoZSAqKnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdCoqLiBUaGUgdmFsdWU
+gb2YgdGhlIGF0dHJpYnV0ZSBuZWVkIG5vdCBiZSBzcGVjaWZpZWQuDQoqKQ0
+KDQoNCigqImFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN
+0LnB1cnBvc2UiDQphbiBpbmZvcm1hbCBkZXNjcmlwdGlvbiBvZiB0aGUgcmV
+hc29uIGZvciB0aGUgKip2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QqKi4NCio
+pDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXV
+lc3QuZGVzY3JpcHRpb24iDQp0aGUgPDxleHByZXNzOnN1cHBvcnRfcmVzb3V
+yY2Vfc2NoZW1hLnRleHQsdGV4dD4+IHRoYXQgY2hhcmFjdGVyaXplcyB0aGU
+gKip2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QqKi4gVGhlIHZhbHVlIG9mIHR
+oZSBhdHRyaWJ1dGUgbmVlZCBub3QgYmUgc3BlY2lmaWVkLg0KKikNCg0KDQo
+oKiJhY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWx
+hdGlvbnNoaXAiDQpBICoqdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0X3JlbGF
+0aW9uc2hpcCoqIGlzIGEgcmVsYXRpb25zaGlwIGJldHdlZW4gdHdvIDw8ZXh
+wcmVzczphY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdCx
+2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3Q+PiBvYmplY3RzLg0KKikNCg0KKCo
+iYWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXR
+pb25zaGlwLl9fZXhhbXBsZSINClR3byA8PGV4cHJlc3M6YWN0aW9uX3NjaGV
+tYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QsdmVyc2lvbmVkX2FjdGlvbl9
+yZXF1ZXN0Pj4gb2JqZWN0cyBtYXkgYmUgcmVsYXRlZCBpZiB0aGV5IGFkZHJ
+lc3Mgc2ltaWxhciBwcm9ibGVtcy4NCiopDQooKiJhY3Rpb25fc2NoZW1hLnZ
+lcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGlvbnNoaXAuX19leGFtcGx
+lIg0KQSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9
+uX3JlcXVlc3QsdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0Pj4gbWF5IGJlIGE
+gdmVyc2lvbiBvZiBhIHdvcmsgcmVxdWVzdC4gSXQgbWlnaHQgYmUgcmVsYXR
+lZCB0byBhIGRpZmZlcmVudCB2ZXJzaW9uIG9mIHRoZSB3b3JrIHJlcXVlc3Q
+gdXNpbmcgYSAqdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2h
+pcCouDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25
+fcmVxdWVzdF9yZWxhdGlvbnNoaXAuaWQiDQp0aGUgPDxleHByZXNzOnN1cHB
+vcnRfcmVzb3VyY2Vfc2NoZW1hLmlkZW50aWZpZXIsaWRlbnRpZmllcj4+IHR
+oYXQgZGlzdGluZ3Vpc2hlcyB0aGUgKip2ZXJzaW9uZWRfYWN0aW9uX3JlcXV
+lc3RfcmVsYXRpb25zaGlwKiouDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWE
+udmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcC5uYW1lIg0
+KdGhlIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmNlX3NjaGVtYS5sYWJlbCx
+sYWJlbD4+IGJ5IHdoaWNoIHRoZSAqKnZlcnNpb25lZF9hY3Rpb25fcmVxdWV
+zdF9yZWxhdGlvbnNoaXAqKiBpcyBrbm93bi4NCiopDQoNCg0KKCoiYWN0aW9
+uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXRpb25zaGl
+wLmRlc2NyaXB0aW9uIg0KdGhlIDw8ZXhwcmVzczpzdXBwb3J0X3Jlc291cmN
+lX3NjaGVtYS50ZXh0LHRleHQ+PiB0aGF0IGNoYXJhY3Rlcml6ZXMgdGhlICo
+qdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcCoqLiBUaGU
+gdmFsdWUgb2YgdGhpcyBhdHRyaWJ1dGUgbmVlZCBub3QgYmUgc3BlY2lmaWV
+kLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25
+fcmVxdWVzdF9yZWxhdGlvbnNoaXAucmVsYXRpbmdfdmVyc2lvbmVkX2FjdGl
+vbl9yZXF1ZXN0Ig0Kb25lIG9mIHRoZSBpbnN0YW5jZXMgb2YgPDxleHByZXN
+zOmFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0LHZlcnN
+pb25lZF9hY3Rpb25fcmVxdWVzdD4+IHRoYXQgaXMgYSBwYXJ0IG9mIHRoZSB
+yZWxhdGlvbnNoaXAuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWEudmVyc2l
+vbmVkX2FjdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcC5yZWxhdGluZ192ZXJ
+zaW9uZWRfYWN0aW9uX3JlcXVlc3QuX19ub3RlIg0KVGhlIG1lYW5pbmcgb2Y
+gdGhpcyBhdHRyaWJ1dGUgY2FuIGJlIGRlZmluZWQgaW4gdGhlIGFubm90YXR
+lZCBFWFBSRVNTIHNjaGVtYXMgdGhhdCB1c2Ugb3Igc3BlY2lhbGl6ZSB0aGl
+zIGVudGl0eSwgb3IgaW4gYW4gYWdyZWVtZW50IG9mIGNvbW1vbiB1bmRlcnN
+0YW5kaW5nIGJldHdlZW4gdGhlIHBhcnRuZXJzIHNoYXJpbmcgdGhpcyBpbmZ
+vcm1hdGlvbi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2F
+jdGlvbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcC5yZWxhdGVkX3ZlcnNpb25lZF9
+hY3Rpb25fcmVxdWVzdCINCnRoZSBvdGhlciBpbnN0YW5jZSBvZiA8PGV4cHJ
+lc3M6YWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QsdmV
+yc2lvbmVkX2FjdGlvbl9yZXF1ZXN0Pj4gdGhhdCBpcyBhIHBhcnQgb2YgdGh
+lIHJlbGF0aW9uc2hpcC4gSWYgb25lIGVsZW1lbnQgb2YgdGhlIHJlbGF0aW9
+uc2hpcCBpcyBkZXBlbmRlbnQgdXBvbiB0aGUgb3RoZXIsIHRoaXMgYXR0cml
+idXRlIHNoYWxsIGJlIHRoZSBkZXBlbmRlbnQgb25lLg0KKikNCg0KDQooKiJ
+hY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGl
+vbnNoaXAucmVsYXRlZF92ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QuX19ub3R
+lIg0KVGhlIG1lYW5pbmcgb2YgdGhpcyBhdHRyaWJ1dGUgY2FuIGJlIGRlZml
+uZWQgaW4gdGhlIGFubm90YXRlZCBFWFBSRVNTIHNjaGVtYXMgdGhhdCB1c2U
+gb3Igc3BlY2lhbGl6ZSB0aGlzIGVudGl0eSwgb3IgaW4gYW4gYWdyZWVtZW5
+0IG9mIGNvbW1vbiB1bmRlcnN0YW5kaW5nIGJldHdlZW4gdGhlIHBhcnRuZXJ
+zIHNoYXJpbmcgdGhpcyBpbmZvcm1hdGlvbi4NCiopDQoNCigqImFjdGlvbl9
+zY2hlbWEuYWN0aW9uX2RpcmVjdGl2ZV9yZWxhdGlvbnNoaXAiDQpBbiAqKmF
+jdGlvbl9kaXJlY3RpdmVfcmVsYXRpb25zaGlwKiogaXMgYSByZWxhdGlvbnN
+oaXAgYmV0d2VlbiB0d28gPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9
+uX2RpcmVjdGl2ZSxhY3Rpb25fZGlyZWN0aXZlPj4gb2JqZWN0cy4NCiopDQo
+NCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9
+uc2hpcC5uYW1lIg0Kc2hhbGwgYmUgdW5pcXVlIHdpdGhpbiBhIHBvcHVsYXR
+pb24gb2YgKiphY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcCoqLg0KKik
+NCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmVfcmVsYXR
+pb25zaGlwLmRlc2NyaXB0aW9uIg0KdGhlIHRleHQgb3IgdGhlIHNldCBvZiB
+0ZXh0cyB0aGF0IHByb3ZpZGUgZnVydGhlciBpbmZvcm1hdGlvbiBhYm91dCB
+0aGUgKiphY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcCoqLiBUaGUgdmF
+sdWUgb2YgdGhpcyBhdHRyaWJ1dGUgbmVlZCBub3QgYmUgc3BlY2lmaWVkLg0
+KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmVfcmV
+sYXRpb25zaGlwLnJlbGF0ZWQiDQp0aGUgb3RoZXIgb2JqZWN0IG9mIDw8ZXh
+wcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmUsYWN0aW9uX2R
+pcmVjdGl2ZT4+IHRoYXQgaXMgcGFydCBvZiB0aGUgcmVsYXRpb25zaGlwLg0
+KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmVfcmV
+sYXRpb25zaGlwLnJlbGF0aW5nIg0Kb25lIG9iamVjdCBvZiA8PGV4cHJlc3M
+6YWN0aW9uX3NjaGVtYS5hY3Rpb25fZGlyZWN0aXZlLGFjdGlvbl9kaXJlY3R
+pdmU+PiB0aGF0IGlzIHBhcnQgb2YgdGhlIHJlbGF0aW9uc2hpcC4NCiopDQo
+NCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9
+uc2hpcC5yZWxhdGlvbl90eXBlIg0KdGhlIG1lYW5pbmcgb2YgdGhlIHJlbGF
+0aW9uc2hpcC4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3Rpb25fZGl
+yZWN0aXZlX3JlbGF0aW9uc2hpcC53cjpXUjEiDQpBICoqYWN0aW9uX2RpcmV
+jdGl2ZV9yZWxhdGlvbnNoaXAqKiBzaGFsbCBub3QgcGFydGljaXBhdGUgaW4
+gaXRzIG93biBkZWZpbml0aW9uLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1
+hLmFjeWNsaWNfYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXAiDQpUaGUgKip
+hY3ljbGljX2FjdGlvbl9tZXRob2RfcmVsYXRpb25zaGlwKiogZnVuY3Rpb24
+gZGV0ZXJtaW5lcyB3aGV0aGVyIHRoZSBncmFwaCBvZiBpbnN0YW5jZXMgb2Y
+gdGhlIGVudGl0eSBkYXRhIHR5cGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWE
+uYWN0aW9uX21ldGhvZCxhY3Rpb25fbWV0aG9kPj4gdGhhdCBjb250YWlucyB
+yZWxhdGlvbiBhcyBvbmUgb2YgaXRzIGxpbmtzIGNvbnRhaW5zIGEgY3ljbGU
+uIFRoaXMgZnVuY3Rpb24gbWF5IGJlIHVzZWQgdG8gZXZhbHVhdGUgZWl0aGV
+yIGFuIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9tZXRob2RfcmV
+sYXRpb25zaGlwLGFjdGlvbl9tZXRob2RfcmVsYXRpb25zaGlwPj4gb3IgYW5
+5IG9mIGl0cyBzdWJ0eXBlcy4gDQoNClRoZSBmdW5jdGlvbiByZXR1cm5zIFR
+SVUUgaWYgbm8gY3ljbGUgaGFzIGJlZW4gZGV0ZWN0ZWQuIE90aGVyd2lzZSB
+pdCByZXR1cm5zIEZBTFNFLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmF
+jeWNsaWNfYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXAuX19ub3RlIg0KVGh
+lIGFsZ29yaXRobSBvZiB0aGUgZnVuY3Rpb24gaXMgZXhwbGFpbmVkIGluIGF
+ubmV4IEUuMi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN5Y2xpY19hY3R
+pb25fbWV0aG9kX3JlbGF0aW9uc2hpcC5fX25vdGUiDQpUaGlzIGZ1bmN0aW9
+uIGlzIG5vdCB1c2VkIGluIHRoaXMgc2NoZW1hLiBJdCBpcyBkZWZpbmVkIGh
+lcmUgYmVjYXVzZSBvdGhlciBJU08gMTAzMDMgaW50ZWdyYXRlZCByZXNvdXJ
+jZXMgYW5kIGFwcGxpY2F0aW9uIHByb3RvY29scyB0aGF0IHVzZSB0aGUgPDx
+leHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZF9yZWxhdGlvbnN
+oaXAsYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXA+PiBlbnRpdHkgaW5jbHV
+kZSBydWxlcyB0aGF0IHVzZSB0aGlzIGZ1bmN0aW9uLg0KKikNCg0KKCoiYWN
+0aW9uX3NjaGVtYS5hY3ljbGljX2FjdGlvbl9tZXRob2RfcmVsYXRpb25zaGl
+wLnJlbGF0aW9uIg0KKGlucHV0KSB0aGUgY2FuZGlkYXRlIDw8ZXhwcmVzczp
+hY3Rpb25fc2NoZW1hLmFjdGlvbl9tZXRob2RfcmVsYXRpb25zaGlwLGFjdGl
+vbl9tZXRob2RfcmVsYXRpb25zaGlwPj4gdG8gYmUgY2hlY2tlZC4NCiopDQo
+NCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3ljbGljX2FjdGlvbl9tZXRob2RfcmV
+sYXRpb25zaGlwLnJlbGF0aXZlcyINCihpbnB1dCkgdGhlIHNldCBvZiBpbnN
+0YW5jZXMgb2YgdGhlIGVudGl0eSBkYXRhIHR5cGUgPDxleHByZXNzOmFjdGl
+vbl9zY2hlbWEuYWN0aW9uX21ldGhvZCxhY3Rpb25fbWV0aG9kPj4gdGhhdCB
+0aGUgZnVuY3Rpb24gaXMgc2VhcmNoaW5nIGZvciBpbiB0aGUgPDxleHByZXN
+zOmFjdGlvbl9zY2hlbWEuYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXAucmV
+sYXRpbmdfbWV0aG9kLHJlbGF0aW5nX21ldGhvZD4+IHBhcmFtZXRlciBvZiB
+0aGUgcmVsYXRpb24gYXJndW1lbnQuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2h
+lbWEuYWN5Y2xpY19hY3Rpb25fbWV0aG9kX3JlbGF0aW9uc2hpcC5zcGVjaWZ
+pY19yZWxhdGlvbiINCihpbnB1dCkgdGhlIGZ1bGx5IHF1YWxpZmllZCBuYW1
+lIG9mIGEgc3VidHlwZSBvZiB0aGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWE
+uYWN0aW9uX21ldGhvZF9yZWxhdGlvbnNoaXAsYWN0aW9uX21ldGhvZF9yZWx
+hdGlvbnNoaXA+PiBlbnRpdHkuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWE
+uYWN5Y2xpY19hY3Rpb25fcmVsYXRpb25zaGlwIg0KVGhlICoqYWN5Y2xpY19
+hY3Rpb25fcmVsYXRpb25zaGlwKiogZnVuY3Rpb24gZGV0ZXJtaW5lcyB3aGV
+0aGVyIHRoZSBncmFwaCBvZiBpbnN0YW5jZXMgb2YgdGhlIGVudGl0eSBkYXR
+hIHR5cGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uLGFjdGlvbj4
++IHRoYXQgY29udGFpbnMgcmVsYXRpb24gYXMgb25lIG9mIGl0cyBsaW5rcyB
+jb250YWlucyBhIGN5Y2xlLiBUaGlzIGZ1bmN0aW9uIG1heSBiZSB1c2VkIHR
+vIGV2YWx1YXRlIGVpdGhlciBhbiA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5
+hY3Rpb25fcmVsYXRpb25zaGlwLGFjdGlvbl9yZWxhdGlvbnNoaXA+PiBvciB
+hbnkgb2YgaXRzIHN1YnR5cGVzLiANCg0KVGhlIGZ1bmN0aW9uIHJldHVybnM
+gVFJVRSBpZiBubyBjeWNsZSBoYXMgYmVlbiBkZXRlY3RlZC4gT3RoZXJ3aXN
+lIGl0IHJldHVybnMgRkFMU0UuDQoqKQ0KDQoNCigqImFjdGlvbl9zY2hlbWE
+uYWN5Y2xpY19hY3Rpb25fcmVsYXRpb25zaGlwLl9fbm90ZSINClRoZSBhbGd
+vcml0aG0gb2YgdGhlIGZ1bmN0aW9uIGlzIGV4cGxhaW5lZCBpbiBhbm5leCB
+FLjIuDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjeWNsaWNfYWN0aW9uX3J
+lbGF0aW9uc2hpcC5fX25vdGUiDQpUaGlzIGZ1bmN0aW9uIGlzIG5vdCB1c2V
+kIGluIHRoaXMgc2NoZW1hLiBJdCBpcyBkZWZpbmVkIGhlcmUgYmVjYXVzZSB
+vdGhlciBJU08gMTAzMDMgaW50ZWdyYXRlZCByZXNvdXJjZXMgYW5kIGFwcGx
+pY2F0aW9uIHByb3RvY29scyB0aGF0IHVzZSB0aGUgPDxleHByZXNzOmFjdGl
+vbl9zY2hlbWEuYWN0aW9uX3JlbGF0aW9uc2hpcCxhY3Rpb25fcmVsYXRpb25
+zaGlwPj4gZW50aXR5IGluY2x1ZGUgcnVsZXMgdGhhdCB1c2UgdGhpcyBmdW5
+jdGlvbi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN5Y2xpY19hY3Rpb25
+fcmVsYXRpb25zaGlwLnJlbGF0aW9uIg0KKGlucHV0KSB0aGUgY2FuZGlkYXR
+lIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9yZWxhdGlvbnNoaXA
+sYWN0aW9uX3JlbGF0aW9uc2hpcD4+IHRvIGJlIGNoZWNrZWQuDQoqKQ0KDQo
+NCigqImFjdGlvbl9zY2hlbWEuYWN5Y2xpY19hY3Rpb25fcmVsYXRpb25zaGl
+wLnJlbGF0aXZlcyINCihpbnB1dCkgdGhlIHNldCBvZiBpbnN0YW5jZXMgb2Y
+gdGhlIGVudGl0eSBkYXRhIHR5cGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWE
+uYWN0aW9uLGFjdGlvbj4+IGZvciB3aGljaCB0aGUgZnVuY3Rpb24gaXMgc2V
+hcmNoaW5nIGluIHRoZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25
+fcmVsYXRpb25zaGlwLnJlbGF0aW5nX2FjdGlvbixyZWxhdGluZ19hY3Rpb24
++PiBwYXJhbWV0ZXIgb2YgdGhlIHJlbGF0aW9uIGFyZ3VtZW50Lg0KKikNCg0
+KDQooKiJhY3Rpb25fc2NoZW1hLmFjeWNsaWNfYWN0aW9uX3JlbGF0aW9uc2h
+pcC5zcGVjaWZpY19yZWxhdGlvbiINCihpbnB1dCkgdGhlIGZ1bGx5IHF1YWx
+pZmllZCBuYW1lIG9mIGEgc3VidHlwZSBvZiB0aGUgPDxleHByZXNzOmFjdGl
+vbl9zY2hlbWEuYWN0aW9uX3JlbGF0aW9uc2hpcCxhY3Rpb25fcmVsYXRpb25
+zaGlwPj4gZW50aXR5Lg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjeWN
+saWNfYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcCINClRoZSAqKmFjeWN
+saWNfYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcCoqIGZ1bmN0aW9uIGR
+ldGVybWluZXMgd2hldGhlciB0aGUgZ3JhcGggb2YgaW5zdGFuY2VzIG9mIHR
+oZSBlbnRpdHkgZGF0YSB0eXBlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmF
+jdGlvbl9yZXNvdXJjZSxhY3Rpb25fcmVzb3VyY2U+PiB0aGF0IGNvbnRhaW5
+zIHJlbGF0aW9uIGFzIG9uZSBvZiBpdHMgbGlua3MgY29udGFpbnMgYSBjeWN
+sZS4gVGhpcyBmdW5jdGlvbiBtYXkgYmUgdXNlZCB0byBldmFsdWF0ZSBlaXR
+oZXIgYW4gPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uX3Jlc291cmN
+lX3JlbGF0aW9uc2hpcCxhY3Rpb25fcmVzb3VyY2VfcmVsYXRpb25zaGlwPj4
+gb3IgYW55IG9mIGl0cyBzdWJ0eXBlcy4gDQoNClRoZSBmdW5jdGlvbiByZXR
+1cm5zIFRSVUUgaWYgbm8gY3ljbGUgaGFzIGJlZW4gZGV0ZWN0ZWQuIE90aGV
+yd2lzZSBpdCByZXR1cm5zIEZBTFNFLg0KKikNCg0KDQooKiJhY3Rpb25fc2N
+oZW1hLmFjeWNsaWNfYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcC5fX25
+vdGUiDQpUaGUgYWxnb3JpdGhtIG9mIHRoZSBmdW5jdGlvbiBpcyBleHBsYWl
+uZWQgaW4gYW5uZXggRS4yLg0KKikNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3l
+jbGljX2FjdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnNoaXAuX19ub3RlIg0KVGh
+pcyBmdW5jdGlvbiBpcyBub3QgdXNlZCBpbiB0aGlzIHNjaGVtYS4gSXQgaXM
+gZGVmaW5lZCBoZXJlIGJlY2F1c2Ugb3RoZXIgSVNPIDEwMzAzIGludGVncmF
+0ZWQgcmVzb3VyY2VzIGFuZCBhcHBsaWNhdGlvbiBwcm90b2NvbHMgdGhhdCB
+1c2UgdGhlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJ
+jZV9yZWxhdGlvbnNoaXAsYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcD4
++IGVudGl0eSBpbmNsdWRlIHJ1bGVzIHRoYXQgdXNlIHRoaXMgZnVuY3Rpb24
+uDQoqKQ0KDQooKiJhY3Rpb25fc2NoZW1hLmFjeWNsaWNfYWN0aW9uX3Jlc29
+1cmNlX3JlbGF0aW9uc2hpcC5yZWxhdGlvbiINCihpbnB1dCkgdGhlIGNhbmR
+pZGF0ZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3Rpb25fcmVzb3VyY2V
+fcmVsYXRpb25zaGlwLGFjdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnNoaXA+PiB
+0byBiZSBjaGVja2VkLg0KKikNCg0KDQooKiJhY3Rpb25fc2NoZW1hLmFjeWN
+saWNfYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcC5yZWxhdGl2ZXMiDQo
+oaW5wdXQpIHRoZSBzZXQgb2YgaW5zdGFuY2VzIG9mIHRoZSBlbnRpdHkgZGF
+0YSB0eXBlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJ
+jZSxhY3Rpb25fcmVzb3VyY2U+PiB0aGF0IHRoZSBmdW5jdGlvbiBpcyBzZWF
+yY2hpbmcgZm9yIGluIHRoZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS5hY3R
+pb25fcmVzb3VyY2VfcmVsYXRpb25zaGlwLnJlbGF0aW5nX3Jlc291cmNlLHJ
+lbGF0aW5nX3Jlc291cmNlPj4gcGFyYW1ldGVyIG9mIHRoZSByZWxhdGlvbiB
+hcmd1bWVudC4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3ljbGljX2F
+jdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnNoaXAuc3BlY2lmaWNfcmVsYXRpb24
+iDQooaW5wdXQpIHRoZSBmdWxseSBxdWFsaWZpZWQgbmFtZSBvZiBhIHN1YnR
+5cGUgb2YgdGhlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXN
+vdXJjZV9yZWxhdGlvbnNoaXAsYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2h
+pcD4+IGVudGl0eS4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3ljbGl
+jX3ZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGlvbnNoaXAiDQpUaGU
+gKiphY3ljbGljX3ZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGlvbnN
+oaXAqKiBmdW5jdGlvbiBkZXRlcm1pbmVzIHdoZXRoZXIgdGhlIGdyYXBoIG9
+mIGluc3RhbmNlcyBvZiB0aGUgZW50aXR5IGRhdGEgdHlwZSA8PGV4cHJlc3M
+6YWN0aW9uX3NjaGVtYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QsdmVyc2l
+vbmVkX2FjdGlvbl9yZXF1ZXN0Pj4gdGhhdCBjb250YWlucyByZWxhdGlvbiB
+hcyBvbmUgb2YgaXRzIGxpbmtzIGNvbnRhaW5zIGEgY3ljbGUuIFRoaXMgZnV
+uY3Rpb24gbWF5IGJlIHVzZWQgdG8gZXZhbHVhdGUgZWl0aGVyIGFuIDw8ZXh
+wcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9yZXNvdXJjZV9yZWxhdGlvbnN
+oaXAsYWN0aW9uX3Jlc291cmNlX3JlbGF0aW9uc2hpcD4+IG9yIGFueSBvZiB
+pdHMgc3VidHlwZXMuIA0KDQpUaGUgZnVuY3Rpb24gcmV0dXJucyBUUlVFIGl
+mIG5vIGN5Y2xlIGhhcyBiZWVuIGRldGVjdGVkLiBPdGhlcndpc2UgaXQgcmV
+0dXJucyBGQUxTRS4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3ljbGl
+jX3ZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGlvbnNoaXAuX19ub3R
+lIg0KVGhlIGFsZ29yaXRobSBvZiB0aGUgZnVuY3Rpb24gaXMgZXhwbGFpbmV
+kIGluIGFubmV4IEUuMi4NCiopDQoNCigqImFjdGlvbl9zY2hlbWEuYWN5Y2x
+pY192ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXRpb25zaGlwLl9fbm9
+0ZSINClRoaXMgZnVuY3Rpb24gaXMgbm90IHVzZWQgaW4gdGhpcyBzY2hlbWE
+uIEl0IGlzIGRlZmluZWQgaGVyZSBiZWNhdXNlIG90aGVyIElTTyAxMDMwMyB
+pbnRlZ3JhdGVkIHJlc291cmNlcyBhbmQgYXBwbGljYXRpb24gcHJvdG9jb2x
+zIHRoYXQgdXNlIHRoZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGVtYS52ZXJzaW9
+uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXRpb25zaGlwLHZlcnNpb25lZF9hY3R
+pb25fcmVxdWVzdF9yZWxhdGlvbnNoaXA+PiBlbnRpdHkgaW5jbHVkZSBydWx
+lcyB0aGF0IHVzZSB0aGlzIGZ1bmN0aW9uLg0KKikNCg0KKCoiYWN0aW9uX3N
+jaGVtYS5hY3ljbGljX3ZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGl
+vbnNoaXAucmVsYXRpb24iDQooaW5wdXQpIHRoZSBjYW5kaWRhdGUgPDxleHB
+yZXNzOmFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN0X3J
+lbGF0aW9uc2hpcCx2ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3RfcmVsYXRpb25
+zaGlwPj4gdG8gYmUgY2hlY2tlZC4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGV
+tYS5hY3ljbGljX3ZlcnNpb25lZF9hY3Rpb25fcmVxdWVzdF9yZWxhdGlvbnN
+oaXAucmVsYXRpdmVzIg0KKGlucHV0KSB0aGUgc2V0IG9mIGluc3RhbmNlcyB
+vZiB0aGUgZW50aXR5IGRhdGEgdHlwZSA8PGV4cHJlc3M6YWN0aW9uX3NjaGV
+tYS52ZXJzaW9uZWRfYWN0aW9uX3JlcXVlc3QsdmVyc2lvbmVkX2FjdGlvbl9
+yZXF1ZXN0Pj4gdGhhdCB0aGUgZnVuY3Rpb24gaXMgc2VhcmNoaW5nIGZvciB
+pbiB0aGUgPDxleHByZXNzOmFjdGlvbl9zY2hlbWEudmVyc2lvbmVkX2FjdGl
+vbl9yZXF1ZXN0X3JlbGF0aW9uc2hpcC5yZWxhdGluZ192ZXJzaW9uZWRfYWN
+0aW9uX3JlcXVlc3QscmVsYXRpbmdfdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN
+0Pj4gcGFyYW1ldGVyIG9mIHRoZSByZWxhdGlvbiBhcmd1bWVudC4NCiopDQo
+NCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3ljbGljX3ZlcnNpb25lZF9hY3Rpb25
+fcmVxdWVzdF9yZWxhdGlvbnNoaXAuc3BlY2lmaWNfcmVsYXRpb24iDQooaW5
+wdXQpIHRoZSBmdWxseSBxdWFsaWZpZWQgbmFtZSBvZiBhIHN1YnR5cGUgb2Y
+gdGhlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLnZlcnNpb25lZF9hY3Rpb25
+fcmVxdWVzdF9yZWxhdGlvbnNoaXAsdmVyc2lvbmVkX2FjdGlvbl9yZXF1ZXN
+0X3JlbGF0aW9uc2hpcD4+IGVudGl0eS4NCiopDQoNCg0KKCoiYWN0aW9uX3N
+jaGVtYS5hY3ljbGljX2FjdGlvbl9kaXJlY3RpdmVfcmVsYXRpb25zaGlwIg0
+KVGhlICoqYWN5Y2xpY19hY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcCo
+qIGZ1bmN0aW9uIGRldGVybWluZXMgd2hldGhlciB0aGUgZ3JhcGggb2YgaW5
+zdGFuY2Ugb2YgdGhlIGVudGl0eSBkYXRhIHR5cGUgPDxleHByZXNzOmFjdGl
+vbl9zY2hlbWEuYWN0aW9uX2RpcmVjdGl2ZSxhY3Rpb25fZGlyZWN0aXZlPj4
+gdGhhdCBjb250YWlucyByZWxhdGlvbiBhcyBvbmUgb2YgaXRzIGxpbmtzIGN
+vbnRhaW5zIGEgY3ljbGUuIFRoaXMgZnVuY3Rpb24gbWF5IGJlIHVzZWQgdG8
+gZXZhbHVhdGUgZWl0aGVyIGEgPDxleHByZXNzOmFjdGlvbl9zY2hlbWEuYWN
+0aW9uX2RpcmVjdGl2ZV9yZWxhdGlvbnNoaXAsYWN0aW9uX2RpcmVjdGl2ZV9
+yZWxhdGlvbnNoaXA+PiBvciBhbnkgb2YgaXRzIHN1YnR5cGVzLiANCg0KVGh
+lIGZ1bmN0aW9uIHJldHVybnMgVFJVRSBpZiBubyBjeWNsZSBoYXMgYmVlbiB
+kZXRlY3RlZC4gT3RoZXJ3aXNlIGl0IHJldHVybnMgRkFMU0UuDQoqKQ0KDQo
+NCigqImFjdGlvbl9zY2hlbWEuYWN5Y2xpY19hY3Rpb25fZGlyZWN0aXZlX3J
+lbGF0aW9uc2hpcC5fX25vdGUiDQpUaGUgYWxnb3JpdGhtIG9mIHRoZSBmdW5
+jdGlvbiBpcyBleHBsYWluZWQgaW4gYW5uZXggRS4yLg0KKikNCg0KKCoiYWN
+0aW9uX3NjaGVtYS5hY3ljbGljX2FjdGlvbl9kaXJlY3RpdmVfcmVsYXRpb25
+zaGlwLnJlbGF0aW9uIg0KKGlucHV0KSB0aGUgY2FuZGlkYXRlIDw8ZXhwcmV
+zczphY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJlY3RpdmVfcmVsYXRpb25zaGl
+wLGFjdGlvbl9kaXJlY3RpdmVfcmVsYXRpb25zaGlwPj4gdG8gYmUgY2hlY2t
+lZC4NCiopDQoNCg0KKCoiYWN0aW9uX3NjaGVtYS5hY3ljbGljX2FjdGlvbl9
+kaXJlY3RpdmVfcmVsYXRpb25zaGlwLnJlbGF0aXZlcyINCihpbnB1dCkgdGh
+lIHNldCBvZiBpbnN0YW5jZXMgb2YgdGhlIGVudGl0eSBkYXRhIHR5cGUgPDx
+leHByZXNzOmFjdGlvbl9zY2hlbWEuYWN0aW9uX2RpcmVjdGl2ZSxhY3Rpb25
+fZGlyZWN0aXZlPj4gZm9yIHdoaWNoIHRoZSBmdW5jdGlvbiBpcyBzZWFyY2h
+pbmcgaW4gdGhlIDw8ZXhwcmVzczphY3Rpb25fc2NoZW1hLmFjdGlvbl9kaXJ
+lY3RpdmVfcmVsYXRpb25zaGlwLnJlbGF0aW5nLHJlbGF0aW5nPj4gcGFyYW1
+ldGVyIG9mIHRoZSByZWxhdGlvbiBhcmd1bWVudC4NCiopDQoNCg0KKCoiYWN
+0aW9uX3NjaGVtYS5hY3ljbGljX2FjdGlvbl9kaXJlY3RpdmVfcmVsYXRpb25
+zaGlwLnNwZWNpZmljX3JlbGF0aW9uIg0KKGlucHV0KSB0aGUgZnVsbHkgcXV
+hbGlmaWVkIG5hbWUgb2YgYSBzdWJ0eXBlIG9mIHRoZSA8PGV4cHJlc3M6YWN
+0aW9uX3NjaGVtYS5hY3Rpb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcCxhY3R
+pb25fZGlyZWN0aXZlX3JlbGF0aW9uc2hpcD4+IGVudGl0eS4NCiopDQoNCg0
+KKCoiYWN0aW9uX3NjaGVtYS5fX3NjaGVtYV9maWxlIg0KZGF0YS9yZXNvdXJ
+jZV9kb2NzL2Z1bmRhbWVudGFsc19vZl9wcm9kdWN0X2Rlc2NyaXB0aW9uX2F
+uZF9zdXBwb3J0L3Jlc291cmNlLnhtbA0KKikNCg==
+</attachment><presentation-metadata><name>TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>HTML TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>DOC TOC Heading Levels</name><value>3</value></presentation-metadata><presentation-metadata><name>PDF TOC Heading Levels</name><value>3</value></presentation-metadata><source-highlighter-css>sourcecode table td { padding: 5px; }
 sourcecode table pre { margin: 0; }
 sourcecode, sourcecode .w {
   color: #444444;
@@ -167,37 +1178,41 @@ sourcecode .nt {
 </source-highlighter-css></metanorma-extension>
 <boilerplate><copyright-statement>
 
-<clause id="_copyright_protected_document" inline-header="false" obligation="normative">
-<title depth="1">COPYRIGHT PROTECTED DOCUMENT</title>
-<p id="boilerplate-year">© <span class="std_publisher">ISO </span><span class="date">2024</span></p>
+<clause id="boilerplate-copyright-default" anchor="boilerplate-copyright-default" inline-header="false" obligation="normative" semx-id="_f5372661-a7aa-5860-8c85-892bbe9ea23b">
+<title id="_121dd968-3fe1-c74e-7a20-d46cb5e5d79d" semx-id="_129fe8d3-7b32-3da5-a270-59bb0ef8173e">COPYRIGHT PROTECTED DOCUMENT</title><fmt-title depth="1" id="_97c5e32c-491f-357d-effc-b405174e6f3c"><semx element="title" source="_121dd968-3fe1-c74e-7a20-d46cb5e5d79d">COPYRIGHT PROTECTED DOCUMENT</semx></fmt-title>
+<p id="boilerplate-year" anchor="boilerplate-year" semx-id="_084d4254-7b78-9745-1ba0-6d23b9c35de5">© <span class="std_publisher">ISO </span><span class="date">2016</span></p>
 
-<p id="boilerplate-message">All rights reserved. Unless otherwise specified, or required in the context of its implementation, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</p>
+<p id="boilerplate-message" anchor="boilerplate-message" semx-id="_dcd0efd0-9c2b-bcfd-6dcd-ce36b8143916">All rights reserved. Unless otherwise specified, or required in the context of its implementation, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</p>
 
-<p id="boilerplate-address" align="left">ISO copyright office<br/> CP 401 • Ch. de Blandonnet 8 <br/> CH-1214 Vernier, Geneva <br/> Phone: +41 22 749 01 11 <br/> Email: <link target="mailto:copyright@iso.org"/><br/> Website: <link target="https://www.iso.org/">www.iso.org</link></p>
+<p id="boilerplate-address" anchor="boilerplate-address" align="left" semx-id="_9b279b29-6760-9714-7fb3-2ca2038acedf">ISO copyright office<br/> CP 401 • Ch. de Blandonnet 8<br/> CH-1214 Vernier, Geneva<br/> Phone: +41 22 749 01 11<br/> Email:  <link target="mailto:copyright@iso.org" id="_c1898dcf-2dd6-8f92-08ce-de50d6683833"/><semx element="link" source="_c1898dcf-2dd6-8f92-08ce-de50d6683833"><fmt-link target="mailto:copyright@iso.org"/></semx><br/> Website: www.iso.org</p>
 
-<p id="boilerplate-place">Published in Switzerland</p>
+<p id="boilerplate-place" anchor="boilerplate-place" semx-id="_93a0bcfe-1edb-b952-e8f5-db8ed91f8e23">Published in Switzerland</p>
 </clause>
 </copyright-statement>
-</boilerplate><preface><clause type="toc" id="_01849f89-df9e-4d3a-bea0-befa1199c4d2" displayorder="1"><title depth="1">Contents</title></clause>
- </preface><sections><p class="zzSTDTitle1" displayorder="2"><span class="boldtitle">Attachment test — Attachment test</span></p><clause id="_scope" type="scope" inline-header="false" obligation="normative" displayorder="3">
-<title depth="1">1<tab/>Scope</title>
-<p id="_937d1be2-f2fb-f7f6-befd-9e847d1b25aa">The sample PDF attachment: <link attachment="true" target="_test_attachments_attachments/program.c">sources/program.c</link></p>
+</boilerplate><preface><clause type="toc" id="_5c1a45ef-0335-c28e-3f58-6bf64e3f6a5a" displayorder="1"><fmt-title depth="1" id="_f51d531f-516e-fbd9-af9b-08b11b85ca82">Contents</fmt-title></clause>
+ </preface><sections><p class="zzSTDTitle1" displayorder="2"><span class="boldtitle">Cereals and pulses — Specifications and test methods — </span><span class="nonboldtitle">Part 1:</span><span class="boldtitle">Rice (Final)</span></p>
+
+
+<clause id="_0d488b17-e1f0-556f-c2fe-bc49e9501517" type="scope" inline-header="false" obligation="normative" semx-id="_0d488b17-e1f0-556f-c2fe-bc49e9501517" displayorder="3">
+<title id="_ef5612fb-1e47-1246-b392-69a921308fcb" semx-id="_6770b367-e1d0-8e49-8515-6b9fe405d4ad">Scope</title><fmt-title depth="1" id="_58af5d1a-79fa-3676-3b52-26615cc3d4d7"><span class="fmt-caption-label"><semx element="autonum" source="_0d488b17-e1f0-556f-c2fe-bc49e9501517">1</semx></span><span class="fmt-caption-delim"><tab/></span><semx element="title" source="_ef5612fb-1e47-1246-b392-69a921308fcb">Scope</semx></fmt-title><fmt-xref-label><span class="fmt-element-name">Clause</span> <semx element="autonum" source="_0d488b17-e1f0-556f-c2fe-bc49e9501517">1</semx></fmt-xref-label>
+<p id="_5bf3f010-2af8-02e5-5521-979d8480999f" semx-id="_5bf3f010-2af8-02e5-5521-979d8480999f">Test case: <eref type="inline" bibitemid="file1" citeas="[schemas/action_schema.exp]" id="_799c4fc0-aeae-8902-1950-45287768f936"/><semx element="eref" source="_799c4fc0-aeae-8902-1950-45287768f936"><fmt-link attachment="true" target="_test.attachment_attachments/action_schema.exp">[schemas/action_schema.exp]</fmt-link></semx></p>
 </clause>
 
 
-</sections><bibliography><references id="_bibliography" normative="false" obligation="informative" hidden="true" displayorder="4">
-<title depth="1">Bibliography</title><bibitem id="file1" hidden="true">
+</sections><bibliography><references id="_436b185e-b8dc-67bd-bec4-2ea211c3ab2a" normative="false" obligation="informative" semx-id="_436b185e-b8dc-67bd-bec4-2ea211c3ab2a" displayorder="4">
+<title id="_79a2af9e-6853-19a3-fcb8-27eb8dad0c44" semx-id="_2b4ed339-a7ed-1bbb-9576-55fcbc1ace3a">Bibliography</title><fmt-title depth="1" id="_2da55403-b11b-078e-f7e8-f49a7def2e71"><semx element="title" source="_79a2af9e-6853-19a3-fcb8-27eb8dad0c44">Bibliography</semx></fmt-title><bibitem anchor="ISO3696" id="ISO3696" type="standard" semx-id="_f135264c-89e0-faf4-1621-49048f325b41"><biblio-tag>[1]<tab/><span class="stdpublisher">ISO </span><span class="stddocNumber">3696</span>, </biblio-tag><formattedref><em><span class="stddocTitle">Water for analytical laboratory use — Specification and test methods</span></em></formattedref>
+<title format="text/plain">Water for analytical laboratory use — Specification and test methods</title><docidentifier type="metanorma-ordinal">[1]</docidentifier>
+<docidentifier type="ISO">ISO 3696</docidentifier><docidentifier scope="biblio-tag">ISO 3696</docidentifier><docnumber>3696</docnumber><contributor><role type="publisher"/><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><language>en</language><script>Latn</script></bibitem><bibitem anchor="file1" id="file1" hidden="true" semx-id="_3cf57749-b6cd-fdbc-993b-2d5033cf62c3">
   <formattedref format="application/x-isodoc+xml">[NO INFORMATION AVAILABLE]</formattedref>
-  <uri type="attachment">_test_attachments_attachments/program.c</uri>
-  <uri type="citation">_test_attachments_attachments/program.c</uri>
-  <docidentifier type="metanorma">[sources/program.c]</docidentifier>
-</bibitem><bibitem id="file2" hidden="true">
-  <formattedref format="application/x-isodoc+xml">[NO INFORMATION AVAILABLE]</formattedref>
-  <uri type="attachment">_test_attachments_attachments/program.pas</uri>
-  <uri type="citation">_test_attachments_attachments/program.pas</uri>
-  <docidentifier type="metanorma">[sources/program.pas]</docidentifier>
+  <uri type="attachment">_test.attachment_attachments/action_schema.exp</uri>
+  <uri type="citation">_test.attachment_attachments/action_schema.exp</uri>
+  <docidentifier type="metanorma">[schemas/action_schema.exp]</docidentifier>
+  <language>en</language>
+  <script>Latn</script>
 </bibitem>
 
 
 </references></bibliography>
-</iso-standard>
+</metanorma>
