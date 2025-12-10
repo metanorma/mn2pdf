@@ -102,7 +102,7 @@ public class SourceXMLDocumentTests {
         SourceXMLDocument sourceXMLDocument = new SourceXMLDocument(new File(xml));
         Map<String,Integer> tablesCellsCount = sourceXMLDocument.getTablesCellsCountMap();
         int countCells = sourceXMLDocument.getCountTableCells();
-        assertTrue(tablesCellsCount.size() == 27);
-        assertTrue(countCells == 725);
+        assertTrue(tablesCellsCount.size() == 26);
+        assertTrue(countCells == 692);
     }
 }

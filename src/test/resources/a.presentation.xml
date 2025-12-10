@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ogc-standard xmlns="https://www.metanorma.org/ns/ogc" type="presentation" version="2.3.1">
+<metanorma xmlns="https://www.metanorma.org/ns/standoc" type="presentation" version="2.3.1">
 <bibdata type="standard">
 <title language="en" format="text/plain">X</title>
 <contributor><role type="publisher"/><organization>
@@ -126,4 +126,4 @@ sourcecode .nb, sourcecode .bp {
 <title depth="1">Bibliography</title><bibitem id="A" type="standard" schema-version="v1.2.1"><formattedref>R. Fielding, J. Gettys, J. Mogul, H. Frystyk, L. Masinter, P. Leach, T. Berners-Lee: IETF RFC 2616, <em>Hypertext Transfer Protocol — HTTP/1.1</em>. (1999). <link target="https://www.rfc-editor.org/info/rfc2616">https://www.rfc-editor.org/info/rfc2616</link>.</formattedref><uri type="src">https://www.rfc-editor.org/info/rfc2616</uri><docidentifier type="metanorma-ordinal">[1]</docidentifier><docidentifier type="IETF" primary="true">IETF RFC 2616</docidentifier><docidentifier type="DOI">DOI 10.17487/RFC2616</docidentifier><biblio-tag>[1]<tab/></biblio-tag></bibitem>
  
 </references></bibliography>
-</ogc-standard>
+</metanorma>

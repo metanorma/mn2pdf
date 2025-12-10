@@ -197,7 +197,11 @@ public class Util {
         
         return version;
     }
-    
+
+    public static String getPDFProducer() {
+        return "Ribose Metanorma mn2pdf version " + Util.getAppVersion();
+    }
+
     public static String getDecodedBase64SVGnode(String encodedString) { //throws SAXException, IOException, ParserConfigurationException {
         byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
         String decodedString = new String(decodedBytes);
@@ -330,6 +334,22 @@ public class Util {
         }
         return stream;
     }
+
+    public static byte[] getBytesFromResources(ClassLoader classLoader, String fileName) throws IOException {
+        try (InputStream inputStream = classLoader.getResourceAsStream(fileName);
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            if (inputStream == null) {
+                throw new IOException("Cannot get resource \"" + fileName + "\" from Jar file.");
+            }
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            return outputStream.toByteArray();
+        }
+    }
+
 
     public static int getCoverPagesCount (File fXSL) {
         int countpages = 0;
