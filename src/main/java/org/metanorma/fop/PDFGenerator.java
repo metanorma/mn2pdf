@@ -410,7 +410,6 @@ public class PDFGenerator {
                     }
                     xsltConverter.deleteTmpXSL();
                     fontcfg.deleteConfigFile();
-                    fontcfg.flushTempPath();
                 }
 
             }
