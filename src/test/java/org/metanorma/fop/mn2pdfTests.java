@@ -178,7 +178,22 @@ public class mn2pdfTests {
 
         assertTrue(Files.exists(pdf));
     }
-    
+
+    @Test
+    public void successPortfolio() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("collection.presentation.xml").getFile();
+        String xsl = classLoader.getResource("iec.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "collection.portfolio.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--pdf-portfolio", "\"true\""};
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+    }
+
     /*@Test
     public void additionalXMLnotfound() throws ParseException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -456,7 +471,9 @@ public class mn2pdfTests {
         }
 
         assertTrue(countFileAttachmentAnnotation == 1);
-        assertTrue(countFileAttachmentEmbedded == 1);
+        //see metanorma\fop\annotations\FileAttachmentAnnotation.java:
+        // 0 becaise remove attachments which have FileAttachment annotation equivalent
+        assertTrue(countFileAttachmentEmbedded == 0);
 
 
     }
