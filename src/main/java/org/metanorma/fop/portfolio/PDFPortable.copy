@@ -1,0 +1,210 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.metanorma.fop;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentNameDictionary;
+import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PageMode;
+import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
+import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName;
+
+public class PDFPortable
+{
+    private Map<String, String> filesList;
+
+    /**
+     * Constructor.
+     */
+    public PDFPortable(Map<String, String> filesList)
+    {
+        this.filesList = filesList;
+    }
+
+    /**
+     * Create a portable collection PDF with the files.
+     *
+     * @param outPDF The file to write the PDF to.
+     *
+     * @throws IOException If there is an error writing the data.
+     */
+    public void generate(String outPDF) throws IOException
+    {
+        try (PDDocument doc = new PDDocument())
+        {
+            PDPage page = new PDPage();
+            doc.addPage(page);
+
+            try (PDPageContentStream contentStream = new PDPageContentStream(doc, page))
+            {
+                contentStream.beginText();
+                contentStream.setFont(new PDType1Font(FontName.HELVETICA), 12);
+                contentStream.newLineAtOffset(100, 700);
+                contentStream.showText("Example of a portable collection");
+                contentStream.endText();
+            }
+
+            //embedded files are stored in a named tree
+            PDEmbeddedFilesNameTreeNode efTree = new PDEmbeddedFilesNameTreeNode();
+
+            List<PDComplexFileSpecification> listPDComplexFileSpecification = new ArrayList<>();
+            for (Map.Entry<String, String> item : filesList.entrySet()) {
+
+                //first create the file specification, which holds the embedded file
+                PDComplexFileSpecification fs = new PDComplexFileSpecification();
+
+                File attachmentFile = new File(item.getKey());
+
+                // use both methods for backwards, cross-platform and cross-language compatibility.
+                fs.setFile(attachmentFile.getName());
+                fs.setFileUnicode(attachmentFile.getName());
+
+                FileInputStream fis = new FileInputStream(attachmentFile);
+                PDEmbeddedFile embeddedFile = new PDEmbeddedFile(doc, fis);
+                embeddedFile.setSubtype("application/pdf");
+                embeddedFile.setSize((int)attachmentFile.length()); // max 2gb
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(attachmentFile.lastModified());
+                embeddedFile.setCreationDate(calendar);
+                fis.close();
+
+                // use both methods for backwards, cross-platform and cross-language compatibility.
+                fs.setEmbeddedFile(embeddedFile);
+                fs.setEmbeddedFileUnicode(embeddedFile);
+                fs.setFileDescription(item.getValue());
+
+                listPDComplexFileSpecification.add(fs);
+            }
+
+            Map<String, PDComplexFileSpecification> map = new HashMap<>();
+
+            String firstFile = listPDComplexFileSpecification.get(0).getFile();
+            for (PDComplexFileSpecification listPDComplexFileSpecificationItem : listPDComplexFileSpecification) {
+                map.put(listPDComplexFileSpecificationItem.getFile(), listPDComplexFileSpecificationItem);
+            }
+
+            // create a new tree node and add the embedded file
+            PDEmbeddedFilesNameTreeNode treeNode = new PDEmbeddedFilesNameTreeNode();
+            treeNode.setNames(map);
+            // add the new node as kid to the root node
+            List<PDEmbeddedFilesNameTreeNode> kids = new ArrayList<>();
+            kids.add(treeNode);
+            efTree.setKids(kids);
+
+            // add the tree to the document catalog
+            PDDocumentNameDictionary names = new PDDocumentNameDictionary(doc.getDocumentCatalog());
+            names.setEmbeddedFiles(efTree);
+            doc.getDocumentCatalog().setNames(names);
+
+            // show attachments panel in some viewers 
+            doc.getDocumentCatalog().setPageMode(PageMode.USE_ATTACHMENTS);
+
+            // create collection directory
+            COSDictionary collectionDic = new COSDictionary();
+            COSDictionary schemaDict = new COSDictionary();
+            schemaDict.setItem(COSName.TYPE, COSName.COLLECTION_SCHEMA);
+            COSDictionary sortDic = new COSDictionary();
+            sortDic.setItem(COSName.TYPE, COSName.COLLECTION_SORT);
+            sortDic.setString(COSName.A, "true"); // sort ascending
+            // "it identifies a field described in the parent collection dictionary"
+            // sort by field 3 (order number)
+            sortDic.setItem(COSName.S, COSName.getPDFName("Order"));
+            collectionDic.setItem(COSName.TYPE, COSName.COLLECTION);
+            collectionDic.setItem(COSName.SCHEMA, schemaDict);
+            collectionDic.setItem(COSName.SORT, sortDic);
+            collectionDic.setItem(COSName.VIEW, COSName.T); // D Details mode (Initial view Top pane), T (Initial view Left pane)
+            collectionDic.setString(COSName.D, firstFile);
+
+            /*COSDictionary fieldDict1 = new COSDictionary();
+            fieldDict1.setItem(COSName.TYPE, COSName.COLLECTION_FIELD);
+            fieldDict1.setItem(COSName.SUBTYPE, COSName.S); // type: text field
+            fieldDict1.setString(COSName.N, "Document identifier"); // header text
+            fieldDict1.setInt(COSName.O, 9); // order on the screen*/
+
+            /*COSDictionary fieldDict2 = new COSDictionary();
+            fieldDict2.setItem(COSName.TYPE, COSName.COLLECTION_FIELD);
+            fieldDict2.setItem(COSName.SUBTYPE, COSName.S); // type: text field
+            fieldDict2.setString(COSName.N, "Name2");
+            fieldDict2.setInt(COSName.O, 6);*/
+
+            COSDictionary fieldDict3 = new COSDictionary();
+            fieldDict3.setItem(COSName.TYPE, COSName.COLLECTION_FIELD);
+            fieldDict3.setItem(COSName.SUBTYPE, COSName.N); // type: number field
+            fieldDict3.setString(COSName.N, "Order number");
+            fieldDict3.setInt(COSName.O, 1);
+            fieldDict3.setBoolean(COSName.V, false); // hide column
+
+            //schemaDict.setItem("DocumentIdentifier", fieldDict1); // field name (this is a key)
+            //schemaDict.setItem("FileName2", fieldDict2);
+            schemaDict.setItem("Order", fieldDict3);
+
+            doc.getDocumentCatalog().getCOSObject().setItem(COSName.COLLECTION, collectionDic);
+            doc.getDocumentCatalog().setVersion("1.7");
+
+            for (PDComplexFileSpecification listPDComplexFileSpecificationItem : listPDComplexFileSpecification) {
+                // collection item dictionary with fields for Nth file
+                COSDictionary ciDict = new COSDictionary();
+                ciDict.setItem(COSName.TYPE, COSName.COLLECTION_ITEM);
+                // use the field names from earlier
+                //ciDict.setString("DocumentIdentifier", listPDComplexFileSpecificationItem.getFileDescription());
+                //ciDict.setString("FileName2", listPDComplexFileSpecificationItem.getFile());
+                ciDict.setInt("Order", listPDComplexFileSpecification.indexOf(listPDComplexFileSpecificationItem));
+                listPDComplexFileSpecificationItem.getCOSObject().setItem(COSName.CI, ciDict);
+            }
+
+            Files.deleteIfExists(Paths.get(outPDF));
+            doc.save(outPDF);
+        }
+    }
+
+    /**
+     * This will create a portable collection PDF.
+     * <br>
+     * see usage() for commandline
+     *
+     * @param args Command line arguments.
+     */
+    public static void main(String[] args) throws IOException
+    {
+        String folder = "D:\\Work\\Metanorma\\PDF_Porfolio\\";
+        String outPDF = folder + "PDFPortable.PDFBox.pdf";
+
+        Map<String, String> filesList = new HashMap<>();
+
+        filesList.put(folder + "iso-is-document-en.fdis.presentation.pdf", "ISO/FDIS17301-1");
+        filesList.put(folder + "iec-rice-en.presentation.pdf", "IEC CD 17301-1:2016 ED2");
+        filesList.put(folder + "cc-18011.presentation.pdf", "CalConnect 18011:2018");
+        filesList.put(folder + "iec-rice-fr.presentation.pdf", "IEC CD 17301-1:2016 ED2");
+
+        PDFPortable app = new PDFPortable(filesList);
+        app.generate(outPDF);
+    }
+
+}

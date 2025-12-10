@@ -1,4 +1,4 @@
-package org.metanorma.fop;
+package org.metanorma.fop.portfolio;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,18 +17,19 @@ import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
 import org.apache.pdfbox.pdmodel.PageMode;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
+import org.metanorma.fop.Util;
 
 //https://github.com/apache/pdfbox/blob/2.0/examples/src/main/java/org/apache/pdfbox/examples/pdmodel/CreatePortableCollection.java
 public class PDFPortfolio
 {
-    private Map<String, String> filesList;
+    private List<PDFPortfolioItem> pdfPortfolioItems;
 
     /**
      * Constructor.
      */
-    public PDFPortfolio(Map<String, String> filesList)
+    public PDFPortfolio(List<PDFPortfolioItem> pdfPortfolioItems)
     {
-        this.filesList = filesList;
+        this.pdfPortfolioItems = pdfPortfolioItems;
     }
 
     /**
@@ -48,12 +49,12 @@ public class PDFPortfolio
             PDEmbeddedFilesNameTreeNode efTree = new PDEmbeddedFilesNameTreeNode();
 
             List<PDComplexFileSpecification> listPDComplexFileSpecification = new ArrayList<>();
-            for (Map.Entry<String, String> item : filesList.entrySet()) {
+            for (PDFPortfolioItem item : pdfPortfolioItems) {
 
                 //first create the file specification, which holds the embedded file
                 PDComplexFileSpecification fs = new PDComplexFileSpecification();
 
-                File attachmentFile = new File(item.getKey());
+                File attachmentFile = new File(item.getPdfAbsolutePath());
 
                 // use both methods for backwards, cross-platform and cross-language compatibility.
                 fs.setFile(attachmentFile.getName());
@@ -71,7 +72,7 @@ public class PDFPortfolio
                 // use both methods for backwards, cross-platform and cross-language compatibility.
                 fs.setEmbeddedFile(embeddedFile);
                 fs.setEmbeddedFileUnicode(embeddedFile);
-                fs.setFileDescription(item.getValue());
+                fs.setFileDescription(item.getDocumentIdentifier());
 
                 listPDComplexFileSpecification.add(fs);
             }
@@ -141,15 +142,50 @@ public class PDFPortfolio
     }
 
     public void flushTempPDF() {
-        for (Map.Entry<String, String> item : filesList.entrySet()) {
-            Path pdfFilePath = Paths.get(item.getKey());
-            if (Files.exists(pdfFilePath)) {
-                try {
-                    Files.deleteIfExists(pdfFilePath);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        for (PDFPortfolioItem item : pdfPortfolioItems) {
+            if (item.isDeleteOnFlush()) {
+                Path pdfFilePath = Paths.get(item.getPdfAbsolutePath());
+                if (Files.exists(pdfFilePath)) {
+                    try {
+                        Files.deleteIfExists(pdfFilePath);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         }
     }
+
+    /**
+     * This will create a portable collection PDF.
+     * <br>
+     * see usage() for commandline
+     *
+     * @param args Command line arguments.
+     */
+    public static void main(String[] args) throws Exception
+    {
+        String folder = "D:\\Work\\Metanorma\\PDF_Porfolio\\";
+        String outPDF = folder + "PDFPortable.PDFBox.pdf";
+
+        Map<String, String> filesList = new LinkedHashMap<>();
+        List<PDFPortfolioItem> pdfPortfolioItems = new ArrayList<>();
+
+        pdfPortfolioItems.add(
+                new PDFPortfolioItem(folder + "iso-is-document-en.fdis.presentation.pdf", "ISO/FDIS17301-1",false)
+        );
+        pdfPortfolioItems.add(
+                new PDFPortfolioItem(folder + "iec-rice-en.presentation.pdf", "IEC CD 17301-1:2016 ED2",false)
+        );
+        pdfPortfolioItems.add(
+                new PDFPortfolioItem(folder + "cc-18011.presentation.pdf", "CalConnect 18011:2018",false)
+        );
+        pdfPortfolioItems.add(
+                new PDFPortfolioItem(folder + "iec-rice-fr.presentation.pdf", "IEC CD 17301-1:2016 ED2",false)
+        );
+
+        PDFPortfolio app = new PDFPortfolio(pdfPortfolioItems);
+        app.generate(outPDF);
+    }
+
 }

@@ -16,6 +16,8 @@ public class PDFResult {
     private File outFile;
     private String outFilename;
 
+    private String outAbsolutePath;
+
     private Path outTmpImagesPath;
 
     private PDFResult() {
@@ -32,6 +34,7 @@ public class PDFResult {
         outFolder = parentFolder;
         outFile = pdfFile;
         outFilename = pdfFile.getName();
+        outAbsolutePath = pdfFile.getAbsolutePath();
     }
 
     public static PDFResult PDFResult(File pdfFile)
@@ -49,6 +52,8 @@ public class PDFResult {
     public String getPDFFilename() { return outFilename; }
 
     public File getPDFFile() { return outFile; }
+
+    public String getPDFAbsolutePath() { return outAbsolutePath; }
 
     public Path getOutTmpImagesPath() {
         return outTmpImagesPath;

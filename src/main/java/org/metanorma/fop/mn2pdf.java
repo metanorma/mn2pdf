@@ -10,10 +10,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import static org.metanorma.Constants.APP_NAME;
-import static org.metanorma.Constants.ERROR_EXIT_CODE;
-import static org.metanorma.Constants.DEBUG;
 import org.metanorma.utils.LoggerHelper;
+
+import static org.metanorma.Constants.*;
 
 
 /**

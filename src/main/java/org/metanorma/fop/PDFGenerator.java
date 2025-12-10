@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +21,13 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import net.sourceforge.jeuclid.fop.plugin.JEuclidFopFactoryConfigurator;
 import org.apache.fop.apps.FOPException;
@@ -29,9 +35,6 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
-import org.apache.fop.events.Event;
-import org.apache.fop.events.EventFormatter;
-import org.apache.fop.events.model.EventSeverity;
 import org.apache.fop.pdf.PDFEncryptionParams;
 import org.apache.fop.render.intermediate.IFContext;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
@@ -49,8 +52,12 @@ import org.metanorma.fop.ifhandler.FOPIFFlatHandler;
 import org.metanorma.fop.ifhandler.FOPIFHiddenMathHandler;
 import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
 import org.metanorma.fop.ifhandler.FOPXMLPresentationHandler;
+import org.metanorma.fop.portfolio.PDFMetainfo;
+import org.metanorma.fop.portfolio.PDFPortfolio;
+import org.metanorma.fop.portfolio.PDFPortfolioItem;
 import org.metanorma.fop.tags.TableCaption;
 import org.metanorma.utils.LoggerHelper;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.yaml.snakeyaml.Yaml;
@@ -302,19 +309,25 @@ public class PDFGenerator {
             if (sourceDocumentFilePath == null) {
                 sourceDocumentFilePath = System.getProperty("user.dir");
             }
-
-            Map<String, String> pdfFilesMap = new LinkedHashMap<>();
+            
+            List<PDFPortfolioItem> pdfPortfolioItems = new ArrayList<>();
 
             //File fPresentationPartXML = getPresentationPartXML(fXML, fPDF.getParent());
-            //File fPresentationPartXML = getPresentationPartXML(fXML, pdfResult.getOutFolder());
-            Map<String, String> mapPresentationPartsXML = getPresentationPartsXML(fXML, pdfResult);
-            for (Map.Entry<String, String> entry : mapPresentationPartsXML.entrySet())
+            List<PDFMetainfo> listPresentationParts = getPresentationPartsFromXML(fXML, pdfResult);
+            for (PDFMetainfo entry : listPresentationParts)
             {
-                File fPresentationPartXML = new File(entry.getKey());
+                File fPresentationPartXML = new File(entry.getXmlFilePath());
 
                 if (isPDFPortfolio) {
-                    Path pdfItemPath = Paths.get(fPDF.getAbsoluteFile().getParent(), entry.getValue());
+                    Path pdfItemPath = Paths.get(fPDF.getAbsoluteFile().getParent(), entry.getPDFFileName());
                     fPDF = pdfItemPath.toFile();
+                    // To do?: if PDF exists, it means that PDF generated already
+                    // and no need to generate it again
+                    // just add to the pdf list for PDF Portfolio generation
+                    /*if (fPDF.exists()) {
+                        pdfFilesMap.put(fPDF.getAbsolutePath(), entry.getDocumentIdentifier());
+                        continue;
+                    }*/
                 }
 
                 sourceXMLDocument = new SourceXMLDocument(fPresentationPartXML);
@@ -338,11 +351,9 @@ public class PDFGenerator {
                 }
                 xsltConverter.setParams(xsltParams);
 
-
                 fontConfig fontcfg = new fontConfig();
                 fontcfg.setFontPath(fontsPath);
                 fontcfg.setFontConfigPath(fPDF.getAbsolutePath());
-
                 fontcfg.setFontManifest(fFontsManifest);
                 fontcfg.saveFontManifest(fPDF.getParent()); // for debug purposes
 
@@ -351,7 +362,9 @@ public class PDFGenerator {
 
                 convertmn2pdf(fontcfg, xsltConverter, fPDF);
 
-                pdfFilesMap.put(fPDF.getAbsolutePath(), entry.getValue());
+                pdfPortfolioItems.add(
+                        new PDFPortfolioItem(fPDF.getAbsolutePath(), entry.getDocumentIdentifier(), true)
+                );
 
                 if (isSplitByLanguage) {
                     int initial_page_number = 1;
@@ -376,7 +389,9 @@ public class PDFGenerator {
 
                         convertmn2pdf(fontcfg, xsltConverter, fPDFsplit);
 
-                        pdfFilesMap.put(fPDFsplit.getAbsolutePath(), fPDFsplit.getName());
+                        pdfPortfolioItems.add(
+                                new PDFPortfolioItem(fPDFsplit.getAbsolutePath(), fPDFsplit.getName(), true)
+                        );
 
                         // initial page number for 'next' document
                         initial_page_number = (getPageCount() - coverpages_count) + 1;
@@ -400,7 +415,7 @@ public class PDFGenerator {
             }
 
             if (isPDFPortfolio) {
-                PDFPortfolio pdfPortfolio = new PDFPortfolio(pdfFilesMap);
+                PDFPortfolio pdfPortfolio = new PDFPortfolio(pdfPortfolioItems);
                 pdfPortfolio.generate(outputPDFFilePath);
                 if (!DEBUG) {
                     pdfPortfolio.flushTempPDF();
@@ -423,8 +438,8 @@ public class PDFGenerator {
         return true;
     }
 
-    private Map<String, String> getPresentationPartsXML(File fXML, PDFResult pdfResult) {
-        Map<String, String> outputFiles = new LinkedHashMap<>();
+    private List<PDFMetainfo> getPresentationPartsFromXML(File fXML, PDFResult pdfResult) {
+        List<PDFMetainfo> listPDFMetaInfo = new ArrayList<>();
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
@@ -441,18 +456,125 @@ public class PDFGenerator {
             }
             if (isPDFPortfolio) {
                 // split collection XML into separate documents
-                outputFiles.put(outputFile.getAbsolutePath(), pdfResult.getPDFFilename());
+
+                // iterate each //entry with @target
+                //   @target points to the /metanorma
+                //   @pdf-file is the output file name
+                //   if missing, then concatenate docidentifier + _ + bibdata/docidentifier + ".pdf"
+                //   extract //doc-container[@id=@target]/metanorma and save to temp xml file
+
+                InputSource xmlPresentationIS = new InputSource(new StringReader(resultedXML.toString()));
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document xmlPresentationDocument = dBuilder.parse(xmlPresentationIS);
+
+                XPath xPathEntries = XPathFactory.newInstance().newXPath();
+                XPathExpression queryAllEntries = xPathEntries.compile("//*[local-name() = 'metanorma-collection']//*[local-name() = 'entry'][@target]");
+                NodeList nodesEntries = (NodeList)queryAllEntries.evaluate(xmlPresentationDocument, XPathConstants.NODESET);
+                for (int i = 0; i < nodesEntries.getLength(); i++) {
+                    Node nodeEntry = nodesEntries.item(i);
+
+                    String target = "";
+                    Node nodeTarget = nodeEntry.getAttributes().getNamedItem("target");
+                    if (nodeTarget != null) {
+                        target = nodeTarget.getTextContent();
+                    }
+
+                    String pdffile = "";
+                    Node nodePdfFile = nodeEntry.getAttributes().getNamedItem("pdf-file");
+                    if (nodePdfFile != null) {
+                        pdffile = nodePdfFile.getTextContent();
+                    }
+
+                    String docidentifier = "";
+                    XPath xPathDocidentifier = XPathFactory.newInstance().newXPath();
+                    XPathExpression queryDocidentifier = xPathDocidentifier.compile("./*[local-name() = 'bibdata']/*[local-name() = 'docidentifier'][1]");
+                    Node nodeDocidentifier = (Node) queryDocidentifier.evaluate(nodeEntry, XPathConstants.NODE);
+                    if (nodeDocidentifier != null) {
+                        docidentifier = nodeDocidentifier.getTextContent();
+                    }
+
+                    if (pdffile.isEmpty()) {
+                        String entry_identifier = "";
+                        XPath xPathIdentifier = XPathFactory.newInstance().newXPath();
+                        XPathExpression queryIdentifier = xPathIdentifier.compile("./*[local-name() = 'identifier'][1]");
+                        Node nodeIdentifier = (Node) queryIdentifier.evaluate(nodeEntry, XPathConstants.NODE);
+                        if (nodeIdentifier != null) {
+                            entry_identifier = nodeIdentifier.getTextContent();
+                        }
+                        pdffile = entry_identifier + "_" + docidentifier.replaceAll("\\s", "_") +".pdf";
+                    }
+
+                    // extract //doc-container[@id=@target]/metanorma and save to temp xml file
+                    if (!target.isEmpty()) {
+                        XPath xPathDocument = XPathFactory.newInstance().newXPath();
+                        XPathExpression queryDocument = xPathDocument.compile("//*[local-name() = 'doc-container'][@id = '" + target + "'][1]/*[1]");
+                        Node nodeDocument = (Node) queryDocument.evaluate(xmlPresentationDocument, XPathConstants.NODE);
+                        if (nodeDocument != null ){
+
+                            DOMSource source = new DOMSource(nodeDocument);
+
+                            File outputFilePart = Paths.get(outputFolder, fXML.getName() + "_" + target + "_tmp").toFile();
+                            FileWriter writer = new FileWriter(outputFilePart);
+                            StreamResult srPart = new StreamResult(writer);
+                            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                            Transformer transformer = transformerFactory.newTransformer();
+                            transformer.setOutputProperty(javax.xml.transform.OutputKeys.ENCODING, "UTF-8");
+                            try {
+                                transformer.transform(source, srPart);
+                                if (DEBUG) {
+                                    logger.info("XML saved to " + outputFilePart.getAbsolutePath());
+                                }
+                                PDFMetainfo pdfMetainfo =
+                                        new PDFMetainfo(outputFilePart.getAbsolutePath(), pdffile, docidentifier);
+                                listPDFMetaInfo.add(pdfMetainfo);
+                            } catch (TransformerException e) {
+                                logger.severe("Can't save the document from document-collection.");
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    writer.close(); // Close the FileWriter
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (listPDFMetaInfo.isEmpty()) {
+                    PDFMetainfo pdfMetainfo =
+                            new PDFMetainfo(outputFile.getAbsolutePath(), pdfResult.getPDFFilename(), pdfResult.getPDFFilename());
+                    listPDFMetaInfo.add(pdfMetainfo);
+                } else {
+                    // no need to save XML outputFile
+                    if (!DEBUG) {
+                        if (!outputFile.getAbsolutePath().equals(fXML.getAbsolutePath())) {
+                            try {
+                                Files.deleteIfExists(outputFile.toPath());
+                            } catch (IOException e) {
+                                e.printStackTrace(System.err);
+                            }
+                        }
+                    }
+                }
+
             } else {
-                outputFiles.put(outputFile.getAbsolutePath(), pdfResult.getPDFFilename());
+                PDFMetainfo pdfMetainfo =
+                        new PDFMetainfo(outputFile.getAbsolutePath(), pdfResult.getPDFFilename(), pdfResult.getPDFFilename());
+                listPDFMetaInfo.add(pdfMetainfo);
             }
-            return outputFiles;
         }
         catch (Exception ex) {
             logger.severe("Can't obtain the presentation part of the XML:");
             logger.severe(ex.getMessage());
             ex.printStackTrace();
-            outputFiles.put(fXML.getAbsolutePath(), outputPDFFilePath);
-            return outputFiles;
+            PDFMetainfo pdfMetainfo =
+                    new PDFMetainfo(fXML.getAbsolutePath(), outputPDFFilePath, "");
+            listPDFMetaInfo.add(pdfMetainfo);
+        }
+        finally {
+            return listPDFMetaInfo;
         }
     }
 
