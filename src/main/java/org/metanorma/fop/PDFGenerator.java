@@ -517,13 +517,19 @@ public class PDFGenerator {
                             DOMSource source = new DOMSource(nodeDocument);
 
                             File outputFilePart = Paths.get(outputFolder, fXML.getName() + "_" + target + "_tmp").toFile();
-                            FileWriter writer = new FileWriter(outputFilePart);
+
+                            StringWriter writer = new StringWriter();
                             StreamResult srPart = new StreamResult(writer);
                             TransformerFactory transformerFactory = TransformerFactory.newInstance();
                             Transformer transformer = transformerFactory.newTransformer();
                             transformer.setOutputProperty(javax.xml.transform.OutputKeys.ENCODING, "UTF-8");
                             try {
                                 transformer.transform(source, srPart);
+                                String xmlPartString = writer.getBuffer().toString();
+
+                                try (OutputStreamWriter outwriter = new OutputStreamWriter(new FileOutputStream(outputFilePart), StandardCharsets.UTF_8)) {
+                                    outwriter.write(xmlPartString);
+                                }
                                 if (DEBUG) {
                                     logger.info("XML saved to " + outputFilePart.getAbsolutePath());
                                 }
