@@ -686,10 +686,13 @@ class fontConfig {
 
                                     //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
                                     //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                    if (embed_url.contains("filenotfound_")) {
-                                        fopFont.setMessage(String.format(WARNING_FONT_NO_FILE, fopFontTriplet.getName(), fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                    } else {
-                                        fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                    // To do: https://github.com/metanorma/mn2pdf/issues/360
+                                    if (SourceXMLDocument.mainFont.equals(fopFontTriplet.getName())) {
+                                        if (embed_url.contains("filenotfound_")) {
+                                            fopFont.setMessage(String.format(WARNING_FONT_NO_FILE, fopFontTriplet.getName(), fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                        } else {
+                                            fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                        }
                                     }
 
                                     /*try{
