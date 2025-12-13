@@ -54,7 +54,9 @@ public class SourceXMLDocument {
 
     static final String TMPDIR = System.getProperty("java.io.tmpdir");
     static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
-    
+
+    public static String mainFont = "";
+
     String documentFilePath;
     
     File fXML;
@@ -231,6 +233,9 @@ public class SourceXMLDocument {
                         }
                     } catch (Exception ex) {
                         //Experimental feature
+                    }
+                    if (!documentFontList.isEmpty()) {
+                        mainFont = documentFontList.get(0);
                     }
                 } catch (XPathExpressionException ex) {
                     logger.info(ex.toString());
