@@ -688,13 +688,13 @@ class fontConfig {
                                     //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
                                     // To do: https://github.com/metanorma/mn2pdf/issues/360
                                     if (embed_url.contains("filenotfound_")) {
-                                        if (SourceXMLDocument.mainFont.equals(fopFontTriplet.getName())) {
-                                            fopFont.setMessage(String.format(WARNING_FONT_NO_FILE, fopFontTriplet.getName(), fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                        }
+                                        fopFont.setMessage(String.format(WARNING_FONT_NO_FILE, fopFontTriplet.getName(), fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
                                     } else {
-                                        fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                        if (SourceXMLDocument.mainFont.equals(fopFontTriplet.getName())) {
+                                            fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                        }
                                     }
-                                    
+
                                     /*try{
                                         font_replacementpath = new File(font_replacementpath).toURI().toURL().toString();
                                     } catch (MalformedURLException ex) {
