@@ -23,6 +23,8 @@ public class PDFPortfolio
 
     private String fieldAuthor = "";
 
+    private String defaultPDFFilename = "";
+
     /**
      * Constructor.
      */
@@ -35,6 +37,10 @@ public class PDFPortfolio
         this.fieldAuthor = fieldAuthor;
     }
 
+    public void setDefaultPDFFilename(String defaultPDFFilename) {
+        this.defaultPDFFilename = defaultPDFFilename;
+    }
+
     /**
      * Create a portable collection PDF with the files.
      *
@@ -45,6 +51,10 @@ public class PDFPortfolio
     public void generate(String outPDF) throws Exception
     {
         byte[] pdfDefaultBytes = Util.getBytesFromResources(getClass().getClassLoader(), "pdfportfolio_default_page.pdf");
+
+        if (!defaultPDFFilename.isEmpty()) {
+            pdfDefaultBytes = Files.readAllBytes(Paths.get(defaultPDFFilename));
+        }
 
         try (PDDocument doc = Loader.loadPDF(pdfDefaultBytes))
         {
