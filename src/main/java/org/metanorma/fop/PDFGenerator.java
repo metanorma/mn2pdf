@@ -417,7 +417,7 @@ public class PDFGenerator {
             if (isPDFPortfolio) {
                 PDFPortfolio pdfPortfolio = new PDFPortfolio(pdfPortfolioItems);
                 pdfPortfolio.setAuthor(portfolioAuthor); // To do
-                pdfPortfolio.setDefaultPDFFilename(getCoverPagePDFPortfolioPath(fXML));
+                pdfPortfolio.setDefaultPDFFilename(fXML, getBasePath());
                 pdfPortfolio.generate(outputPDFFilePath);
                 if (!DEBUG) {
                     pdfPortfolio.flushTempPDF();
@@ -438,6 +438,15 @@ public class PDFGenerator {
         }
         Profiler.removeMethodCall();
         return true;
+    }
+
+    private String getBasePath() {
+        String basepath = sourceDocumentFilePath + File.separator;
+        // redefine basepath
+        if (xsltParams.containsKey("baseassetpath")) {
+            basepath = xsltParams.getProperty("baseassetpath") + File.separator;
+        }
+        return basepath;
     }
 
     private List<PDFMetainfo> getPresentationPartsFromXML(File fXML, PDFResult pdfResult) {
@@ -588,34 +597,7 @@ public class PDFGenerator {
         }
     }
 
-    private String getCoverPagePDFPortfolioPath(File fXML) {
-        String pdfPath = "";
-        if (isPDFPortfolio) {
-            try {
-                String sourceXML = Util.readFile(fXML);
-                InputSource xmlPresentationIS = new InputSource(new StringReader(sourceXML));
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document xmlPresentationDocument = dBuilder.parse(xmlPresentationIS);
-                XPath xPathEntries = XPathFactory.newInstance().newXPath();
-                XPathExpression queryCoverPage = xPathEntries.compile("//*[local-name() = 'metanorma-collection']//*[local-name() = 'directive'][*[local-name() = 'key'] = 'coverpage-pdf-portfolio']//*[local-name() = 'value']");
-                Node nodeEntry = (Node)queryCoverPage.evaluate(xmlPresentationDocument, XPathConstants.NODE);
-                if (nodeEntry != null) {
-                    String value = nodeEntry.getTextContent();
-                    if (value != null) {
-                        Path coverPDFPath = Paths.get(fXML.getParent(), value);
-                        pdfPath = coverPDFPath.toAbsolutePath().toString();
-                    }
-                }
-            }
-            catch (Exception ex) {
-                logger.severe("Can't obtain the PDF portfolio cover page path from the XML:");
-                logger.severe(ex.getMessage());
-                ex.printStackTrace();
-            }
-        }
-        return pdfPath;
-    }
+
     
     /**
      * Converts an XML file to a PDF file using FOP
@@ -648,14 +630,8 @@ public class PDFGenerator {
                 // index.xml was created for bilingual document
                 additionalXSLTparams.setProperty("external_index", fileXmlIF.getAbsolutePath());
             }
-            
-            //String basepath = sourceXMLDocument.getDocumentFilePath() + File.separator;
-            String basepath = sourceDocumentFilePath + File.separator;
-            // redefine basepath
-            if (xsltParams.containsKey("baseassetpath")) {
-                basepath = xsltParams.getProperty("baseassetpath") + File.separator;
-            }
-            additionalXSLTparams.setProperty("basepath", basepath);
+
+            additionalXSLTparams.setProperty("basepath", getBasePath());
 
             File fInputXML = new File(inputXMLFilePath);
             String fInputXMLParent = fInputXML.getAbsoluteFile().getParent() + File.separator;

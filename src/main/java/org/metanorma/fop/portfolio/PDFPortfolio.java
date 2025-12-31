@@ -3,10 +3,12 @@ package org.metanorma.fop.portfolio;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -15,10 +17,25 @@ import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.metanorma.fop.Util;
+import org.metanorma.utils.LoggerHelper;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 
 //https://github.com/apache/pdfbox/blob/2.0/examples/src/main/java/org/apache/pdfbox/examples/pdmodel/CreatePortableCollection.java
 public class PDFPortfolio
 {
+
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
+
     private List<PDFPortfolioItem> pdfPortfolioItems;
 
     private String fieldAuthor = "";
@@ -37,8 +54,30 @@ public class PDFPortfolio
         this.fieldAuthor = fieldAuthor;
     }
 
-    public void setDefaultPDFFilename(String defaultPDFFilename) {
-        this.defaultPDFFilename = defaultPDFFilename;
+    public void setDefaultPDFFilename(File fXML, String basePath) {
+        defaultPDFFilename = "";
+        try {
+            String sourceXML = Util.readFile(fXML);
+            InputSource xmlPresentationIS = new InputSource(new StringReader(sourceXML));
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document xmlPresentationDocument = dBuilder.parse(xmlPresentationIS);
+            XPath xPathEntries = XPathFactory.newInstance().newXPath();
+            XPathExpression queryCoverPage = xPathEntries.compile("//*[local-name() = 'metanorma-collection']//*[local-name() = 'directive'][*[local-name() = 'key'] = 'coverpage-pdf-portfolio']//*[local-name() = 'value']");
+            Node nodeEntry = (Node)queryCoverPage.evaluate(xmlPresentationDocument, XPathConstants.NODE);
+            if (nodeEntry != null) {
+                String value = nodeEntry.getTextContent();
+                if (value != null) {
+                    Path coverPDFPath = Paths.get(basePath, value);
+                    defaultPDFFilename = coverPDFPath.toAbsolutePath().toString();
+                }
+            }
+        }
+        catch (Exception ex) {
+            logger.severe("Can't obtain the PDF portfolio cover page path from the XML:");
+            logger.severe(ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     /**
