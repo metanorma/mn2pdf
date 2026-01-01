@@ -417,7 +417,7 @@ public class PDFGenerator {
             if (isPDFPortfolio) {
                 PDFPortfolio pdfPortfolio = new PDFPortfolio(pdfPortfolioItems);
                 pdfPortfolio.setAuthor(portfolioAuthor); // To do
-                pdfPortfolio.setDefaultPDFFilename(fXML, getBasePath());
+                pdfPortfolio.setDefaultPDFFilename(fXML);
                 pdfPortfolio.generate(outputPDFFilePath);
                 if (!DEBUG) {
                     pdfPortfolio.flushTempPDF();

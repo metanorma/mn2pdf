@@ -54,7 +54,7 @@ public class PDFPortfolio
         this.fieldAuthor = fieldAuthor;
     }
 
-    public void setDefaultPDFFilename(File fXML, String basePath) {
+    public void setDefaultPDFFilename(File fXML) {
         defaultPDFFilename = "";
         try {
             String sourceXML = Util.readFile(fXML);
@@ -68,8 +68,9 @@ public class PDFPortfolio
             if (nodeEntry != null) {
                 String value = nodeEntry.getTextContent();
                 if (value != null) {
-                    Path coverPDFPath = Paths.get(basePath, value);
-                    defaultPDFFilename = coverPDFPath.toAbsolutePath().toString();
+                    /* Path coverPDFPath = Paths.get(basePath, value);
+                    defaultPDFFilename = coverPDFPath.toAbsolutePath().toString();*/
+                    defaultPDFFilename = value;
                 }
             }
         }
