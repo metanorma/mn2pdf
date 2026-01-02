@@ -7,7 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
+import java.security.KeyStore;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -55,6 +57,7 @@ import org.metanorma.fop.ifhandler.FOPXMLPresentationHandler;
 import org.metanorma.fop.portfolio.PDFMetainfo;
 import org.metanorma.fop.portfolio.PDFPortfolio;
 import org.metanorma.fop.portfolio.PDFPortfolioItem;
+import org.metanorma.fop.signature.PDFSign;
 import org.metanorma.fop.tags.TableCaption;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
@@ -88,6 +91,10 @@ public class PDFGenerator {
     private String inputXSLoverrideFilePath;
 
     private boolean isPDFPortfolio = false;
+
+    private KeyStore keystore;
+    private String keystoreFilename;
+    private String keystorePassword;
 
     final private String outputPDFFilePath;
     
@@ -139,6 +146,14 @@ public class PDFGenerator {
 
     public void setPDFPortfolio(boolean PDFPortfolio) {
         isPDFPortfolio = PDFPortfolio;
+    }
+
+    public void setKeystore(String keystoreFilename) {
+        this.keystoreFilename = keystoreFilename;
+    }
+
+    public void setKeystorePassword(String keystorePassword) {
+        this.keystorePassword = keystorePassword;
     }
 
     public void setFontsPath(String fontsPath) {
@@ -279,7 +294,22 @@ public class PDFGenerator {
                 }
                 readEncryptionParameters(fEncryptionParameters);
             }
-            
+
+            if (keystoreFilename != null && !keystoreFilename.isEmpty()) {
+                File fKeystore = new File(keystoreFilename);
+                if (!fKeystore.exists()) {
+                    logger.severe(String.format(INPUT_NOT_FOUND, "Keystore file", fKeystore));
+                    return false;
+                }
+                // load the keystore
+                keystore = KeyStore.getInstance("PKCS12");
+                char[] password = keystorePassword.toCharArray();
+                try (InputStream is = new FileInputStream(keystoreFilename))
+                {
+                    keystore.load(is, password);
+                }
+            }
+
             File fPDF = new File(outputPDFFilePath);
             
             if (!fontsManifest.isEmpty() && fontsPath.isEmpty()) {
@@ -421,6 +451,15 @@ public class PDFGenerator {
                 pdfPortfolio.generate(outputPDFFilePath);
                 if (!DEBUG) {
                     pdfPortfolio.flushTempPDF();
+                }
+                if (keystoreFilename != null && !keystoreFilename.isEmpty()) {
+                    // sign PDF
+                    char[] password = keystorePassword.toCharArray();
+                    PDFSign signing = new PDFSign(keystore, password);
+                    File inFile = new File(outputPDFFilePath);
+                    File outFile = new File(outputPDFFilePath + ".signed.pdf");
+                    signing.signDetached(inFile, outFile);
+                    Files.move(outFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
             }
 
