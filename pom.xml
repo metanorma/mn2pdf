@@ -17,6 +17,7 @@
 		<exec.mainClass>org.metanorma.fop.mn2pdf</exec.mainClass>
 		<junit.version>5.4.2</junit.version>
 		<highlightis.version>11.4.0</highlightis.version>
+		<bouncycastle.version>1.83</bouncycastle.version>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -310,6 +311,16 @@
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
 			<version>2.19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<version>${bouncycastle.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk18on</artifactId>
+			<version>${bouncycastle.version}</version>
 		</dependency>
 	</dependencies>
 </project>
