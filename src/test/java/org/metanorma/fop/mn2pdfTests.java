@@ -186,9 +186,10 @@ public class mn2pdfTests {
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
         String xml = classLoader.getResource("collection.presentation.xml").getFile();
         String xsl = classLoader.getResource("iec.international-standard.xsl").getFile();
+        String keystore = classLoader.getResource("keystore.p12").getFile();
         Path pdf = Paths.get(System.getProperty("buildDirectory"), "collection.portfolio.pdf");
 
-        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--pdf-portfolio", "\"true\""};
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--pdf-portfolio", "\"true\"", "--keystore", keystore, "--keystore-password", "123456"};
         mn2pdf.main(args);
 
         assertTrue(Files.exists(pdf));

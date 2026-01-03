@@ -29,7 +29,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-
 //https://github.com/apache/pdfbox/blob/2.0/examples/src/main/java/org/apache/pdfbox/examples/pdmodel/CreatePortableCollection.java
 public class PDFPortfolio
 {

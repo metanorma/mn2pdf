@@ -81,6 +81,20 @@ public class mn2pdf {
                     .type(Boolean.class)
                     .required(false)
                     .build());
+            addOption(Option.builder("ks")
+                    .longOpt("keystore")
+                    .desc("PKCS12 keystore")
+                    .hasArg()
+                    .argName("file")
+                    .required(false)
+                    .build());
+            addOption(Option.builder("ks_pass")
+                    .longOpt("keystore-password")
+                    .desc("PKCS12 keystore password")
+                    .hasArg()
+                    .argName("string")
+                    .required(false)
+                    .build());
             addOption(Option.builder("o")
                 .longOpt("pdf-file")
                 .desc("path to output PDF file")
@@ -282,6 +296,15 @@ public class mn2pdf {
 
                 if (cmd.hasOption("pdf-portfolio")) {
                     pdfGenerator.setPDFPortfolio(Boolean.valueOf(cmd.getOptionValue("pdf-portfolio")));
+                }
+
+                if (cmd.hasOption("keystore")) {
+                    pdfGenerator.setKeystore(cmd.getOptionValue("keystore"));
+                    if (!cmd.hasOption("keystore-password")) {
+                        logger.info(USAGE);
+                        System.exit(ERROR_EXIT_CODE);
+                    }
+                    pdfGenerator.setKeystorePassword(cmd.getOptionValue("keystore-password"));
                 }
 
                 if (cmd.hasOption("font-path")) {

@@ -65,6 +65,14 @@ allow-assemble-document: false
 encrypt-metadata: true
 ----
 
+=== Certify the PDF feature
+
+|===
+|parameter | description
+
+|--keystore <file name> | keystore file with certificate
+|--keystore-password <string> | keystore password
+|===
 
 
 == Building the package
