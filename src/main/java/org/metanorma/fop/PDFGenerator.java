@@ -452,17 +452,19 @@ public class PDFGenerator {
                 if (!DEBUG) {
                     pdfPortfolio.flushTempPDF();
                 }
-                if (keystoreFilename != null && !keystoreFilename.isEmpty()) {
-                    // sign PDF
-                    char[] password = keystorePassword.toCharArray();
-                    PDFSign signing = new PDFSign(keystore, password);
-                    File inFile = new File(outputPDFFilePath);
-                    File outFile = new File(outputPDFFilePath + ".signed.pdf");
-                    signing.signDetached(inFile, outFile);
-                    Files.move(outFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
+
             }
 
+            if (keystoreFilename != null && !keystoreFilename.isEmpty()) {
+                // sign PDF
+                char[] password = keystorePassword.toCharArray();
+                PDFSign signing = new PDFSign(keystore, password);
+                File inFile = new File(outputPDFFilePath);
+                File outFile = new File(outputPDFFilePath + ".signed.pdf");
+                signing.signDetached(inFile, outFile);
+                Files.move(outFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            
             // flush temporary folder
             if (!DEBUG) {
                 sourceXMLDocument.flushTempPath();
