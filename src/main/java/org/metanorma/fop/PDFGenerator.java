@@ -295,21 +295,6 @@ public class PDFGenerator {
                 readEncryptionParameters(fEncryptionParameters);
             }
 
-            if (keystoreFilename != null && !keystoreFilename.isEmpty()) {
-                File fKeystore = new File(keystoreFilename);
-                if (!fKeystore.exists()) {
-                    logger.severe(String.format(INPUT_NOT_FOUND, "Keystore file", fKeystore));
-                    return false;
-                }
-                // load the keystore
-                keystore = KeyStore.getInstance("PKCS12");
-                char[] password = keystorePassword.toCharArray();
-                try (InputStream is = new FileInputStream(keystoreFilename))
-                {
-                    keystore.load(is, password);
-                }
-            }
-
             File fPDF = new File(outputPDFFilePath);
             
             if (!fontsManifest.isEmpty() && fontsPath.isEmpty()) {
@@ -338,6 +323,24 @@ public class PDFGenerator {
             sourceDocumentFilePath = fXML.getParent();
             if (sourceDocumentFilePath == null) {
                 sourceDocumentFilePath = System.getProperty("user.dir");
+            }
+
+            if (keystoreFilename != null && !keystoreFilename.isEmpty()) {
+                File fKeystore = new File(keystoreFilename);
+                if (!fKeystore.toPath().isAbsolute()) { // if keystore path is relative
+                    fKeystore = Paths.get(getBasePath(), keystoreFilename).toAbsolutePath().toFile();
+                }
+                if (!fKeystore.exists()) {
+                    logger.severe(String.format(INPUT_NOT_FOUND, "Keystore file", fKeystore));
+                    return false;
+                }
+                // load the keystore
+                keystore = KeyStore.getInstance("PKCS12");
+                char[] password = keystorePassword.toCharArray();
+                try (InputStream is = new FileInputStream(fKeystore.getAbsolutePath()))
+                {
+                    keystore.load(is, password);
+                }
             }
 
             List<PDFPortfolioItem> pdfPortfolioItems = new ArrayList<>();
