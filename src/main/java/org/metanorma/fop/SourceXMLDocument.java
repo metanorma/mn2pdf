@@ -49,6 +49,7 @@ public class SourceXMLDocument {
     private boolean hasAnnotations = false;
     private boolean hasFileAttachmentAnnotations = false;
     private boolean hasTables = false;
+    private boolean hasForms = false;
     private Map<String, Integer> tablesCellsCountMap = new HashMap<>();
     private boolean hasMath = false;
 
@@ -108,6 +109,8 @@ public class SourceXMLDocument {
         //hasTables = element_table.length() != 0;
         obtainTablesCellsCount();
         hasTables = !tablesCellsCountMap.isEmpty();
+        String element_form = readValue("//*[local-name() = 'form'][1]");
+        hasForms = element_form.length() != 0;
     }
 
     private void obtainTablesCellsCount() {
@@ -504,6 +507,11 @@ public class SourceXMLDocument {
     // find tag 'table' or 'dl'
     public boolean hasTables() {
         return hasTables;
+    }
+
+    // find tag 'form'
+    public boolean hasForms() {
+        return hasForms;
     }
 
     public boolean hasMath() {
