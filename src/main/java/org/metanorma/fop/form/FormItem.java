@@ -6,10 +6,13 @@ public class FormItem {
 
     PDRectangle rect ;// = new PDRectangle(50, 750, 200, 50);
 
+    int page;
+
     FormItemType formItemType;
 
-    public FormItem(PDRectangle rect) {
+    public FormItem(PDRectangle rect, int page) {
         this.rect = rect;
+        this.page = page;
     }
 
     public PDRectangle getRect() {
@@ -18,6 +21,10 @@ public class FormItem {
 
     public FormItemType getFormItemType() {
         return formItemType;
+    }
+
+    public int getPage() {
+        return page;
     }
 
     public void setFormItemType(String formItemType) {

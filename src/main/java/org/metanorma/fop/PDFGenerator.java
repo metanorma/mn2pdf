@@ -51,6 +51,7 @@ import org.metanorma.fop.annotations.FileAttachmentAnnotation;
 import org.metanorma.fop.eventlistener.LoggingEventListener;
 import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
 import org.metanorma.fop.form.FormItem;
+import org.metanorma.fop.form.PDFForm;
 import org.metanorma.fop.ifhandler.*;
 import org.metanorma.fop.portfolio.PDFMetainfo;
 import org.metanorma.fop.portfolio.PDFPortfolio;
@@ -109,6 +110,8 @@ public class PDFGenerator {
     private boolean isAddCommentaryPageNumbers = false;
 
     private boolean isAddForms = false;
+
+    private List<FormItem> formsItems = new ArrayList<>();
     
     private boolean isAddMathAsAttachment = false;
 
@@ -833,7 +836,7 @@ public class PDFGenerator {
                     //String xmlIFForm = applyXSLT("forms_if.xsl", xmlIF, true);
 
                     xmlIF = fopIFFormsHandler.getResultedXML();
-                    List<FormItem> formItems =  fopIFFormsHandler.getFormsItems();
+                    formsItems =  fopIFFormsHandler.getFormsItems();
 
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.forms.xml");
                 }
@@ -990,6 +993,17 @@ public class PDFGenerator {
                 annotations.process(pdf);
             } catch (Exception ex) {
                 logger.severe("Can't process file attachment annotation (" + ex.toString() + ").");
+                ex.printStackTrace();
+            }
+        }
+
+        if (isAddForms && !formsItems.isEmpty()) {
+            logger.log(Level.INFO, "[INFO] Forms processing...");
+            try {
+                PDFForm forms = new PDFForm();
+                forms.process(pdf, formsItems);
+            } catch (Exception ex) {
+                logger.severe("Can't process forms (" + ex.toString() + ").");
                 ex.printStackTrace();
             }
         }

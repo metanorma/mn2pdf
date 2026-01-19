@@ -29,6 +29,8 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
     Stack<Viewport> stackViewports = new Stack<>();
 
+    private int page;
+
     FormItem currFormItem;
     List<FormItem> formItems = new ArrayList<>();
 
@@ -82,7 +84,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
             pdRectangle.setLowerLeftY(border_y1);
             pdRectangle.setUpperRightX(border_x2);
             pdRectangle.setUpperRightY(border_y2);
-            currFormItem = new FormItem(new PDRectangle());
+            currFormItem = new FormItem(new PDRectangle(), page);
             skipElements.push(true);
             return;
         }
@@ -115,6 +117,8 @@ public class FOPIFFormsHandler extends DefaultHandler {
         skipElements.push(false);
 
         switch (qName) {
+            case "page":
+                page++;
             case "viewport":
             case "g":
 
@@ -271,7 +275,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
             stackChar.push(Character.MIN_VALUE);
         }
     }
-    
+
     public String getResultedXML() {
         if (listResult.size() == 0) {
             return "";
