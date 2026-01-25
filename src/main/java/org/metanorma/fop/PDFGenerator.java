@@ -495,6 +495,11 @@ public class PDFGenerator {
         return basepath;
     }
 
+    private String getCurrentPath() {
+        String currentWorkingDir = System.getProperty("user.dir") + File.separator;
+        return currentWorkingDir;
+    }
+
     private List<PDFMetainfo> getPresentationPartsFromXML(File fXML, PDFResult pdfResult) {
         List<PDFMetainfo> listPDFMetaInfo = new ArrayList<>();
         try {
@@ -678,6 +683,7 @@ public class PDFGenerator {
             }
 
             additionalXSLTparams.setProperty("basepath", getBasePath());
+            additionalXSLTparams.setProperty("mn2pdfpath", getCurrentPath());
 
             File fInputXML = new File(inputXMLFilePath);
             String fInputXMLParent = fInputXML.getAbsoluteFile().getParent() + File.separator;
