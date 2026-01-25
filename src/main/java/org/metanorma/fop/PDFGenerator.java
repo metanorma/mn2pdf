@@ -720,7 +720,7 @@ public class PDFGenerator {
 
             debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
             
-            fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
+            fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts(fontcfg));
 
             fontcfg.setComplexScriptFeatures(isComplexScriptsFeatures);
 
@@ -1520,7 +1520,7 @@ public class PDFGenerator {
 
                     fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
 
-                    fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                    fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts(fontcfg));
 
                     Source sourceFO = new StreamSource(new StringReader(xmlFO));
 
@@ -1573,7 +1573,7 @@ public class PDFGenerator {
 
                         fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".portion_" + portion + ".tables.fontmanifest.log.txt"));
 
-                        fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                        fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts(fontcfg));
 
                         Source sourceFO = new StreamSource(new StringReader(xmlFO));
 

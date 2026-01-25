@@ -601,7 +601,10 @@ class fontConfig {
         return fonts;
     }
     
-    
+    public boolean hasFontFamily(String fontfamily) {
+        return getUsedFonts().stream()
+                .filter(fopFont -> fopFont.getFont_triplet().get(0).getName().equals(fontfamily)).count() > 0;
+    }
     
     // set file paths for fonts
     private void setFontsPaths() throws IOException, URISyntaxException {
