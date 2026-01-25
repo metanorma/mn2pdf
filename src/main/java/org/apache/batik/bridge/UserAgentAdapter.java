@@ -33,6 +33,7 @@ import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.apache.xmlgraphics.util.UnitConv;
+import org.metanorma.fop.SourceXMLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -145,7 +146,14 @@ public class UserAgentAdapter implements UserAgent {
      * Returns the default font family.
      */
     public String getDefaultFontFamily() {
-        return "Arial, Helvetica, sans-serif";
+        //return "Arial, Helvetica, sans-serif";
+        // see https://github.com/metanorma/mn2pdf/issues/362
+        String mainFont = SourceXMLDocument.mainFont;
+        if (!mainFont.isEmpty()) {
+            mainFont = mainFont + ", ";
+        }
+        //return  + ", Arial, Helvetica, sans-serif";
+        return mainFont + "Arial, Helvetica, sans-serif";
     }
 
     /** 
