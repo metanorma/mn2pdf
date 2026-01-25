@@ -25,6 +25,8 @@ import javax.xml.xpath.XPathFactory;
 
 import static org.metanorma.fop.Util.getStreamFromResources;
 
+import org.apache.fop.fonts.FontConfig;
+import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -156,11 +158,15 @@ public class SourceXMLDocument {
     public void setXMLFO(String xmlFO) {
         this.xmlFO = xmlFO;
     }
-    
+
     public List<String> getDocumentFonts() {
+        return getDocumentFonts(null);
+    }
+
+    public List<String> getDocumentFonts(fontConfig fontcfg) {
 
         List<String> documentFontList = new ArrayList<>();
-        
+
         if(!xmlFO.isEmpty()) {
             try {
                 InputSource is = new InputSource(new StringReader(xmlFO));
@@ -214,7 +220,7 @@ public class SourceXMLDocument {
                         String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
                         boolean foundFontFamily = true;
                         while (foundFontFamily) {
-                            int fontFamilyStart = textCSS.indexOf("{font-family:");
+                            int fontFamilyStart = textCSS.indexOf("font-family:");
                             foundFontFamily = fontFamilyStart != -1;
                             if (foundFontFamily) {
                                 textCSS = textCSS.substring(fontFamilyStart);
@@ -224,8 +230,12 @@ public class SourceXMLDocument {
                                     for (String fname : attrText.split(",")) {
                                         fname = fname.trim().replace("'", "")
                                                 .replace("\"", "");
+
                                         if (!documentFontList.contains(fname)) {
-                                            documentFontList.add(fname);
+                                            if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
+                                                documentFontList.add(fname);
+                                                break;
+                                            }
                                         }
                                     }
                                 }
