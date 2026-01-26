@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -58,6 +59,8 @@ public class SourceXMLDocument {
     static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
 
     public static String mainFont = "";
+
+    public static List<String> mainAdditionalFonts = new ArrayList<>();
 
     String documentFilePath;
     
@@ -190,7 +193,13 @@ public class SourceXMLDocument {
                                 if (!documentFontList.contains(fname)) {
                                     documentFontList.add(fname);
                                 }
-                            }                    
+                            }
+                            if (attr.getOwnerElement().getNodeName().equals("fo:root")) {
+                                // Get all fo:root fonts except the first one
+                                mainAdditionalFonts = documentFontList.stream()
+                                        .skip(1)
+                                        .collect(Collectors.toList());
+                            }
                         } catch (Exception ex) {}
                     }
 
