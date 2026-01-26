@@ -733,6 +733,7 @@ public class Util {
     public static String getURIFromPath(String filepath) {
         String result = filepath;
         try {
+            filepath = filepath.replace('\\', '/');
             URI uri = new URI(null, null, filepath, null);
             result = uri.toString();
         } catch (URISyntaxException e) {
