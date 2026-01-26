@@ -215,7 +215,9 @@ public class FontInfo {
         if (fontTriplet != null) {
             if (fontTriplet != startKey) {
                 // To do: https://github.com/metanorma/mn2pdf/issues/360
-                if (SourceXMLDocument.mainFont.equals(startKey.getName()) || Constants.DEBUG) {
+                if (SourceXMLDocument.mainFont.equals(startKey.getName()) ||
+                        Constants.DEBUG ||
+                        !(SourceXMLDocument.mainAdditionalFonts.contains(startKey.getName()))) {
                     notifyFontReplacement(startKey, fontTriplet);
                 }
             }
