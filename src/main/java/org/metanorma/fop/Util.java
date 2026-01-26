@@ -6,11 +6,7 @@ import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
@@ -733,7 +729,18 @@ public class Util {
 
         return filepathComponents[filepathComponents.length - 1];*/
     }
-   
+
+    public static String getURIFromPath(String filepath) {
+        String result = filepath;
+        try {
+            URI uri = new URI(null, null, filepath, null);
+            result = uri.toString();
+        } catch (URISyntaxException e) {
+            logger.severe("File to URL parsing error: " + e.toString());
+        }
+        return result;
+
+    }
     private static String nodeToString(Node node) {
         StringWriter sw = new StringWriter();
         try {

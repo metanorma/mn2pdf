@@ -155,4 +155,11 @@ public class utilTests {
         assertTrue(Util.getFilenameFromPath(file3).equals("program.c"));
     }
 
+    @Test
+    public void testURIFromPath() throws IOException {
+        System.out.println(name.getMethodName());
+        String file1 = "img-art/Image_in_50%_gray.svg";
+        assertTrue(Util.getURIFromPath(file1).equals("img-art/Image_in_50%25_gray.svg"));
+    }
+
 }
