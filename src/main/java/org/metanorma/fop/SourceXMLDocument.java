@@ -224,35 +224,41 @@ public class SourceXMLDocument {
                         } catch (Exception ex) {}
                     }
 
-                    try {
-                        // [@type = 'text/css'] removed for https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3803816045
-                        query = xPath.compile("//*/*[local-name() = 'style'][contains(., 'font-family')]/text()");
-                        String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
-                        boolean foundFontFamily = true;
-                        while (foundFontFamily) {
-                            int fontFamilyStart = textCSS.indexOf("font-family:");
-                            foundFontFamily = fontFamilyStart != -1;
-                            if (foundFontFamily) {
-                                textCSS = textCSS.substring(fontFamilyStart);
-                                textCSS = textCSS.substring(textCSS.indexOf(":") + 1);
-                                if (textCSS.indexOf(";") != -1) {
-                                    String attrText = textCSS.substring(0, textCSS.indexOf(";"));
-                                    for (String fname : attrText.split(",")) {
-                                        fname = fname.trim().replace("'", "")
-                                                .replace("\"", "");
+                    // [@type = 'text/css'] removed for https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3803816045
+                    query = xPath.compile("//*/*[local-name() = 'style'][contains(., 'font-family')]/text()");
+                    // String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
+                    nList = (NodeList)query.evaluate(srcXML, XPathConstants.NODESET);
+                    for (int i = 0; i < nList.getLength(); i++) {
+                        try {
 
-                                        if (!documentFontList.contains(fname)) {
-                                            if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
-                                                documentFontList.add(fname);
-                                                break;
+                            String textCSS = nList.item(i).getTextContent();
+
+                            boolean foundFontFamily = true;
+                            while (foundFontFamily) {
+                                int fontFamilyStart = textCSS.indexOf("font-family:");
+                                foundFontFamily = fontFamilyStart != -1;
+                                if (foundFontFamily) {
+                                    textCSS = textCSS.substring(fontFamilyStart);
+                                    textCSS = textCSS.substring(textCSS.indexOf(":") + 1);
+                                    if (textCSS.indexOf(";") != -1) {
+                                        String attrText = textCSS.substring(0, textCSS.indexOf(";"));
+                                        for (String fname : attrText.split(",")) {
+                                            fname = fname.trim().replace("'", "")
+                                                    .replace("\"", "");
+
+                                            if (!documentFontList.contains(fname)) {
+                                                if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
+                                                    documentFontList.add(fname);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+                        } catch (Exception ex) {
+                            //Experimental feature
                         }
-                    } catch (Exception ex) {
-                        //Experimental feature
                     }
                     if (!documentFontList.isEmpty()) {
                         mainFont = documentFontList.get(0);
