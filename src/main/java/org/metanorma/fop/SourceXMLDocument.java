@@ -225,7 +225,8 @@ public class SourceXMLDocument {
                     }
 
                     try {
-                        query = xPath.compile("//*/*[local-name() = 'style'][@type = 'text/css'][contains(., 'font-family')]/text()");
+                        // [@type = 'text/css'] removed for https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3803816045
+                        query = xPath.compile("//*/*[local-name() = 'style'][contains(., 'font-family')]/text()");
                         String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
                         boolean foundFontFamily = true;
                         while (foundFontFamily) {
