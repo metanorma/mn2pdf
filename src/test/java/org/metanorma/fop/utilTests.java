@@ -100,10 +100,17 @@ public class utilTests {
         System.out.println(name.getMethodName());
         String cssString = "sourcecode .c, sourcecode .ch {\n" +
                 "  color: #FF0000;\n" +
-                "}";
+                "}\n" +
+                "#toc li a, #toc > ul :is(h1, h2, h3, h4, h5, h6) li a {\n" +
+                "  text-transform: none;\n" +
+                "}\n" +
+                ".clauses::after     { content: \"chapters\"; }";
         Node xmlNode = Util.parseCSS(cssString);
         String xmlStr = nodeToString(xmlNode);
-        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class><class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class></css>", xmlStr);
+        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class>" +
+                "<class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class>" +
+                "<class name=\"clauses::after\"><property name=\"content\" value=\"chapters\"/></class>" +
+                "</css>", xmlStr);
     }
 
     private static String nodeToString(Node node) {
