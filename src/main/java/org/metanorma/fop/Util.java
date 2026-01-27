@@ -675,6 +675,7 @@ public class Util {
                     for (int j = 0; j < styleDeclaration.getLength(); j++) {
                         String property = styleDeclaration.item(j);
                         String value = styleDeclaration.getPropertyCSSValue(property).getCssText();
+                        value = value.replace("\"", "");
                         //System.out.println("property: " + property);
                         //System.out.println("value: " + value);
                         properties.append("<property name=\"");
@@ -708,6 +709,12 @@ public class Util {
             sbCSSxml.setLength(0);
             sbCSSxml.append("<css></css>");
         }
+        Node node = getCSSRulesXMLNode(sbCSSxml);
+
+        return node;
+    }
+
+    private static Node getCSSRulesXMLNode(StringBuilder sbCSSxml) {
         Node node = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -716,6 +723,10 @@ public class Util {
             node = parsed.getDocumentElement();
         } catch (IOException | ParserConfigurationException | SAXException e) {
             logger.severe("CSS parsing error: " + e.toString());
+            logger.severe("CSS string: " + sbCSSxml.toString());
+            sbCSSxml.setLength(0);
+            sbCSSxml.append("<css></css>");
+            node = getCSSRulesXMLNode(sbCSSxml);
         }
         return node;
     }
