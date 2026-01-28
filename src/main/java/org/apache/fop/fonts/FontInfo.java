@@ -75,7 +75,7 @@ public class FontInfo {
     // https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3809689570
     private static List<String> replacedFonts = new ArrayList<>();
 
-    private static int currentPage;
+    //private static int currentPage;
 
 
     /**
@@ -462,13 +462,15 @@ public class FontInfo {
             this.eventListener.fontSubstituted(this, replacedKey, newKey);
         } else {
             // https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3809689570
-            String msg = "Font \"" + replacedKey + "\" not found. Substituting with \"" + newKey+ "\".";
+            int currentPage =  EventProducingFilter.getCurrentPage();
+            String msg = "Page #" + currentPage + ": " + "Font \"" + replacedKey + "\" not found. Substituting with \"" + newKey+ "\".";
             if (!replacedFonts.contains(msg)) {
-                int pageEventProducingFilter = EventProducingFilter.getCurrentPage();
+                /*int pageEventProducingFilter = EventProducingFilter.getCurrentPage();
                 if (currentPage != pageEventProducingFilter) {
                     currentPage = pageEventProducingFilter;
                     logger.severe("Page #" + currentPage);
                 }
+                currentPage = pageEventProducingFilter;*/
                 logger.severe(msg);
                 replacedFonts.add(msg);
             }
