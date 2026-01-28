@@ -33,6 +33,8 @@ public class EventProducingFilter extends IFDocumentHandlerProxy {
 
     private FOUserAgent userAgent;
 
+    private static int currentPage;
+
     /**
      * Constructor
      * @param ifDocumentHandler the IFDocumentHandler to filter
@@ -47,8 +49,13 @@ public class EventProducingFilter extends IFDocumentHandlerProxy {
     public void endPage() throws IFException {
         super.endPage();
         pageNumberEnded++;
+        currentPage = pageNumberEnded;
         RendererEventProducer.Provider.get(userAgent.getEventBroadcaster())
                 .endPage(this, pageNumberEnded);
+    }
+
+    public static int getCurrentPage() {
+        return currentPage;
     }
 
 }
