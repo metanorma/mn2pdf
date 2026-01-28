@@ -26,11 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.fop.render.intermediate.EventProducingFilter;
 import org.metanorma.Constants;
 import org.metanorma.fop.SourceXMLDocument;
+import org.metanorma.utils.LoggerHelper;
 
 
 /**
@@ -46,6 +49,8 @@ public class FontInfo {
 
     /** logging instance */
     protected static final Log log = LogFactory.getLog(FontInfo.class);
+
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
     /** Map containing fonts that have been used */
     private Map<String, Typeface> usedFonts; //(String = font key)
@@ -65,6 +70,13 @@ public class FontInfo {
 
     /** Event listener for font events */
     private FontEventListener eventListener;
+
+    // for notifyFontReplacement in FontInfo
+    // https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3809689570
+    private static List<String> replacedFonts = new ArrayList<>();
+
+    private static int currentPage;
+
 
     /**
      * Main constructor
@@ -448,6 +460,18 @@ public class FontInfo {
     private void notifyFontReplacement(FontTriplet replacedKey, FontTriplet newKey) {
         if (this.eventListener != null) {
             this.eventListener.fontSubstituted(this, replacedKey, newKey);
+        } else {
+            // https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3809689570
+            String msg = "Font \"" + replacedKey + "\" not found. Substituting with \"" + newKey+ "\".";
+            if (!replacedFonts.contains(msg)) {
+                int pageEventProducingFilter = EventProducingFilter.getCurrentPage();
+                if (currentPage != pageEventProducingFilter) {
+                    currentPage = pageEventProducingFilter;
+                    logger.severe("Page #" + currentPage);
+                }
+                logger.severe(msg);
+                replacedFonts.add(msg);
+            }
         }
     }
 
