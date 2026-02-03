@@ -458,9 +458,10 @@ public class FontInfo {
     }
 
     private void notifyFontReplacement(FontTriplet replacedKey, FontTriplet newKey) {
-        if (this.eventListener != null) {
+        // commented due https://github.com/metanorma/mn2pdf/issues/392#issuecomment-3840144806
+        /*if (this.eventListener != null) {
             this.eventListener.fontSubstituted(this, replacedKey, newKey);
-        } else {
+        } else {*/
             // https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3809689570
             int currentPage =  EventProducingFilter.getCurrentPage() + 1;
             String msg = "Page #" + currentPage + ": " + "Font \"" + replacedKey + "\" not found. Substituting with \"" + newKey+ "\".";
@@ -474,7 +475,7 @@ public class FontInfo {
                 logger.severe(msg);
                 replacedFonts.add(msg);
             }
-        }
+        //}
     }
 
     /**
