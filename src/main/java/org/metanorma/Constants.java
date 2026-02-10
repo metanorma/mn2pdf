@@ -18,6 +18,7 @@ public final class Constants {
     public static final String PDF_A_MODE = "PDF/A-3a";
     public static final String PDF_UA_MODE = "PDF/UA-1";
     public static final String REPORT_ISSUE = " Please report this issue at the following link: https://github.com/metanorma/mn2pdf/issues/new";
+    public static final String REPORT_ISSUE_XSLT = " Please report this issue at the following link: https://github.com/metanorma/mn-native-pdf/issues/new";
     public static final int ERROR_EXIT_CODE = -1;
     public static boolean DEBUG;
 }

@@ -99,7 +99,8 @@ public class PDFGenerator {
     private String keystorePassword;
 
     final private String outputPDFFilePath;
-    
+
+    static private String xslFOfilename;
     //private boolean isDebugMode = false;
     
     private boolean isSkipPDFGeneration = false;
@@ -718,7 +719,8 @@ public class PDFGenerator {
             String add_commentary_page_numbers = Util.readValueFromXMLString(xmlFO, "//*[@id = '_independent_page_number_commentary']/@id");
             isAddCommentaryPageNumbers = !add_commentary_page_numbers.isEmpty();
 
-            debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
+            xslFOfilename = pdf.getAbsolutePath() + ".fo.xml";
+            debugSaveXML(xmlFO, xslFOfilename, true);
             
             fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts(fontcfg));
 
@@ -1635,8 +1637,11 @@ public class PDFGenerator {
     }
     
     private void debugSaveXML(String xmlString, String pathTo) {
+        debugSaveXML(xmlString, pathTo, false);
+    }
+    private void debugSaveXML(String xmlString, String pathTo, boolean saveAlways) {
         try {
-            if (DEBUG) {
+            if (DEBUG || saveAlways) {
 
                 //DEBUG: write table width information to file                
                 String xmlString_UTF8 = xmlString.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -1709,4 +1714,7 @@ public class PDFGenerator {
         return sbTablesIF.toString();
     }
 
+    public static String getXSLFOfilename() {
+        return xslFOfilename;
+    }
 }
