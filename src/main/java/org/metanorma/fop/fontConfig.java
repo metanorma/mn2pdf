@@ -71,9 +71,9 @@ class fontConfig {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
-    static final String WARNING_FONT = "WARNING: Font file '%s' (font name '%s', font style '%s', font weight '%s/%s') doesn't exist. Replaced by '%s' (%s).";
+    static final String WARNING_FONT = "WARNING: Font file '%s' (font family '%s', style '%s', weight '%s/%s') doesn't exist. Replaced by '%s' (%s).";
     static final String WARNING_FONT_NO_FILE =
-            "WARNING: Font '%s,%s,%s' (font name '%s', font style '%s', font weight '%s/%s') doesn't exist. Replaced by '%s' (%s).";
+            "WARNING: Font '%s,%s,%s' (font family '%s', style '%s', weight '%s/%s') doesn't exist. Replaced by '%s' (%s).";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     
