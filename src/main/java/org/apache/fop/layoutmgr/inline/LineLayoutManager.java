@@ -409,13 +409,15 @@ public class LineLayoutManager extends InlineStackingLayoutManager
                 if (elementId != null && elementId.startsWith("__internal_layout__")) {
                     // skip event
                 } else if (curChildLM.getFObj() == null) {
-                    int currentPage =  EventProducingFilter.getCurrentPage() + 1;
-                    logger.severe("Page #" + currentPage + ":");
+                    // https://github.com/metanorma/mn2pdf/issues/385#issuecomment-3887124667
+                    // int currentPage =  EventProducingFilter.getCurrentPage() + 1;
+                    // logger.severe("Page #" + currentPage + ":");
                     eventProducer.lineOverflows(this, getFObj().getName(), bestActiveNode.line,
                             -lack, getFObj().getLocator());
                 } else {
-                    int currentPage =  EventProducingFilter.getCurrentPage() + 1;
-                    logger.severe("Page #" + currentPage + ":");
+                    // https://github.com/metanorma/mn2pdf/issues/385#issuecomment-3887124667
+                    // int currentPage =  EventProducingFilter.getCurrentPage() + 1;
+                    // logger.severe("Page #" + currentPage + ":");
                     eventProducer.lineOverflows(this, curChildLM.getFObj().getName(), bestActiveNode.line,
                         -lack, curChildLM.getFObj().getLocator());
                 }
