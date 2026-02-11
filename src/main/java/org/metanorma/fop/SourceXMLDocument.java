@@ -212,7 +212,7 @@ public class SourceXMLDocument {
                             attrText = attrText.substring(attrText.indexOf("font-family"));
                             attrText = attrText.substring(attrText.indexOf(":") + 1);
                             if (attrText.indexOf(";") != -1) {
-                                attrText = attrText.substring(0, attrText.indexOf(";"));
+                                attrText = attrText.substring(0, attrText.indexOf(";")).trim();
                             }
                             for (String fname: attrText.split(",")) {
                                 fname = fname.trim().replace("'","")
@@ -240,8 +240,20 @@ public class SourceXMLDocument {
                                 if (foundFontFamily) {
                                     textCSS = textCSS.substring(fontFamilyStart);
                                     textCSS = textCSS.substring(textCSS.indexOf(":") + 1);
-                                    if (textCSS.indexOf(";") != -1) {
-                                        String attrText = textCSS.substring(0, textCSS.indexOf(";"));
+                                    int pos_semicolon = textCSS.indexOf(";");
+                                    int pos_curlybrace = textCSS.indexOf("}");
+                                    if (pos_semicolon != -1 || pos_curlybrace != -1) {
+                                        int pos_end = 0;
+                                        if (pos_semicolon == -1) {
+                                            pos_semicolon = 0;
+                                            pos_end = pos_curlybrace;
+                                        } else if (pos_curlybrace == -1) {
+                                            pos_curlybrace = 0;
+                                            pos_end = pos_semicolon;
+                                        }
+                                        pos_end = Math.min(pos_semicolon, pos_curlybrace);
+                                        
+                                        String attrText = textCSS.substring(0, pos_end).trim();
                                         for (String fname : attrText.split(",")) {
                                             fname = fname.trim().replace("'", "")
                                                     .replace("\"", "");
@@ -249,7 +261,7 @@ public class SourceXMLDocument {
                                             if (!documentFontList.contains(fname)) {
                                                 //if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
                                                     documentFontList.add(fname);
-                                                    break;
+                                                    //break;
                                                 //}
                                             }
                                         }
