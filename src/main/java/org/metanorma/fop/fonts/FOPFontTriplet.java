@@ -116,6 +116,9 @@ public class FOPFontTriplet {
         } else if (fontname.toLowerCase().contains("cour")) {
             //substprefix = "Code";
             substprefix = "SansMono";
+        } else if (fontname.toLowerCase().contains("monospace")) {
+            //substprefix = "Code";
+            substprefix = "SansMono";
         } else if (fontname.toLowerCase().contains("sans")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("serif")) {
