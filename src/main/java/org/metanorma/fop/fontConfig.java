@@ -71,8 +71,9 @@ class fontConfig {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     static final String ENV_FONT_PATH = "MN_PDF_FONT_PATH";
-    static final String WARNING_FONT = "WARNING: Font file '%s' (font name '%s', font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
-    static final String WARNING_FONT_NO_FILE = "WARNING: Font '%s' (font name '%s', font style '%s', font weight '%s') doesn't exist. Replaced by '%s'.";
+    static final String WARNING_FONT = "WARNING: Font file '%s' (font family '%s', style '%s', weight '%s/%s') doesn't exist. Replaced by '%s' (%s).";
+    static final String WARNING_FONT_NO_FILE =
+            "WARNING: Font '%s,%s,%s' (font family '%s', style '%s', weight '%s/%s') doesn't exist. Replaced by '%s' (%s).";
     private final String CONFIG_NAME = "pdf_fonts_config.xml";
     private final String CONFIG_NAME_UPDATED = CONFIG_NAME + ".out";
     
@@ -646,10 +647,12 @@ class fontConfig {
                             //try to find system font (example for Windows - C:/Windows/fonts/)
                             String fontfilename = file_embed_url.getName();
                             String font_replacementpath = null;
+                            String font_replacementname = "";
                             String font_source = "";
                             for (String url: machineFontList) {
                                 if (url.toLowerCase().endsWith(fontfilename.toLowerCase())) {
                                     font_replacementpath = url;
+                                    font_replacementname = fontfilename.toLowerCase();
                                     font_source = "system";
                                     break;
                                 }
@@ -666,6 +669,7 @@ class fontConfig {
                                     for (String url: machineFontList) {
                                         if (url.toLowerCase().endsWith(fopFontAlternate.getEmbed_url().toLowerCase())) {
                                             font_replacementpath = url;
+                                            font_replacementname = fopFontAlternate.getSub_font();
                                             font_source = "system";
                                             fopFont.setSub_font(fopFontAlternate.getSub_font());                                        
                                             fopFont.setSimulate_style(fopFontAlternate.getSimulate_style());
@@ -686,21 +690,38 @@ class fontConfig {
                                     String fontFamilySubst = fopFontTriplet.getFontSubstituionByDefault();
 
                                     font_replacementpath = Paths.get(fontPath, fontFamilySubst + ".ttf").toString();
+                                    font_replacementname = fontFamilySubst;
 
                                     //printMessage(msg + " (font style '" + fontstyle + "', font weight '" + fontweight + "') doesn't exist. Replaced by '" + font_replacementpath + "'.");
                                     //printMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
                                     // To do: https://github.com/metanorma/mn2pdf/issues/360
                                     if (embed_url.contains("filenotfound_")) {
-                                        if ((fopFontTriplet.getName().equals("sans-serif") ||
+                                       /* if ((fopFontTriplet.getName().equals("sans-serif") ||
                                                 fopFontTriplet.getName().equals("serif"))
                                                 && !DEBUG) {
                                             // skip warning (sans-serif and serif intended for replacement by real font)
-                                        } else {
-                                            fopFont.setMessage(String.format(WARNING_FONT_NO_FILE, fopFontTriplet.getName(), fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
-                                        }
+                                        } else {*/
+                                            fopFont.setMessage(String.format(WARNING_FONT_NO_FILE,
+                                                    fopFontTriplet.getName(),
+                                                    fopFontTriplet.getStyle(),
+                                                    fopFontTriplet.getWeightNumerical(),
+                                                    fopFontTriplet.getName(),
+                                                    fopFontTriplet.getStyle(),
+                                                    fopFontTriplet.getWeight(),
+                                                    fopFontTriplet.getWeightNumerical(),
+                                                    font_replacementname,
+                                                    font_replacementpath));
+                                        //}
                                     } else {
                                         if (SourceXMLDocument.mainFont.equals(fopFontTriplet.getName())) {
-                                            fopFont.setMessage(String.format(WARNING_FONT, embed_url, fopFontTriplet.getName(), fopFontTriplet.getStyle(), fopFontTriplet.getWeight(), font_replacementpath));
+                                            fopFont.setMessage(String.format(WARNING_FONT,
+                                                    embed_url,
+                                                    fopFontTriplet.getName(),
+                                                    fopFontTriplet.getStyle(),
+                                                    fopFontTriplet.getWeight(),
+                                                    fopFontTriplet.getWeightNumerical(),
+                                                    font_replacementname,
+                                                    font_replacementpath));
                                         }
                                     }
 
@@ -977,7 +998,9 @@ class fontConfig {
     private void printMessage(String msg) {
         if (!msg.isEmpty()) {
             if (!messages.contains(msg)) {
-                logger.warning(msg);
+                if (DEBUG) {
+                    logger.warning(msg);
+                }
                 messages.add(msg);
             }
         }

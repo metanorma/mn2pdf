@@ -1,5 +1,6 @@
 package org.metanorma.utils;
 
+import org.metanorma.Constants;
 import org.metanorma.fop.Util;
 import org.metanorma.fop.mn2pdf;
 
@@ -9,10 +10,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.metanorma.fop.PDFGenerator;
 
 /**
  *
@@ -62,12 +66,18 @@ public final class LoggerHelper {
             fileHandler.close();
         }
         File logfile = new File(logFilename);
+        boolean isXSLFOlocation = false;
         if (Util.getFileSize(logfile) > 0) {
             System.out.println("There are warnings and errors:");
             try (BufferedReader br = new BufferedReader(new FileReader(logFilename))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(line);
+                    // if log contains location to XSL-FO
+                    if (line.contains("(See position ")) {
+                        isXSLFOlocation = true;
+                        System.out.println("Please check the PDF and if necessary, report this issue at the following link: https://github.com/metanorma/mn-native-pdf/issues/new, and attach the XSL-FO file or fragment: '" + PDFGenerator.getXSLFOfilename() + "'.");
+                    }
                 }
             } catch (Exception e) { }
             System.out.println("Please check the log file '" + logfile.getAbsolutePath() + "'");
@@ -76,7 +86,12 @@ public final class LoggerHelper {
                 Files.deleteIfExists(logfile.toPath());
             } catch (IOException e) { }
         }
-
+        // delete XSL-FO file if there isn't position to the XSL-FO line
+        if (!isXSLFOlocation && !Constants.DEBUG) {
+            try {
+                Files.deleteIfExists(Paths.get(PDFGenerator.getXSLFOfilename()));
+            } catch (IOException e) { }
+        }
     }
 
 }

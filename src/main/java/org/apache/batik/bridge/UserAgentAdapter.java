@@ -146,14 +146,13 @@ public class UserAgentAdapter implements UserAgent {
      * Returns the default font family.
      */
     public String getDefaultFontFamily() {
-        //return "Arial, Helvetica, sans-serif";
-        // see https://github.com/metanorma/mn2pdf/issues/362
+        // see https://github.com/metanorma/mn2pdf/issues/362, https://github.com/metanorma/mn2pdf/issues/393
         String mainFont = SourceXMLDocument.mainFont;
         if (!mainFont.isEmpty()) {
-            mainFont = mainFont + ", ";
+            //mainFont = mainFont + ", ";
+            return mainFont;
         }
-        //return  + ", Arial, Helvetica, sans-serif";
-        return mainFont + "Arial, Helvetica, sans-serif";
+        return "Arial, Helvetica, sans-serif";
     }
 
     /** 

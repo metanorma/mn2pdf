@@ -247,10 +247,10 @@ public class SourceXMLDocument {
                                                     .replace("\"", "");
 
                                             if (!documentFontList.contains(fname)) {
-                                                if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
+                                                //if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
                                                     documentFontList.add(fname);
                                                     break;
-                                                }
+                                                //}
                                             }
                                         }
                                     }
