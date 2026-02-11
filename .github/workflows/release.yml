@@ -22,7 +22,7 @@ jobs:
       - run: |
           sudo gem install fontist
           fontist update
-          fontist manifest-install --confirm-license .github/mscorefonts.yml
+          fontist manifest install --confirm-license .github/mscorefonts.yml
 
       - run: make all
 
