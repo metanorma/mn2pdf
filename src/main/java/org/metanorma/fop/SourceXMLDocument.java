@@ -52,6 +52,9 @@ public class SourceXMLDocument {
     private boolean hasAnnotations = false;
     private boolean hasFileAttachmentAnnotations = false;
     private boolean hasTables = false;
+
+    private boolean isDebugMode = false;
+
     private Map<String, Integer> tablesCellsCountMap = new HashMap<>();
     private boolean hasMath = false;
 
@@ -113,6 +116,8 @@ public class SourceXMLDocument {
         //hasTables = element_table.length() != 0;
         obtainTablesCellsCount();
         hasTables = !tablesCellsCountMap.isEmpty();
+        String element_pdf_debug = readValue("//*[local-name() = 'presentation-metadata']/*[local-name() = 'pdf-debug'][1]");
+        isDebugMode = element_pdf_debug.equalsIgnoreCase("true");
     }
 
     private void obtainTablesCellsCount() {
@@ -542,6 +547,10 @@ public class SourceXMLDocument {
     // find tag 'table' or 'dl'
     public boolean hasTables() {
         return hasTables;
+    }
+
+    public boolean isDebugMode() {
+        return isDebugMode;
     }
 
     public boolean hasMath() {
