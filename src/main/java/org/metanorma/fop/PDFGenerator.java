@@ -373,6 +373,9 @@ public class PDFGenerator {
                 isAddFileAttachmentAnnotations = sourceXMLDocument.hasFileAttachmentAnnotations();
                 isTableExists = sourceXMLDocument.hasTables();
                 boolean isMathExists = sourceXMLDocument.hasMath();
+                if(sourceXMLDocument.isDebugMode()) {
+                    DEBUG = true;
+                }
 
                 XSLTconverter xsltConverter = new XSLTconverter(fXSL, fXSLoverride, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
 
