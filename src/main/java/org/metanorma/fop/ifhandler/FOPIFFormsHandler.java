@@ -27,6 +27,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
     boolean isBorderAroundElement = false;
 
+    private int pageHeight = 0;
     Stack<Viewport> stackViewports = new Stack<>();
 
     private int page;
@@ -59,66 +60,13 @@ public class FOPIFFormsHandler extends DefaultHandler {
             rootXMLNS = copyAttributes(attr);
         }
 
-        // if next item is border around the form element
-        if (qName.equals("id") && attr.getValue("name").startsWith("_metanorma_form_item_border_")) {
-            // example: <id name="_metanorma_form_item_border_textfield_birthday"/>
-            isBorderAroundElement = true;
-            // skip
-            skipElements.push(true);
-            return;
-        }
-        // text element with hair space after <id name="_metanorma_form_item_border_..." -->
-        if (qName.equals("text") && isBorderAroundElement && !previousElement.equals("form_item_id")) {
-            // example: <text x="0" y="525992" foi:struct-ref="6f"> </text>
-            skipElements.push(true);
-            return;
-        }
-        if (qName.equals("border-rect") && isBorderAroundElement) {
-            // example: <border-rect x="913" y="517369" width="59750" height="11988" top="(solid,#000000,1000)" bottom="(solid,#000000,1000)" left="(solid,#000000,1000)" right="(solid,#000000,1000)" inner-background-color="#ffffff"/>
-            float border_x1 = stackViewports.peek().getX() + Integer.parseInt(attr.getValue("x"));
-            float border_y1 = stackViewports.peek().getY() + Integer.parseInt(attr.getValue("y"));
-            float border_x2 = border_x1 + Integer.parseInt(attr.getValue("width"));
-            float border_y2 = border_y1 + Integer.parseInt(attr.getValue("height"));
-            PDRectangle pdRectangle = new PDRectangle();
-            pdRectangle.setLowerLeftX(border_x1);
-            pdRectangle.setLowerLeftY(border_y1);
-            pdRectangle.setUpperRightX(border_x2);
-            pdRectangle.setUpperRightY(border_y2);
-            currFormItem = new FormItem(new PDRectangle(), page);
-            skipElements.push(true);
-            return;
-        }
-        if (qName.equals("id") && attr.getValue("name").startsWith("_metanorma_form_item_")) {
-            // example: <id name="_metanorma_form_item_textfield_birthday"/>
-
-            String attname =  attr.getValue("name");
-            String value = attname.substring("_metanorma_form_item_".length());
-            String field_type = value.substring(0, value.indexOf("_"));
-            currFormItem.setFormItemType(field_type);
-            formItems.add(currFormItem);
-
-            previousElement = "form_item_id";
-            skipElements.push(false);
-            copyStartElement(qName, attr);
-            return;
-        }
-
-        if (qName.equals("text") && isBorderAroundElement && previousElement.equals("form_item_id")) {
-            // example: <text x="59542" y="539192" foi:struct-ref="75">__________ </text>
-            //skipElements.push(true);
-            // Todo: replace to hair space - for previous ID work
-            skipElements.push(false);
-            copyStartElement(qName, attr);
-            return;
-        }
-
-        isBorderAroundElement = false;
-
-        skipElements.push(false);
-
         switch (qName) {
             case "page":
                 page++;
+                String attr_height = attr.getValue("height");
+                if (attr_height != null) {
+                    pageHeight = Integer.valueOf(attr_height);
+                }
             case "viewport":
             case "g":
 
@@ -156,6 +104,74 @@ public class FOPIFFormsHandler extends DefaultHandler {
                 stackViewports.push(new Viewport(new_x, new_y));
                 break;
         }
+
+        /* Example:
+        <id name="_metanorma_form_item_border_textfield_fname"/>
+        <text x="0" y="355376" foi:struct-ref="53"> </text>
+        <border-rect x="605" y="345829" width="45120" height="12989" top="(solid,#000000,1000)" bottom="(solid,#000000,1000)" left="(solid,#000000,1000)" right="(solid,#000000,1000)" inner-background-color="#ffffff"/>
+        */
+
+        // if next item is border around the form element
+        if (qName.equals("id") && attr.getValue("name").startsWith("_metanorma_form_item_border_")) {
+            // example: <id name="_metanorma_form_item_border_textfield_birthday"/>
+            isBorderAroundElement = true;
+            // skip
+            skipElements.push(true);
+            return;
+        }
+        // text element with hair space after <id name="_metanorma_form_item_border_..." -->
+        if (qName.equals("text") && isBorderAroundElement && !previousElement.equals("form_item_id")) {
+            // example: <text x="0" y="525992" foi:struct-ref="6f"> </text>
+            skipElements.push(true);
+            return;
+        }
+        if (qName.equals("border-rect") && isBorderAroundElement) {
+            // example: <border-rect x="913" y="517369" width="59750" height="11988" top="(solid,#000000,1000)" bottom="(solid,#000000,1000)" left="(solid,#000000,1000)" right="(solid,#000000,1000)" inner-background-color="#ffffff"/>
+            float border_x1 = stackViewports.peek().getX() + Integer.parseInt(attr.getValue("x"));
+            float border_y1 = stackViewports.peek().getY() + Integer.parseInt(attr.getValue("y"));
+            float border_x2 = border_x1 + Integer.parseInt(attr.getValue("width"));
+            float border_y2 = border_y1 + Integer.parseInt(attr.getValue("height"));
+            PDRectangle pdRectangle = new PDRectangle();
+            pdRectangle.setLowerLeftX(border_x1 / 1000);
+            pdRectangle.setLowerLeftY((pageHeight - border_y1) / 1000);
+            pdRectangle.setUpperRightX(border_x2 / 1000);
+            pdRectangle.setUpperRightY((pageHeight - border_y2) / 1000) ;
+            currFormItem = new FormItem(pdRectangle, page);
+            skipElements.push(true);
+            return;
+        }
+        if (qName.equals("id") && attr.getValue("name").startsWith("_metanorma_form_item_")) {
+            // example: <id name="_metanorma_form_item_textfield_birthday"/>
+
+            String attname =  attr.getValue("name");
+            String value = attname.substring("_metanorma_form_item_".length());
+            String field_type = value.substring(0, value.indexOf("_"));
+            currFormItem.setFormItemType(field_type);
+            formItems.add(currFormItem);
+
+            previousElement = "form_item_id";
+            skipElements.push(false);
+            copyStartElement(qName, attr);
+            return;
+        }
+
+        if (qName.equals("text") && isBorderAroundElement && previousElement.equals("form_item_id")) {
+            // example: <text x="59542" y="539192" foi:struct-ref="75">__________ </text>
+            //skipElements.push(true);
+            // Todo: replace to hair space - for previous ID work
+            skipElements.push(false);
+            copyStartElement(qName, attr);
+            return;
+        }
+
+        isBorderAroundElement = false;
+
+        skipElements.push(false);
+
+
+
+
+
 
         copyStartElement(qName, attr);
 

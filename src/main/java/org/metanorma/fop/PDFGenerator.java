@@ -1000,8 +1000,7 @@ public class PDFGenerator {
         if (isAddForms && !formsItems.isEmpty()) {
             logger.log(Level.INFO, "[INFO] Forms processing...");
             try {
-                PDFForm forms = new PDFForm();
-                forms.process(pdf, formsItems);
+                new PDFForm().process(pdf, formsItems);
             } catch (Exception ex) {
                 logger.severe("Can't process forms (" + ex.toString() + ").");
                 ex.printStackTrace();
