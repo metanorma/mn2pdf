@@ -23,7 +23,11 @@ public class FormItem {
         return type;
     }
 
-    public String name;
+    private String name;
+
+    private double fontSize = 11;
+
+    private String fontColor = "#000000";
 
     public int getPage() {
         return page;
@@ -47,5 +51,21 @@ public class FormItem {
 
     public void setName(String formItemName) {
         this.name = formItemName;
+    }
+
+    public double getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(double fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public String getFontColor() {
+        return fontColor;
+    }
+
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
     }
 }

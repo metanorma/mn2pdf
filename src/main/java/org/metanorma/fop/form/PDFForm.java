@@ -22,12 +22,15 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
 import org.metanorma.utils.LoggerHelper;
 import org.verapdf.model.coslayer.CosName;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -67,7 +70,19 @@ public class PDFForm {
                 PDTextField textBox = new PDTextField(acroForm);
                 textBox.setPartialName(formItem.getName());
 
-                defaultAppearanceString = "/Helv 12 Tf 0 0 1 rg";
+                DecimalFormat df = new DecimalFormat("#.#");
+                String fontSize = df.format(formItem.getFontSize());
+                String fontColor = getNormalizedRGB(formItem.getFontColor());
+
+                // /Helv 11 Tf 0 0 1 rg
+                /* From Google AI:
+                /Helv: This is the name under which the Helvetica font is known in the PDF's resource dictionary. The actual font file might be embedded in the PDF, but it's referenced by this name.
+                11: This number specifies the font size in points (11 points).
+                Tf: This is the "Set text font and size" operator. It sets the specified font and size as the current text state parameters for any subsequent text-showing operations.
+                0 0 1: These three numbers represent the RGB color values for the non-stroking (filling) color, with values ranging from 0 to 1. In this case, 0 0 1 corresponds to blue (0% Red, 0% Green, 100% Blue).
+                rg: This is the "Set non-stroking color space to RGB and set the color" operator. It sets the color used for filling text (and other shapes) to the color specified by the preceding values.
+                */
+                defaultAppearanceString = "/Helv " + fontSize + " Tf " + fontColor +" rg";
                 textBox.setDefaultAppearance(defaultAppearanceString);
 
                 acroForm.getFields().add(textBox);
@@ -110,5 +125,28 @@ public class PDFForm {
         }
         
     }
-    
+
+    private String getNormalizedRGB(String hexColor) {
+        try {
+            Color awtColor = Color.decode(hexColor);
+
+            // integer RGB components (0-255)
+            int r255 = awtColor.getRed();
+            int g255 = awtColor.getGreen();
+            int b255 = awtColor.getBlue();
+
+            // normalized RGB components (0.0-1.0)
+            float rNormalized = r255 / 255.0f;
+            float gNormalized = g255 / 255.0f;
+            float bNormalized = b255 / 255.0f;
+
+            DecimalFormat df = new DecimalFormat("#.#");
+
+            return df.format(rNormalized) + " " + df.format(gNormalized) + " " + df.format(bNormalized);
+
+        } catch (Exception ex) {
+            return "0 0 0";
+        }
+    }
+
 }

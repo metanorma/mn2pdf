@@ -33,6 +33,10 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
     private int page;
 
+    private int fontSize = 11;
+
+    private String fontColor = "#000000";
+
     FormItem currFormItem;
     List<FormItem> formItems = new ArrayList<>();
 
@@ -183,6 +187,8 @@ public class FOPIFFormsHandler extends DefaultHandler {
             }
 
             currFormItem.setName(field_name_unique);
+            currFormItem.setFontSize(fontSize / 1000.0);
+            currFormItem.setFontColor(fontColor);
             formItems.add(currFormItem);
 
             previousElement = "form_item_id";
@@ -200,14 +206,22 @@ public class FOPIFFormsHandler extends DefaultHandler {
             return;
         }
 
+        if (qName.equals("font")) {
+            String attr_font = attr.getValue("size");
+            if (attr_font != null) {
+                // Example: 10500
+                fontSize = Integer.valueOf(attr_font);
+            }
+            String attr_color = attr.getValue("color");
+            if (attr_color != null) {
+                // Example "#000000"
+                fontColor = attr_color;
+            }
+        }
+
         isBorderAroundElement = false;
 
         skipElements.push(false);
-
-
-
-
-
 
         copyStartElement(qName, attr);
 
