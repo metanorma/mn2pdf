@@ -20,6 +20,8 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
 import org.metanorma.utils.LoggerHelper;
+import org.verapdf.model.coslayer.CosName;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +65,7 @@ public class PDFForm {
                 PDPage page = document.getPage(pageNum - 1);
 
                 PDTextField textBox = new PDTextField(acroForm);
-                textBox.setPartialName("SampleField");
+                textBox.setPartialName(formItem.getName());
 
                 defaultAppearanceString = "/Helv 12 Tf 0 0 1 rg";
                 textBox.setDefaultAppearance(defaultAppearanceString);
@@ -77,18 +79,18 @@ public class PDFForm {
 
                 PDAppearanceCharacteristicsDictionary fieldAppearance
                         = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
-                fieldAppearance.setBorderColour(new PDColor(new float[]{0,1,0}, PDDeviceRGB.INSTANCE));
-                fieldAppearance.setBackground(new PDColor(new float[]{1,1,0}, PDDeviceRGB.INSTANCE));
+                //fieldAppearance.setBorderColour(new PDColor(new float[]{0,1,0}, PDDeviceRGB.INSTANCE));
+                //fieldAppearance.setBackground(new PDColor(new float[]{1,1,0}, PDDeviceRGB.INSTANCE));
                 widget.setAppearanceCharacteristics(fieldAppearance);
 
                 widget.setPrinted(true);
 
                 page.getAnnotations().add(widget);
 
+                // alignment
                 textBox.setQ(PDVariableText.QUADDING_CENTERED);
 
-                textBox.setValue("Sample field content");
-
+                //textBox.setValue("Sample field content");
             }
 
             Files.deleteIfExists(pdf.toPath());

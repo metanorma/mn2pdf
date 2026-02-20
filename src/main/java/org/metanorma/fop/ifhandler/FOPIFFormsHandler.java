@@ -17,6 +17,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
     private final String XMLHEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
+    private final String FIELD_NAME_PREFIX = "___name_";
     private final Character SIGN_GREATER = '>';
 
     private List<String> listResult = new ArrayList<>();
@@ -105,8 +106,15 @@ public class FOPIFFormsHandler extends DefaultHandler {
                 break;
         }
 
+        // From common.form.xsl:
+        // _metanorma_form_item - fixed prefix
+        // _border - for determine the size of the form element
+        // _textfield_ - form element type
+        // fname - form element id
+        // ___name_ - prefix before form element name
+        // fname - form element name
         /* Example:
-        <id name="_metanorma_form_item_border_textfield_fname"/>
+        <id name="_metanorma_form_item_border_textfield_fname___name_fname"/>
         <text x="0" y="355376" foi:struct-ref="53"> </text>
         <border-rect x="605" y="345829" width="45120" height="12989" top="(solid,#000000,1000)" bottom="(solid,#000000,1000)" left="(solid,#000000,1000)" right="(solid,#000000,1000)" inner-background-color="#ffffff"/>
         */
@@ -144,9 +152,37 @@ public class FOPIFFormsHandler extends DefaultHandler {
             // example: <id name="_metanorma_form_item_textfield_birthday"/>
 
             String attname =  attr.getValue("name");
+
+            //determine field type
             String value = attname.substring("_metanorma_form_item_".length());
             String field_type = value.substring(0, value.indexOf("_"));
             currFormItem.setFormItemType(field_type);
+
+            //determine field name
+            String field_name = attname.substring(("_metanorma_form_item_" + field_type + "_").length());
+            field_name = field_name.substring(field_name.indexOf(FIELD_NAME_PREFIX) + FIELD_NAME_PREFIX.length());
+            String field_name_unique = field_name;
+            int iter = 1;
+            boolean is_field_name_unique = false;
+            while (!is_field_name_unique) {
+                final String field_name_new = iter == 1 ? field_name: field_name + "_" + iter;
+                FormItem foundItem = formItems.stream()
+                        .filter(item -> item.getName().equals(field_name_new))
+                        .findFirst()
+                        .orElse(null); // Returns null if no match is found
+                if (foundItem != null) {
+                    iter ++;
+                } else {
+                    is_field_name_unique = true;
+                    field_name_unique = field_name_new;
+                }
+            }
+
+            if (!field_name.equals(field_name_unique)) {
+                logger.warning("Form element " + field_type + " with name '" + field_name +  "' exists already in the document. For uniqueness, the name changed to '" + field_name_unique + "'.");
+            }
+
+            currFormItem.setName(field_name_unique);
             formItems.add(currFormItem);
 
             previousElement = "form_item_id";
@@ -206,8 +242,10 @@ public class FOPIFFormsHandler extends DefaultHandler {
             sbTmp.append("=\"");
             String value = StringEscapeUtils.escapeXml(attr.getValue(i));
             if (attName.equals("name") && value.startsWith("_metanorma_form_item_")) {
+                // restore id from string starts with '_metanorma_form_item_....___name_'
                 value = value.substring("_metanorma_form_item_".length());
                 value = value.substring(value.indexOf("_") + 1);
+                value = value.substring(0, value.indexOf(FIELD_NAME_PREFIX));
             }
             sbTmp.append(value);
             sbTmp.append("\"");

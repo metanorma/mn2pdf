@@ -8,7 +8,7 @@ public class FormItem {
 
     int page;
 
-    FormItemType formItemType;
+    FormItemType type;
 
     public FormItem(PDRectangle rect, int page) {
         this.rect = rect;
@@ -19,9 +19,11 @@ public class FormItem {
         return rect;
     }
 
-    public FormItemType getFormItemType() {
-        return formItemType;
+    public FormItemType getType() {
+        return type;
     }
+
+    public String name;
 
     public int getPage() {
         return page;
@@ -30,12 +32,20 @@ public class FormItem {
     public void setFormItemType(String formItemType) {
         switch (formItemType) {
             case "textfield":
-                this.formItemType = FormItemType.TextField;
+                this.type = FormItemType.TextField;
                 break;
             default:
-                this.formItemType = FormItemType.TextField;
+                this.type = FormItemType.TextField;
                 break;
         }
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String formItemName) {
+        this.name = formItemName;
     }
 }
