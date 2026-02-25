@@ -38,6 +38,9 @@ public class FormItem {
             case "textfield":
                 this.type = FormItemType.TextField;
                 break;
+            case "checkbox":
+                this.type = FormItemType.CheckBox;
+                break;
             default:
                 this.type = FormItemType.TextField;
                 break;
