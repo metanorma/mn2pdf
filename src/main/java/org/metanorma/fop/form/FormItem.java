@@ -4,11 +4,19 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 public class FormItem {
 
-    PDRectangle rect ;// = new PDRectangle(50, 750, 200, 50);
+    PDRectangle rect;// = new PDRectangle(50, 750, 200, 50);
 
     int page;
 
     FormItemType type;
+
+    String value = "";
+
+    private String name;
+
+    private double fontSize = 11;
+
+    private String fontColor = "#000000";
 
     public FormItem(PDRectangle rect, int page) {
         this.rect = rect;
@@ -19,21 +27,11 @@ public class FormItem {
         return rect;
     }
 
-    public FormItemType getType() {
-        return type;
-    }
-
-    private String name;
-
-    private double fontSize = 11;
-
-    private String fontColor = "#000000";
-
     public int getPage() {
         return page;
     }
 
-    public void setFormItemType(String formItemType) {
+    public void setType(String formItemType) {
         switch (formItemType) {
             case "textfield":
                 this.type = FormItemType.TextField;
@@ -45,30 +43,41 @@ public class FormItem {
                 this.type = FormItemType.TextField;
                 break;
         }
-
     }
 
-    public String getName() {
-        return name;
+    public FormItemType getType() {
+        return type;
     }
 
     public void setName(String formItemName) {
         this.name = formItemName;
     }
 
-    public double getFontSize() {
-        return fontSize;
+    public String getName() {
+        return name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     public void setFontSize(double fontSize) {
         this.fontSize = fontSize;
     }
 
-    public String getFontColor() {
-        return fontColor;
+    public double getFontSize() {
+        return fontSize;
     }
 
     public void setFontColor(String fontColor) {
         this.fontColor = fontColor;
+    }
+
+    public String getFontColor() {
+        return fontColor;
     }
 }

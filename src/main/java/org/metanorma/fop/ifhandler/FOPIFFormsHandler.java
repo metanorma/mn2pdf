@@ -17,6 +17,8 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
     private final String XMLHEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
+    private final String METANORMA_FORM_START_PREFIX = "_metanorma_form_start";
+    private final String METANORMA_FORM_ITEM_PREFIX = "_metanorma_form_item_";
     private final String FIELD_NAME_PREFIX = "___name_";
     private final Character SIGN_GREATER = '>';
 
@@ -32,6 +34,8 @@ public class FOPIFFormsHandler extends DefaultHandler {
     Stack<Viewport> stackViewports = new Stack<>();
 
     private int page;
+
+    private String formName;
 
     private int fontSize = 11;
 
@@ -110,6 +114,24 @@ public class FOPIFFormsHandler extends DefaultHandler {
                 break;
         }
 
+
+        // From common.form.xsl:
+        // _metanorma_form_start - fixed prefix, start of the form
+        if (qName.equals("id") && attr.getValue("name").startsWith(METANORMA_FORM_START_PREFIX)) {
+            String value = attr.getValue("name");
+            String[] values = value.split("___");
+            if (values.length == 3 && !values[2].isEmpty()) {
+                formName = values[2];
+            } else if (values.length == 2 && !values[1].isEmpty()) {
+                formName = values[1];
+            } else {
+                formName = value;
+            }
+            skipElements.push(false);
+            copyStartElement(qName, attr);
+            return;
+        }
+        
         // From common.form.xsl:
         // _metanorma_form_item - fixed prefix
         // _border - for determine the size of the form element
@@ -124,7 +146,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
         */
 
         // if next item is border around the form element
-        if (qName.equals("id") && attr.getValue("name").startsWith("_metanorma_form_item_border_")) {
+        if (qName.equals("id") && attr.getValue("name").startsWith(METANORMA_FORM_ITEM_PREFIX + "border_")) {
             // example: <id name="_metanorma_form_item_border_textfield_birthday"/>
             isBorderAroundElement = true;
             // skip
@@ -157,33 +179,52 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
             String attname =  attr.getValue("name");
 
+
+            /// _metanorma_form_item_border____form_item_type___id___name___value -->
+			// split by '___': [1] - form_item_type, [2] - id, [3] - name, [4] - value -->
+            String[] values = attname.split("___");
+
+
             //determine field type
-            String value = attname.substring("_metanorma_form_item_".length());
-            String field_type = value.substring(0, value.indexOf("_"));
-            currFormItem.setFormItemType(field_type);
+            //String value = attname.substring(METANORMA_FORM_ITEM_PREFIX.length());
+            //String field_type = value.substring(0, value.indexOf("_"));
+            String field_type = values[1].replace("_", "");
+            currFormItem.setType(field_type);
 
             //determine field name
-            String field_name = attname.substring(("_metanorma_form_item_" + field_type + "_").length());
-            field_name = field_name.substring(field_name.indexOf(FIELD_NAME_PREFIX) + FIELD_NAME_PREFIX.length());
+            //String field_name = attname.substring((METANORMA_FORM_ITEM_PREFIX + field_type + "_").length());
+            //field_name = field_name.substring(field_name.indexOf(FIELD_NAME_PREFIX) + FIELD_NAME_PREFIX.length());
+            String field_name = values[3];
             String field_name_unique = field_name;
-            int iter = 1;
-            boolean is_field_name_unique = false;
-            while (!is_field_name_unique) {
-                final String field_name_new = iter == 1 ? field_name: field_name + "_" + iter;
-                FormItem foundItem = formItems.stream()
-                        .filter(item -> item.getName().equals(field_name_new))
-                        .findFirst()
-                        .orElse(null); // Returns null if no match is found
-                if (foundItem != null) {
-                    iter ++;
-                } else {
-                    is_field_name_unique = true;
-                    field_name_unique = field_name_new;
-                }
-            }
+            if (!field_type.equals("radiobutton")) {
+                int iter = 1;
+                boolean is_field_name_unique = false;
+                while (!is_field_name_unique) {
 
-            if (!field_name.equals(field_name_unique)) {
-                logger.warning("Form element " + field_type + " with name '" + field_name +  "' exists already in the document. For uniqueness, the name changed to '" + field_name_unique + "'.");
+                    final String field_name_new;
+                    if (iter == 1) {
+                        field_name_new = field_name;
+                    } else if (iter == 2) {
+                        field_name_new = formName + "_" + field_name;
+                    } else {
+                        field_name_new = formName + "_" + field_name + iter;
+                    }
+
+                    FormItem foundItem = formItems.stream()
+                            .filter(item -> item.getName().equals(field_name_new))
+                            .findFirst()
+                            .orElse(null); // Returns null if no match is found
+                    if (foundItem != null) {
+                        iter ++;
+                    } else {
+                        is_field_name_unique = true;
+                        field_name_unique = field_name_new;
+                    }
+                }
+
+                if (!field_name.equals(field_name_unique)) {
+                    logger.warning("Form element " + field_type + " with name '" + field_name +  "' exists already in the document. For uniqueness, the name changed to '" + field_name_unique + "'.");
+                }
             }
 
             currFormItem.setName(field_name_unique);
@@ -255,11 +296,19 @@ public class FOPIFFormsHandler extends DefaultHandler {
             sbTmp.append(attName);
             sbTmp.append("=\"");
             String value = StringEscapeUtils.escapeXml(attr.getValue(i));
-            if (attName.equals("name") && value.startsWith("_metanorma_form_item_")) {
-                // restore id from string starts with '_metanorma_form_item_....___name_'
-                value = value.substring("_metanorma_form_item_".length());
-                value = value.substring(value.indexOf("_") + 1);
-                value = value.substring(0, value.indexOf(FIELD_NAME_PREFIX));
+            if (attName.equals("name") && value.startsWith(METANORMA_FORM_START_PREFIX)) {
+                // restore id from string starts with '_metanorma_form_start_id'
+                String[] values = value.split("___");
+                value = values[1];
+            }  else if (attName.equals("name") && value.startsWith(METANORMA_FORM_ITEM_PREFIX)) {
+                // restore id from string _metanorma_form_item_border____form_item_type___id___name___value
+                // split string  by '___'
+                String[] values = value.split("___");
+                try {
+                    value = values[2];
+                } catch (Exception ex) {
+                    value = value.substring(METANORMA_FORM_ITEM_PREFIX.length() + 1);
+                }
             }
             sbTmp.append(value);
             sbTmp.append("\"");
