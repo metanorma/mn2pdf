@@ -35,14 +35,15 @@ public class FOPIFFormsHandler extends DefaultHandler {
 
     private int page;
 
-    private String formName;
+    private String currentFormName;
 
     private int fontSize = 11;
 
     private String fontColor = "#000000";
 
     FormItem currFormItem;
-    List<FormItem> formItems = new ArrayList<>();
+
+    Map<String, List<FormItem>> formItems = new HashMap<>();
 
     boolean isViewportProcessing = false;
 
@@ -121,17 +122,17 @@ public class FOPIFFormsHandler extends DefaultHandler {
             String value = attr.getValue("name");
             String[] values = value.split("___");
             if (values.length == 3 && !values[2].isEmpty()) {
-                formName = values[2];
+                currentFormName = values[2];
             } else if (values.length == 2 && !values[1].isEmpty()) {
-                formName = values[1];
+                currentFormName = values[1];
             } else {
-                formName = value;
+                currentFormName = value;
             }
             skipElements.push(false);
             copyStartElement(qName, attr);
             return;
         }
-        
+
         // From common.form.xsl:
         // _metanorma_form_item - fixed prefix
         // _border - for determine the size of the form element
@@ -169,20 +170,20 @@ public class FOPIFFormsHandler extends DefaultHandler {
             pdRectangle.setLowerLeftX(border_x1 / 1000);
             pdRectangle.setLowerLeftY((pageHeight - border_y1) / 1000);
             pdRectangle.setUpperRightX(border_x2 / 1000);
-            pdRectangle.setUpperRightY((pageHeight - border_y2) / 1000) ;
+            pdRectangle.setUpperRightY((pageHeight - border_y2) / 1000);
             currFormItem = new FormItem(pdRectangle, page);
             skipElements.push(true);
             return;
         }
-        if (qName.equals("id") && attr.getValue("name").startsWith("_metanorma_form_item_")) {
+        if (qName.equals("id") && attr.getValue("name").startsWith(METANORMA_FORM_ITEM_PREFIX)) {
             // example: <id name="_metanorma_form_item_textfield_birthday"/>
 
-            String attname =  attr.getValue("name");
+            String attname = attr.getValue("name");
 
 
             /// _metanorma_form_item_border____form_item_type___id___name___value -->
-			// split by '___': [1] - form_item_type, [2] - id, [3] - name, [4] - value -->
-            String[] values = attname.split("___");
+            // split by '___': [1] - form_item_type, [2] - id, [3] - name, [4] - value -->
+            String[] values = attname.split("___", -1);
 
 
             //determine field type
@@ -205,17 +206,21 @@ public class FOPIFFormsHandler extends DefaultHandler {
                     if (iter == 1) {
                         field_name_new = field_name;
                     } else if (iter == 2) {
-                        field_name_new = formName + "_" + field_name;
+                        field_name_new = currentFormName + "_" + field_name;
                     } else {
-                        field_name_new = formName + "_" + field_name + iter;
+                        field_name_new = currentFormName + "_" + field_name + iter;
                     }
 
-                    FormItem foundItem = formItems.stream()
-                            .filter(item -> item.getName().equals(field_name_new))
-                            .findFirst()
-                            .orElse(null); // Returns null if no match is found
+                    List<FormItem> currentFormItems =  formItems.get(currentFormName);
+                    FormItem foundItem = null;
+                    if (currentFormItems != null) {
+                        foundItem = currentFormItems.stream()
+                                .filter(item -> item.getName().equals(field_name_new))
+                                .findFirst()
+                                .orElse(null); // Returns null if no match is found
+                    }
                     if (foundItem != null) {
-                        iter ++;
+                        iter++;
                     } else {
                         is_field_name_unique = true;
                         field_name_unique = field_name_new;
@@ -223,14 +228,17 @@ public class FOPIFFormsHandler extends DefaultHandler {
                 }
 
                 if (!field_name.equals(field_name_unique)) {
-                    logger.warning("Form element " + field_type + " with name '" + field_name +  "' exists already in the document. For uniqueness, the name changed to '" + field_name_unique + "'.");
+                    logger.warning("Form element " + field_type + " with name '" + field_name + "' exists already in the document. For uniqueness, the name changed to '" + field_name_unique + "'.");
                 }
             }
 
             currFormItem.setName(field_name_unique);
             currFormItem.setFontSize(fontSize / 1000.0);
             currFormItem.setFontColor(fontColor);
-            formItems.add(currFormItem);
+            currFormItem.setValue(values[values.length - 1]);
+
+            //addFormItem(currFormItem);
+            formItems.computeIfAbsent(currentFormName, k -> new ArrayList<>()).add(currFormItem);
 
             previousElement = "form_item_id";
             skipElements.push(false);
@@ -300,7 +308,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
                 // restore id from string starts with '_metanorma_form_start_id'
                 String[] values = value.split("___");
                 value = values[1];
-            }  else if (attName.equals("name") && value.startsWith(METANORMA_FORM_ITEM_PREFIX)) {
+            } else if (attName.equals("name") && value.startsWith(METANORMA_FORM_ITEM_PREFIX)) {
                 // restore id from string _metanorma_form_item_border____form_item_type___id___name___value
                 // split string  by '___'
                 String[] values = value.split("___");
@@ -350,6 +358,7 @@ public class FOPIFFormsHandler extends DefaultHandler {
         }
         stackChar.pop();
     }
+
     private void copyEndElement(String qName, List<String> list) {
         if (!stackChar.isEmpty() && stackChar.peek().compareTo(SIGN_GREATER) == 0) {
             list.add("/>");
@@ -398,18 +407,31 @@ public class FOPIFFormsHandler extends DefaultHandler {
             return "";
         }
         int size = 0;
-        for (String item: listResult) {
-            size +=  item.length();
+        for (String item : listResult) {
+            size += item.length();
         }
         StringBuilder sbResult = new StringBuilder(size);
-        for (String item: listResult) {
+        for (String item : listResult) {
             sbResult.append(item);
         }
         listResult.clear();
         return sbResult.toString();
     }
 
-    public List<FormItem> getFormsItems() {
+
+    private void addFormItem(FormItem formItem) {
+        List<FormItem> items = formItems.get(currentFormName);
+        if (items == null) {
+            formItems.put(currentFormName, new ArrayList<>(Arrays.asList(formItem)));
+        } else {
+            items.add(formItem);
+            formItems.put(currentFormName, items);
+        }
+    }
+
+
+
+    public Map<String, List<FormItem>> getFormsItems() {
         return formItems;
     }
 

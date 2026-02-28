@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,7 +48,7 @@ public class PDFForm {
     
     private boolean DEBUG = false;
     
-    public void process(File pdf, List<FormItem> formItems) throws IOException {
+    public void process(File pdf, Map<String, List<FormItem>> formItems) throws IOException {
 
         Path pdf_tmp = Paths.get(pdf.getAbsolutePath() + "_forms_tmp");
         Files.copy(Paths.get(pdf.getAbsolutePath()), pdf_tmp, StandardCopyOption.REPLACE_EXISTING);
@@ -68,93 +69,101 @@ public class PDFForm {
 
             DecimalFormat df = new DecimalFormat("#.#");
 
-            for (FormItem formItem: formItems) {
+            for (Map.Entry<String, List<FormItem>> formEntry : formItems.entrySet()) {
 
-                int pageNum = formItem.getPage();
-                PDPage page = document.getPage(pageNum - 1);
+                String formName = formEntry.getKey();
 
-                if (formItem.getType() == FormItemType.TextField) {
-                    PDTextField textBox = new PDTextField(acroForm);
-                    textBox.setPartialName(formItem.getName());
+                for (FormItem formItem: formEntry.getValue()) {
 
-                    String fontSize = df.format(formItem.getFontSize());
-                    String fontColor = getNormalizedRGB(formItem.getFontColor());
+                    int pageNum = formItem.getPage();
+                    PDPage page = document.getPage(pageNum - 1);
 
-                    // /Helv 11 Tf 0 0 1 rg
-                    /* From Google AI:
-                    /Helv: This is the name under which the Helvetica font is known in the PDF's resource dictionary. The actual font file might be embedded in the PDF, but it's referenced by this name.
-                    11: This number specifies the font size in points (11 points).
-                    Tf: This is the "Set text font and size" operator. It sets the specified font and size as the current text state parameters for any subsequent text-showing operations.
-                    0 0 1: These three numbers represent the RGB color values for the non-stroking (filling) color, with values ranging from 0 to 1. In this case, 0 0 1 corresponds to blue (0% Red, 0% Green, 100% Blue).
-                    rg: This is the "Set non-stroking color space to RGB and set the color" operator. It sets the color used for filling text (and other shapes) to the color specified by the preceding values.
-                    */
-                    defaultAppearanceString = "/Helv " + fontSize + " Tf " + fontColor +" rg";
-                    textBox.setDefaultAppearance(defaultAppearanceString);
+                    if (formItem.getType() == FormItemType.TextField) {
+                        PDTextField textBox = new PDTextField(acroForm);
+                        textBox.setPartialName(formItem.getName());
 
-                    acroForm.getFields().add(textBox);
+                        String fontSize = df.format(formItem.getFontSize());
+                        String fontColor = getNormalizedRGB(formItem.getFontColor());
 
-                    PDAnnotationWidget widget = textBox.getWidgets().get(0);
-                    PDRectangle rect = formItem.getRect();
-                    widget.setRectangle(rect);
-                    widget.setPage(page);
+                        // /Helv 11 Tf 0 0 1 rg
+                        /* From Google AI:
+                        /Helv: This is the name under which the Helvetica font is known in the PDF's resource dictionary. The actual font file might be embedded in the PDF, but it's referenced by this name.
+                        11: This number specifies the font size in points (11 points).
+                        Tf: This is the "Set text font and size" operator. It sets the specified font and size as the current text state parameters for any subsequent text-showing operations.
+                        0 0 1: These three numbers represent the RGB color values for the non-stroking (filling) color, with values ranging from 0 to 1. In this case, 0 0 1 corresponds to blue (0% Red, 0% Green, 100% Blue).
+                        rg: This is the "Set non-stroking color space to RGB and set the color" operator. It sets the color used for filling text (and other shapes) to the color specified by the preceding values.
+                        */
+                        defaultAppearanceString = "/Helv " + fontSize + " Tf " + fontColor +" rg";
+                        textBox.setDefaultAppearance(defaultAppearanceString);
 
-                    PDAppearanceCharacteristicsDictionary fieldAppearance
-                            = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
-                    //fieldAppearance.setBorderColour(new PDColor(new float[]{0,1,0}, PDDeviceRGB.INSTANCE));
-                    //fieldAppearance.setBackground(new PDColor(new float[]{1,1,0}, PDDeviceRGB.INSTANCE));
-                    widget.setAppearanceCharacteristics(fieldAppearance);
+                        acroForm.getFields().add(textBox);
 
-                    widget.setPrinted(true);
+                        PDAnnotationWidget widget = textBox.getWidgets().get(0);
+                        PDRectangle rect = formItem.getRect();
+                        widget.setRectangle(rect);
+                        widget.setPage(page);
 
-                    page.getAnnotations().add(widget);
+                        PDAppearanceCharacteristicsDictionary fieldAppearance
+                                = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
+                        //fieldAppearance.setBorderColour(new PDColor(new float[]{0,1,0}, PDDeviceRGB.INSTANCE));
+                        //fieldAppearance.setBackground(new PDColor(new float[]{1,1,0}, PDDeviceRGB.INSTANCE));
+                        widget.setAppearanceCharacteristics(fieldAppearance);
 
-                    // alignment
-                    textBox.setQ(PDVariableText.QUADDING_CENTERED);
-                }  else if (formItem.getType() == FormItemType.CheckBox) {
-                    // from PDFBox CreateCheckBox
-                    PDCheckBox checkbox = new PDCheckBox(acroForm);
-                    checkbox.setPartialName(formItem.getName());
+                        widget.setPrinted(true);
 
-                    PDAnnotationWidget widget = checkbox.getWidgets().get(0);
-                    widget.setPage(page);
-                    PDRectangle rect = formItem.getRect();
-                    widget.setRectangle(rect);
-                    widget.setPrinted(true);
+                        page.getAnnotations().add(widget);
 
-                    PDAppearanceCharacteristicsDictionary appearanceCharacteristics = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
+                        // alignment
+                        textBox.setQ(PDVariableText.QUADDING_CENTERED);
+                    }  else if (formItem.getType() == FormItemType.CheckBox) {
+                        // from PDFBox CreateCheckBox
+                        PDCheckBox checkbox = new PDCheckBox(acroForm);
+                        checkbox.setPartialName(formItem.getName());
 
-                    float[] rgb = getFloatRGB(formItem.getFontColor());
+                        PDAnnotationWidget widget = checkbox.getWidgets().get(0);
+                        widget.setPage(page);
+                        PDRectangle rect = formItem.getRect();
+                        widget.setRectangle(rect);
+                        widget.setPrinted(true);
 
-                    // To do: https://github.com/metanorma/mn2pdf/issues/403
-                    appearanceCharacteristics.setBorderColour(new PDColor(rgb, PDDeviceRGB.INSTANCE));
-                    // default white background
-                    appearanceCharacteristics.setBackground(new PDColor(new float[]{1, 1, 1}, PDDeviceRGB.INSTANCE));
-                    // 8 = cross; 4 = checkmark; H = star; u = diamond; n = square, l = dot
-                    appearanceCharacteristics.setNormalCaption("4");
-                    widget.setAppearanceCharacteristics(appearanceCharacteristics);
+                        PDAppearanceCharacteristicsDictionary appearanceCharacteristics = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
 
-                    PDBorderStyleDictionary borderStyleDictionary = new PDBorderStyleDictionary();
-                    borderStyleDictionary.setWidth(0.5f); // To do - pass border width
-                    borderStyleDictionary.setStyle(PDBorderStyleDictionary.STYLE_SOLID);
-                    widget.setBorderStyle(borderStyleDictionary);
+                        float[] rgb = getFloatRGB(formItem.getFontColor());
 
-                    PDAppearanceDictionary ap = new PDAppearanceDictionary();
-                    widget.setAppearance(ap);
-                    PDAppearanceEntry normalAppearance = ap.getNormalAppearance();
+                        // To do: https://github.com/metanorma/mn2pdf/issues/403
+                        appearanceCharacteristics.setBorderColour(new PDColor(rgb, PDDeviceRGB.INSTANCE));
+                        // default white background
+                        appearanceCharacteristics.setBackground(new PDColor(new float[]{1, 1, 1}, PDDeviceRGB.INSTANCE));
+                        // 8 = cross; 4 = checkmark; H = star; u = diamond; n = square, l = dot
+                        appearanceCharacteristics.setNormalCaption("4");
+                        widget.setAppearanceCharacteristics(appearanceCharacteristics);
 
-                    COSDictionary normalAppearanceDict = normalAppearance.getCOSObject();
-                    PDFont zapfDingbats = new PDType1Font(Standard14Fonts.FontName.ZAPF_DINGBATS);
-                    normalAppearanceDict.setItem(COSName.Off, createCheckBoxAppearanceStream(document, widget, false, zapfDingbats));
-                    normalAppearanceDict.setItem(COSName.YES, createCheckBoxAppearanceStream(document, widget, true, zapfDingbats));
+                        PDBorderStyleDictionary borderStyleDictionary = new PDBorderStyleDictionary();
+                        borderStyleDictionary.setWidth(0.5f); // To do - pass border width
+                        borderStyleDictionary.setStyle(PDBorderStyleDictionary.STYLE_SOLID);
+                        widget.setBorderStyle(borderStyleDictionary);
 
-                    // If we ever decide to implement a /D (down) appearance, just
-                    // replace the background colors c with c * 0.75
+                        PDAppearanceDictionary ap = new PDAppearanceDictionary();
+                        widget.setAppearance(ap);
+                        PDAppearanceEntry normalAppearance = ap.getNormalAppearance();
 
-                    page.getAnnotations().add(checkbox.getWidgets().get(0));
-                    acroForm.getFields().add(checkbox);
+                        COSDictionary normalAppearanceDict = normalAppearance.getCOSObject();
+                        PDFont zapfDingbats = new PDType1Font(Standard14Fonts.FontName.ZAPF_DINGBATS);
+                        normalAppearanceDict.setItem(COSName.Off, createCheckBoxAppearanceStream(document, widget, false, zapfDingbats));
+                        normalAppearanceDict.setItem(COSName.YES, createCheckBoxAppearanceStream(document, widget, true, zapfDingbats));
 
-                    // always call check() or unCheck(), or the box will remain invisible.
-                    checkbox.unCheck();
+                        // If we ever decide to implement a /D (down) appearance, just
+                        // replace the background colors c with c * 0.75
+
+                        page.getAnnotations().add(checkbox.getWidgets().get(0));
+                        acroForm.getFields().add(checkbox);
+
+                        // always call check() or unCheck(), or the box will remain invisible.
+                        checkbox.unCheck();
+                        if (formItem.getValue().equals("true")) {
+                            checkbox.check();
+                        }
+                    } 
                 }
 
                 //textBox.setValue("Sample field content");

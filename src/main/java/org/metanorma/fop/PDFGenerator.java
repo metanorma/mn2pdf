@@ -111,7 +111,7 @@ public class PDFGenerator {
 
     private boolean isAddForms = false;
 
-    private List<FormItem> formsItems = new ArrayList<>();
+    private Map<String, List<FormItem>> formsItems = new HashMap<>();
     
     private boolean isAddMathAsAttachment = false;
 
