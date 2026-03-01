@@ -4,13 +4,13 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 public class FormItem {
 
-    PDRectangle rect;// = new PDRectangle(50, 750, 200, 50);
+    private PDRectangle rect;// = new PDRectangle(50, 750, 200, 50);
 
-    int page;
+    private int page;
 
-    FormItemType type;
+    private FormItemType type;
 
-    String value = "";
+    private String value = "";
 
     private String name;
 
@@ -38,6 +38,9 @@ public class FormItem {
                 break;
             case "checkbox":
                 this.type = FormItemType.CheckBox;
+                break;
+            case "radiobutton":
+                this.type = FormItemType.RadioButton;
                 break;
             default:
                 this.type = FormItemType.TextField;

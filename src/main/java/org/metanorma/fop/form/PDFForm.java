@@ -17,10 +17,7 @@ import org.apache.pdfbox.pdmodel.font.encoding.GlyphList;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.interactive.annotation.*;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.metanorma.utils.LoggerHelper;
 import org.verapdf.model.coslayer.CosName;
 
@@ -47,7 +44,10 @@ public class PDFForm {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
     
     private boolean DEBUG = false;
-    
+
+    private PDColor colorBlack = new PDColor(new float[]{0, 0, 0}, PDDeviceRGB.INSTANCE);
+    private PDColor colorWhite = new PDColor(new float[]{1, 1, 1}, PDDeviceRGB.INSTANCE);
+
     public void process(File pdf, Map<String, List<FormItem>> formItems) throws IOException {
 
         Path pdf_tmp = Paths.get(pdf.getAbsolutePath() + "_forms_tmp");
@@ -115,6 +115,8 @@ public class PDFForm {
 
                         // alignment
                         textBox.setQ(PDVariableText.QUADDING_CENTERED);
+                        //textBox.setValue("Sample field content");
+
                     }  else if (formItem.getType() == FormItemType.CheckBox) {
                         // from PDFBox CreateCheckBox
                         PDCheckBox checkbox = new PDCheckBox(acroForm);
@@ -133,7 +135,7 @@ public class PDFForm {
                         // To do: https://github.com/metanorma/mn2pdf/issues/403
                         appearanceCharacteristics.setBorderColour(new PDColor(rgb, PDDeviceRGB.INSTANCE));
                         // default white background
-                        appearanceCharacteristics.setBackground(new PDColor(new float[]{1, 1, 1}, PDDeviceRGB.INSTANCE));
+                        appearanceCharacteristics.setBackground(colorWhite);
                         // 8 = cross; 4 = checkmark; H = star; u = diamond; n = square, l = dot
                         appearanceCharacteristics.setNormalCaption("4");
                         widget.setAppearanceCharacteristics(appearanceCharacteristics);
@@ -163,10 +165,72 @@ public class PDFForm {
                         if (formItem.getValue().equals("true")) {
                             checkbox.check();
                         }
-                    } 
+                    }  else if (formItem.getType() == FormItemType.RadioButton) {
+                        // skip, see processing below
+                    }
                 }
 
-                //textBox.setValue("Sample field content");
+                // create groups of radiobuttons
+                Map<String, List<FormItem>> radioButtonsGroups = new HashMap<>();
+                for (FormItem formItem: formEntry.getValue()) {
+                    if (formItem.getType() == FormItemType.RadioButton) {
+                        String groupName = formItem.getName();
+                        radioButtonsGroups.computeIfAbsent(groupName, k -> new ArrayList<>()).add(formItem);
+                    }
+                }
+
+                for (Map.Entry<String, List<FormItem>> radioButtonEntry : radioButtonsGroups.entrySet()) {
+
+                    String groupName = radioButtonEntry.getKey();
+
+                    int pageNum = radioButtonEntry.getValue().get(0).getPage(); // all RadioButtons on the same page
+                    PDPage page = document.getPage(pageNum - 1);
+
+                    List<String> options = new ArrayList<>();
+                    for (FormItem radioButtonItem : radioButtonEntry.getValue()) {
+                        options.add(radioButtonItem.getValue());
+                    }
+
+                    PDRadioButton radioButton = new PDRadioButton(acroForm);
+                    radioButton.setPartialName(groupName);
+                    radioButton.setExportValues(options);
+
+                    PDAppearanceCharacteristicsDictionary appearanceCharacteristics = new PDAppearanceCharacteristicsDictionary(new COSDictionary());
+                    appearanceCharacteristics.setBorderColour(colorBlack);
+                    appearanceCharacteristics.setBackground(colorWhite);
+                    // no caption => round
+                    // with caption => see checkbox example
+
+                    List<PDAnnotationWidget> widgets = new ArrayList<>();
+                    for (int i = 0; i < options.size(); i++)
+                    {
+                        PDAnnotationWidget widget = new PDAnnotationWidget();
+                        PDRectangle rect = radioButtonEntry.getValue().get(i).getRect();
+                        widget.setRectangle(rect);
+                        widget.setPrinted(true);
+                        widget.setAppearanceCharacteristics(appearanceCharacteristics);
+                        PDBorderStyleDictionary borderStyleDictionary = new PDBorderStyleDictionary();
+                        borderStyleDictionary.setWidth(0.5f);
+                        borderStyleDictionary.setStyle(PDBorderStyleDictionary.STYLE_SOLID);
+                        widget.setBorderStyle(borderStyleDictionary);
+                        widget.setPage(page);
+
+                        COSDictionary apNDict = new COSDictionary();
+                        apNDict.setItem(COSName.Off, createRadioButtonAppearanceStream(document, widget, false));
+                        apNDict.setItem(options.get(i), createRadioButtonAppearanceStream(document, widget, true));
+
+                        PDAppearanceDictionary appearance = new PDAppearanceDictionary();
+                        PDAppearanceEntry appearanceNEntry = new PDAppearanceEntry(apNDict);
+                        appearance.setNormalAppearance(appearanceNEntry);
+                        widget.setAppearance(appearance);
+                        widget.setAppearanceState("Off"); // don't forget this, or button will be invisible
+                        widgets.add(widget);
+                        page.getAnnotations().add(widget);
+                    }
+                    radioButton.setWidgets(widgets);
+
+                    acroForm.getFields().add(radioButton);
+                }
             }
 
             Files.deleteIfExists(pdf.toPath());
@@ -176,15 +240,12 @@ public class PDFForm {
             logger.severe("Can't read annotation data from PDF.");
             ex.printStackTrace();
         }
-
-
         finally {
             /*if( document != null ) {
                 document.close();
             }*/
             Files.deleteIfExists(pdf_tmp);
         }
-        
     }
 
     private String getNormalizedRGB(String hexColor) {
@@ -309,6 +370,36 @@ public class PDFForm {
         return yesAP;
     }
 
+    private static PDAppearanceStream createRadioButtonAppearanceStream(
+            final PDDocument document, PDAnnotationWidget widget, boolean on) throws IOException
+    {
+        PDRectangle rect = widget.getRectangle();
+        PDAppearanceStream onAP = new PDAppearanceStream(document);
+        onAP.setBBox(new PDRectangle(rect.getWidth(), rect.getHeight()));
+        try (PDAppearanceContentStream onAPCS = new PDAppearanceContentStream(onAP))
+        {
+            PDAppearanceCharacteristicsDictionary appearanceCharacteristics = widget.getAppearanceCharacteristics();
+            PDColor backgroundColor = appearanceCharacteristics.getBackground();
+            PDColor borderColor = appearanceCharacteristics.getBorderColour();
+            float lineWidth = getLineWidth(widget);
+            onAPCS.setBorderLine(lineWidth, widget.getBorderStyle(), widget.getBorder());
+            onAPCS.setNonStrokingColor(backgroundColor);
+            float radius = Math.min(rect.getWidth() / 2, rect.getHeight() / 2);
+            drawCircle(onAPCS, rect.getWidth() / 2, rect.getHeight() / 2, radius);
+            onAPCS.fill();
+            onAPCS.setStrokingColor(borderColor);
+            drawCircle(onAPCS, rect.getWidth() / 2, rect.getHeight() / 2, radius - lineWidth / 2);
+            onAPCS.stroke();
+            if (on)
+            {
+                onAPCS.setNonStrokingColor(0f);
+                drawCircle(onAPCS, rect.getWidth() / 2, rect.getHeight() / 2, (radius - lineWidth) / 2);
+                onAPCS.fill();
+            }
+        }
+        return onAP;
+    }
+
     static float getLineWidth(PDAnnotationWidget widget)
     {
         PDBorderStyleDictionary bs = widget.getBorderStyle();
@@ -319,4 +410,15 @@ public class PDFForm {
         return 1;
     }
 
+    static void drawCircle(PDAppearanceContentStream cs, float x, float y, float r) throws IOException
+    {
+        // http://stackoverflow.com/a/2007782/535646
+        float magic = r * 0.551784f;
+        cs.moveTo(x, y + r);
+        cs.curveTo(x + magic, y + r, x + r, y + magic, x + r, y);
+        cs.curveTo(x + r, y - magic, x + magic, y - r, x, y - r);
+        cs.curveTo(x - magic, y - r, x - r, y - magic, x - r, y);
+        cs.curveTo(x - r, y + magic, x - magic, y + r, x, y + r);
+        cs.closePath();
+    }
 }
