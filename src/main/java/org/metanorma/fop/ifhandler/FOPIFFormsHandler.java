@@ -168,9 +168,9 @@ public class FOPIFFormsHandler extends DefaultHandler {
             float border_y2 = border_y1 + Integer.parseInt(attr.getValue("height"));
             PDRectangle pdRectangle = new PDRectangle();
             pdRectangle.setLowerLeftX(border_x1 / 1000);
-            pdRectangle.setLowerLeftY((pageHeight - border_y1) / 1000);
+            pdRectangle.setLowerLeftY((pageHeight - border_y1) / 1000 + 1.0f);
             pdRectangle.setUpperRightX(border_x2 / 1000);
-            pdRectangle.setUpperRightY((pageHeight - border_y2) / 1000);
+            pdRectangle.setUpperRightY((pageHeight - border_y2) / 1000 + 1.0f);
             currFormItem = new FormItem(pdRectangle, page);
             skipElements.push(true);
             return;
@@ -196,6 +196,10 @@ public class FOPIFFormsHandler extends DefaultHandler {
             //String field_name = attname.substring((METANORMA_FORM_ITEM_PREFIX + field_type + "_").length());
             //field_name = field_name.substring(field_name.indexOf(FIELD_NAME_PREFIX) + FIELD_NAME_PREFIX.length());
             String field_name = values[3];
+            if (field_name.isEmpty()) {
+                //if 'name' didn't set
+                field_name = values[2];
+            }
             String field_name_unique = field_name;
             if (!field_type.equals("radiobutton")) {
                 int iter = 1;
