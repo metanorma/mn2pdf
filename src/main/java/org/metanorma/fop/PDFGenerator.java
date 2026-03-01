@@ -1015,7 +1015,7 @@ public class PDFGenerator {
             try {
                 new PDFForm().process(pdf, formsItems);
             } catch (Exception ex) {
-                logger.severe("Can't process forms (" + ex.toString() + ").");
+                logger.severe("Can't process forms (" + ex.toString() + ")." + REPORT_ISSUE);
                 ex.printStackTrace();
             }
         }
