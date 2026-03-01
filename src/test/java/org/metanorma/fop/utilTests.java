@@ -100,10 +100,17 @@ public class utilTests {
         System.out.println(name.getMethodName());
         String cssString = "sourcecode .c, sourcecode .ch {\n" +
                 "  color: #FF0000;\n" +
-                "}";
+                "}\n" +
+                "#toc li a, #toc > ul :is(h1, h2, h3, h4, h5, h6) li a {\n" +
+                "  text-transform: none;\n" +
+                "}\n" +
+                ".clauses::after     { content: \"chapters\"; }";
         Node xmlNode = Util.parseCSS(cssString);
         String xmlStr = nodeToString(xmlNode);
-        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class><class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class></css>", xmlStr);
+        assertEquals("<css><class name=\"c\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class>" +
+                "<class name=\"ch\"><property name=\"color\" value=\"rgb(255, 0, 0)\"/></class>" +
+                "<class name=\"clauses::after\"><property name=\"content\" value=\"chapters\"/></class>" +
+                "</css>", xmlStr);
     }
 
     private static String nodeToString(Node node) {
@@ -153,6 +160,13 @@ public class utilTests {
         assertTrue(Util.getFilenameFromPath(file1).equals("program.c"));
         assertTrue(Util.getFilenameFromPath(file2).equals("program.c"));
         assertTrue(Util.getFilenameFromPath(file3).equals("program.c"));
+    }
+
+    @Test
+    public void testURIFromPath() throws IOException {
+        System.out.println(name.getMethodName());
+        String file1 = "img-art/Image_in_50%_gray.svg";
+        assertTrue(Util.getURIFromPath(file1).equals("img-art/Image_in_50%25_gray.svg"));
     }
 
 }

@@ -74,7 +74,9 @@ import org.w3c.dom.NodeList;
 public class PDFGenerator {
     
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
-    
+
+    public static final String ISSUE_TABLE_AUTOLAYOUT = "The problem with the 'table auto-layout algorithm': ";
+
     private String fontsPath = "";
 
     private String fontsManifest = "";
@@ -96,7 +98,8 @@ public class PDFGenerator {
     private String keystorePassword;
 
     final private String outputPDFFilePath;
-    
+
+    static private String xslFOfilename;
     //private boolean isDebugMode = false;
     
     private boolean isSkipPDFGeneration = false;
@@ -374,6 +377,9 @@ public class PDFGenerator {
                 isTableExists = sourceXMLDocument.hasTables();
                 isAddForms = sourceXMLDocument.hasForms();
                 boolean isMathExists = sourceXMLDocument.hasMath();
+                if(sourceXMLDocument.isDebugMode()) {
+                    DEBUG = true;
+                }
 
                 XSLTconverter xsltConverter = new XSLTconverter(fXSL, fXSLoverride, sourceXMLDocument.getPreprocessXSLT(), fPDF.getAbsolutePath());
 
@@ -497,6 +503,11 @@ public class PDFGenerator {
         return basepath;
     }
 
+    private String getCurrentPath() {
+        String currentWorkingDir = System.getProperty("user.dir") + File.separator;
+        return currentWorkingDir;
+    }
+
     private List<PDFMetainfo> getPresentationPartsFromXML(File fXML, PDFResult pdfResult) {
         List<PDFMetainfo> listPDFMetaInfo = new ArrayList<>();
         try {
@@ -596,7 +607,7 @@ public class PDFGenerator {
                                         new PDFMetainfo(outputFilePart.getAbsolutePath(), pdffile, docidentifier);
                                 listPDFMetaInfo.add(pdfMetainfo);
                             } catch (TransformerException e) {
-                                logger.severe("Can't save the document from document-collection.");
+                                logger.severe("Can't save the document from document-collection." + REPORT_ISSUE);
                                 e.printStackTrace();
                             } finally {
                                 try {
@@ -633,7 +644,7 @@ public class PDFGenerator {
             }
         }
         catch (Exception ex) {
-            logger.severe("Can't obtain the presentation part of the XML:");
+            logger.severe("Can't obtain the presentation part of the XML:" + REPORT_ISSUE);
             logger.severe(ex.getMessage());
             ex.printStackTrace();
             PDFMetainfo pdfMetainfo =
@@ -680,6 +691,7 @@ public class PDFGenerator {
             }
 
             additionalXSLTparams.setProperty("basepath", getBasePath());
+            additionalXSLTparams.setProperty("mn2pdfpath", getCurrentPath());
 
             File fInputXML = new File(inputXMLFilePath);
             String fInputXMLParent = fInputXML.getAbsoluteFile().getParent() + File.separator;
@@ -714,9 +726,10 @@ public class PDFGenerator {
             String add_commentary_page_numbers = Util.readValueFromXMLString(xmlFO, "//*[@id = '_independent_page_number_commentary']/@id");
             isAddCommentaryPageNumbers = !add_commentary_page_numbers.isEmpty();
 
-            debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.xml");
+            xslFOfilename = pdf.getAbsolutePath() + ".fo.xml";
+            debugSaveXML(xmlFO, xslFOfilename, true);
             
-            fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts());
+            fontcfg.setSourceDocumentFontList(sourceXMLDocument.getDocumentFonts(fontcfg));
 
             fontcfg.setComplexScriptFeatures(isComplexScriptsFeatures);
 
@@ -992,7 +1005,7 @@ public class PDFGenerator {
                 FileAttachmentAnnotation annotations = new FileAttachmentAnnotation();
                 annotations.process(pdf);
             } catch (Exception ex) {
-                logger.severe("Can't process file attachment annotation (" + ex.toString() + ").");
+                logger.severe("Can't process file attachment annotation (" + ex.toString() + ")." + REPORT_ISSUE);
                 ex.printStackTrace();
             }
         }
@@ -1154,7 +1167,7 @@ public class PDFGenerator {
         }    
         catch (Exception ex) {
             //System.err.println("Can't save index.xml into temporary folder");
-            logger.severe("Can't save index.xml into temporary folder");
+            logger.severe("Can't save index.xml into temporary folder" + REPORT_ISSUE);
             ex.printStackTrace();
         }
         Profiler.printProcessingTime(methodName, startMethodTime);
@@ -1184,7 +1197,7 @@ public class PDFGenerator {
             return result.toString();
         }
         catch (Exception ex) {
-            logger.severe("Can't update IF for hidden math.");
+            logger.severe("Can't update IF for hidden math." + REPORT_ISSUE);
             ex.printStackTrace();
         }
         Profiler.removeMethodCall();
@@ -1209,7 +1222,7 @@ public class PDFGenerator {
             return result;
         }
         catch (Exception ex) {
-            logger.severe("Can't flat IF.");
+            logger.severe("Can't flat IF." + REPORT_ISSUE);
             ex.printStackTrace();
         }
         Profiler.removeMethodCall();
@@ -1228,7 +1241,7 @@ public class PDFGenerator {
         try {
             xmlTableIF = applyXSLT("table_if.xsl", intermediateXML, false);
         } catch (Exception ex) {
-            logger.severe("Can't generate information about tables from Intermediate Format.");
+            logger.severe("Can't generate information about tables from Intermediate Format." + REPORT_ISSUE);
             ex.printStackTrace();
         }
         Profiler.printProcessingTime(methodName, startMethodTime);
@@ -1527,7 +1540,7 @@ public class PDFGenerator {
                 try {
                     xmlTablesOnly = applyXSLT("tables_only.xsl", sourceXMLDocument.getStreamSource(), true);
                 } catch (Exception ex) {
-                    logger.severe("Can't generate information about tables from Intermediate Format.");
+                    logger.severe(ISSUE_TABLE_AUTOLAYOUT + "Can't generate information about tables from Intermediate Format." + REPORT_ISSUE);
                     ex.printStackTrace();
                 }
 
@@ -1547,7 +1560,7 @@ public class PDFGenerator {
 
                     fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
 
-                    fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                    fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts(fontcfg));
 
                     Source sourceFO = new StreamSource(new StringReader(xmlFO));
 
@@ -1600,7 +1613,7 @@ public class PDFGenerator {
 
                         fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".portion_" + portion + ".tables.fontmanifest.log.txt"));
 
-                        fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts());
+                        fontcfg.setSourceDocumentFontList(sourceXMLDocumentTablesOnly.getDocumentFonts(fontcfg));
 
                         Source sourceFO = new StreamSource(new StringReader(xmlFO));
 
@@ -1655,15 +1668,18 @@ public class PDFGenerator {
             xsltConverter.setParam("table_if", "false");
             xsltConverter.setParam("table_only_with_id", "");
             xsltConverter.setParam("table_only_with_ids", "");
-            logger.log(Level.SEVERE, "Can''t obtain table''s widths information: {0}", e.toString());
+            logger.log(Level.SEVERE, ISSUE_TABLE_AUTOLAYOUT + "Can''t obtain table''s widths information: {0}" + REPORT_ISSUE, e.toString());
         }
         Profiler.printProcessingTime(methodName, startMethodTime);
         Profiler.removeMethodCall();
     }
     
     private void debugSaveXML(String xmlString, String pathTo) {
+        debugSaveXML(xmlString, pathTo, false);
+    }
+    private void debugSaveXML(String xmlString, String pathTo, boolean saveAlways) {
         try {
-            if (DEBUG) {
+            if (DEBUG || saveAlways) {
 
                 //DEBUG: write table width information to file                
                 String xmlString_UTF8 = xmlString.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -1708,7 +1724,7 @@ public class PDFGenerator {
         try {
             table = applyXSLT("table_if_clean.xsl", table, false);
         } catch (Exception ex) {
-            logger.severe("Can't simplify the tables width information XML.");
+            logger.severe(ISSUE_TABLE_AUTOLAYOUT + "Can't simplify the tables width information XML." + REPORT_ISSUE);
             ex.printStackTrace();
         }
         /*int startPos = table.indexOf("<table ");
@@ -1736,4 +1752,7 @@ public class PDFGenerator {
         return sbTablesIF.toString();
     }
 
+    public static String getXSLFOfilename() {
+        return xslFOfilename;
+    }
 }

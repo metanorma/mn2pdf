@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -25,6 +26,8 @@ import javax.xml.xpath.XPathFactory;
 
 import static org.metanorma.fop.Util.getStreamFromResources;
 
+import org.apache.fop.fonts.FontConfig;
+import org.metanorma.fop.fonts.FOPFont;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -50,6 +53,9 @@ public class SourceXMLDocument {
     private boolean hasFileAttachmentAnnotations = false;
     private boolean hasTables = false;
     private boolean hasForms = false;
+
+    private boolean isDebugMode = false;
+
     private Map<String, Integer> tablesCellsCountMap = new HashMap<>();
     private boolean hasMath = false;
 
@@ -57,6 +63,8 @@ public class SourceXMLDocument {
     static final Path tmpfilepath  = Paths.get(TMPDIR, UUID.randomUUID().toString());
 
     public static String mainFont = "";
+
+    public static List<String> mainAdditionalFonts = new ArrayList<>();
 
     String documentFilePath;
     
@@ -111,6 +119,8 @@ public class SourceXMLDocument {
         hasTables = !tablesCellsCountMap.isEmpty();
         String element_form = readValue("//*[local-name() = 'form'][1]");
         hasForms = element_form.length() != 0;
+        String element_pdf_debug = readValue("//*[local-name() = 'presentation-metadata']/*[local-name() = 'pdf-debug'][1]");
+        isDebugMode = element_pdf_debug.equalsIgnoreCase("true");
     }
 
     private void obtainTablesCellsCount() {
@@ -159,11 +169,15 @@ public class SourceXMLDocument {
     public void setXMLFO(String xmlFO) {
         this.xmlFO = xmlFO;
     }
-    
+
     public List<String> getDocumentFonts() {
+        return getDocumentFonts(null);
+    }
+
+    public List<String> getDocumentFonts(fontConfig fontcfg) {
 
         List<String> documentFontList = new ArrayList<>();
-        
+
         if(!xmlFO.isEmpty()) {
             try {
                 InputSource is = new InputSource(new StringReader(xmlFO));
@@ -187,7 +201,13 @@ public class SourceXMLDocument {
                                 if (!documentFontList.contains(fname)) {
                                     documentFontList.add(fname);
                                 }
-                            }                    
+                            }
+                            if (attr.getOwnerElement().getNodeName().equals("fo:root")) {
+                                // Get all fo:root fonts except the first one
+                                mainAdditionalFonts = documentFontList.stream()
+                                        .skip(1)
+                                        .collect(Collectors.toList());
+                            }
                         } catch (Exception ex) {}
                     }
 
@@ -200,7 +220,7 @@ public class SourceXMLDocument {
                             attrText = attrText.substring(attrText.indexOf("font-family"));
                             attrText = attrText.substring(attrText.indexOf(":") + 1);
                             if (attrText.indexOf(";") != -1) {
-                                attrText = attrText.substring(0, attrText.indexOf(";"));
+                                attrText = attrText.substring(0, attrText.indexOf(";")).trim();
                             }
                             for (String fname: attrText.split(",")) {
                                 fname = fname.trim().replace("'","")
@@ -212,30 +232,53 @@ public class SourceXMLDocument {
                         } catch (Exception ex) {}
                     }
 
-                    try {
-                        query = xPath.compile("//*/*[local-name() = 'style'][@type = 'text/css'][contains(., 'font-family')]/text()");
-                        String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
-                        boolean foundFontFamily = true;
-                        while (foundFontFamily) {
-                            int fontFamilyStart = textCSS.indexOf("{font-family:");
-                            foundFontFamily = fontFamilyStart != -1;
-                            if (foundFontFamily) {
-                                textCSS = textCSS.substring(fontFamilyStart);
-                                textCSS = textCSS.substring(textCSS.indexOf(":") + 1);
-                                if (textCSS.indexOf(";") != -1) {
-                                    String attrText = textCSS.substring(0, textCSS.indexOf(";"));
-                                    for (String fname : attrText.split(",")) {
-                                        fname = fname.trim().replace("'", "")
-                                                .replace("\"", "");
-                                        if (!documentFontList.contains(fname)) {
-                                            documentFontList.add(fname);
+                    // [@type = 'text/css'] removed for https://github.com/metanorma/mn2pdf/issues/384#issuecomment-3803816045
+                    query = xPath.compile("//*/*[local-name() = 'style'][contains(., 'font-family')]/text()");
+                    // String textCSS = (String)query.evaluate(srcXML, XPathConstants.STRING);
+                    nList = (NodeList)query.evaluate(srcXML, XPathConstants.NODESET);
+                    for (int i = 0; i < nList.getLength(); i++) {
+                        try {
+
+                            String textCSS = nList.item(i).getTextContent();
+
+                            boolean foundFontFamily = true;
+                            while (foundFontFamily) {
+                                int fontFamilyStart = textCSS.indexOf("font-family:");
+                                foundFontFamily = fontFamilyStart != -1;
+                                if (foundFontFamily) {
+                                    textCSS = textCSS.substring(fontFamilyStart);
+                                    textCSS = textCSS.substring(textCSS.indexOf(":") + 1);
+                                    int pos_semicolon = textCSS.indexOf(";");
+                                    int pos_curlybrace = textCSS.indexOf("}");
+                                    if (pos_semicolon != -1 || pos_curlybrace != -1) {
+                                        int pos_end = 0;
+                                        if (pos_semicolon == -1) {
+                                            pos_semicolon = 0;
+                                            pos_end = pos_curlybrace;
+                                        } else if (pos_curlybrace == -1) {
+                                            pos_curlybrace = 0;
+                                            pos_end = pos_semicolon;
+                                        }
+                                        pos_end = Math.min(pos_semicolon, pos_curlybrace);
+                                        
+                                        String attrText = textCSS.substring(0, pos_end).trim();
+                                        for (String fname : attrText.split(",")) {
+                                            fname = fname.trim().replace("'", "")
+                                                    .replace("\"", "");
+
+                                            if (!documentFontList.contains(fname)) {
+                                                //if (fontcfg != null && fontcfg.hasFontFamily(fname)) {
+                                                    documentFontList.add(fname);
+                                                    //break;
+                                                //}
+                                            }
                                         }
                                     }
                                 }
                             }
+                        } catch (Exception ex) {
+                            //Experimental feature
                         }
-                    } catch (Exception ex) {
-                        //Experimental feature
                     }
                     if (!documentFontList.isEmpty()) {
                         mainFont = documentFontList.get(0);
@@ -512,6 +555,8 @@ public class SourceXMLDocument {
     // find tag 'form'
     public boolean hasForms() {
         return hasForms;
+    public boolean isDebugMode() {
+        return isDebugMode;
     }
 
     public boolean hasMath() {

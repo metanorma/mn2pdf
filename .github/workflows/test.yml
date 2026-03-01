@@ -49,7 +49,7 @@ jobs:
 
       - run: |
           fontist update
-          fontist manifest-install --confirm-license .github/mscorefonts.yml
+          fontist manifest install --confirm-license .github/mscorefonts.yml
 
       - uses: actions/cache@v4
         with:

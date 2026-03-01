@@ -53,6 +53,34 @@ public class FOPFontTriplet {
         return weight;
     }
 
+    public String getWeightNumerical() {
+        switch (weight) {
+            case "thin":
+            case "hairline":
+                return "100";
+            case "extra-light":
+                return "200";
+            case "light":
+                return "300";
+            case "normal":
+                return "400";
+            case "medium":
+                return "500";
+            case "semi-bold":
+            case "demi-bold":
+                return "600";
+            case "bold":
+                return "700";
+            case "extra-bold":
+            case "ultra-bold":
+                return "800";
+            case "black":
+            case "heavy":
+                return "900";
+        }
+        return weight;
+    }
+
     public void setWeight(String weight) {
         this.weight = weight;
     }
@@ -86,6 +114,9 @@ public class FOPFontTriplet {
         } else if (fontname.toLowerCase().contains("calibri")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("cour")) {
+            //substprefix = "Code";
+            substprefix = "SansMono";
+        } else if (fontname.toLowerCase().contains("monospace")) {
             //substprefix = "Code";
             substprefix = "SansMono";
         } else if (fontname.toLowerCase().contains("sans")) {

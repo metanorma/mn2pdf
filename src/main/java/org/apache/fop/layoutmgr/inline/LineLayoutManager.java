@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,7 +72,9 @@ import org.apache.fop.layoutmgr.NonLeafPosition;
 import org.apache.fop.layoutmgr.Position;
 import org.apache.fop.layoutmgr.PositionIterator;
 import org.apache.fop.layoutmgr.SpaceSpecifier;
+import org.apache.fop.render.intermediate.EventProducingFilter;
 import org.apache.fop.traits.MinOptMax;
+import org.metanorma.utils.LoggerHelper;
 
 /**
  * LayoutManager for lines. It builds one or more lines containing
@@ -99,6 +102,8 @@ public class LineLayoutManager extends InlineStackingLayoutManager
      * logging instance
      */
     private static Log log = LogFactory.getLog(LineLayoutManager.class);
+
+    protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
     private final Block fobj;
     private boolean isFirstInBlock;
@@ -404,9 +409,15 @@ public class LineLayoutManager extends InlineStackingLayoutManager
                 if (elementId != null && elementId.startsWith("__internal_layout__")) {
                     // skip event
                 } else if (curChildLM.getFObj() == null) {
+                    // https://github.com/metanorma/mn2pdf/issues/385#issuecomment-3887124667
+                    // int currentPage =  EventProducingFilter.getCurrentPage() + 1;
+                    // logger.severe("Page #" + currentPage + ":");
                     eventProducer.lineOverflows(this, getFObj().getName(), bestActiveNode.line,
                             -lack, getFObj().getLocator());
                 } else {
+                    // https://github.com/metanorma/mn2pdf/issues/385#issuecomment-3887124667
+                    // int currentPage =  EventProducingFilter.getCurrentPage() + 1;
+                    // logger.severe("Page #" + currentPage + ":");
                     eventProducer.lineOverflows(this, curChildLM.getFObj().getName(), bestActiveNode.line,
                         -lack, curChildLM.getFObj().getLocator());
                 }
