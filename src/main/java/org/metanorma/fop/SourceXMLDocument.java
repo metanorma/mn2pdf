@@ -555,6 +555,8 @@ public class SourceXMLDocument {
     // find tag 'form'
     public boolean hasForms() {
         return hasForms;
+    }
+        
     public boolean isDebugMode() {
         return isDebugMode;
     }
