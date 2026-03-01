@@ -50,10 +50,9 @@ import static org.metanorma.fop.Util.getStreamFromResources;
 import org.metanorma.fop.annotations.FileAttachmentAnnotation;
 import org.metanorma.fop.eventlistener.LoggingEventListener;
 import org.metanorma.fop.eventlistener.SecondPassSysOutEventListener;
-import org.metanorma.fop.ifhandler.FOPIFFlatHandler;
-import org.metanorma.fop.ifhandler.FOPIFHiddenMathHandler;
-import org.metanorma.fop.ifhandler.FOPIFIndexHandler;
-import org.metanorma.fop.ifhandler.FOPXMLPresentationHandler;
+import org.metanorma.fop.form.FormItem;
+import org.metanorma.fop.form.PDFForm;
+import org.metanorma.fop.ifhandler.*;
 import org.metanorma.fop.portfolio.PDFMetainfo;
 import org.metanorma.fop.portfolio.PDFPortfolio;
 import org.metanorma.fop.portfolio.PDFPortfolioItem;
@@ -112,6 +111,10 @@ public class PDFGenerator {
     private boolean isAddLineNumbers = false;
 
     private boolean isAddCommentaryPageNumbers = false;
+
+    private boolean isAddForms = false;
+
+    private Map<String, List<FormItem>> formsItems = new HashMap<>();
     
     private boolean isAddMathAsAttachment = false;
 
@@ -372,6 +375,7 @@ public class PDFGenerator {
                 isAddAnnotations = sourceXMLDocument.hasAnnotations();
                 isAddFileAttachmentAnnotations = sourceXMLDocument.hasFileAttachmentAnnotations();
                 isTableExists = sourceXMLDocument.hasTables();
+                isAddForms = sourceXMLDocument.hasForms();
                 boolean isMathExists = sourceXMLDocument.hasMath();
                 if(sourceXMLDocument.isDebugMode()) {
                     DEBUG = true;
@@ -785,7 +789,11 @@ public class PDFGenerator {
             
             String mime = MimeConstants.MIME_PDF;
 
-            boolean isPostprocessing = isAddMathAsText || isAddAnnotations || isAddLineNumbers || isAddCommentaryPageNumbers;
+            boolean isPostprocessing = isAddMathAsText ||
+                    isAddAnnotations ||
+                    isAddLineNumbers ||
+                    isAddCommentaryPageNumbers ||
+                    isAddForms;
 
             if (isPostprocessing) {
                 logger.info("Starting post-processing...");
@@ -828,6 +836,23 @@ public class PDFGenerator {
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.commentarypagenumbers.xml");
                 }
 
+                if (isAddForms) {
+                    logger.info("Read Forms information from Intermediate Format...");
+
+
+                    SAXParserFactory factory = SAXParserFactory.newInstance();
+                    SAXParser saxParser = factory.newSAXParser();
+                    FOPIFFormsHandler fopIFFormsHandler = new FOPIFFormsHandler();
+                    InputSource srcIntermediateXML = new InputSource(new StringReader(xmlIF));
+                    saxParser.parse(srcIntermediateXML, fopIFFormsHandler);
+
+                    //String xmlIFForm = applyXSLT("forms_if.xsl", xmlIF, true);
+
+                    xmlIF = fopIFFormsHandler.getResultedXML();
+                    formsItems =  fopIFFormsHandler.getFormsItems();
+
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.forms.xml");
+                }
                 
                 src = new StreamSource(new StringReader(xmlIF));
             }
@@ -981,6 +1006,16 @@ public class PDFGenerator {
                 annotations.process(pdf);
             } catch (Exception ex) {
                 logger.severe("Can't process file attachment annotation (" + ex.toString() + ")." + REPORT_ISSUE);
+                ex.printStackTrace();
+            }
+        }
+
+        if (isAddForms && !formsItems.isEmpty()) {
+            logger.log(Level.INFO, "[INFO] Forms processing...");
+            try {
+                new PDFForm().process(pdf, formsItems);
+            } catch (Exception ex) {
+                logger.severe("Can't process forms (" + ex.toString() + ").");
                 ex.printStackTrace();
             }
         }

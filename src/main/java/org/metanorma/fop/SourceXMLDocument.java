@@ -52,6 +52,7 @@ public class SourceXMLDocument {
     private boolean hasAnnotations = false;
     private boolean hasFileAttachmentAnnotations = false;
     private boolean hasTables = false;
+    private boolean hasForms = false;
 
     private boolean isDebugMode = false;
 
@@ -116,6 +117,8 @@ public class SourceXMLDocument {
         //hasTables = element_table.length() != 0;
         obtainTablesCellsCount();
         hasTables = !tablesCellsCountMap.isEmpty();
+        String element_form = readValue("//*[local-name() = 'form'][1]");
+        hasForms = element_form.length() != 0;
         String element_pdf_debug = readValue("//*[local-name() = 'presentation-metadata']/*[local-name() = 'pdf-debug'][1]");
         isDebugMode = element_pdf_debug.equalsIgnoreCase("true");
     }
@@ -549,6 +552,11 @@ public class SourceXMLDocument {
         return hasTables;
     }
 
+    // find tag 'form'
+    public boolean hasForms() {
+        return hasForms;
+    }
+        
     public boolean isDebugMode() {
         return isDebugMode;
     }
