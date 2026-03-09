@@ -104,13 +104,32 @@ public final class StandardStructureTypes {
         private static final long serialVersionUID = 8577475043360334210L;
         private final PDFName name;
 
+        // https://github.com/metanorma/mn2pdf/issues/406
+        private PDFName tagType;
+
         protected StructureTypeImpl(String name) {
+            // https://github.com/metanorma/mn2pdf/issues/406
+            String[] nameItems = name.split("/");
+            name = nameItems[0];
             this.name = new PDFName(name);
             StandardStructureTypes.STRUCTURE_TYPES.put(name, this);
         }
 
         public PDFName getName() {
             return name;
+        }
+
+        public void setTagType (String tagType) {
+            this.tagType = name;
+            if (tagType != null) {
+                this.tagType = new PDFName(tagType);
+            }
+        }
+        public PDFName getTagType() {
+            if (tagType == null) {
+                tagType = name;
+            }
+            return tagType;
         }
 
         @Override

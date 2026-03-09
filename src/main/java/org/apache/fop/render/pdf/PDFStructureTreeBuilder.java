@@ -123,12 +123,17 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
         public final PDFStructElem build(StructureHierarchyMember parent, Attributes attributes,
                 PDFFactory pdfFactory, EventBroadcaster eventBroadcaster) {
             String role = attributes.getValue(ROLE);
+            String tagType = role;
             StructureType structureType;
             if (role == null) {
                 structureType = defaultStructureType;
             } else if (role.equals("SKIP")) {
                 return (PDFStructElem)parent;
             } else {
+
+                String[] roleParts = role.split("/"); // for https://github.com/metanorma/mn2pdf/issues/406
+                role = roleParts[0];
+                tagType = (roleParts.length > 1) ? roleParts[1] : roleParts[0];
                 structureType = StandardStructureTypes.get(role);
                 if (structureType == null) {
                     structureType = defaultStructureType;
@@ -156,6 +161,9 @@ public class PDFStructureTreeBuilder implements StructureTreeEventHandler {
             if (structureType.toString().equals("Div") && tags_ancestor.contains("P")) {
                 return (PDFStructElem)parent;
             }
+
+
+            structureType.setTagType(tagType);
 
             PDFStructElem structElem = createStructureElement(parent, structureType);
             setAttributes(structElem, attributes);

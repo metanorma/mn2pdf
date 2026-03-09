@@ -31,4 +31,7 @@ public interface StructureType {
      */
     PDFName getName();
 
+    // https://github.com/metanorma/mn2pdf/issues/406
+    void setTagType(String type);
+    PDFName getTagType();
 }

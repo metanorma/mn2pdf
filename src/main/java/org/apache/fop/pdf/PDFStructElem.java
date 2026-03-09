@@ -67,7 +67,8 @@ public class PDFStructElem extends StructureHierarchyMember
     public PDFStructElem(PDFObject parent, StructureType structureType) {
         this(parent);
         this.structureType = structureType;
-        put("S", structureType.getName());
+        // https://github.com/metanorma/mn2pdf/issues/406
+        put("S", structureType.getTagType()); // .getName()
         if (structureType.getName().getName().equals("Note")) {
             // Note tag shall have ID entry (see https://github.com/metanorma/mn2pdf/issues/288)
             put("ID", generateHexID(16));
