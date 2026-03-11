@@ -90,9 +90,11 @@ public class PDFLink extends PDFObject {
             int f = 0;
             f |= 1 << (3 - 1); //Print, bit 3
             if (!(this.action instanceof PDFFileAttachmentAnnotation)) {
-                f |= 1 << (4 - 1); //NoZoom, bit 4
+                // commented for https://github.com/metanorma/mn2pdf/issues/405
+                //f |= 1 << (4 - 1); //NoZoom, bit 4
             }
-            f |= 1 << (5 - 1); //NoRotate, bit 5
+            // commented for https://github.com/metanorma/mn2pdf/issues/405
+            // f |= 1 << (5 - 1); //NoRotate, bit 5
             fFlag = "/F " + f;
         }
         String contents_key = null;
