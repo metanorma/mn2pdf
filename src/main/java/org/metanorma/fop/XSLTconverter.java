@@ -24,6 +24,7 @@ import static org.metanorma.Constants.ERROR_EXIT_CODE;
 import static org.metanorma.fop.PDFGenerator.logger;
 import static org.metanorma.fop.Util.getStreamFromResources;
 
+import org.metanorma.Constants;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -57,7 +58,8 @@ public class XSLTconverter {
             ex.printStackTrace(System.err);
             System.exit(ERROR_EXIT_CODE);
         }
-        transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+        // transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+        transformerFO.setOutputProperty(OutputKeys.ENCODING, Constants.XML_ENCODING);
     }
 
     public XSLTconverter(File fXSL, File fXSLoverride, String preprocessXSLT, String outPath) {
@@ -125,7 +127,8 @@ public class XSLTconverter {
             System.exit(ERROR_EXIT_CODE);
         }
 
-        transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+        // transformerFO.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+        transformerFO.setOutputProperty(OutputKeys.ENCODING, Constants.XML_ENCODING);
     }
 
     public Transformer getTransformer ()

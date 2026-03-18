@@ -1,5 +1,6 @@
 package org.metanorma.fop;
 
+import org.metanorma.Constants;
 import org.metanorma.fop.annotations.Annotation;
 
 import java.io.*;
@@ -1091,7 +1092,8 @@ public class PDFGenerator {
         IFSerializer ifSerializer = new IFSerializer(new IFContext(userAgent));
         //Tell the IFSerializer to mimic the target format
         ifSerializer.mimicDocumentHandler(targetHandler);
-        ifSerializer.setEncoding("UTF-16");
+        // ifSerializer.setEncoding("UTF-16"); // for surrogate pair issue
+        ifSerializer.setEncoding(Constants.XML_ENCODING);
         //Make sure the prepared document handler is used
         userAgent.setDocumentHandlerOverride(ifSerializer);
         if (isSecondPass) {
@@ -1124,7 +1126,8 @@ public class PDFGenerator {
             // Start XSLT transformation and FOP processing
             transformer.transform(src, res);
 
-            xmlIF = out.toString("UTF-16");
+            // xmlIF = out.toString("UTF-16"); // for surrogate pair issue
+            xmlIF = out.toString(Constants.XML_ENCODING);
             saveDebugFO(xmlIF);
             
             debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if" + sfx + ".xml");
@@ -1283,7 +1286,8 @@ public class PDFGenerator {
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer(srcXSL);
         if (fixSurrogatePairs) {
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+            // transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+            transformer.setOutputProperty(OutputKeys.ENCODING, Constants.XML_ENCODING);
         }
         
         Source src = (sourceXML instanceof StreamSource) ? (StreamSource)sourceXML : new StreamSource(new StringReader((String)sourceXML));
@@ -1348,7 +1352,8 @@ public class PDFGenerator {
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer(srcXSL);
         if (fixSurrogatePairs) {
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+            // transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+            transformer.setOutputProperty(OutputKeys.ENCODING, Constants.XML_ENCODING);
         }
         
         // pass Apache FOP Intermediate Format XML via parameter 'if_xml'

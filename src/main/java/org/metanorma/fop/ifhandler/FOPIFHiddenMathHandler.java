@@ -1,6 +1,7 @@
 package org.metanorma.fop.ifhandler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.metanorma.Constants;
 import org.metanorma.fop.Util;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Document;
@@ -151,7 +152,8 @@ public class FOPIFHiddenMathHandler extends DefaultHandler {
                         Source srcXSL = new StreamSource(Util.getStreamFromResources(getClass().getClassLoader(), "add_hidden_math_partial.xsl"));
                         TransformerFactory factory = TransformerFactory.newInstance();
                         Transformer transformer = factory.newTransformer(srcXSL);
-                        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16");
+                        // transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-16"); // to fix issue with UTF-16 surrogate pairs
+                        transformer.setOutputProperty(OutputKeys.ENCODING, Constants.XML_ENCODING);
 
                         String strViewportXML = sbViewport.insert(0, XMLHEADER + "<envelope " + rootXMLNS + ">").append("</envelope>").toString();
 
