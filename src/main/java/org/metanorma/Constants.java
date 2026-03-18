@@ -11,6 +11,7 @@ public final class Constants {
     public static final String XML_INPUT = "XML";
     public static final String XSL_INPUT = "XSL";
     public static final String XSL_INPUT_PARAMS = "XSL parameters";
+    public static final String XML_ENCODING = "UTF-8"; // UTF-16 to to fix issue with surrogate pairs
     public static final String INPUT_LOG = "Input: %s (%s)";
     public static final String OUTPUT_LOG = "Output: %s (%s)";
     public static final String PDF_OUTPUT = "PDF";
