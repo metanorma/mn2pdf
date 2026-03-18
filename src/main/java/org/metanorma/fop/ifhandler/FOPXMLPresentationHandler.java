@@ -64,6 +64,10 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
         if (qName.startsWith("semantic__") || qName.equals("emf") || qName.equals("stem")) {
             // skip
             skipElements.push(true);
+        } else if (qName.equals("altsource") &&
+                (!attr.getValue("tag").contains("pdf") && !attr.getValue("tag").contains("default"))) {
+            // skip
+            skipElements.push(true);
         } else {
             skipElements.push(false);
             if (skipElements.contains(true)) {
@@ -106,7 +110,7 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
             boolean isExtractedImage = false;
 
-            if (currentElement.equals("image") && attrName.equals("src") &&
+            if ((currentElement.equals("image") || currentElement.equals("altsource")) && attrName.equals("src") &&
                     (attrValue.startsWith("data:image/") || attrValue.startsWith("data:application/")) &&
                     !(attrValue.startsWith("data:image/svg+xml;"))) {
                 String dataPrefix = "data:image/";
