@@ -476,8 +476,38 @@ public class mn2pdfTests {
         // 0 becaise remove attachments which have FileAttachment annotation equivalent
         assertTrue(countFileAttachmentEmbedded == 0);
 
-
     }
+
+    @Test
+    public void checkSurrogatePairs() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("iso.surrogatepair.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.surrogatepair.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+    }
+
+    @Test
+    public void checkSurrogatePairsCharByChar() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("iso.surrogatepair.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.char-by-char.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.surrogatepair.char-by-char.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+    }
+
 
     @Test
     public void checkJapaneseNumbering() throws ParseException {
