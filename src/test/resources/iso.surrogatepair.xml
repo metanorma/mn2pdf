@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metanorma xmlns="https://www.metanorma.org/ns/standoc" type="presentation" version="2.8.2" schema-version="v2.1.5" flavor="iso">
+	<bibdata type="standard">
+		<title language="en" type="main">PDF Test</title>
+		<docidentifier primary="true" type="PDF Test">PDF Test</docidentifier>
+		<contributor>
+			<role type="author"/>
+			<organization>
+				<name>PDF Test</name>
+				<abbreviation>PDF Test</abbreviation>
+			</organization>
+		</contributor>
+		<contributor>
+			<role type="author">
+				<description>committee</description>
+			</role>
+			<organization>
+				<name>PDF Test</name>
+				<subdivision type="Committee">
+					<name>PDF Test</name>
+				</subdivision>
+			</organization>
+		</contributor>
+		<edition language="">1.0</edition>
+		<edition language="en">edition 1.0</edition>
+		<language current="true">en</language>
+		<script current="true">Latn</script>
+		<status>
+			<stage>working-draft</stage>
+		</status>
+		<keyword>PDF</keyword>
+		<ext>
+			<doctype language="">standard</doctype>
+			<doctype language="en">standard</doctype>
+			<flavor>iso</flavor>
+		</ext>
+	</bibdata>
+	<metanorma-extension>
+		<toc type="figure">
+			<title>List of figures</title>
+		</toc>
+		<toc type="table">
+			<title>List of tables</title>
+		</toc>
+		<toc type="recommendation">
+			<title>List of recommendations</title>
+		</toc>
+	</metanorma-extension>
+	<boilerplate>
+		<copyright-statement>
+			<clause id="_939142f1-ee79-b818-f737-f8b3c27bd19a" obligation="normative" semx-id="_939142f1-ee79-b818-f737-f8b3c27bd19a">
+				<title id="_00ae3cf5-e9f9-0d5f-5576-19de035eb138" semx-id="_160815a2-9ecf-4ee9-d9a2-76518f3641d6">Copyright notice</title>
+				<fmt-title depth="1" id="_63c88293-f38a-6aee-7112-aecb997c0646">
+					<semx element="title" source="_00ae3cf5-e9f9-0d5f-5576-19de035eb138">Copyright notice</semx>
+				</fmt-title>
+				<p id="_97b06aab-745a-721a-a773-4bba99c19047" semx-id="_97b06aab-745a-721a-a773-4bba99c19047">Copyright © 2026 PDF Test</p>
+			</clause>
+		</copyright-statement>
+	</boilerplate>
+	<sections>
+		<clause id="_1e02f739-d1d1-3548-fd61-b8c465a7087f" type="scope" obligation="normative" semx-id="_1e02f739-d1d1-3548-fd61-b8c465a7087f" displayorder="3">
+			<title id="_27f24c52-47bf-ede9-a9bc-0030108e9c77" semx-id="_f70b6ff6-6131-0e24-81e1-850dbe94b63d">Scope</title>
+			<fmt-title depth="1" id="_a49d63b7-87c4-3bc5-ea2b-e2121f2524d3">
+				<span class="fmt-caption-label">
+					<semx element="autonum" source="_1e02f739-d1d1-3548-fd61-b8c465a7087f">1</semx>
+					<span class="fmt-autonum-delim">.</span>
+				</span>
+				<span class="fmt-caption-delim">
+					<tab/>
+				</span>
+				<semx element="title" source="_27f24c52-47bf-ede9-a9bc-0030108e9c77">Scope</semx>
+			</fmt-title>
+			<fmt-xref-label>
+				<span class="fmt-element-name">Clause</span>
+				<semx element="autonum" source="_1e02f739-d1d1-3548-fd61-b8c465a7087f">1</semx>
+			</fmt-xref-label>
+			<p id="_tc1">Test 1 surrogate pair: <tt>𠀾</tt></p>
+			<p id="_tc2">賤</p>
+			<p id="_tc3">賤賤</p>
+			<p id="_tc4">&#120243;</p>
+			<p id="_tc5"><fmt-stem type="MathML"><math xmlns="http://www.w3.org/1998/Math/MathML"><mtext>&#120243;</mtext></math><asciimath>&#120243;</asciimath></fmt-stem></p>
+			<p id="_tc6">a賤b</p>
+			<p id="_tc7">a賤賤b</p>
+			<p id="_tc8">a&#120243;b</p>
+			<p id="_tc9">a<fmt-stem type="MathML"><math xmlns="http://www.w3.org/1998/Math/MathML"><mtext>&#120243;</mtext></math><asciimath>&#120243;</asciimath></fmt-stem>b</p>
+		</clause>
+	</sections>
+</metanorma>
