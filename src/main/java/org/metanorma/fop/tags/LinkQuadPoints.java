@@ -3,13 +3,16 @@ package org.metanorma.fop.tags;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDObjectReference;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureElement;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureNode;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
+import org.apache.pdfbox.pdmodel.interactive.annotation.handlers.PDLinkAppearanceHandler;
 import org.metanorma.utils.LoggerHelper;
 
 import java.io.File;
@@ -19,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,6 +35,8 @@ public class LinkQuadPoints {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
     private PDStructureTreeRoot structureTreeRoot;
+
+    private final String ANNOTATION_TO_REMOVE = "_METANORMA_REMOVE";
 
     public void process(File pdf) throws IOException {
 
@@ -47,6 +53,25 @@ public class LinkQuadPoints {
                 mergeLinks(kid);
             }
 
+            int numberOfPages = document.getNumberOfPages();
+            for (int pageIndex = 0; pageIndex < numberOfPages; pageIndex++) {
+                PDPage page = document.getPage(pageIndex);
+                List<PDAnnotation> annotations = page.getAnnotations();
+
+                Iterator<PDAnnotation> iterator = annotations.iterator();
+                boolean isRemoved = false;
+                while (iterator.hasNext()) {
+                    String contents = iterator.next().getContents();
+                    if (contents.equals(ANNOTATION_TO_REMOVE)) {
+                        iterator.remove();
+                        isRemoved = true;
+                    }
+                }
+                if (isRemoved) {
+                    page.setAnnotations(annotations);
+                }
+            }
+            
             Files.deleteIfExists(pdf.toPath());
             document.save(pdf); // , CompressParameters.NO_COMPRESSION
         } catch (IOException ex) {
@@ -68,27 +93,33 @@ public class LinkQuadPoints {
                     PDStructureElement pdStructureElement = (PDStructureElement) kid;
 
                     if (pdStructureElement.getStructureType().equals("Link")) {
-                        List<PDObjectReference> PDObjectReferences = new ArrayList<>();
-                        List<PDAnnotationLink> PDAnnotationLinks = new ArrayList<>();
+                        List<PDObjectReference> pdObjectReferences = new ArrayList<>();
+                        List<PDAnnotationLink> pdAnnotationLinks = new ArrayList<>();
                         for (Object o: pdStructureElement.getKids()) {
                             if (o instanceof PDObjectReference) {
                                 PDObjectReference objRef = (PDObjectReference) o;
                                 COSObjectable refObj =  objRef.getReferencedObject();
                                 if (refObj instanceof PDAnnotationLink) {
                                     PDAnnotationLink link = (PDAnnotationLink) refObj;
-                                    PDAnnotationLinks.add(link);
-                                    PDObjectReferences.add(objRef);
+                                    pdAnnotationLinks.add(link);
+                                    pdObjectReferences.add(objRef);
                                 }
                             }
                         }
 
                         // if more than 1 Link, them merge and convert /Rect to /QuadPoints
-                        if (PDAnnotationLinks.size() > 1) {
-                            int countQuadPoints = 8 * PDAnnotationLinks.size();
+                        if (pdAnnotationLinks.size() > 1) {
+                            int countQuadPoints = 8 * pdAnnotationLinks.size();
                             float[] quadPoints = new float[countQuadPoints];
+                            PDRectangle pdLinkFirstRectangle = pdAnnotationLinks.get(0).getRectangle();
+                            float x1_cover_rect = pdLinkFirstRectangle.getLowerLeftX();
+                            float y1_cover_rect = pdLinkFirstRectangle.getLowerLeftY();
+                            float x2_cover_rect = pdLinkFirstRectangle.getUpperRightX();
+                            float y2_cover_rect = pdLinkFirstRectangle.getUpperRightY();
+
                             // gathering the /Rect coordinates
-                            for(int j = 0; j < PDAnnotationLinks.size(); j++) {
-                                PDAnnotationLink pdLink = PDAnnotationLinks.get(j);
+                            for(int j = 0; j < pdAnnotationLinks.size(); j++) {
+                                PDAnnotationLink pdLink = pdAnnotationLinks.get(j);
                                 PDRectangle pdRectangle = pdLink.getRectangle();
                                 //*          ***************  (x2,y2)
                                 //*          *             *
@@ -99,6 +130,19 @@ public class LinkQuadPoints {
                                 float y1 = pdRectangle.getLowerLeftY();
                                 float x2 = pdRectangle.getUpperRightX();
                                 float y2 = pdRectangle.getUpperRightY();
+
+                                if(x1 < x1_cover_rect) {
+                                    x1_cover_rect = x1;
+                                }
+                                if(y1 < y1_cover_rect) {
+                                    y1_cover_rect = y1;
+                                }
+                                if(x2 > x2_cover_rect) {
+                                    x2_cover_rect = x2;
+                                }
+                                if(y2 > y2_cover_rect) {
+                                    y2_cover_rect = y2;
+                                }
 
                                 // /QuadPoints:
                                 //*   6  7                      4  5
@@ -115,15 +159,21 @@ public class LinkQuadPoints {
                                 quadPoints[j * 8 + 5] = y2; // y3
                                 quadPoints[j * 8 + 6] = x1; // x4
                                 quadPoints[j * 8 + 7] = y2; // y4
-
                             }
-                            PDAnnotationLink firstPDLink = PDAnnotationLinks.get(0);
+                            PDAnnotationLink firstPDLink = pdAnnotationLinks.get(0);
                             firstPDLink.setQuadPoints(quadPoints);
-                            firstPDLink.getCOSObject().setItem(COSName.RECT, null); // because firstPDLink.setRectangle(null) raises exception
+                            // no need to remove /Rect, see PDLinkAppearanceHandler, method generateNormalAppearance
+                            // firstPDLink.getCOSObject().setItem(COSName.RECT, null); // because firstPDLink.setRectangle(null) raises exception
+                            PDRectangle pdRectangleOld = firstPDLink.getRectangle();
+                            PDRectangle pdRectangleCover = new PDRectangle(x1_cover_rect, y1_cover_rect, x2_cover_rect - x1_cover_rect, y2_cover_rect - y1_cover_rect);
+                            firstPDLink.setRectangle(pdRectangleCover);
 
+                            firstPDLink.constructAppearances();
                             //remove 2nd, 3rd... Link
-                            for(int j = 1; j < PDAnnotationLinks.size(); j++) {
-                                pdStructureElement.removeKid(PDObjectReferences.get(j));
+                            for(int j = 1; j < pdAnnotationLinks.size(); j++) {
+                                pdStructureElement.removeKid(pdObjectReferences.get(j));
+                                // mark Annotation for removing
+                                pdAnnotationLinks.get(j).setContents(ANNOTATION_TO_REMOVE);
                             }
                         }
                     }
