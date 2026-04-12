@@ -400,12 +400,12 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
 
     private GoToXYAction getGoToActionForID(String targetID, int pageIndex) {
         // Already a GoToXY present for this target? If not, create.
-        GoToXYAction action;// = (GoToXYAction)actionSet.get(targetID);
+        GoToXYAction action = (GoToXYAction)actionSet.get(targetID);
         //GoToXYAction action = (GoToXYAction)idGoTos.get(targetID);
         // https://issues.apache.org/jira/browse/FOP-2868?focusedCommentId=18069309&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-18069309
         // and
         // https://github.com/metanorma/mn2pdf/issues/409#issuecomment-4144901247
-        //if (action == null) {
+        if (action == null) {
             /* if (pageIndex < 0) {
                 //pageIndex = page
             } */
@@ -420,7 +420,7 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
             }
             action = (GoToXYAction)actionSet.put(action);
             //idGoTos.put(targetID, action);
-        //}
+        }
         return action;
     }
 
