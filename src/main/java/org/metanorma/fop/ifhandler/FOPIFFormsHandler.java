@@ -70,6 +70,13 @@ public class FOPIFFormsHandler extends DefaultHandler {
             rootXMLNS = copyAttributes(attr);
         }
 
+        https://github.com/metanorma/mn2pdf/issues/416
+        if (stackElements.contains("svg")) {
+            skipElements.push(false);
+            copyStartElement(qName, attr);
+            return;
+        }
+
         switch (qName) {
             case "page":
                 page++;
@@ -336,13 +343,15 @@ public class FOPIFFormsHandler extends DefaultHandler {
             // skip
         } else {
 
-            switch (qName) {
-                case "viewport":
-                case "g":
-                    stackViewports.pop();
-                    break;
-                default:
-                    break;
+            if (!stackElements.contains("svg")) {
+                switch (qName) {
+                    case "viewport":
+                    case "g":
+                        stackViewports.pop();
+                        break;
+                    default:
+                        break;
+                }
             }
 
             copyEndElement(qName, listResult);
