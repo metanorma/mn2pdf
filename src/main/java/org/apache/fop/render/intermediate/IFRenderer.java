@@ -400,9 +400,12 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
 
     private GoToXYAction getGoToActionForID(String targetID, int pageIndex) {
         // Already a GoToXY present for this target? If not, create.
-        GoToXYAction action = (GoToXYAction)actionSet.get(targetID);
+        GoToXYAction action;// = (GoToXYAction)actionSet.get(targetID);
         //GoToXYAction action = (GoToXYAction)idGoTos.get(targetID);
-        if (action == null) {
+        // https://issues.apache.org/jira/browse/FOP-3305
+        // and
+        // https://github.com/metanorma/mn2pdf/issues/409#issuecomment-4144901247
+        //if (action == null) {
             /* if (pageIndex < 0) {
                 //pageIndex = page
             } */
@@ -417,7 +420,7 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
             }
             action = (GoToXYAction)actionSet.put(action);
             //idGoTos.put(targetID, action);
-        }
+        //}
         return action;
     }
 
@@ -429,9 +432,11 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
                 GoToXYAction action = (GoToXYAction)unfinishedGoTos.get(0);
                 noteGoToPosition(action, defaultPos);
             }
-            PDFEventProducer eventProducer = PDFEventProducer.Provider.get(
+            // note 2026-04-12: removed in https://github.com/apache/xmlgraphics-fop/commit/63c0ce941e58f3673a586527e1669639494ecf6e
+            /* PDFEventProducer eventProducer = PDFEventProducer.Provider.get(
                     getUserAgent().getEventBroadcaster());
-            eventProducer.nonFullyResolvedLinkTargets(this, count);
+            eventProducer.nonFullyResolvedLinkTargets(this, count);*/
+
             // dysfunctional if pageref is null
         }
     }
