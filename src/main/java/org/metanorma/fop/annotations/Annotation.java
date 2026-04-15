@@ -166,7 +166,9 @@ public class Annotation {
                     stripper.writeText(document, dummy);
 
                     if (annotationArea.getPosition().length == 0) {
-                        logger.severe("Can't highlight the text '" + highlight_text + "'.");
+                        if (!highlight_text.isEmpty()) {
+                            logger.severe("Can't highlight the text '" + highlight_text + "'.");
+                        }
                     } else {
 
                         float y_lower = annotationArea.getPosition()[1];
