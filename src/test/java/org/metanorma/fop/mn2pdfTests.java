@@ -209,6 +209,26 @@ public class mn2pdfTests {
     }
 
     @Test
+    public void checkLogMessagesOverflow() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("rice-en.final.overflow.xml").getFile();
+        String xsl = classLoader.getResource("iec.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iec-rice.overflow.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        mn2pdf.main(args);
+
+        String capturedLog = getTestCapturedLog();
+        // check for id="__internal_layout__test" (to skip warnings about overflow)
+        assertTrue(!capturedLog.contains("exceed the available area in the inline-progression direction by"));
+        // check for overflowing table
+        assertTrue(capturedLog.contains("is wider than the available width of page. Please check this overflowing table on the page 1"));
+    }
+
+    @Test
     public void successPortfolio() throws ParseException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
