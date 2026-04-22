@@ -100,4 +100,36 @@ at the address below or ISO’s member body in the country of the requester.
 
   
 </boilerplate>
+
+<sections>
+
+<clause id="test_math_quotes">
+
+<!-- Test for 'String-valued property starts with quote but doesn't end with quote' -->
+      <p><stem block="false" type="MathML" id="_2f7a4cab-076a-24d8-7407-3ae8d4b5bd44_si-brochure-en"><math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mstyle displaystyle="false">
+    <msub>
+      <mtext>C</mtext>
+      <mn data-metanorma-numberformat="notation='basic'">2</mn>
+    </msub>
+    <msub>
+      <mtext>H</mtext>
+      <mn data-metanorma-numberformat="notation='basic'">2</mn>
+    </msub>
+  </mstyle>
+</math><asciimath>"C"_2"H"_2</asciimath></stem><fmt-stem type="MathML"><semx element="stem" source="_2f7a4cab-076a-24d8-7407-3ae8d4b5bd44_si-brochure-en"><math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mstyle displaystyle="false">
+    <msub>
+      <mtext>C</mtext>
+      <mn>2</mn>
+    </msub>
+    <msub>
+      <mtext>H</mtext>
+      <mn>2</mn>
+    </msub>
+  </mstyle>
+</math><asciimath>"C"_2"H"_2</asciimath></semx></fmt-stem></p>
+</clause>
+</sections>
+
 </metanorma>

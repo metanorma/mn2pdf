@@ -206,6 +206,8 @@ public class mn2pdfTests {
         assertTrue(!capturedLog.contains("Default page-width set to"));
         https://github.com/apache/xmlgraphics-fop/commit/bafb8efb2ca0c0499722d14594c510f168dc3658
         assertTrue(!capturedLog.contains("coverage set class table not yet supported"));
+        // C"_2"H"_2
+        assertTrue(!capturedLog.contains("String-valued property starts with quote but doesn't end with quote"));
     }
 
     @Test
