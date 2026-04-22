@@ -258,7 +258,7 @@ public class mn2pdfTests {
     }
     
     @Test
-    public void checkResultedPDF() throws ParseException {
+    public void checkResultedPDF() throws ParseException, IOException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
@@ -314,7 +314,12 @@ public class mn2pdfTests {
         //assertTrue(PDFsubject.length() != 0);
         assertTrue(PDFkeywords.length() != 0);
         assertTrue(allEmbedded);
-        
+
+        // test for https://github.com/apache/xmlgraphics-fop/commit/159ea69c42bad08acecd723a64347aceacce2ae4
+        String capturedLog = getTestCapturedLog();
+        assertTrue(!capturedLog.contains("Default page-height set to"));
+        assertTrue(!capturedLog.contains("Default page-width set to"));
+
     }
 
     @Test
