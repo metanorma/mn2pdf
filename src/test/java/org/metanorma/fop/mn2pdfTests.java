@@ -16,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.fop.apps.FopConfParser;
 import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
@@ -54,7 +55,12 @@ public class mn2pdfTests {
 
     private static OutputStream logCapturingStream;
     private static StreamHandler customLogHandler;
-    
+
+    private static final Logger loggerFopConfParser = Logger.getLogger(FopConfParser.class.getName());
+
+    private static OutputStream logFopConfParserCapturingStream;
+    private static StreamHandler customLogFopConfParserHandler;
+
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
@@ -81,12 +87,23 @@ public class mn2pdfTests {
         Handler[] handlers = logger.getParent().getHandlers();
         customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
         logger.addHandler(customLogHandler);
+
+        logFopConfParserCapturingStream = new ByteArrayOutputStream();
+        Handler[] handlersFopConfParser = loggerFopConfParser.getParent().getHandlers();
+        customLogFopConfParserHandler = new StreamHandler(logFopConfParserCapturingStream, handlersFopConfParser[0].getFormatter());
+        loggerFopConfParser.addHandler(customLogFopConfParserHandler);
     }
     
     public String getTestCapturedLog() throws IOException
     {
         customLogHandler.flush();
         return logCapturingStream.toString();
+    }
+
+    public String getTestCapturedLogFopConfParser() throws IOException
+    {
+        customLogFopConfParserHandler.flush();
+        return logFopConfParserCapturingStream.toString();
     }
     
     @Test
@@ -177,6 +194,25 @@ public class mn2pdfTests {
         mn2pdf.main(args);
 
         assertTrue(Files.exists(pdf));
+    }
+
+    @Test
+    public void checkLogMessages() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("rice-en.final.metadata.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso-rice.log.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        mn2pdf.main(args);
+
+        // test for https://github.com/apache/xmlgraphics-fop/commit/159ea69c42bad08acecd723a64347aceacce2ae4
+        String capturedLog = getTestCapturedLogFopConfParser();
+        assertTrue(!capturedLog.contains("Default page-height set to"));
+        assertTrue(!capturedLog.contains("Default page-width set to"));
     }
 
     @Test
@@ -314,12 +350,6 @@ public class mn2pdfTests {
         //assertTrue(PDFsubject.length() != 0);
         assertTrue(PDFkeywords.length() != 0);
         assertTrue(allEmbedded);
-
-        // test for https://github.com/apache/xmlgraphics-fop/commit/159ea69c42bad08acecd723a64347aceacce2ae4
-        String capturedLog = getTestCapturedLog();
-        assertTrue(!capturedLog.contains("Default page-height set to"));
-        assertTrue(!capturedLog.contains("Default page-width set to"));
-
     }
 
     @Test
