@@ -4,26 +4,19 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.fop.apps.FopConfParser;
 import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
-import org.apache.pdfbox.pdmodel.common.filespecification.PDFileSpecification;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
@@ -45,9 +38,7 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.metanorma.Constants;
-import org.metanorma.fop.annotations.Annotation;
 import org.metanorma.utils.LoggerHelper;
-import org.w3c.dom.Node;
 
 public class mn2pdfTests {
 
@@ -56,10 +47,10 @@ public class mn2pdfTests {
     private static OutputStream logCapturingStream;
     private static StreamHandler customLogHandler;
 
-    private static final Logger loggerFopConfParser = Logger.getLogger(FopConfParser.class.getName());
+    private static final Logger loggerGlobal = Logger.getLogger("");
 
-    private static OutputStream logFopConfParserCapturingStream;
-    private static StreamHandler customLogFopConfParserHandler;
+    private static OutputStream logGlobalCapturingStream;
+    private static StreamHandler customLogGlobalHandler;
 
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
@@ -88,10 +79,10 @@ public class mn2pdfTests {
         customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
         logger.addHandler(customLogHandler);
 
-        logFopConfParserCapturingStream = new ByteArrayOutputStream();
-        Handler[] handlersFopConfParser = loggerFopConfParser.getParent().getHandlers();
-        customLogFopConfParserHandler = new StreamHandler(logFopConfParserCapturingStream, handlersFopConfParser[0].getFormatter());
-        loggerFopConfParser.addHandler(customLogFopConfParserHandler);
+        logGlobalCapturingStream = new ByteArrayOutputStream();
+        Handler[] handlersGlobal = loggerGlobal.getHandlers(); //getParent()
+        customLogGlobalHandler = new StreamHandler(logGlobalCapturingStream, handlersGlobal[0].getFormatter());
+        loggerGlobal.addHandler(customLogGlobalHandler);
     }
     
     public String getTestCapturedLog() throws IOException
@@ -100,10 +91,10 @@ public class mn2pdfTests {
         return logCapturingStream.toString();
     }
 
-    public String getTestCapturedLogFopConfParser() throws IOException
+    public String getTestCapturedLogGlobal() throws IOException
     {
-        customLogFopConfParserHandler.flush();
-        return logFopConfParserCapturingStream.toString();
+        customLogGlobalHandler.flush();
+        return logGlobalCapturingStream.toString();
     }
     
     @Test
@@ -209,10 +200,12 @@ public class mn2pdfTests {
 
         mn2pdf.main(args);
 
+        String capturedLog = getTestCapturedLogGlobal();
         // test for https://github.com/apache/xmlgraphics-fop/commit/159ea69c42bad08acecd723a64347aceacce2ae4
-        String capturedLog = getTestCapturedLogFopConfParser();
         assertTrue(!capturedLog.contains("Default page-height set to"));
         assertTrue(!capturedLog.contains("Default page-width set to"));
+        https://github.com/apache/xmlgraphics-fop/commit/bafb8efb2ca0c0499722d14594c510f168dc3658
+        assertTrue(!capturedLog.contains("coverage set class table not yet supported"));
     }
 
     @Test
