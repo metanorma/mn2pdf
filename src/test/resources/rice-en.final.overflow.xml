@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metanorma xmlns="https://www.metanorma.org/ns/standoc">
+  <bibdata type="standard">
+    <title language="en" format="text/plain" type="main">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
+    <title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
+    <title language="en" format="text/plain" type="title-main">Specifications and test methods</title>
+    <title language="en" format="text/plain" type="title-part">Rice (Final)</title>
+    <title language="fr" format="text/plain" type="main">Céréales et légumineuses — Spécification et méthodes d’essai — Riz (Final)</title>
+    <title language="fr" format="text/plain" type="title-intro">Céréales et légumineuses</title>
+    <title language="fr" format="text/plain" type="title-main">Spécification et méthodes d’essai</title>
+    <title language="fr" format="text/plain" type="title-part">Riz (Final)</title>
+    <docidentifier type="iso">ISO 17301-1:2016</docidentifier>
+    <docidentifier type="iso-with-lang">ISO 17301-1:2016(E)</docidentifier>
+    <docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier>
+    <docidentifier type="iso-tc">17301</docidentifier>
+    <docnumber>17301</docnumber>
+    <contributor>
+      <role type="author"/>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </contributor>
+    <contributor>
+      <role type="publisher"/>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </contributor>
+    <edition>2</edition>
+    <version>
+      <revision-date>2016-05-01</revision-date>
+    </version>
+    <language>en</language>
+    <script>Latn</script>
+    <status>
+      <stage abbreviation="IS">60</stage>
+      <substage>60</substage>
+    </status>
+    <copyright>
+      <from>2016</from>
+      <owner>
+        <organization>
+          <name>International Organization for Standardization</name>
+          <abbreviation>ISO</abbreviation>
+        </organization>
+      </owner>
+    </copyright>
+    <keyword>keyword1</keyword>
+    <keyword>keyword2</keyword>
+    <keyword>keyword3</keyword>
+    <ext>
+      <doctype>international-standard</doctype>
+      <editorialgroup>
+        <technical-committee number="34">Food products</technical-committee>
+        <subcommittee number="4">Cereals and pulses</subcommittee>
+        <workgroup number="4" type="WG">Amylose in rice</workgroup>
+        <secretariat>SAC</secretariat>
+      </editorialgroup>
+      <ics>
+        <code>67.060</code>
+      </ics>
+      <structuredidentifier>
+        <project-number part="1">ISO 17301</project-number>
+      </structuredidentifier>
+      <stagename>International standard</stagename>
+    </ext>
+  </bibdata>
+  <boilerplate>
+    <copyright-statement>
+      <clause>
+        <p id="boilerplate-year">
+    © ISO 2016
+  </p>
+        <p id="boilerplate-message">
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO’s member body in the country of the requester.
+  </p>
+        <p id="boilerplate-address" align="left">
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 • CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.  + 41 22 749 01 11<br/>
+    Fax  + 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+        <p id="boilerplate-place">
+    Published in Switzerland
+  </p>
+      </clause>
+    </copyright-statement>
+  </boilerplate>
+  <sections>
+    <p class="zzSTDTitle1" displayorder="4">
+      <span class="boldtitle">Cereals and pulses — Specifications and test methods — </span>
+      <span class="nonboldtitle">Part 1:</span>
+      <span class="boldtitle">Rice (FDIS)</span>
+    </p>
+    <clause id="scope" anchor="scope" type="scope" inline-header="false" obligation="normative" semx-id="_201352e7-f381-8c51-a784-6b25426802de" displayorder="5">
+      <fmt-annotation-start id="_0c902a39-5583-89f6-79c8-9c27c03a225b" source="scope" target="_79bc7560-1bb4-8096-8c6a-db6af62c0b15" end="scope" author="" date="2026-03-22T00:00:00Z"/>
+      <title id="_5375ed13-8e0d-8d57-94f2-d78374ffe780" semx-id="_f70b6ff6-6131-0e24-81e1-850dbe94b63d">Scope<fmt-annotation-end id="_9dde6516-415d-7c27-dbd9-5f6ce29ac73b" source="scope" target="_79bc7560-1bb4-8096-8c6a-db6af62c0b15" start="scope" author="" date="2026-03-22T00:00:00Z"/>
+      </title>
+      <fmt-title depth="1" id="_637e30c3-c36a-03d3-c81d-f665db7fde72">
+        <span class="fmt-caption-label">
+          <semx element="autonum" source="scope">1</semx>
+        </span>
+        <span class="fmt-caption-delim">
+          <tab/>
+        </span>
+        <semx element="title" source="_5375ed13-8e0d-8d57-94f2-d78374ffe780">Scope</semx>
+      </fmt-title>
+      <fmt-xref-label>
+        <span class="fmt-element-name">Clause</span>
+        <semx element="autonum" source="scope">1</semx>
+      </fmt-xref-label>
+      <p id="_61ce453e-bf75-91d7-ddb0-cb8bc0dd3d50" semx-id="_61ce453e-bf75-91d7-ddb0-cb8bc0dd3d50">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa</em> L.).</p>
+      <p id="_8c6e23a2-4690-3b5a-7b0d-09eae18c174f" semx-id="_8c6e23a2-4690-3b5a-7b0d-09eae18c174f">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
+      <p id="_00b96019-1d2b-95b6-4703-2dc837355630" semx-id="_00b96019-1d2b-95b6-4703-2dc837355630">It is not applicable to cooked rice products.</p>
+      <p id="__internal_layout__test">VerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtextVerylongtext</p>
+      
+      <table id="tableD-1" anchor="tableD-1" semx-id="_4da73ae1-20c4-4133-bb39-42377fb7e230" autonum="D.1" width="30cm">
+        <name id="_513f1dfe-3b48-8172-0482-f8f7c841ebe1" semx-id="_a6a77bb7-f1e7-a3ab-af9a-0760940b51ad">Repeatability and reproducibility of husked rice yield</name>
+        <fmt-name id="_c30cb38e-eab2-0758-edc0-3ac152471856">
+          <span class="fmt-caption-label">
+            <span class="fmt-element-name">Table</span>
+            <semx element="autonum" source="AnnexD">D</semx>
+            <span class="fmt-autonum-delim">.</span>
+            <semx element="autonum" source="tableD-1">1</semx>
+          </span>
+          <span class="fmt-caption-delim"> — </span>
+          <semx element="name" source="_513f1dfe-3b48-8172-0482-f8f7c841ebe1">Repeatability and reproducibility of husked rice yield</semx>
+        </fmt-name>
+        <fmt-xref-label>
+          <span class="fmt-element-name">Table</span>
+          <semx element="autonum" source="AnnexD">D</semx>
+          <span class="fmt-autonum-delim">.</span>
+          <semx element="autonum" source="tableD-1">1</semx>
+        </fmt-xref-label>
+        <thead>
+          <tr id="_515383ae-3457-ff39-3c00-a8aa17a8f2de" semx-id="_515383ae-3457-ff39-3c00-a8aa17a8f2de">
+            <th id="_669406d9-35e1-32e0-e789-e28399de6e8d" valign="top" rowspan="2" align="center" semx-id="_669406d9-35e1-32e0-e789-e28399de6e8d">
+              <fmt-annotation-start id="_a23020aa-b4fe-1131-a022-b414d64613e4" source="_faf437e2-96be-47bc-aa0e-54924a0bbb7f" target="_983d9a7d-9925-a749-1e9b-5d4be449e39a" end="_faf437e2-96be-47bc-aa0e-54924a0bbb7f" author="" date="2026-03-22T00:00:00Z"/>
+              <bookmark id="_faf437e2-96be-47bc-aa0e-54924a0bbb7f" anchor="_faf437e2-96be-47bc-aa0e-54924a0bbb7f" semx-id="_e7705f3f-3a59-485c-0d88-350aa40e36e8"/>
+              <fmt-annotation-end id="_0b5b0592-9ce3-ce31-8eba-80a9f12f7d40" source="_faf437e2-96be-47bc-aa0e-54924a0bbb7f" target="_983d9a7d-9925-a749-1e9b-5d4be449e39a" start="_faf437e2-96be-47bc-aa0e-54924a0bbb7f" author="" date="2026-03-22T00:00:00Z"/>Description</th>
+            <th id="_7ce531a5-b902-4c60-22d4-48376fd27bba" colspan="4" valign="top" align="center" semx-id="_7ce531a5-b902-4c60-22d4-48376fd27bba">Rice sample</th>
+          </tr>
+          <tr id="_73695b30-0c38-d75f-1f87-7de341df6b50" semx-id="_73695b30-0c38-d75f-1f87-7de341df6b50">
+            <th id="_061a4a17-dadc-91d4-c453-e4077557c02b" valign="top" align="left" semx-id="_061a4a17-dadc-91d4-c453-e4077557c02b">Arborio</th>
+            <th id="_d5a8860e-7659-2ff8-7939-da97386a55e0" valign="top" align="center" semx-id="_d5a8860e-7659-2ff8-7939-da97386a55e0">Drago<fn id="_937d26ae-cf5e-4f82-97e6-e11c99c07555" reference="a" semx-id="_937d26ae-cf5e-4f82-97e6-e11c99c07555" target="_fe072d68-84af-68b5-20a3-9b8811e14f82">
+                <p semx-id="_00706c75-858e-0841-a7e9-4b257416b59f" original-id="_00706c75-858e-0841-a7e9-4b257416b59f">Parboiled rice.</p>
+                <fmt-fn-label>
+                  <span class="fmt-caption-label">
+                    <sup>
+                      <semx element="autonum" source="_937d26ae-cf5e-4f82-97e6-e11c99c07555">a</semx>
+                    </sup>
+                  </span>
+                </fmt-fn-label>
+              </fn>
+            </th>
+            <th id="_06ace50e-5f94-4e93-8566-fb53405fa200" valign="top" align="center" semx-id="_06ace50e-5f94-4e93-8566-fb53405fa200">Balilla</th>
+            <th id="_6b2592fc-abb6-dbc2-50f8-d06be575a228" valign="top" align="center" semx-id="_6b2592fc-abb6-dbc2-50f8-d06be575a228">Thaibonnet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="_4cd24ecb-e483-ff39-2dd2-a9eb5d227df5" semx-id="_4cd24ecb-e483-ff39-2dd2-a9eb5d227df5">
+            <td id="_ff104bd0-8599-1db9-0e8d-4b5e0e040101" valign="top" align="left" semx-id="_ff104bd0-8599-1db9-0e8d-4b5e0e040101">Number of laboratories retained after eliminating outliers</td>
+            <td id="_8cbdf5ea-682a-e312-28c6-546160e816b2" valign="top" align="center" semx-id="_8cbdf5ea-682a-e312-28c6-546160e816b2">13</td>
+            <td id="_126e2329-8d96-6d66-c3ea-0c27ec56b4f2" valign="top" align="center" semx-id="_126e2329-8d96-6d66-c3ea-0c27ec56b4f2">11</td>
+            <td id="_a8192d0c-4408-7b84-b224-e0dd4ec6fa4f" valign="top" align="center" semx-id="_a8192d0c-4408-7b84-b224-e0dd4ec6fa4f">13</td>
+            <td id="_20ba5956-c61e-fa6e-fd99-63bd3fe1647c" valign="top" align="center" semx-id="_20ba5956-c61e-fa6e-fd99-63bd3fe1647c">13</td>
+          </tr>
+          <tr id="_c37e65fd-8ccf-cd60-0212-8a09f6f0a591" semx-id="_c37e65fd-8ccf-cd60-0212-8a09f6f0a591">
+            <td id="_7b1c720b-2842-37db-7207-bbfe30487791" valign="top" align="left" semx-id="_7b1c720b-2842-37db-7207-bbfe30487791">Mean value, g/100 g</td>
+            <td id="_63b2eb59-e729-f99a-54bb-9dfe464299c0" valign="top" align="center" semx-id="_63b2eb59-e729-f99a-54bb-9dfe464299c0">81,2</td>
+            <td id="_ae747ede-293b-3659-232d-4d9b8b65e1d6" valign="top" align="center" semx-id="_ae747ede-293b-3659-232d-4d9b8b65e1d6">82,0</td>
+            <td id="_4c58db6c-f001-6649-2217-6988f6a20389" valign="top" align="center" semx-id="_4c58db6c-f001-6649-2217-6988f6a20389">81,8</td>
+            <td id="_a16a784e-abd0-f7fe-e5b1-6a7adab0db8c" valign="top" align="center" semx-id="_a16a784e-abd0-f7fe-e5b1-6a7adab0db8c">77,7</td>
+          </tr>
+          <tr id="_df4f025c-cd07-deb8-eeba-0b690d6fd5fa" semx-id="_df4f025c-cd07-deb8-eeba-0b690d6fd5fa">
+            <td id="_24f67338-c46a-4694-49b5-bd8d8a2b36f8" valign="top" align="left" semx-id="_24f67338-c46a-4694-49b5-bd8d8a2b36f8">Standard deviation of repeatability, <stem block="false" type="MathML" id="_dabb4447-2430-c281-ba68-b3d8ec3cf62e">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                  <mstyle displaystyle="false">
+                    <msub>
+                      <mi>s</mi>
+                      <mi>r</mi>
+                    </msub>
+                  </mstyle>
+                </math>
+                <asciimath>s_r</asciimath>
+              </stem>
+              <fmt-stem type="MathML">
+                <semx element="stem" source="_dabb4447-2430-c281-ba68-b3d8ec3cf62e">
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mstyle displaystyle="false">
+                      <msub>
+                        <mi>s</mi>
+                        <mi>r</mi>
+                      </msub>
+                    </mstyle>
+                  </math>
+                  <asciimath>s_r</asciimath>
+                </semx>
+              </fmt-stem>, g/100 g</td>
+            <td id="_84c06206-8506-6bf8-1e10-9acbef56437e" valign="top" align="center" semx-id="_84c06206-8506-6bf8-1e10-9acbef56437e">0,41</td>
+            <td id="_0a378853-a7a2-aeb4-cabc-e0c6a57a930e" valign="top" align="center" semx-id="_0a378853-a7a2-aeb4-cabc-e0c6a57a930e">0,15</td>
+            <td id="_39d4abcc-6dfc-02ad-7243-ca58c928ca83" valign="top" align="center" semx-id="_39d4abcc-6dfc-02ad-7243-ca58c928ca83">0,31</td>
+            <td id="_fab34bbf-bb93-767b-eecd-5ee036645f00" valign="top" align="center" semx-id="_fab34bbf-bb93-767b-eecd-5ee036645f00">0,53</td>
+          </tr>
+          <tr id="_7216b7ca-3ed4-3356-10ef-dc8676aff6e3" semx-id="_7216b7ca-3ed4-3356-10ef-dc8676aff6e3">
+            <td id="_23582377-abb1-8d49-21c7-a75beb2f015e" valign="top" align="left" semx-id="_23582377-abb1-8d49-21c7-a75beb2f015e">Coefficient of variation of repeatability, %</td>
+            <td id="_3cbf9345-490a-18e7-9213-0d0de00978e5" valign="top" align="center" semx-id="_3cbf9345-490a-18e7-9213-0d0de00978e5">0,5</td>
+            <td id="_76d88ae4-1635-c1b2-5c78-68a49e898b10" valign="top" align="center" semx-id="_76d88ae4-1635-c1b2-5c78-68a49e898b10">0,2</td>
+            <td id="_fa33d6a4-9fb5-4fd3-1354-ad46ba3552dd" valign="top" align="center" semx-id="_fa33d6a4-9fb5-4fd3-1354-ad46ba3552dd">0,4</td>
+            <td id="_a1bd1f55-cdef-5117-cf5d-1bff529e513e" valign="top" align="center" semx-id="_a1bd1f55-cdef-5117-cf5d-1bff529e513e">0,7</td>
+          </tr>
+          <tr id="_47afac49-edbb-5e2f-4a7f-5a27909f7bfb" semx-id="_47afac49-edbb-5e2f-4a7f-5a27909f7bfb">
+            <td id="_0fafdb9d-454b-1f9a-4cf7-495b316369a8" valign="top" align="left" semx-id="_0fafdb9d-454b-1f9a-4cf7-495b316369a8">Repeatability limit, <stem block="false" type="MathML" id="_6726a2a6-e4be-98a9-5a96-afb0d18faa34">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                  <mstyle displaystyle="false">
+                    <mi>r</mi>
+                  </mstyle>
+                </math>
+                <asciimath>r</asciimath>
+              </stem>
+              <fmt-stem type="MathML">
+                <semx element="stem" source="_6726a2a6-e4be-98a9-5a96-afb0d18faa34">
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mstyle displaystyle="false">
+                      <mi>r</mi>
+                    </mstyle>
+                  </math>
+                  <asciimath>r</asciimath>
+                </semx>
+              </fmt-stem> (= 2,83 <stem block="false" type="MathML" id="_05455143-5b32-c331-48b8-94f7ea5bda35">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                  <mstyle displaystyle="false">
+                    <msub>
+                      <mi>s</mi>
+                      <mi>r</mi>
+                    </msub>
+                  </mstyle>
+                </math>
+                <asciimath>s_r</asciimath>
+              </stem>
+              <fmt-stem type="MathML">
+                <semx element="stem" source="_05455143-5b32-c331-48b8-94f7ea5bda35">
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mstyle displaystyle="false">
+                      <msub>
+                        <mi>s</mi>
+                        <mi>r</mi>
+                      </msub>
+                    </mstyle>
+                  </math>
+                  <asciimath>s_r</asciimath>
+                </semx>
+              </fmt-stem>)</td>
+            <td id="_c016eb8e-b46a-6840-a1a6-95119bb7cbfe" valign="top" align="center" semx-id="_c016eb8e-b46a-6840-a1a6-95119bb7cbfe">1,16</td>
+            <td id="_90592f2b-9bd7-406b-27f5-7adabee15a10" valign="top" align="center" semx-id="_90592f2b-9bd7-406b-27f5-7adabee15a10">0,42</td>
+            <td id="_1c58fafd-82ed-51f9-e06b-347496662d57" valign="top" align="center" semx-id="_1c58fafd-82ed-51f9-e06b-347496662d57">0,88</td>
+            <td id="_88a0d69c-79a8-e1a8-9cc2-f8ddc6e9c723" valign="top" align="center" semx-id="_88a0d69c-79a8-e1a8-9cc2-f8ddc6e9c723">1,50</td>
+          </tr>
+          <tr id="_7cca6dec-044a-7b93-0362-ff247e381b3e" semx-id="_7cca6dec-044a-7b93-0362-ff247e381b3e">
+            <td id="_112f0dd2-be12-6ced-93e0-faa72985ecc4" valign="top" align="left" semx-id="_112f0dd2-be12-6ced-93e0-faa72985ecc4">Standard deviation of reproducibility, <stem block="false" type="MathML" id="_322ed459-faab-13bb-af7b-78791aa9fa21">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                  <mstyle displaystyle="false">
+                    <msub>
+                      <mi>s</mi>
+                      <mi>R</mi>
+                    </msub>
+                  </mstyle>
+                </math>
+                <asciimath>s_R</asciimath>
+              </stem>
+              <fmt-stem type="MathML">
+                <semx element="stem" source="_322ed459-faab-13bb-af7b-78791aa9fa21">
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mstyle displaystyle="false">
+                      <msub>
+                        <mi>s</mi>
+                        <mi>R</mi>
+                      </msub>
+                    </mstyle>
+                  </math>
+                  <asciimath>s_R</asciimath>
+                </semx>
+              </fmt-stem>, g/100 g</td>
+            <td id="_d9633e9f-1eb1-72d4-c0a4-fe379afa971f" valign="top" align="center" semx-id="_d9633e9f-1eb1-72d4-c0a4-fe379afa971f">1,02</td>
+            <td id="_cdc11a12-e91b-7a9e-8050-3dfc5d42e21d" valign="top" align="center" semx-id="_cdc11a12-e91b-7a9e-8050-3dfc5d42e21d">0,20</td>
+            <td id="_96b9617b-c479-ad57-dbb8-d100d64db4b1" valign="top" align="center" semx-id="_96b9617b-c479-ad57-dbb8-d100d64db4b1">0,80</td>
+            <td id="_86edc594-d897-805d-afd6-60bb48d2dbe2" valign="top" align="center" semx-id="_86edc594-d897-805d-afd6-60bb48d2dbe2">2,14</td>
+          </tr>
+          <tr id="_1ca38b78-1469-c3d1-5ff2-7d4950d17621" semx-id="_1ca38b78-1469-c3d1-5ff2-7d4950d17621">
+            <td id="_9820d5d1-70bd-f4b9-d440-f5776504837b" valign="top" align="left" semx-id="_9820d5d1-70bd-f4b9-d440-f5776504837b">Coefficient of variation of reproducibility, %</td>
+            <td id="_ae744b24-b531-cad6-e38f-ee9da88cc7c0" valign="top" align="center" semx-id="_ae744b24-b531-cad6-e38f-ee9da88cc7c0">1,3</td>
+            <td id="_9a4105f6-56dc-6591-bfbe-60fe7f40cc83" valign="top" align="center" semx-id="_9a4105f6-56dc-6591-bfbe-60fe7f40cc83">0,2</td>
+            <td id="_40540685-6e9b-8960-439c-50f4fe39b152" valign="top" align="center" semx-id="_40540685-6e9b-8960-439c-50f4fe39b152">1,0</td>
+            <td id="_3e2ad5aa-5d8a-e33d-fa34-548023d2ea5a" valign="top" align="center" semx-id="_3e2ad5aa-5d8a-e33d-fa34-548023d2ea5a">2,7</td>
+          </tr>
+          <tr id="_4d831d27-ec56-5373-8370-165bcb109104" semx-id="_4d831d27-ec56-5373-8370-165bcb109104">
+            <td id="_8c3e0862-0e2a-a5c4-a75c-94ee462dc23d" valign="top" align="left" semx-id="_8c3e0862-0e2a-a5c4-a75c-94ee462dc23d">Reproducibility limit, <stem block="false" type="MathML" id="_cb4fda96-bdbb-d0d7-8edd-74d7327e97ed">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                  <mstyle displaystyle="false">
+                    <mi>R</mi>
+                  </mstyle>
+                </math>
+                <asciimath>R</asciimath>
+              </stem>
+              <fmt-stem type="MathML">
+                <semx element="stem" source="_cb4fda96-bdbb-d0d7-8edd-74d7327e97ed">
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mstyle displaystyle="false">
+                      <mi>R</mi>
+                    </mstyle>
+                  </math>
+                  <asciimath>R</asciimath>
+                </semx>
+              </fmt-stem> (= 2,83 <stem block="false" type="MathML" id="_17352bbf-e872-c75e-70d0-ddbf861dc5ad">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                  <mstyle displaystyle="false">
+                    <msub>
+                      <mi>s</mi>
+                      <mi>R</mi>
+                    </msub>
+                  </mstyle>
+                </math>
+                <asciimath>s_R</asciimath>
+              </stem>
+              <fmt-stem type="MathML">
+                <semx element="stem" source="_17352bbf-e872-c75e-70d0-ddbf861dc5ad">
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mstyle displaystyle="false">
+                      <msub>
+                        <mi>s</mi>
+                        <mi>R</mi>
+                      </msub>
+                    </mstyle>
+                  </math>
+                  <asciimath>s_R</asciimath>
+                </semx>
+              </fmt-stem>)</td>
+            <td id="_2f8c8f3a-2ff4-ab68-7c9f-02ff9171b7da" valign="top" align="center" semx-id="_2f8c8f3a-2ff4-ab68-7c9f-02ff9171b7da">2,89</td>
+            <td id="_e900c89d-3161-5f76-a447-5c4988fb13c2" valign="top" align="center" semx-id="_e900c89d-3161-5f76-a447-5c4988fb13c2">0,57</td>
+            <td id="_88bac044-3b49-4b21-3a94-c8f401687e9e" valign="top" align="center" semx-id="_88bac044-3b49-4b21-3a94-c8f401687e9e">2,26</td>
+            <td id="_4dbd642f-d88c-d58e-486d-845ffa264980" valign="top" align="center" semx-id="_4dbd642f-d88c-d58e-486d-845ffa264980">6,06</td>
+          </tr>
+        </tbody>
+        <fmt-footnote-container>
+          <fmt-fn-body id="_fe072d68-84af-68b5-20a3-9b8811e14f82" target="_937d26ae-cf5e-4f82-97e6-e11c99c07555" reference="a">
+            <semx element="fn" source="_937d26ae-cf5e-4f82-97e6-e11c99c07555">
+              <p id="_00706c75-858e-0841-a7e9-4b257416b59f" semx-id="_00706c75-858e-0841-a7e9-4b257416b59f">
+                <fmt-fn-label>
+                  <span class="fmt-caption-label">
+                    <sup>
+                      <semx element="autonum" source="_937d26ae-cf5e-4f82-97e6-e11c99c07555">a</semx>
+                    </sup>
+                  </span>
+                  <span class="fmt-caption-delim">
+                    <tab/>
+                  </span>
+                </fmt-fn-label>Parboiled rice.</p>
+            </semx>
+          </fmt-fn-body>
+        </fmt-footnote-container>
+      </table>
+    </clause>
+  </sections>
+</metanorma>
