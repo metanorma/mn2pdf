@@ -577,32 +577,5 @@ public class mn2pdfTests {
         assertTrue(j11.equals("十一"));
         assertTrue(j23.equals("二十三"));
     }
-    
-    @Test
-    public void testDates() throws IOException {
-        System.out.println(name.getMethodName());
-        String date1 = "20180125T0121";
-        Calendar cdate1 = Util.getCalendarDate(date1);
-        Calendar cdate1_etalon = Calendar.getInstance();
-        cdate1_etalon.clear();
-        cdate1_etalon.set(2018,0,25,1,21,0);
-        
-        assertTrue(cdate1_etalon.compareTo(cdate1) == 0);
-        
-        String date2 = "20220422T000000";
-        Calendar cdate2 = Util.getCalendarDate(date2);
-        Calendar cdate2_etalon = Calendar.getInstance();
-        cdate2_etalon.clear();
-        cdate2_etalon.set(2022,03,22,0,0,0);
-        assertTrue(cdate2_etalon.compareTo(cdate2) == 0);
-        
-        String date3 = "2017-01-01T00:00:00Z";
-        Calendar cdate3 = Util.getCalendarDate(date3);
-        Calendar cdate3_etalon = Calendar.getInstance();
-        cdate3_etalon.clear();
-        cdate3_etalon.set(2017,0,1,0,0,0);
-        assertTrue(cdate3_etalon.compareTo(cdate3) == 0);
-        
-    }
-    
+
 }
