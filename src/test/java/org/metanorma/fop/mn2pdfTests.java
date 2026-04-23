@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
@@ -208,7 +209,10 @@ public class mn2pdfTests {
         assertTrue(!capturedLog.contains("coverage set class table not yet supported"));
         // C"_2"H"_2
         assertTrue(!capturedLog.contains("String-valued property starts with quote but doesn't end with quote"));
-        assertTrue(capturedLog.contains("(0x2610) not available in font \"Cambria\". Found in the character sequence"));
+        assertTrue(capturedLog.contains("Found in the character sequence"));
+        // for https://github.com/metanorma/xmlgraphics-fop/commit/f9a1eab2b82de6621819b615ed336cdd63e9372d and
+        // https://github.com/metanorma/mn2pdf/issues/181
+        assertTrue(StringUtils.countMatches(capturedLog, "not available in font") > 8);
     }
 
     @Test
