@@ -233,6 +233,9 @@ public class mn2pdfTests {
         assertTrue(!capturedLog.contains("exceed the available area in the inline-progression direction by"));
         // check for overflowing table
         assertTrue(capturedLog.contains("is wider than the available width of page. Please check this overflowing table on the page 1"));
+        // check for localize place of overflowing, https://github.com/metanorma/xmlgraphics-fop/commit/4276335f46642a6094335dc929eef5881030a2f0
+        assertTrue(capturedLog.contains("The contents of fo:region-body on page 2 exceed its viewport by"));
+
     }
 
     @Test
