@@ -208,6 +208,7 @@ public class mn2pdfTests {
         assertTrue(!capturedLog.contains("coverage set class table not yet supported"));
         // C"_2"H"_2
         assertTrue(!capturedLog.contains("String-valued property starts with quote but doesn't end with quote"));
+        assertTrue(capturedLog.contains("(0x2610) not available in font \"Cambria\". Found in the character sequence"));
     }
 
     @Test
