@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
@@ -237,6 +238,29 @@ public class mn2pdfTests {
         assertTrue(capturedLog.contains("The contents of fo:region-body on page 2 exceed its viewport by"));
 
     }
+
+    // Test for https://github.com/metanorma/xmlgraphics-fop/commit/d4a2d295b307f94230f1329100f5b3de72e8eaa9
+    @Test
+    public void sucessJeuclidAtts() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("test.jeuclid_atts.xml").getFile();
+        String xsl = classLoader.getResource("test.jeuclid_atts.xsl").getFile();
+        String pdfName = "test.jeuclid_atts.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+        Path xml_if = Paths.get(System.getProperty("buildDirectory"), pdfName + ".if.xml");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--debug"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(xml_if));
+        String strIF = Files.lines(xml_if).collect(Collectors.joining(System.lineSeparator()));
+
+        assertTrue(strIF.contains("jeuclid:scriptSizeMult=\"2\""));
+    }
+
 
     @Test
     public void successPortfolio() throws ParseException {
