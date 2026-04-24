@@ -241,7 +241,7 @@ public class mn2pdfTests {
 
     // Test for https://github.com/metanorma/xmlgraphics-fop/commit/d4a2d295b307f94230f1329100f5b3de72e8eaa9
     @Test
-    public void sucessJeuclidAtts() throws ParseException, IOException {
+    public void successJeuclidAtts() throws ParseException, IOException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
@@ -261,6 +261,23 @@ public class mn2pdfTests {
         assertTrue(strIF.contains("jeuclid:scriptSizeMult=\"2\""));
     }
 
+    // Test for https://github.com/metanorma/xmlgraphics-fop/commit/fe2bea21938dd1c44c1e2d3f5532ef742c582fff
+    @Test
+    public void successSetPDFVersion() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("test.set_pdf_version.xsl").getFile();
+        String xml = classLoader.getResource("test.set_pdf_version.xml").getFile();
+        String pdfName = "test.set-pdf-version.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+    }
 
     @Test
     public void successPortfolio() throws ParseException {
