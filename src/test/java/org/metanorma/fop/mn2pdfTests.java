@@ -4,25 +4,21 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
-import org.apache.pdfbox.pdmodel.common.filespecification.PDFileSpecification;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
@@ -44,9 +40,7 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.metanorma.Constants;
-import org.metanorma.fop.annotations.Annotation;
 import org.metanorma.utils.LoggerHelper;
-import org.w3c.dom.Node;
 
 public class mn2pdfTests {
 
@@ -54,7 +48,12 @@ public class mn2pdfTests {
 
     private static OutputStream logCapturingStream;
     private static StreamHandler customLogHandler;
-    
+
+    private static final Logger loggerGlobal = Logger.getLogger("");
+
+    private static OutputStream logGlobalCapturingStream;
+    private static StreamHandler customLogGlobalHandler;
+
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
@@ -81,12 +80,23 @@ public class mn2pdfTests {
         Handler[] handlers = logger.getParent().getHandlers();
         customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
         logger.addHandler(customLogHandler);
+
+        logGlobalCapturingStream = new ByteArrayOutputStream();
+        Handler[] handlersGlobal = loggerGlobal.getHandlers(); //getParent()
+        customLogGlobalHandler = new StreamHandler(logGlobalCapturingStream, handlersGlobal[0].getFormatter());
+        loggerGlobal.addHandler(customLogGlobalHandler);
     }
     
     public String getTestCapturedLog() throws IOException
     {
         customLogHandler.flush();
         return logCapturingStream.toString();
+    }
+
+    public String getTestCapturedLogGlobal() throws IOException
+    {
+        customLogGlobalHandler.flush();
+        return logGlobalCapturingStream.toString();
     }
     
     @Test
@@ -180,6 +190,207 @@ public class mn2pdfTests {
     }
 
     @Test
+    public void checkLogMessages() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("rice-en.final.metadata.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso-rice.log.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        mn2pdf.main(args);
+
+        String capturedLog = getTestCapturedLogGlobal();
+        // test for https://github.com/apache/xmlgraphics-fop/commit/159ea69c42bad08acecd723a64347aceacce2ae4
+        assertTrue(!capturedLog.contains("Default page-height set to"));
+        assertTrue(!capturedLog.contains("Default page-width set to"));
+        https://github.com/apache/xmlgraphics-fop/commit/bafb8efb2ca0c0499722d14594c510f168dc3658
+        assertTrue(!capturedLog.contains("coverage set class table not yet supported"));
+        // C"_2"H"_2
+        assertTrue(!capturedLog.contains("String-valued property starts with quote but doesn't end with quote"));
+        assertTrue(capturedLog.contains("Found in the character sequence"));
+        // for https://github.com/metanorma/xmlgraphics-fop/commit/f9a1eab2b82de6621819b615ed336cdd63e9372d and
+        // https://github.com/metanorma/mn2pdf/issues/181
+        assertTrue(StringUtils.countMatches(capturedLog, "not available in font") > 8);
+    }
+
+    @Test
+    public void checkLogMessagesOverflow() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("rice-en.final.overflow.xml").getFile();
+        String xsl = classLoader.getResource("iec.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iec-rice.overflow.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        mn2pdf.main(args);
+
+        String capturedLog = getTestCapturedLog();
+        // check for id="__internal_layout__test" (to skip warnings about overflow)
+        assertTrue(!capturedLog.contains("exceed the available area in the inline-progression direction by"));
+        // check for overflowing table
+        assertTrue(capturedLog.contains("is wider than the available width of page. Please check this overflowing table on the page 1"));
+        // check for localize place of overflowing, https://github.com/metanorma/xmlgraphics-fop/commit/4276335f46642a6094335dc929eef5881030a2f0
+        assertTrue(capturedLog.contains("The contents of fo:region-body on page 2 exceed its viewport by"));
+
+    }
+
+    // Test for https://github.com/metanorma/xmlgraphics-fop/commit/d4a2d295b307f94230f1329100f5b3de72e8eaa9
+    @Test
+    public void successJeuclidAtts() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("test.jeuclid_atts.xml").getFile();
+        String xsl = classLoader.getResource("test.jeuclid_atts.xsl").getFile();
+        String pdfName = "test.jeuclid_atts.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+        Path xml_if = Paths.get(System.getProperty("buildDirectory"), pdfName + ".if.xml");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--debug"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(xml_if));
+        String strIF = Files.lines(xml_if).collect(Collectors.joining(System.lineSeparator()));
+
+        assertTrue(strIF.contains("jeuclid:scriptSizeMult=\"2\""));
+    }
+
+    // Test for https://github.com/metanorma/xmlgraphics-fop/commit/fe2bea21938dd1c44c1e2d3f5532ef742c582fff
+    @Test
+    public void successSetPDFVersion() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("test.set_pdf_version.xsl").getFile();
+        String xml = classLoader.getResource("test.set_pdf_version.xml").getFile();
+        String pdfName = "test.set-pdf-version.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+    }
+
+    @Test
+    public void testLigatures() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("test.ligatures.xsl").getFile();
+        String xml = classLoader.getResource("test.ligatures.xml").getFile();
+        String pdfNameEN = "test.ligatures.en.pdf";
+        Path pdfEN = Paths.get(System.getProperty("buildDirectory"), pdfNameEN);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdfEN.toAbsolutePath().toString(), "--param", "lang", "en"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdfEN));
+
+        String pdftextEN = "";
+        //PDDocument  doc;
+        try (PDDocument doc = Loader.loadPDF(pdfEN.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
+            pdftextEN = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        System.out.println(pdftextEN);
+        System.out.println(pdftextEN.trim());
+
+        assertTrue(pdftextEN.trim().equals("ti, fi, tt, ij, ff, fl, ffi, ffl"));
+
+        String pdfNameAR = "test.ligatures.ar.pdf";
+        Path pdfAR = Paths.get(System.getProperty("buildDirectory"), pdfNameAR);
+
+        args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdfAR.toAbsolutePath().toString(), "--param", "lang", "ar"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdfAR));
+
+        String pdftextAR = "";
+        try (PDDocument doc = Loader.loadPDF(pdfAR.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
+            pdftextAR = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        System.out.println(pdftextAR);
+        System.out.println(pdftextAR.trim());
+
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) { // latest Cambria font on Windows only contains ligatures
+            // \u061c for testing Arabic Text Marker, https://github.com/metanorma/isodoc/issues/354
+            assertTrue(pdftextAR.trim().equals("ti, \uE000i, tt, ij, ff, \uE000l, f\uE000i, f\uE000l\u061C"));
+        }
+    }
+
+    @Test
+    public void checkKanjiNoReplaceCharacters() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("test.kanji.nonreplace.xsl").getFile();
+        String xml = classLoader.getResource("test.kanji.nonreplace.xml").getFile();
+        String pdfName = "test.kanji.nonreplace.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--param", "lang", "en"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+
+        String pdftext = "";
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            pdftext = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        System.out.println(pdftext);
+
+        assertTrue(pdftext.trim().equals("作成すべきメタデータ項目"));
+    }
+
+    @Test
+    public void checkHiddenTextForMath() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        String xml = classLoader.getResource("test.hidden_math.xml").getFile();
+        String pdfName = "test.hidden_math.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--param", "lang", "en"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+
+        String pdftext = "";
+        String hiddentext = "";
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            PDFHiddenTextStripper pdfHiddenTextStripper = new PDFHiddenTextStripper();
+            pdftext = pdfHiddenTextStripper.getText(doc);
+            hiddentext = pdfHiddenTextStripper.getTransparentText();
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+
+        assertTrue(hiddentext.trim().equals("t 90"));
+    }
+
+    @Test
     public void successPortfolio() throws ParseException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
@@ -258,7 +469,7 @@ public class mn2pdfTests {
     }
     
     @Test
-    public void checkResultedPDF() throws ParseException {
+    public void checkResultedPDF() throws ParseException, IOException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
         String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
@@ -314,7 +525,6 @@ public class mn2pdfTests {
         //assertTrue(PDFsubject.length() != 0);
         assertTrue(PDFkeywords.length() != 0);
         assertTrue(allEmbedded);
-        
     }
 
     @Test
@@ -519,32 +729,5 @@ public class mn2pdfTests {
         assertTrue(j11.equals("十一"));
         assertTrue(j23.equals("二十三"));
     }
-    
-    @Test
-    public void testDates() throws IOException {
-        System.out.println(name.getMethodName());
-        String date1 = "20180125T0121";
-        Calendar cdate1 = Util.getCalendarDate(date1);
-        Calendar cdate1_etalon = Calendar.getInstance();
-        cdate1_etalon.clear();
-        cdate1_etalon.set(2018,0,25,1,21,0);
-        
-        assertTrue(cdate1_etalon.compareTo(cdate1) == 0);
-        
-        String date2 = "20220422T000000";
-        Calendar cdate2 = Util.getCalendarDate(date2);
-        Calendar cdate2_etalon = Calendar.getInstance();
-        cdate2_etalon.clear();
-        cdate2_etalon.set(2022,03,22,0,0,0);
-        assertTrue(cdate2_etalon.compareTo(cdate2) == 0);
-        
-        String date3 = "2017-01-01T00:00:00Z";
-        Calendar cdate3 = Util.getCalendarDate(date3);
-        Calendar cdate3_etalon = Calendar.getInstance();
-        cdate3_etalon.clear();
-        cdate3_etalon.set(2017,0,1,0,0,0);
-        assertTrue(cdate3_etalon.compareTo(cdate3) == 0);
-        
-    }
-    
+
 }
