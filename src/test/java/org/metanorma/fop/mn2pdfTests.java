@@ -303,7 +303,8 @@ public class mn2pdfTests {
         } catch (IOException ex) {
             System.out.println(ex.toString());
         }
-        //System.out.println(pdftextEN);
+        System.out.println(pdftextEN);
+        System.out.println(pdftextEN.trim());
 
         assertTrue(pdftextEN.trim().equals("ti, fi, tt, ij, ff, fl, ffi, ffl"));
 
@@ -323,7 +324,8 @@ public class mn2pdfTests {
         } catch (IOException ex) {
             System.out.println(ex.toString());
         }
-        //System.out.println(pdftextAR);
+        System.out.println(pdftextAR);
+        System.out.println(pdftextAR.trim());
 
         assertTrue(pdftextAR.trim().equals("ti, \uE000i, tt, ij, ff, \uE000l, f\uE000i, f\uE000l"));
 
