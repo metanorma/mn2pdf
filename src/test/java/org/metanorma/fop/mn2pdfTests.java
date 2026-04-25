@@ -329,7 +329,8 @@ public class mn2pdfTests {
 
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) { // latest Cambria font on Windows only contains ligatures
-            assertTrue(pdftextAR.trim().equals("ti, \uE000i, tt, ij, ff, \uE000l, f\uE000i, f\uE000l"));
+            // \u061c for testing Arabic Text Marker, https://github.com/metanorma/isodoc/issues/354
+            assertTrue(pdftextAR.trim().equals("ti, \uE000i, tt, ij, ff, \uE000l, f\uE000i, f\uE000l\u061C"));
         }
     }
 

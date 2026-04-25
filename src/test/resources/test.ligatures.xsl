@@ -54,6 +54,8 @@
 	<xsl:template match="mn:p">
 		<fo:block>
 			<xsl:copy-of select="@*"/>
+			<!--  \u061c for testing Arabic Text Marker, https://github.com/metanorma/isodoc/issues/354 -->
+			<xsl:if test="$lang = 'ar'"> &#x061C;</xsl:if>
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
