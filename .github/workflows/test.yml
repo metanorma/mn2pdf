@@ -61,7 +61,7 @@ jobs:
       #   run: choco install --no-progress make
 
       - if: matrix.os == 'macos-latest'
-        run: echo ${{ JAVA_HOME }}
+        run: echo $JAVA_HOME
 
       - run: make all
 
