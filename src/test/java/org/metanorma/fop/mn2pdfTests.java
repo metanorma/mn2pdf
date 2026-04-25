@@ -280,6 +280,56 @@ public class mn2pdfTests {
     }
 
     @Test
+    public void testLigatures() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("test.ligatures.xsl").getFile();
+        String xml = classLoader.getResource("test.ligatures.xml").getFile();
+        String pdfNameEN = "test.ligatures.en.pdf";
+        Path pdfEN = Paths.get(System.getProperty("buildDirectory"), pdfNameEN);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdfEN.toAbsolutePath().toString(), "--param", "lang", "en"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdfEN));
+
+        String pdftextEN = "";
+        //PDDocument  doc;
+        try (PDDocument doc = Loader.loadPDF(pdfEN.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
+            pdftextEN = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        //System.out.println(pdftextEN);
+
+        assertTrue(pdftextEN.trim().equals("ti, fi, tt, ij, ff, fl, ffi, ffl"));
+
+        String pdfNameAR = "test.ligatures.ar.pdf";
+        Path pdfAR = Paths.get(System.getProperty("buildDirectory"), pdfNameAR);
+
+        args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdfAR.toAbsolutePath().toString(), "--param", "lang", "ar"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdfAR));
+
+        String pdftextAR = "";
+        try (PDDocument doc = Loader.loadPDF(pdfAR.toFile())) {
+            //doc = PDDocument.load(pdf.toFile());
+            pdftextAR = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        //System.out.println(pdftextAR);
+
+        assertTrue(pdftextAR.trim().equals("ti, \uE000i, tt, ij, ff, \uE000l, f\uE000i, f\uE000l"));
+
+    }
+
+    @Test
     public void successPortfolio() throws ParseException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();

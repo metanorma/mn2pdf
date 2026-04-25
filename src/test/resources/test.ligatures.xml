@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metanorma xmlns="https://www.metanorma.org/ns/standoc">
+<!-- Test for: keep ligatures for text in Arabic only -->
+<!-- Note: in Cambria font there are only fi, fl, ffi and ffl ligature -->
+<p>ti, fi, tt, ij, ff, fl, ffi, ffl</p>
+</metanorma>
