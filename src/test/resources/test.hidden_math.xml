@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metanorma xmlns="https://www.metanorma.org/ns/standoc">
+<sections>
+<p>Hidden math test: 
+<fmt-stem type="MathML"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>t</mi><mn>90</mn></msub></math><asciimath>t 90</asciimath></fmt-stem>
+</p>
+</sections>
+</metanorma>

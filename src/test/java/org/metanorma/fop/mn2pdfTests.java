@@ -361,6 +361,35 @@ public class mn2pdfTests {
     }
 
     @Test
+    public void checkHiddenTextForMath() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        String xml = classLoader.getResource("test.hidden_math.xml").getFile();
+        String pdfName = "test.hidden_math.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--param", "lang", "en"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+
+        String pdftext = "";
+        String hiddentext = "";
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            PDFHiddenTextStripper pdfHiddenTextStripper = new PDFHiddenTextStripper();
+            pdftext = pdfHiddenTextStripper.getText(doc);
+            hiddentext = pdfHiddenTextStripper.getTransparentText();
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+
+        assertTrue(hiddentext.trim().equals("t 90"));
+    }
+
+    @Test
     public void successPortfolio() throws ParseException {
         System.out.println(name.getMethodName());
         ClassLoader classLoader = getClass().getClassLoader();
