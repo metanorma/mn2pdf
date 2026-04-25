@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metanorma xmlns="https://www.metanorma.org/ns/standoc">
+<!-- Test for: https://github.com/metanorma/mn-samples-plateau/issues/168 -->
+<p>作成すべきメタデータ項目</p>
+</metanorma>

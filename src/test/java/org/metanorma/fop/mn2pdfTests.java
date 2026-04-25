@@ -331,7 +331,33 @@ public class mn2pdfTests {
         if (os.contains("win")) { // latest Cambria font on Windows only contains ligatures
             assertTrue(pdftextAR.trim().equals("ti, \uE000i, tt, ij, ff, \uE000l, f\uE000i, f\uE000l"));
         }
+    }
 
+    @Test
+    public void checkKanjiNoReplaceCharacters() throws ParseException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xsl = classLoader.getResource("test.kanji.nonreplace.xsl").getFile();
+        String xml = classLoader.getResource("test.kanji.nonreplace.xml").getFile();
+        String pdfName = "test.kanji.nonreplace.pdf";
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), pdfName);
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString(), "--param", "lang", "en"};
+
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+
+        String pdftext = "";
+        try (PDDocument doc = Loader.loadPDF(pdf.toFile())) {
+            pdftext = new PDFTextStripper().getText(doc);
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        System.out.println(pdftext);
+
+        assertTrue(pdftext.trim().equals("作成すべきメタデータ項目"));
     }
 
     @Test
