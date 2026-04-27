@@ -66,6 +66,8 @@ jobs:
 
       - run: cat /opt/homebrew/bin/mvn
 
+      - run: cat /opt/homebrew/Cellar/maven/3.9.15/libexec/bin/mvn
+
       - run: mvn --version        
 
       - run: make all
