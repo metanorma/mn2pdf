@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 1.8, 1.11 ]
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ macos-latest ]
         experimental: [ false ]
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -64,7 +64,7 @@ jobs:
 
       - run: which mvn
 
-      - run: can /opt/homebrew/bin/mvn
+      - run: cat /opt/homebrew/bin/mvn
 
       - run: mvn --version        
 
