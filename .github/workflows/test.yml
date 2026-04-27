@@ -64,6 +64,8 @@ jobs:
 
       - run: which mvn
 
+      - run: can /opt/homebrew/bin/mvn
+
       - run: mvn --version        
 
       - run: make all
