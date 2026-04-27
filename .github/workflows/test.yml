@@ -60,6 +60,12 @@ jobs:
       # - if: matrix.os == 'windows-latest'
       #   run: choco install --no-progress make
 
+      - run: echo $JAVA_HOME
+
+      - run: echo $JAVACMD
+
+      - run: mvn --version        
+
       - run: make all
 
       - run: make test
