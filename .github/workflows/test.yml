@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 1.8, 1.11 ]
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ macos-latest ]
         experimental: [ false ]
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -60,21 +60,24 @@ jobs:
       # - if: matrix.os == 'windows-latest'
       #   run: choco install --no-progress make
 
+      - if: matrix.os == 'macos-latest'
+        run: JAVA_HOME="$JAVA_HOME/Contents/Home"
+
       - run: echo $JAVA_HOME
 
-      - run: ls -l $JAVA_HOME
+      #- run: ls -l $JAVA_HOME
 
       - run: $JAVA_HOME/bin/java -version
 
-      - run: ls -l $JAVA_HOME/Contents
+      #- run: ls -l $JAVA_HOME/Contents
 
-      - run: which mvn
+      #- run: which mvn
 
-      - run: cat /opt/homebrew/bin/mvn
+      #- run: cat /opt/homebrew/bin/mvn
 
-      - run: cat /opt/homebrew/Cellar/maven/3.9.15/libexec/bin/mvn
+      #- run: cat /opt/homebrew/Cellar/maven/3.9.15/libexec/bin/mvn
 
-      - run: mvn --version        
+      #- run: mvn --version        
 
       - run: make all
 
