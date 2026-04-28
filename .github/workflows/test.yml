@@ -62,6 +62,8 @@ jobs:
 
       - run: echo $JAVA_HOME
 
+      - run: $JAVA_HOME/bin/java -version
+
       - run: which mvn
 
       - run: cat /opt/homebrew/bin/mvn
