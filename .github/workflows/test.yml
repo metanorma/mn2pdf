@@ -62,6 +62,8 @@ jobs:
 
       - run: echo $JAVA_HOME
 
+      - run: ls -l $JAVA_HOME
+
       - run: $JAVA_HOME/bin/java -version
 
       - run: which mvn
