@@ -64,9 +64,9 @@ jobs:
 
       - run: ls -l $JAVA_HOME
 
-      - run: ls -l $JAVA_HOME/Contents
-
       - run: $JAVA_HOME/bin/java -version
+
+      - run: ls -l $JAVA_HOME/Contents
 
       - run: which mvn
 
