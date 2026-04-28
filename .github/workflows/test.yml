@@ -61,10 +61,7 @@ jobs:
       #   run: choco install --no-progress make
 
       - if: matrix.os == 'macos-latest'
-        run: |
-          JAVA_HOME="$JAVA_HOME/Contents/Home"
-          export JAVA_HOME
-          echo $JAVA_HOME
+        run: echo "JAVA_HOME=$JAVA_HOME/Contents/Home" >> $GITHUB_ENV
 
       - run: echo $JAVA_HOME
 
