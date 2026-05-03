@@ -23,6 +23,7 @@ package org.apache.fop.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -280,7 +281,30 @@ public class PDFDocument {
      */
     public static byte[] encode(String text) {
         try {
-            return text.getBytes(ENCODING);
+            String strKeyContents = "/Contents (";
+            // for https://github.com/metanorma/mn2pdf/issues/423
+            // Embedded file *Desc* and file attachment annotation *Contents* entries have bad text content - needs to be UTF-16BE
+            if (text.contains("/FileAttachment") && text.contains(strKeyContents)) {
+                String strBeforeContents = text.substring(0, text.indexOf(strKeyContents) + strKeyContents.length());
+                String strAfterContents = text.substring(text.indexOf(strKeyContents) + strKeyContents.length());
+                int posEndContents = strBeforeContents.length() + strAfterContents.indexOf(")\n");
+                String strContents = text.substring(text.indexOf(strKeyContents) + strKeyContents.length(), posEndContents);
+                String strEnd = text.substring(posEndContents);
+                byte[] bytesStart = strBeforeContents.getBytes(ENCODING);
+                byte[] bytesBOM = {(byte) 0xFE, (byte) 0xFF};
+                byte[] bytesContents =  strContents.getBytes("UTF-16BE");
+                byte[] bytesEnd = strEnd.getBytes(ENCODING);
+
+                byte[] combined = ByteBuffer.allocate(bytesStart.length + bytesBOM.length + bytesContents.length + bytesEnd.length)
+                        .put(bytesStart)
+                        .put(bytesBOM)
+                        .put(bytesContents)
+                        .put(bytesEnd)
+                        .array();
+                return combined;
+            } else {
+                return text.getBytes(ENCODING);
+            }
         } catch (UnsupportedEncodingException uee) {
             return text.getBytes();
         }
