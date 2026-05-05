@@ -346,6 +346,8 @@ public class PDFRoot extends PDFDictionary {
             put("AF", af);
         }
         af.add(fileSpec);
-        fileSpec.put("AFRelationship", new PDFName("Data"));
+        // https://github.com/metanorma/mn2pdf/issues/431
+        // don't add AFRelationship to the DocCatalog/AF array
+        // fileSpec.put("AFRelationship", new PDFName("Data"));
     }
 }
