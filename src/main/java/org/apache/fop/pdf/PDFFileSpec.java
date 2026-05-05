@@ -85,7 +85,7 @@ public class PDFFileSpec extends PDFDictionary {
      * @param relationship the AFRelationship
      */
     public void setAFRelationship(String relationship) {
-        put("AFRelationship", new PDFName(relationship));
+        //put("AFRelationship", new PDFName(relationship));
     }
 
     /**
