@@ -474,7 +474,9 @@ public class mn2pdfTests {
         assertTrue(countFileAttachmentAnnotation == 1);
         //see metanorma\fop\annotations\FileAttachmentAnnotation.java:
         // 0 becaise remove attachments which have FileAttachment annotation equivalent
-        assertTrue(countFileAttachmentEmbedded == 0);
+        //assertTrue(countFileAttachmentEmbedded == 0);
+        // https://github.com/metanorma/mn2pdf/issues/424
+        assertTrue(countFileAttachmentEmbedded == 1);
 
     }
 
