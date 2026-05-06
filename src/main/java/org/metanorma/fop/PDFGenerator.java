@@ -838,9 +838,15 @@ public class PDFGenerator {
                     debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.commentarypagenumbers.xml");
                 }
 
+                if (isAddFileAttachmentAnnotations) {
+                    logger.info("Updating Intermediate Format (keep paperclip mark after last part only in the reference)...");
+                    xmlIF = applyXSLT("keep_last_paperclip_attachment.xsl", xmlIF, true);
+
+                    debugSaveXML(xmlIF, pdf.getAbsolutePath() + ".if.keep_last_paperclip_attachment.xml");
+                }
+
                 if (isAddForms) {
                     logger.info("Read Forms information from Intermediate Format...");
-
 
                     SAXParserFactory factory = SAXParserFactory.newInstance();
                     SAXParser saxParser = factory.newSAXParser();
