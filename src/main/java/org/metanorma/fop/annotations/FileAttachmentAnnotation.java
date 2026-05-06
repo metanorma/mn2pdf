@@ -56,6 +56,7 @@ public class FileAttachmentAnnotation {
             }
 
             // remove attachments which have FileAttachment annotation equivalent
+            /*
             PDDocumentNameDictionary namesDictionary = new PDDocumentNameDictionary(document.getDocumentCatalog());
             PDEmbeddedFilesNameTreeNode efTree = namesDictionary.getEmbeddedFiles();
             if (efTree != null)
@@ -76,7 +77,7 @@ public class FileAttachmentAnnotation {
                 efTree.setNames(newnames);
                 namesDictionary.setEmbeddedFiles(efTree);
             }
-
+*/
             Files.deleteIfExists(pdf.toPath());
             document.save(pdf);
                 
