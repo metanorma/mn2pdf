@@ -83,6 +83,8 @@
 			<p id="_tc7">a賤賤b</p>
 			<p id="_tc8">a&#120243;b</p>
 			<p id="_tc9">a<fmt-stem type="MathML"><math xmlns="http://www.w3.org/1998/Math/MathML"><mtext>&#120243;</mtext></math><asciimath>&#120243;</asciimath></fmt-stem>b</p>
+			<!-- https://github.com/metanorma/laozi/issues/8 -->
+			<p id="_tc10">賤𨽻小夫</p>
 		</clause>
 	</sections>
 </metanorma>
