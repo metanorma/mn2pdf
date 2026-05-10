@@ -1713,4 +1713,8 @@ public class PDFFactory {
     public void setEventBroadcaster(EventBroadcaster eventBroadcaster) {
         this.eventBroadcaster = eventBroadcaster;
     }
+
+    public EventBroadcaster getEventBroadcaster() {
+        return eventBroadcaster;
+    }
 }
