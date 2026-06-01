@@ -48,6 +48,17 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>metanorma_fop</id>
+			<name>GitHub Metanorma Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/metanorma/xmlgraphics-fop</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 	<build>
 		<plugins>
@@ -156,16 +167,17 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.4</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/fop -->
+		<!-- org.apache.xmlgraphics -> https://mvnrepository.com/artifact/org.apache.xmlgraphics/fop -->
+		<!-- https://maven.pkg.github.com/metanorma/xmlgraphics-fop -->
 		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
+			<groupId>org.metanorma</groupId>
 			<artifactId>fop</artifactId>
-			<version>2.10</version>
+			<version>2.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop-pdf-images</artifactId>
-			<version>2.10</version>
+			<version>2.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>

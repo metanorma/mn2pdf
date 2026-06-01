@@ -19,6 +19,11 @@
                   <name>GitHub Metanorma Apache Maven Packages</name>
                   <url>https://maven.pkg.github.com/metanorma/barcode4j</url>
               </repository>
+              <repository>
+                  <id>metanorma_fop</id>
+                  <name>GitHub Metanorma Apache Maven Packages</name>
+                  <url>https://maven.pkg.github.com/metanorma/xmlgraphics-fop</url>
+              </repository>
               <!-- <repository>
                <id>metanorma_mn2pdf</id>
                <name>GitHub Metanorma Apache Maven Packages</name>
