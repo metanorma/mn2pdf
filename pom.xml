@@ -17,7 +17,7 @@
 		<exec.mainClass>org.metanorma.fop.mn2pdf</exec.mainClass>
 		<junit.version>5.4.2</junit.version>
 		<highlightis.version>11.4.0</highlightis.version>
-		<bouncycastle.version>1.83</bouncycastle.version>
+		<bouncycastle.version>1.84</bouncycastle.version>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -217,7 +217,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>xmlgraphics-commons</artifactId>
-			<version>2.10</version> <!-- 2.8 -->
+			<version>2.11.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
@@ -297,7 +297,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+			<version>3.20.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.graalvm.js</groupId>
