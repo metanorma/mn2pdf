@@ -4,6 +4,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
@@ -19,6 +21,9 @@ import org.apache.pdfbox.cos.COSName;
 
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureElement;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureNode;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
@@ -67,7 +72,9 @@ public class mn2pdfTests {
     public final EnvironmentVariables envVarRule = new EnvironmentVariables();
 
     @Rule public TestName name = new TestName();
-    
+
+    StringBuilder tagsTree = new StringBuilder();
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         LoggerHelper.setupLogger();
@@ -720,6 +727,38 @@ public class mn2pdfTests {
         assertTrue(Files.exists(pdf));
     }
 
+    @Test
+    public void checkTagsTree() throws ParseException, IOException {
+        System.out.println(name.getMethodName());
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fontpath = Paths.get(System.getProperty("buildDirectory"), ".." , "fonts").toString();
+        String xml = classLoader.getResource("iso.document-en.presentation.xml").getFile();
+        String xsl = classLoader.getResource("iso.international-standard.xsl").getFile();
+        Path pdf = Paths.get(System.getProperty("buildDirectory"), "iso.tagstree.pdf");
+
+        String[] args = new String[]{"--font-path", fontpath, "--xml-file",  xml, "--xsl-file", xsl, "--pdf-file", pdf.toAbsolutePath().toString()};
+        mn2pdf.main(args);
+
+        assertTrue(Files.exists(pdf));
+
+        try (PDDocument document = Loader.loadPDF(pdf.toFile())) {
+            PDStructureTreeRoot structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
+            List<Object> kids = structureTreeRoot.getKids();
+
+            for (Object kid : kids) {
+                tagsTree(kid);
+            }
+        }
+        //System.out.println(tagsTree.toString());
+
+        String fileTagsTree = classLoader.getResource("tags_tree.txt").getPath();
+
+        List<String> lines = Files.readAllLines(new File(fileTagsTree).toPath());
+        String tagsTreeExpect = String.join("\n", lines) + "\n";
+
+        assertTrue(tagsTree.toString().equals(tagsTreeExpect));
+    }
+
 
     @Test
     public void checkJapaneseNumbering() throws ParseException {
@@ -730,6 +769,37 @@ public class mn2pdfTests {
         assertTrue(j1.equals("一"));
         assertTrue(j11.equals("十一"));
         assertTrue(j23.equals("二十三"));
+    }
+
+    private void tagsTree(Object element) {
+        if (element instanceof PDStructureNode) {
+            List<Object> kids = ((PDStructureNode) element).getKids();
+            for (int i = 0; i < kids.size(); i++) {
+                Object kid = kids.get(i);
+
+                if (kid instanceof PDStructureElement) {
+                    PDStructureElement pdStructureElement = (PDStructureElement) kid;
+
+                    List<String> tree = new ArrayList<>();
+                    tree.add(pdStructureElement.getStructureType());
+
+                    PDStructureNode p = pdStructureElement.getParent();
+
+                    while (p instanceof PDStructureElement) {
+                        PDStructureElement se = (PDStructureElement)p;
+                        tree.add(se.getStructureType());
+                        p = se.getParent();
+                    }
+                    Collections.reverse(tree);
+                    for (String item : tree) {
+                        tagsTree.append(" -> " + item);
+                    }
+                    tagsTree.append("\n");
+
+                    tagsTree(kid);
+                }
+            }
+        }
     }
 
 }
