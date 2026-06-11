@@ -760,9 +760,10 @@ class fontConfig {
         List<URL> userFontListURL = new ArrayList<>();
         
         FontFileFinder fontFileFinder = new FontFileFinder(null);
-        
-        if(new File(fontPath).exists()) {
-            userFontListURL =  fontFileFinder.find(fontPath);
+
+        File fontPathDir = new File(fontPath);
+        if(fontPathDir.exists()) {
+            userFontListURL =  fontFileFinder.find(fontPathDir);
         }
         systemFontListURL = fontFileFinder.find();
         
