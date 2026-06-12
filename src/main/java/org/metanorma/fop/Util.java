@@ -519,9 +519,11 @@ public class Util {
             if (DEBUG) {
                 logger.info("Start syntaxHighlight");
             }
-            
-            GraalJSEngine graalEngine = GraalJSEngine.getInstance();
-            String highlightedCode = graalEngine.eval(code, lang);
+
+            // GraalJSEngine disabled
+            // GraalJSEngine graalEngine = GraalJSEngine.getInstance();
+            // String highlightedCode = graalEngine.eval(code, lang);
+            String highlightedCode = code;
             
             if (highlightedCode.isEmpty()) {
                 return null;

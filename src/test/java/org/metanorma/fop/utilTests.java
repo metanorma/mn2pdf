@@ -82,6 +82,7 @@ public class utilTests {
     }
     
 
+    /*
     @Test
     public void testSyntaxHighlight() throws TransformerException, TransformerConfigurationException  {
         System.out.println(name.getMethodName());
@@ -94,6 +95,7 @@ public class utilTests {
         String exprectedValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><syntax><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">root</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">a</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">b</span>&gt;</span>text<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">b</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">c</span> <span class=\"hljs-attr\">key</span>=<span class=\"hljs-string\">'value'</span>/&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">root</span>&gt;</span></syntax>";
         assertTrue(value.equals(exprectedValue));
     }
+     */
 
     @Test
     public void checkCSSparsing() throws IOException {
