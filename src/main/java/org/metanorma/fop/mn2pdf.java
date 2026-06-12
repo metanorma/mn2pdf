@@ -126,11 +126,11 @@ public class mn2pdf {
                 .desc("additionally create a PDF for each language in XML")
                 .required(false)
                 .build());
-            addOption(Option.builder("hl")
+            /*addOption(Option.builder("hl")
                 .longOpt("syntax-highlight")
                 .desc("source code syntax highlighting")
                 .required(false)
-                .build());
+                .build());*/
             addOption(Option.builder("ep")
                 .longOpt("encryption-parameters")
                 .desc("path to YAML file with encryption parameters")

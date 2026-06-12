@@ -89,7 +89,7 @@
 					<outputFile>${project.build.outputDirectory}/properties-from-pom.properties</outputFile>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
 				<version>1.6.8</version>
@@ -107,7 +107,7 @@
 					<unpack>true</unpack>
 					<outputDirectory>${project.build.directory}/classes/highlightjs</outputDirectory>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -309,7 +309,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.20.0</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.graalvm.js</groupId>
 			<artifactId>js</artifactId>
 			<version>21.1.0</version>
@@ -318,7 +318,7 @@
 			<groupId>org.graalvm.js</groupId>
 			<artifactId>js-scriptengine</artifactId>
 			<version>21.1.0</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>net.sourceforge.cssparser</groupId>
 			<artifactId>cssparser</artifactId>
