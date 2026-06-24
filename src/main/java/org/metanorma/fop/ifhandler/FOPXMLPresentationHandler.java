@@ -2,27 +2,12 @@ package org.metanorma.fop.ifhandler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.metanorma.fop.PDFResult;
-import org.metanorma.fop.Util;
 import org.metanorma.utils.LoggerHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,6 +34,8 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
     Stack<Character> stackChar = new Stack<>();
 
+    Stack<Boolean> stackTrackSemxElements = new Stack<>();
+
     Stack<Boolean> skipElements = new Stack<>();
 
     @Override
@@ -64,14 +51,17 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
         if (qName.startsWith("semantic__") || qName.equals("emf") || qName.equals("stem")) {
             // skip
             skipElements.push(true);
+            stackTrackSemxElements.push(false);
         } else if (qName.equals("altsource") &&
                 (!attr.getValue("tag").contains("pdf") && !attr.getValue("tag").contains("default"))) {
             // skip
             skipElements.push(true);
+            stackTrackSemxElements.push(false);
         } else {
             skipElements.push(false);
             if (skipElements.contains(true)) {
                 // skip
+                stackTrackSemxElements.push(false);
             } else {
                 copyStartElement(qName, attr);
             }
@@ -81,9 +71,19 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
     private void copyStartElement(String qName, Attributes attr) {
         StringBuilder sbTmp = new StringBuilder();
 
-        if (qName.equals("semx")) {
+        if (qName.equals("semx")
+            && (attr.getValue("element") != null
+                && (attr.getValue("element").equals("link")
+                    || attr.getValue("element").equals("autonum")
+                    || attr.getValue("element").equals("xref")
+                    || attr.getValue("element").equals("stem")
+                    || attr.getValue("element").equals("eref")
+                ))) {
             // skip element name `semx`
+            stackTrackSemxElements.push(true);
         } else {
+
+            stackTrackSemxElements.push(false);
 
             updateStackChar(sbTmp);
 
@@ -158,7 +158,7 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
         if (skipElements.contains(true)) {
             // skip
         } else {
-            if (qName.equals("semx")) {
+            if (qName.equals("semx") && stackTrackSemxElements.peek()) {
                 // skip element name `semx`
             } else {
                 copyEndElement(qName);
@@ -166,6 +166,7 @@ public class FOPXMLPresentationHandler extends DefaultHandler {
 
         }
         skipElements.pop();
+        stackTrackSemxElements.pop();
     }
 
     private void copyEndElement(String qName) {
