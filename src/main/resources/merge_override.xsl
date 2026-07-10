@@ -73,6 +73,7 @@
 			<xsl:for-each select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/node()">
 				<xsl:choose>
 					<xsl:when test="$nodes//*[@master-name = current()/@master-name]"><!-- skip --></xsl:when>
+					<xsl:when test="local-name() = 'variable' and $nodes//xsl:variable[@name = current()/@name]"><!-- skip --></xsl:when>
 					<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:for-each>
@@ -81,6 +82,11 @@
 	
 	<xsl:template match="xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/*">
 		<xsl:choose>
+			<!-- if in override xslt there is <xsl:variable with @name with same name, then replace it -->
+			<xsl:when test="local-name() = 'variable' and 
+					$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/xsl:variable[@name = current()/@name]">
+				<xsl:copy-of select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/xsl:variable[@name = current()/@name]"/>
+			</xsl:when>
 			<!-- if in override xslt there is <fo:simple-page-master or <fo:page-sequence-master with @master-name with same name, then replace it -->
 			<xsl:when test="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/*[@master-name = current()/@master-name]">
 				<xsl:copy-of select="$override_xsl_xml/xsl:stylesheet/xsl:template[@name = 'layout-master-set']/fo:layout-master-set/*[@master-name = current()/@master-name]"/>
