@@ -541,7 +541,7 @@ public class PDFGenerator {
                 Document xmlPresentationDocument = dBuilder.parse(xmlPresentationIS);
 
                 XPath xPathEntries = XPathFactory.newInstance().newXPath();
-                XPathExpression queryAllEntries = xPathEntries.compile("//*[local-name() = 'metanorma-collection']//*[local-name() = 'entry'][@target]");
+                XPathExpression queryAllEntries = xPathEntries.compile("//*[local-name() = 'metanorma-collection']//*[local-name() = 'entry'][@target and not(@attachment)]");
                 NodeList nodesEntries = (NodeList)queryAllEntries.evaluate(xmlPresentationDocument, XPathConstants.NODESET);
                 for (int i = 0; i < nodesEntries.getLength(); i++) {
                     Node nodeEntry = nodesEntries.item(i);
