@@ -58,6 +58,7 @@ import org.metanorma.fop.portfolio.PDFMetainfo;
 import org.metanorma.fop.portfolio.PDFPortfolio;
 import org.metanorma.fop.portfolio.PDFPortfolioItem;
 import org.metanorma.fop.signature.PDFSign;
+import org.metanorma.fop.tags.EmptyTag;
 import org.metanorma.fop.tags.LinkQuadPoints;
 import org.metanorma.fop.tags.TableCaption;
 import org.metanorma.utils.LoggerHelper;
@@ -988,6 +989,9 @@ public class PDFGenerator {
             logger.log(Level.INFO, "[INFO] Link QuadPoints processing...");
             LinkQuadPoints linkQuadPoints = new LinkQuadPoints();
             linkQuadPoints.process(pdf);
+            logger.log(Level.INFO, "[INFO] Empty text from tags tag removing...");
+            EmptyTag emptyTag = new EmptyTag();
+            emptyTag.process(pdf);
         }
 
         
