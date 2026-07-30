@@ -117,7 +117,7 @@ public class EmptyTag {
                     //System.out.println(textSB);
                     prevIsText = true;
 
-                    if (emptyMarkedContents.get(pageNum).get(mcid) != null) {
+                    if (emptyMarkedContents.get(pageNum) != null && emptyMarkedContents.get(pageNum).get(mcid) != null) {
                         // remove this item from tags tree
                         kidsToRemove.add(kid);
                         // System.out.println("Text removed.");
