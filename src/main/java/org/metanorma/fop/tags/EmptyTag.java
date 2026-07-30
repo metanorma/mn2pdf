@@ -8,7 +8,6 @@ import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructur
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureNode;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDMarkedContent;
-import org.apache.pdfbox.pdmodel.documentinterchange.taggedpdf.PDArtifactMarkedContent;
 import org.apache.pdfbox.text.PDFMarkedContentExtractor;
 import org.apache.pdfbox.text.TextPosition;
 import org.metanorma.utils.LoggerHelper;
@@ -20,10 +19,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * Remove empty text in the PDF tags tree
  *
  * @author Alexander Dyuzhev
  */
@@ -35,12 +37,25 @@ public class EmptyTag {
 
     private PDStructureTreeRoot structureTreeRoot;
 
+    private PDDocument document;
+
+    private Map<Integer, Map<Integer, String>> emptyMarkedContents = new HashMap<>();
+
+    /**
+     *
+     * @param pdf path to the PDF
+     * @throws IOException
+     */
     public void process(File pdf) throws IOException {
 
         Path pdf_tmp = Paths.get(pdf.getAbsolutePath() + "_tags_tmp");
         Files.copy(Paths.get(pdf.getAbsolutePath()), pdf_tmp, StandardCopyOption.REPLACE_EXISTING);
 
         try (PDDocument document = Loader.loadPDF(pdf_tmp.toFile())) {
+
+            this.document = document;
+
+            emptyMarkedContents = extractEmptyMarkedContents(document);
 
             structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
 
@@ -62,6 +77,12 @@ public class EmptyTag {
         }
     }
 
+    /**
+     *
+     * @param element current Object in the PDF tree
+     * @param indent indent for pretty print (for debug only)
+     * @throws IOException
+     */
     private void removeEmptyTags(Object element, int indent) throws IOException {
 
         if (element instanceof PDStructureNode) {
@@ -74,7 +95,7 @@ public class EmptyTag {
 
                 //System.out.println(kid.getClass());
                 if (kid instanceof PDStructureElement) {
-                    PDStructureElement se = (PDStructureElement)kid;
+                    //PDStructureElement se = (PDStructureElement)kid;
                     //System.out.print(getIndent(indent));
                     //System.out.println("<" + se.getStructureType() + ">");
                     prevIsText = false;
@@ -85,43 +106,18 @@ public class EmptyTag {
                     }
 
                     PDMarkedContentReference mkr = (PDMarkedContentReference)kid;
+
                     PDPage page = mkr.getPage();
+
+                    int pageNum = document.getPages().indexOf(page);
+
                     int mcid = mkr.getMCID();
-
-                    PDFMarkedContentExtractor extractor = new PDFMarkedContentExtractor();
-                    extractor.processPage(page);
-                    String tag = "";
-                    StringBuilder textSB = new StringBuilder();
-                    for (PDMarkedContent group : extractor.getMarkedContents()) {
-                        if (group.getMCID() == mcid) {
-                            tag = group.getTag();
-
-                            if (!tag.equals("Figure")) { //tag <Figure> contains PathPath... without text
-                                for (Object item : group.getContents()) {
-                                    if (item instanceof TextPosition) {
-                                        textSB.append(((TextPosition) item).getUnicode());
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                    }
 
                     //System.out.print(getIndent(indent));
                     //System.out.println(textSB);
                     prevIsText = true;
 
-                    // remove white spaces
-                    String text = textSB.toString().trim();
-                    text = text
-                            .replace("\u00a0", "")
-                            .replace("\u2002", "")
-                            .replace("\u2003", "")
-                            .replace("\u2009", "")
-                            .replace("\u200a", "")
-                            .replace("\u200b", "");
-
-                    if (!tag.equals("Figure") && text.isEmpty()) {
+                    if (emptyMarkedContents.get(pageNum).get(mcid) != null) {
                         // remove this item from tags tree
                         kidsToRemove.add(kid);
                         // System.out.println("Text removed.");
@@ -138,10 +134,62 @@ public class EmptyTag {
                 ((PDStructureNode) element).setKids(kids);
             }
 
-
         }
     }
 
+    /**
+     * Return the empty text position (page, mcid) in the PDF tags tree
+     *
+     * @param document PDDocument object
+     * @return Map of Page, MCID and empty text
+     * @throws IOException
+     */
+    private Map<Integer, Map<Integer, String>> extractEmptyMarkedContents(PDDocument document) throws IOException {
+
+        Map<Integer, Map<Integer, String>> emptyMarkedContents = new HashMap<>();
+
+        for (int i = 0; i < document.getNumberOfPages(); i++) {
+
+            PDPage page = document.getPage(i);
+
+            PDFMarkedContentExtractor extractor = new PDFMarkedContentExtractor();
+            extractor.processPage(page);
+
+            for (PDMarkedContent group : extractor.getMarkedContents()) {
+                if (!group.getTag().equals("Figure")) { //tag <Figure> contains PathPath... without text
+                    int mcid = group.getMCID();
+                    StringBuilder textSB = new StringBuilder();
+                    for (Object item : group.getContents()) {
+                        if (item instanceof TextPosition) {
+                            textSB.append(((TextPosition) item).getUnicode());
+                        }
+                    }
+
+                    // remove white spaces
+                    String text = textSB.toString().trim();
+                    text = text
+                            .replace("\u00a0", "")
+                            .replace("\u2002", "")
+                            .replace("\u2003", "")
+                            .replace("\u2009", "")
+                            .replace("\u200a", "")
+                            .replace("\u200b", "");
+
+                    if (text.isEmpty()) {
+                        emptyMarkedContents.computeIfAbsent(i, k -> new HashMap<>()).put(mcid, text);
+                    }
+                }
+            }
+        }
+        return emptyMarkedContents;
+    }
+
+    /**
+     * Return the count spaces based on indent value
+     *
+     * @param indent value of indent
+     * @return spaces based on indent value
+     */
     private String getIndent(int indent) {
         StringBuilder sb = new StringBuilder(indent);
         for (int j = 0; j < indent; j++) {
