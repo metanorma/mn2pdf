@@ -462,6 +462,11 @@ public class Annotation {
                                     numberTreeAsMap.put(parentTreeNextKey, anDict);
                                     parentTree = new PDNumberTreeNode(PDParentTreeValue.class);
                                     parentTree.setNumbers(numberTreeAsMap);
+
+                                    // remove StructTreeRoot/ParentTree/Limits
+                                    // https://github.com/metanorma/metanorma-pdfa/issues/70
+                                    parentTree.getCOSObject().removeItem(COSName.LIMITS);
+
                                     structureTreeRoot.setParentTree(parentTree);
                                     // END from stackoverflow
                                 } catch (IOException e) {
