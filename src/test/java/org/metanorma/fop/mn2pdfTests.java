@@ -17,6 +17,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.fop.complexscripts.util.JapaneseToNumbers;
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 
 import org.apache.pdfbox.pdmodel.*;
@@ -743,6 +744,13 @@ public class mn2pdfTests {
 
         try (PDDocument document = Loader.loadPDF(pdf.toFile())) {
             PDStructureTreeRoot structureTreeRoot = document.getDocumentCatalog().getStructureTreeRoot();
+
+            // https://github.com/metanorma/metanorma-pdfa/issues/70
+            // https://github.com/metanorma/xmlgraphics-fop/issues/100
+            assertTrue(structureTreeRoot.getParentTree().getLowerLimit() == null);
+            assertTrue(structureTreeRoot.getParentTree().getUpperLimit() == null);
+            assertTrue(((COSDictionary)document.getDocumentCatalog().getNames().getCOSObject()).getItem("Limits") == null);
+
             List<Object> kids = structureTreeRoot.getKids();
 
             for (Object kid : kids) {
