@@ -320,6 +320,7 @@ public class PDFToUnicodeCMap extends PDFCMap {
          */
         private boolean sameRangeEntryAsNext(char[] charArray, int firstItem) {
             boolean retval = false;
+            int sizeLimit = 255; //256
             do {
                 if (firstItem < 0 || firstItem >= charArray.length - 1) {
                     break;
@@ -328,7 +329,7 @@ public class PDFToUnicodeCMap extends PDFCMap {
                     if (firstItem < charArray.length - 3) {
                         if (charArray[firstItem + 2] == charArray[firstItem]) {
                             if (charArray[firstItem + 3] == charArray[firstItem + 1] + 1) {
-                                if (firstItem / 256 == (firstItem + 2) / 256) {
+                                if (firstItem / sizeLimit == (firstItem + 2) / sizeLimit) {
                                     retval = true;
                                 }
                             }
@@ -336,7 +337,7 @@ public class PDFToUnicodeCMap extends PDFCMap {
                     }
                 } else {
                     if (charArray[firstItem] + 1 == charArray[firstItem + 1]) {
-                        if (firstItem / 256 == (firstItem + 1) / 256) {
+                        if (firstItem / sizeLimit == (firstItem + 1) / sizeLimit) {
                             retval = true;
                         }
                     }
