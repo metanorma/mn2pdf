@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.metanorma.fop</groupId>
 	<artifactId>mn2pdf</artifactId>
-	<version>2.64</version>
+	<version>2.65</version>
 	<name>Metanorma XML to PDF converter</name>
 	<packaging>jar</packaging>
 	<url>https://www.metanorma.org</url>
@@ -23,7 +23,7 @@
 		<exec.mainClass>org.metanorma.fop.mn2pdf</exec.mainClass>
 		<fontbox.version>3.0.3</fontbox.version>
 		<fop.version>2.11.0-SNAPSHOT</fop.version>
-		<fop-metanorma.version>2.11.3</fop-metanorma.version>
+		<fop-metanorma.version>2.11.4</fop-metanorma.version>
 		<highlightis.version>11.4.0</highlightis.version>
 		<jackson-dataformat-xml.version>2.11.3</jackson-dataformat-xml.version>
 		<jarname>${project.artifactId}-${project.version}.jar</jarname>
