@@ -118,6 +118,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'table'][@type = 'sourcecode']" priority="2"/>
+	<xsl:template match="*[local-name() = 'fmt-sourcecode'][@linenums = 'true']/*[local-name() = 'table']" priority="2"/>
 
 	<xsl:template match="*[local-name() = 'image'][not(ancestor::*[local-name() = 'table']) and not(ancestor::*[local-name() = 'dl'])]" priority="2"/>
 

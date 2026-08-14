@@ -60,7 +60,7 @@ import org.metanorma.fop.portfolio.PDFPortfolioItem;
 import org.metanorma.fop.signature.PDFSign;
 import org.metanorma.fop.tags.EmptyTag;
 import org.metanorma.fop.tags.LinkQuadPoints;
-import org.metanorma.fop.tags.TableCaption;
+import org.metanorma.fop.tags.TableCaptionTFoot;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -982,10 +982,9 @@ public class PDFGenerator {
 
 
         if (PDFUA_error == false) {
-            logger.log(Level.INFO, "[INFO] Table Caption tag processing...");
-            TableCaption tableCaption = new TableCaption();
-            tableCaption.process(pdf);
-
+            logger.log(Level.INFO, "[INFO] Table Caption and TFoot tags processing...");
+            TableCaptionTFoot tableCaptionTFoot = new TableCaptionTFoot();
+            tableCaptionTFoot.process(pdf);
             logger.log(Level.INFO, "[INFO] Link QuadPoints processing...");
             LinkQuadPoints linkQuadPoints = new LinkQuadPoints();
             linkQuadPoints.process(pdf);
