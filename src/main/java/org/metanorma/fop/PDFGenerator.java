@@ -59,6 +59,7 @@ import org.metanorma.fop.portfolio.PDFPortfolio;
 import org.metanorma.fop.portfolio.PDFPortfolioItem;
 import org.metanorma.fop.signature.PDFSign;
 import org.metanorma.fop.tags.EmptyTag;
+import org.metanorma.fop.tags.FormulaAltText;
 import org.metanorma.fop.tags.LinkQuadPoints;
 import org.metanorma.fop.tags.TableCaptionTFoot;
 import org.metanorma.utils.LoggerHelper;
@@ -985,6 +986,9 @@ public class PDFGenerator {
             logger.log(Level.INFO, "[INFO] Table Caption and TFoot tags processing...");
             TableCaptionTFoot tableCaptionTFoot = new TableCaptionTFoot();
             tableCaptionTFoot.process(pdf);
+            logger.log(Level.INFO, "[INFO] Formula tags alt and actual text processing...");
+            FormulaAltText formulaAltText = new FormulaAltText();
+            formulaAltText.process(pdf);
             logger.log(Level.INFO, "[INFO] Link QuadPoints processing...");
             LinkQuadPoints linkQuadPoints = new LinkQuadPoints();
             linkQuadPoints.process(pdf);

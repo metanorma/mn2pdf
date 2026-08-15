@@ -57,7 +57,7 @@ public class TableCaptionTFoot {
             }
 
             Files.deleteIfExists(pdf.toPath());
-            document.save(pdf, CompressParameters.NO_COMPRESSION); // , CompressParameters.NO_COMPRESSION
+            document.save(pdf); // , CompressParameters.NO_COMPRESSION
 
         } catch (IOException ex) {
             logger.severe("Can't process Caption tag for Table.");
