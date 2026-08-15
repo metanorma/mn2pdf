@@ -42,11 +42,11 @@ public class FormulaAltText {
             List<Object> kids = structureTreeRoot.getKids();
 
             for (Object kid: kids) {
-                copyFormulaAltTextToFigure(kid);
+                copyFigureAltTextToFormula(kid);
             }
 
             Files.deleteIfExists(pdf.toPath());
-            document.save(pdf, CompressParameters.NO_COMPRESSION); // , CompressParameters.NO_COMPRESSION
+            document.save(pdf); // , CompressParameters.NO_COMPRESSION
 
         } catch (IOException ex) {
             logger.severe("Can't process alt text for Figure.");
@@ -55,15 +55,13 @@ public class FormulaAltText {
         finally {
             Files.deleteIfExists(pdf_tmp);
         }
-
-
     }
 
     /**
      * Copy alt text and actual text attributes from <Figure> to <Formula>
      * @param element current element
      */
-    private void copyFormulaAltTextToFigure(Object element) {
+    private void copyFigureAltTextToFormula(Object element) {
         boolean found = false;
         if (element instanceof PDStructureElement) {
             PDStructureElement pdStructureElement = (PDStructureElement) element;
@@ -95,7 +93,7 @@ public class FormulaAltText {
         if (!found) {
             if (element instanceof PDStructureNode) {
                 for (Object kid : ((PDStructureNode) element).getKids()) {
-                    copyFormulaAltTextToFigure(kid);
+                    copyFigureAltTextToFormula(kid);
                 }
             }
         }
