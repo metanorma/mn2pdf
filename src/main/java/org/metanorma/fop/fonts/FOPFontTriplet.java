@@ -122,7 +122,7 @@ public class FOPFontTriplet {
         } else if (fontname.toLowerCase().contains("sans")) {
             substprefix = "Sans";
         } else if (fontname.toLowerCase().contains("serif")) {
-            substprefix = "Sans";//"Serif";
+            substprefix = "Serif";
         }
     }
     
