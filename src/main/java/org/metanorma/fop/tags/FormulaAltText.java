@@ -32,7 +32,7 @@ public class FormulaAltText {
 
     public void process(File pdf) throws IOException {
 
-        Path pdf_tmp = Paths.get(pdf.getAbsolutePath() + "_tablecaption_tmp");
+        Path pdf_tmp = Paths.get(pdf.getAbsolutePath() + "_formulaalt_tmp");
         Files.copy(Paths.get(pdf.getAbsolutePath()), pdf_tmp, StandardCopyOption.REPLACE_EXISTING);
 
         try (PDDocument document = Loader.loadPDF(pdf_tmp.toFile())) {
