@@ -66,19 +66,27 @@ public final class LoggerHelper {
         }
         File logfile = new File(logFilename);
         boolean isXSLFOlocation = false;
+        boolean isXSLFOTableslocations = false;
         if (Util.getFileSize(logfile) > 0) {
             System.out.println("There are warnings and errors:");
 
             // add additional lines into log
             List<String> sbLog = new ArrayList<>();
+            String msg = "Please check the PDF and if necessary, report this issue at the following link: https://github.com/metanorma/mn-native-pdf/issues/new, and attach the XSL-FO file";
             try (BufferedReader br = new BufferedReader(new FileReader(logFilename))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     sbLog.add(line);
                     // if log contains location to XSL-FO
                     if (line.contains("(See position ")) {
-                        isXSLFOlocation = true;
-                        sbLog.add("Please check the PDF and if necessary, report this issue at the following link: https://github.com/metanorma/mn-native-pdf/issues/new, and attach the XSL-FO file or fragment: '" + PDFGenerator.getXSLFOfilename() + "'.");
+                        if (line.contains("table_if_start_") ||
+                            line.contains("table auto-layout algorithm")) {
+                            isXSLFOTableslocations = true;
+                            sbLog.add(msg + "(s): '" + String.join(", ", PDFGenerator.getXSLFOTablesfilenames()) + "'.");
+                        } else {
+                            isXSLFOlocation = true;
+                            sbLog.add(msg + " or fragment: '" + PDFGenerator.getXSLFOfilename() + "'.");
+                        }
                     }
                 }
             }catch (Exception e) { }
@@ -101,6 +109,14 @@ public final class LoggerHelper {
         if (!isXSLFOlocation && !Constants.DEBUG) {
             try {
                 Files.deleteIfExists(Paths.get(PDFGenerator.getXSLFOfilename()));
+            } catch (IOException e) { }
+        }
+        if (!isXSLFOTableslocations && !Constants.DEBUG) {
+            try {
+                for (String xslfoFilename: PDFGenerator.getXSLFOTablesfilenames()) {
+                    Files.deleteIfExists(Paths.get(xslfoFilename));
+                }
+
             } catch (IOException e) { }
         }
     }

@@ -104,6 +104,8 @@ public class PDFGenerator {
     final private String outputPDFFilePath;
 
     static private String xslFOfilename;
+
+    static private List<String> xslFOTablesfilenames = new ArrayList<>();
     //private boolean isDebugMode = false;
     
     private boolean isSkipPDFGeneration = false;
@@ -1579,7 +1581,9 @@ public class PDFGenerator {
                     String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
 
                     //debug
-                    debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".fo.tables.xml");
+                    String xslFOTablesfilename = pdf.getAbsolutePath() + ".fo.tables.xml";
+                    xslFOTablesfilenames.add(xslFOTablesfilename);
+                    debugSaveXML(xmlFO, xslFOTablesfilename, true);
 
                     fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".tables.fontmanifest.log.txt"));
 
@@ -1632,7 +1636,9 @@ public class PDFGenerator {
                         String xmlFO = sourceXMLDocumentTablesOnly.getXMLFO();
 
                         //debug
-                        debugSaveXML(xmlFO, pdf.getAbsolutePath() + ".portion_" + portion + ".fo.tables.xml");
+                        String xslFOTablesfilename = pdf.getAbsolutePath() + ".portion_" + portion + ".fo.tables.xml";
+                        xslFOTablesfilenames.add(xslFOTablesfilename);
+                        debugSaveXML(xmlFO, xslFOTablesfilename, true);
 
                         fontcfg.outputFontManifestLog(Paths.get(pdf.getAbsolutePath() + ".portion_" + portion + ".tables.fontmanifest.log.txt"));
 
@@ -1777,5 +1783,9 @@ public class PDFGenerator {
 
     public static String getXSLFOfilename() {
         return xslFOfilename;
+    }
+
+    public static List<String> getXSLFOTablesfilenames() {
+        return xslFOTablesfilenames;
     }
 }
