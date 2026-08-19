@@ -61,6 +61,7 @@ import org.metanorma.fop.signature.PDFSign;
 import org.metanorma.fop.tags.EmptyTag;
 import org.metanorma.fop.tags.FormulaAltText;
 import org.metanorma.fop.tags.LinkQuadPoints;
+import org.metanorma.fop.tags.NonStruct;
 import org.metanorma.fop.tags.TableCaptionTFoot;
 import org.metanorma.utils.LoggerHelper;
 import org.w3c.dom.Node;
@@ -988,6 +989,9 @@ public class PDFGenerator {
             logger.log(Level.INFO, "[INFO] Table Caption and TFoot tags processing...");
             TableCaptionTFoot tableCaptionTFoot = new TableCaptionTFoot();
             tableCaptionTFoot.process(pdf);
+            logger.log(Level.INFO, "[INFO] Part tags processing...");
+            NonStruct nonStruct = new NonStruct();
+            nonStruct.process(pdf);
             logger.log(Level.INFO, "[INFO] Formula tags alt and actual text processing...");
             FormulaAltText formulaAltText = new FormulaAltText();
             formulaAltText.process(pdf);
