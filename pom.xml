@@ -23,7 +23,7 @@
 		<exec.mainClass>org.metanorma.fop.mn2pdf</exec.mainClass>
 		<fontbox.version>3.0.3</fontbox.version>
 		<fop.version>2.11.0-SNAPSHOT</fop.version>
-		<fop-metanorma.version>2.11.4</fop-metanorma.version>
+		<fop-metanorma.version>2.11.5</fop-metanorma.version>
 		<highlightis.version>11.4.0</highlightis.version>
 		<jackson-dataformat-xml.version>2.11.3</jackson-dataformat-xml.version>
 		<jarname>${project.artifactId}-${project.version}.jar</jarname>
