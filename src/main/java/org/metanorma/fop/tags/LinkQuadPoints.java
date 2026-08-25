@@ -1,6 +1,7 @@
 package org.metanorma.fop.tags;
 
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -11,8 +12,8 @@ import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructur
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureNode;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationFileAttachment;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
-import org.apache.pdfbox.pdmodel.interactive.annotation.handlers.PDLinkAppearanceHandler;
 import org.metanorma.utils.LoggerHelper;
 
 import java.io.File;
@@ -94,7 +95,9 @@ public class LinkQuadPoints {
                 if (kid instanceof PDStructureElement) {
                     PDStructureElement pdStructureElement = (PDStructureElement) kid;
 
-                    if (pdStructureElement.getStructureType().equals("Link")) {
+                    String structureType = pdStructureElement.getStructureType();
+
+                    if (structureType.equals("Link") || structureType.equals("Annot")) {
 
                         if (DEBUG) {
                             String alt = pdStructureElement.getAlternateDescription();
@@ -122,14 +125,18 @@ public class LinkQuadPoints {
                         if (processQuadPoints) {
 
                             List<PDObjectReference> pdObjectReferences = new ArrayList<>();
-                            List<PDAnnotationLink> pdAnnotationLinks = new ArrayList<>();
+                            //List<PDAnnotationLink> pdAnnotationLinks = new ArrayList<>();
+                            List<PDAnnotation> pdAnnotationLinks = new ArrayList<>();
                             for (Object o: pdStructureElement.getKids()) {
                                 if (o instanceof PDObjectReference) {
                                     PDObjectReference objRef = (PDObjectReference) o;
                                     COSObjectable refObj =  objRef.getReferencedObject();
-                                    if (refObj instanceof PDAnnotationLink) {
-                                        PDAnnotationLink link = (PDAnnotationLink) refObj;
-                                        pdAnnotationLinks.add(link);
+                                    if (refObj instanceof PDAnnotationLink ||
+                                            refObj instanceof PDAnnotationFileAttachment) {
+                                        //PDAnnotationLink link = (PDAnnotationLink) refObj;
+                                        //pdAnnotationLinks.add(link);
+                                        PDAnnotation annotation = (PDAnnotation) refObj;
+                                        pdAnnotationLinks.add(annotation);
                                         pdObjectReferences.add(objRef);
                                     }
                                 }
@@ -147,7 +154,8 @@ public class LinkQuadPoints {
 
                                 // gathering the /Rect coordinates
                                 for(int j = 0; j < pdAnnotationLinks.size(); j++) {
-                                    PDAnnotationLink pdLink = pdAnnotationLinks.get(j);
+                                    //PDAnnotationLink pdLink = pdAnnotationLinks.get(j);
+                                    PDAnnotation pdLink = pdAnnotationLinks.get(j);
                                     PDRectangle pdRectangle = pdLink.getRectangle();
                                     //*          ***************  (x2,y2)
                                     //*          *             *
@@ -188,11 +196,20 @@ public class LinkQuadPoints {
                                     quadPoints[j * 8 + 6] = x1; // x4
                                     quadPoints[j * 8 + 7] = y2; // y4
                                 }
-                                PDAnnotationLink firstPDLink = pdAnnotationLinks.get(0);
-                                firstPDLink.setQuadPoints(quadPoints);
+                                //PDAnnotationLink firstPDLink = pdAnnotationLinks.get(0);
+                                PDAnnotation firstPDLink = pdAnnotationLinks.get(0);
+                                if (structureType.equals("Link")) {
+                                    ((PDAnnotationLink)firstPDLink).setQuadPoints(quadPoints);
+                                } else if (structureType.equals("Annot")) {
+                                    // PDAnnotationFileAttachment doesn't have the method setQuadPoints
+                                    COSArray newQuadPoints = new COSArray();
+                                    newQuadPoints.setFloatArray(quadPoints);
+                                    firstPDLink.getCOSObject().setItem(COSName.QUADPOINTS, newQuadPoints);
+                                }
+
                                 // no need to remove /Rect, see PDLinkAppearanceHandler, method generateNormalAppearance
                                 // firstPDLink.getCOSObject().setItem(COSName.RECT, null); // because firstPDLink.setRectangle(null) raises exception
-                                PDRectangle pdRectangleOld = firstPDLink.getRectangle();
+                                // PDRectangle pdRectangleOld = firstPDLink.getRectangle();
                                 PDRectangle pdRectangleCover = new PDRectangle(x1_cover_rect, y1_cover_rect, x2_cover_rect - x1_cover_rect, y2_cover_rect - y1_cover_rect);
                                 firstPDLink.setRectangle(pdRectangleCover);
 
