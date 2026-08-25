@@ -58,15 +58,21 @@ public class PDFileAttachmentAppearanceHandler extends PDAbstractAppearanceHandl
             setOpacity(contentStream, annotation.getConstantOpacity());
 
             // minimum code of PDTextAppearanceHandler.adjustRectAndBBox() 
-            int size = 18;
+            /*int size = 18;
+
             rect.setUpperRightX(rect.getLowerLeftX() + (size - 5));
             rect.setUpperRightY(rect.getLowerLeftY() + 8);
-            rect.setLowerLeftY(rect.getUpperRightY() - (size - 5));
+            rect.setLowerLeftY(rect.getUpperRightY() - (size - 5));*/
             annotation.setRectangle(rect);
-            annotation.getNormalAppearanceStream().setBBox(new PDRectangle(size, size));
+            //annotation.getNormalAppearanceStream().setBBox(new PDRectangle(size, size));
+            annotation.getNormalAppearanceStream().setBBox(rect);
 
             //TODO support Graph, PushPin, Paperclip, Tag
-            drawPaperclip(contentStream);
+
+            //paper clip icon rendering moved from here common.link.xsl
+            // for https://github.com/metanorma/metanorma-pdfa/issues/71
+            //drawPaperclip(contentStream);
+
         }
         catch (IOException e)
         {
