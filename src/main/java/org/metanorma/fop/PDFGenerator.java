@@ -1000,9 +1000,9 @@ public class PDFGenerator {
             logger.log(Level.INFO, "[INFO] Link QuadPoints processing...");
             LinkQuadPoints linkQuadPoints = new LinkQuadPoints();
             linkQuadPoints.process(pdf);
-            logger.log(Level.INFO, "[INFO] Empty text from tags tag removing...");
+            /*logger.log(Level.INFO, "[INFO] Empty text from tags tag removing...");
             EmptyTag emptyTag = new EmptyTag();
-            emptyTag.process(pdf);
+            emptyTag.process(pdf);*/
         }
 
         
