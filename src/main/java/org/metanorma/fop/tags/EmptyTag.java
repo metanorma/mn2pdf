@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static org.metanorma.Constants.DEBUG;
+
 /**
  * Remove empty text in the PDF tags tree
  *
@@ -127,12 +129,12 @@ public class EmptyTag {
                 removeEmptyTags(kid, ++indent);
             }
 
-            for (int i = 0; i < kidsToRemove.size(); i++) {
+            /*for (int i = 0; i < kidsToRemove.size(); i++) {
                 kids.remove(kidsToRemove.get(i));
             }
             if (!kidsToRemove.isEmpty()) {
                 ((PDStructureNode) element).setKids(kids);
-            }
+            }*/
 
         }
     }
@@ -148,6 +150,10 @@ public class EmptyTag {
 
         Map<Integer, Map<Integer, String>> emptyMarkedContents = new HashMap<>();
 
+        if (DEBUG) {
+            System.out.println("extractEmptyMarkedContents:");
+        }
+
         for (int i = 0; i < document.getNumberOfPages(); i++) {
 
             PDPage page = document.getPage(i);
@@ -156,7 +162,12 @@ public class EmptyTag {
             extractor.processPage(page);
 
             for (PDMarkedContent group : extractor.getMarkedContents()) {
-                if (!group.getTag().equals("Figure")) { //tag <Figure> contains PathPath... without text
+                if (!group.getTag().equals("Figure") && !group.getTag().equals("Artifact")) { //tag <Figure> contains PathPath... without text
+
+                    if (DEBUG) {
+                        System.out.print("<" + group.getTag() + "> ");
+                    }
+
                     int mcid = group.getMCID();
                     StringBuilder textSB = new StringBuilder();
                     for (Object item : group.getContents()) {
@@ -176,7 +187,13 @@ public class EmptyTag {
                             .replace("\u200b", "");
 
                     if (text.isEmpty()) {
+                        if (DEBUG) {
+                            System.out.print("empty: ");
+                        }
                         emptyMarkedContents.computeIfAbsent(i, k -> new HashMap<>()).put(mcid, text);
+                    }
+                    if (DEBUG) {
+                        System.out.println(text);
                     }
                 }
             }
