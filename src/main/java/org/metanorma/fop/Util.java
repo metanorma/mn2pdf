@@ -87,15 +87,26 @@ public class Util {
     protected static final Logger logger = Logger.getLogger(LoggerHelper.LOGGER_NAME);
 
     public static int getFileSize(URL url) {
-        URLConnection conn = null;
+        HttpURLConnection conn = null;
         try {
-            conn = url.openConnection();
-            return conn.getContentLength();
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("HEAD");
+            conn.setRequestProperty("Accept", "*/*");
+            conn.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+            /*int responseCode = conn.getResponseCode();
+            System.out.println("HTTP Response Code: " + responseCode);*/
+            String contentLength = conn.getHeaderField("Content-Length");
+            if (contentLength != null) {
+                return Integer.parseInt(contentLength);
+            } else {
+                return conn.getContentLength();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
             if(conn instanceof HttpURLConnection) {
-                ((HttpURLConnection)conn).disconnect();
+                conn.disconnect();
             }
         }
     }
@@ -107,10 +118,27 @@ public class Util {
 
     public static void downloadFile(String url, Path destPath) {
         logger.info("Downloading " + url + "...");
+        HttpURLConnection conn = null;
         try {
-            ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(destPath.toString());
-            fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+            URL urlObj = new URL(url);
+            conn = (HttpURLConnection) urlObj.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "*/*");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+            conn.setInstanceFollowRedirects(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try (InputStream inputStream = conn.getInputStream();
+                     ReadableByteChannel readableByteChannel = Channels.newChannel(inputStream);
+                     FileOutputStream fileOutputStream = new FileOutputStream(destPath.toString())) {
+
+                    fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+                }
+            } else {
+                logger.log(Level.INFO, "Can''t downloaded a file. HTTP response code: " + responseCode);
+            }
+
         } catch (Exception ex) {
             logger.log(Level.INFO, "Can''t downloaded a file: {0}", ex.getMessage());
         }
