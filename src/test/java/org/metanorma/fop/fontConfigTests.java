@@ -76,13 +76,17 @@ public class fontConfigTests {
 
         // compound one-word styles: the trailing italic/oblique is the
         // style, the prefix is the weight (the ITC Stone Sans web fonts
-        // name their styles without spaces)
+        // name their styles without spaces). Medium maps to the default
+        // weight: a family whose lightest cut is Medium has no 400 face,
+        // and registering the file at 500 makes FOP skip the family for
+        // normal-weight text entirely (the body fell through to the next
+        // family in the chain).
         Map<String,String> tc6 = fontcfg.getFontStyles("Medium");
-        assertTrue(tc6.get("weight").equals("500"));
+        assertTrue(tc6.get("weight").equals("normal"));
         assertTrue(tc6.get("style").equals("normal"));
 
         Map<String,String> tc7 = fontcfg.getFontStyles("MediumItalic");
-        assertTrue(tc7.get("weight").equals("500"));
+        assertTrue(tc7.get("weight").equals("normal"));
         assertTrue(tc7.get("style").equals("italic"));
 
         Map<String,String> tc8 = fontcfg.getFontStyles("SemiBoldOblique");
