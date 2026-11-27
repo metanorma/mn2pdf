@@ -361,6 +361,22 @@ class fontConfig {
             String[] fontStyleParts = style.toLowerCase().split(" ");
             fontStyle_weight = fontStyleParts[0];
             fontStyle_style = fontStyleParts[1];
+        } else {
+            // Compound one-word styles ("MediumItalic", "SemiBoldOblique"):
+            // the trailing italic/oblique is the style, the prefix is the
+            // weight. Without this split the whole string matches neither
+            // the weight table nor the style table, and the font file is
+            // registered as weight-normal — a slanted italic file can then
+            // win a normal-weight font request.
+            for (String suffix : new String[]{"italic", "oblique"}) {
+                if (fontStyle_weight.endsWith(suffix)
+                        && fontStyle_weight.length() > suffix.length()) {
+                    fontStyle_style = suffix;
+                    fontStyle_weight = fontStyle_weight
+                        .substring(0, fontStyle_weight.length() - suffix.length());
+                    break;
+                }
+            }
         }
         
         fontWeight = getFontWeight(fontStyle_weight);

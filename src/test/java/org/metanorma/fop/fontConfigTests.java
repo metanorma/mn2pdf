@@ -72,7 +72,26 @@ public class fontConfigTests {
         
         Map<String,String> tc5 = fontcfg.getFontStyles("SemiBold Italic");
         assertTrue(tc5.get("weight").equals("600"));
-        assertTrue(tc5.get("style").equals("italic"));   
+        assertTrue(tc5.get("style").equals("italic"));
+
+        // compound one-word styles: the trailing italic/oblique is the
+        // style, the prefix is the weight (the ITC Stone Sans web fonts
+        // name their styles without spaces)
+        Map<String,String> tc6 = fontcfg.getFontStyles("Medium");
+        assertTrue(tc6.get("weight").equals("500"));
+        assertTrue(tc6.get("style").equals("normal"));
+
+        Map<String,String> tc7 = fontcfg.getFontStyles("MediumItalic");
+        assertTrue(tc7.get("weight").equals("500"));
+        assertTrue(tc7.get("style").equals("italic"));
+
+        Map<String,String> tc8 = fontcfg.getFontStyles("SemiBoldOblique");
+        assertTrue(tc8.get("weight").equals("600"));
+        assertTrue(tc8.get("style").equals("italic"));
+
+        Map<String,String> tc9 = fontcfg.getFontStyles("LightItalic");
+        assertTrue(tc9.get("weight").equals("300"));
+        assertTrue(tc9.get("style").equals("italic"));
     }
-    
+
 }
