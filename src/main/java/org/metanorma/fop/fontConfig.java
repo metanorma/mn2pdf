@@ -2,12 +2,11 @@ package org.metanorma.fop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.fop.fonts.EmbeddingMode;
-import org.apache.fop.fonts.EncodingMode;
-import org.apache.fop.fonts.FontLoader;
-import org.apache.fop.fonts.FontUris;
-import org.apache.fop.apps.io.InternalResourceResolver;
-import java.net.URI;
+import org.apache.fop.fonts.truetype.OFFontLoader;
+import org.apache.fop.fonts.truetype.FontFileReader;
+import org.apache.fop.fonts.truetype.OpenFont;
+import org.apache.fop.fonts.truetype.OTFFile;
+import org.apache.fop.fonts.truetype.TTFFile;
 import org.apache.fop.fonts.FontTriplet;
 import org.metanorma.fop.fonts.DefaultFonts;
 import org.metanorma.fop.fonts.FOPFont;
@@ -223,7 +222,7 @@ class fontConfig {
                             // collection whose face lacks a Unicode cmap, for
                             // example): registering such a path makes FOP
                             // fatal at layout time when the triplet is used.
-                            String subFontName = fontPath_.toLowerCase().endsWith(".ttc") ? fontFullName : null;
+                            String subFontName = fontFile.getName().toLowerCase().endsWith(".ttc") ? fontFullName : null;
                             if (!fontLoads(fontFile, subFontName)) {
                                 logger.log(Level.WARNING, "WARNING: font ''{0}'' from the 'fontist' manifest file cannot be loaded; skipped!", fontPath);
                                 continue;
@@ -370,17 +369,15 @@ class fontConfig {
     // the FOP font configuration: the failure surfaces later as a fatal
     // layout error.
     boolean fontLoads(File fontFile, String subFontName) {
-        try {
-            FontUris fontUris = new FontUris(fontFile.toURI(), null);
-            FontLoader.loadFont(fontUris, subFontName, true, EmbeddingMode.AUTO, EncodingMode.AUTO,
-                    false, false, InternalResourceResolver.newDefaultResourceResolver(),
-                    false, false, false);
-            return true;
+        try (InputStream in = new FileInputStream(fontFile)) {
+            FontFileReader reader = new FontFileReader(in);
+            String header = OFFontLoader.readHeader(reader);
+            OpenFont otf = header.equals("OTTO") ? new OTFFile(false, false) : new TTFFile(false, false);
+            return otf.readFont(reader, header, subFontName);
         } catch (IOException | RuntimeException e) {
             return false;
         }
     }
-
     public Map<String,String> getFontStyles(String style) {
         Map<String,String> fontstyle = new HashMap<>();
         
