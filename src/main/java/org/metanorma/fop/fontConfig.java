@@ -2,6 +2,12 @@ package org.metanorma.fop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.fop.fonts.EmbeddingMode;
+import org.apache.fop.fonts.EncodingMode;
+import org.apache.fop.fonts.FontLoader;
+import org.apache.fop.fonts.FontUris;
+import org.apache.fop.apps.io.InternalResourceResolver;
+import java.net.URI;
 import org.apache.fop.fonts.FontTriplet;
 import org.metanorma.fop.fonts.DefaultFonts;
 import org.metanorma.fop.fonts.FOPFont;
@@ -213,6 +219,16 @@ class fontConfig {
                                 continue;
                             }
 
+                            // Skip files FOP cannot load (a system font
+                            // collection whose face lacks a Unicode cmap, for
+                            // example): registering such a path makes FOP
+                            // fatal at layout time when the triplet is used.
+                            String subFontName = fontPath_.toLowerCase().endsWith(".ttc") ? fontFullName : null;
+                            if (!fontLoads(fontFile, subFontName)) {
+                                logger.log(Level.WARNING, "WARNING: font ''{0}'' from the 'fontist' manifest file cannot be loaded; skipped!", fontPath);
+                                continue;
+                            }
+
                             String fontPath_ = fontPath__;
 
                             for (FOPFontTriplet fontVariant : fontVariants) {
@@ -347,7 +363,24 @@ class fontConfig {
             }
         }
     }
-    
+
+    // True when FOP's TrueType/OpenType loader can read the file (a
+    // collection face named by subFontName for .ttc files). A file that
+    // fails here — no Unicode cmap, truncated tables — must not enter
+    // the FOP font configuration: the failure surfaces later as a fatal
+    // layout error.
+    boolean fontLoads(File fontFile, String subFontName) {
+        try {
+            FontUris fontUris = new FontUris(fontFile.toURI(), null);
+            FontLoader.loadFont(fontUris, subFontName, true, EmbeddingMode.AUTO, EncodingMode.AUTO,
+                    false, false, InternalResourceResolver.newDefaultResourceResolver(),
+                    false, false, false);
+            return true;
+        } catch (IOException | RuntimeException e) {
+            return false;
+        }
+    }
+
     public Map<String,String> getFontStyles(String style) {
         Map<String,String> fontstyle = new HashMap<>();
         
