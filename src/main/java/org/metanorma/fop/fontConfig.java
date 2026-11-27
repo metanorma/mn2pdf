@@ -448,7 +448,14 @@ class fontConfig {
                 fontWeight = "600";
                 break;
             case ("medium"):
-                fontWeight = "500";
+                // A family whose lightest cut is Medium (no Regular exists —
+                // the ITC Stone Sans families, for example) has no 400-weight
+                // face: registering the Medium file at 500 makes FOP skip the
+                // family entirely for normal-weight text (FOP matches exact
+                // weights first and falls through the substitution chain), so
+                // the body renders in the next family. At 400 the Medium file
+                // is the family's normal face, which is what the style means.
+                fontWeight = FONT_WEIGHT_DEFAULT;
                 break;
             case ("light"):
                 fontWeight = "300";
